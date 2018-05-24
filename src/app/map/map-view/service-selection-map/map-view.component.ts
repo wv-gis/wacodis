@@ -28,6 +28,7 @@ export class MapViewComponent implements OnInit, AfterViewInit {
   public fitBounds: L.LatLngBoundsExpression = [[50.985, 6.924], [51.319, 7.607]];
 
   public providerUrl = 'http://www.fluggs.de/sos2/api/v1/';
+  public label = 'Wupperverband Zeitreihen Dienst';
   public avoidZoomToSelection = false;
   public cluster = true;
   public loadingStations: boolean;
@@ -87,11 +88,12 @@ export class MapViewComponent implements OnInit, AfterViewInit {
     console.log(this.providerUrl);
   }
 
-  public setProviderUrl(url: string){
-    this.providerUrl = url;
+  public setProviderUrl(url: Service){
+    this.providerUrl = url.apiUrl;
     if(this.stationFilter){
       this.stationFilter ={};
     }
+    this.label=url.label;
     console.log("SelectedProvider: " + url);
   }
 

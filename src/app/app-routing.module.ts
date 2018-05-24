@@ -8,13 +8,13 @@ import { TimespanMapComponent } from './map/map-view/timespan-map/timespan-map.c
 import { RasterMapComponent } from './map/map-view/raster-map/raster-map.component';
 
 const routes: Routes = [
-  { path: '' , redirectTo: 'selectViewDashboard', pathMatch: 'full'},
-  { path: 'map', component: MapViewComponent, data: { title: 'Kartenansicht'}},
-  { path: 'table', component: DataTableComponent, data: { title: 'Tabellenansicht'}},
-  { path: 'timeseries', component: GraphViewComponent, data: { title: 'Zeitreihenansicht'}},
-  { path: 'selectViewDashboard', component: SelectViewDashboardComponent, data: { title: 'Kartenauswahl'}},
-  { path: 'timespanMap', component: TimespanMapComponent, data: { title: 'Zeitverfolgung'}},
-  { path: 'rasterMap', component: RasterMapComponent, data: { title: 'RasterKartenansicht'}},
+  { path: '' , redirectTo: 'start', pathMatch: 'full'},
+  { path: 'selection-map', component: MapViewComponent, data: { title: 'WaCoDiS Web Client'}},
+  { path: 'diagram', component: DataTableComponent, data: { title: 'Tabellenansicht'}},
+  { path: 'timeseries', component: GraphViewComponent, data: { title: 'WaCoDiS Web Client'}},
+  { path: 'start', component: SelectViewDashboardComponent, data: { title: 'WaCoDiS Web Client'}},
+  { path: 'timespan-map', component: TimespanMapComponent, data: { title: 'WaCoDiS Web Client'}},
+  { path: 'raster-map', component: RasterMapComponent, data: { title: 'WaCoDiS Web Client'}},
 ];
 
 @NgModule({

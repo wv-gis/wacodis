@@ -5,6 +5,7 @@ import { Phenomenon } from "@helgoland/core";
 {
     selector: 'wv-phenomenon-selector',
     templateUrl: './phenomenon-selector.component.html',
+    styleUrls: ['./phenomenon-selector.component.css']
 })
 
 
@@ -19,7 +20,5 @@ onPhenomenonSelected(phenomenon: Phenomenon){
 this.selectedPhenomenon.emit(phenomenon);
 }
 
-
-url = this.apiUrl;
 
 }
