@@ -1,0 +1,24 @@
+<div class="container-fluid">
+  <ul class="nav">
+    <li class="nav-item dropdown">
+      <a class="btn btn-secondary dropdown-toggle" role="button" id="navbarDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Datenquelle
+      </a>
+      <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+        <a class="dropdown-item" href="#">Test</a>
+        <a class="dropdown-item" href="#">noch ein Test</a>
+      </div>
+    </li>
+    <li>
+      <a class="btn btn-secondary" role="button" href="#">Zeitwahl</a>
+    </li>
+  </ul>
+</div>
+<div style="display: flex; flex-direction: row;">
+  <div style="width: 100%; padding: 5px;">
+    <div style="height: 800px;">
+      <n52-geometry-map-viewer [mapOptions]="mapOptions" [fitBounds]="fitBounds" [layerControlOptions]="layerControlOptions" [zoomControlOptions]="zoomControlOptions"
+        [overlayMaps]="overlayMaps" [baseMaps]="baseMaps" mapId="map"></n52-geometry-map-viewer>
+    </div>
+  </div>
+</div>

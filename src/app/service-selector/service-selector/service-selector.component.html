@@ -1,0 +1,7 @@
+<div>
+    <div class="form-check" *ngFor="let dataset of datasetApis">
+        <input class="form-check-input" name="group100" type="radio" id="radio100">
+        <n52-service-selector class="form-check-label" for="radio100" [datasetApiList]="datasetApis" [supportStations]="true" [showUnresolvableServices]="true"
+            (onServiceSelected)="switchProvider($event)"></n52-service-selector>
+    </div>
+</div>
