@@ -30,6 +30,7 @@ export class ExtendedSettingsService extends SettingsService<Settings> {
   constructor() {
     super();
     this.setSettings(settings);
+    // console.log("Settings: " + settings.refreshDataInterval);
   }
 }
 

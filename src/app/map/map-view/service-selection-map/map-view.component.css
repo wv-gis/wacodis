@@ -2,7 +2,7 @@
     padding: 10px;
 }
 
-.modal-dialog .modal-content .modal-header .modal-title{
+.modal-dialog.modal-content.modal-header.modal-title{
     text-align: center;
     
 }
@@ -17,4 +17,8 @@
     height: 40px;
     margin-left: 5px;
     margin-right: 5px;
+}
+.btn.btn-secondary{
+    background-color: #2c4869;
+    color: white;
 }

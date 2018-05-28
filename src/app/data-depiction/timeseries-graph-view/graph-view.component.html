@@ -1,12 +1,12 @@
-<div class="diagram" style="height: 800px; width: 800px; padding: 5px; position: absolute;">
+<div class="diagram" style="height: 800px; width: 800px; padding: 5px; position: relative;">
   <n52-d3-timeseries-graph [datasetIds]="datasetIdsMultiple" [selectedDatasetIds]="selectedIds" [datasetOptions]="datasetOptionsMultiple"
     [timeInterval]="timespan" (onTimespanChanged)="timespanChanged($event)" [graphOptions]="diagramOptionsD3" #diagram></n52-d3-timeseries-graph>
 </div>
-<div>
+<div style="padding: 10px;">
   <n52-timespan-shift-selector [timespan]="timespan" (onTimespanChange)="timespanChanged($event)"></n52-timespan-shift-selector>
-  <n52-refresh-button [refreshInterval]=10 (refreshing)="diagram.drawLineGrap()"></n52-refresh-button>
+  <n52-refresh-button  (refreshing)="diagram.reloadData()"></n52-refresh-button>
 </div>
-<div class="bottom" style="float: right;" *ngFor="let id of datasetIdsMultiple">
+<div class="bottom"  *ngFor="let id of datasetIdsMultiple">
   <n52-timeseries-entry [datasetId]="id" [selected]="isSelected(id)" [datasetOptions]="datasetOptionsMultiple.get(id)" [timeInterval]="timespan"
     (onSelectDataset)="selectDataset($event, id)"></n52-timeseries-entry>
 </div>

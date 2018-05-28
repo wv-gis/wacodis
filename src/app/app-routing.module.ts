@@ -10,7 +10,7 @@ import { RasterMapComponent } from './map/map-view/raster-map/raster-map.compone
 const routes: Routes = [
   { path: '' , redirectTo: 'start', pathMatch: 'full'},
   { path: 'selection-map', component: MapViewComponent, data: { title: 'WaCoDiS Web Client'}},
-  { path: 'diagram', component: DataTableComponent, data: { title: 'Tabellenansicht'}},
+  { path: 'table', component: DataTableComponent, data: { title: 'Tabellenansicht'}},
   { path: 'timeseries', component: GraphViewComponent, data: { title: 'WaCoDiS Web Client'}},
   { path: 'start', component: SelectViewDashboardComponent, data: { title: 'WaCoDiS Web Client'}},
   { path: 'timespan-map', component: TimespanMapComponent, data: { title: 'WaCoDiS Web Client'}},

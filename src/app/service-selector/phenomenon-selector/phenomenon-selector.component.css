@@ -21,6 +21,8 @@ body{
 
 .btn.btn-primary {
     background-color: #2c4869;
+    position: absolute;
+    right: 0px;
 }
 .card-header{
     background-color: #2c4869;
