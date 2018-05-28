@@ -1,0 +1,8 @@
+.diagram {
+    height: 500px;
+    flex: 1;
+}
+.bottom {
+    display: flex;
+    flex-direction: row;
+}

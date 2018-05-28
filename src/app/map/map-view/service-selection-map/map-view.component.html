@@ -39,9 +39,12 @@
 
 <div class="container-fluid h-100">
   <div class="row h-100">
-    <div class="col" style="display: flex; flex-direction: row;">
-      <div style="width: 100%; padding: 5px;">
-        <div style="height: 800px;">
+    <div class="col">
+      <div class="row" style="width: 100%; padding: 5px; position: relative; height: 850px;">
+        <div class="col-12" style="width: 100%; position: absolute; z-index: 800;">
+          <wv-phenomenon-selector [(apiUrl)]="providerUrl" (selectedPhenomenon)="onSelectPhenomenon($event)" id="phenomenon" (stationFilter)="removeStationFilter()"></wv-phenomenon-selector>
+        </div>
+        <div class="col-12" style="height: 100%; width: 100%;">
           <!-- <n52-geometry-map-viewer [mapOptions]="mapOptions" [fitBounds]="fitBounds" [layerControlOptions]="layerControlOptions" [zoomControlOptions]="zoomControlOptions"
         [overlayMaps]="overlayMaps" [baseMaps]="baseMaps" mapId="map"></n52-geometry-map-viewer> -->
           <n52-station-map-selector [mapId]="'map'" [serviceUrl]="providerUrl" [filter]="stationFilter" [zoomControlOptions]="zoomControlOptions"
@@ -49,9 +52,6 @@
             [overlayMaps]="overlayMaps" [layerControlOptions]="layerControlOptions" (onSelected)="onStationSelected($event)"
             [cluster]="cluster" [statusIntervals]="statusIntervals" (onContentLoading)="loadingStations = $event"></n52-station-map-selector>
         </div>
-      </div>
-      <div class="col-3 collapse show phenomenon px-0">
-        <wv-phenomenon-selector [(apiUrl)]="providerUrl" (selectedPhenomenon)="onSelectPhenomenon($event)" id="phenomenon"></wv-phenomenon-selector>
       </div>
     </div>
   </div>

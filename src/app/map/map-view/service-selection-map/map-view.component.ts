@@ -67,16 +67,16 @@ export class MapViewComponent implements OnInit, AfterViewInit {
 
   public onStationSelected(station: Station) {
     console.log('Clicked station: ' + station.properties.label);
-    if(!station.properties.timeseries){
-    this.stationPopup = L.popup().setLatLng([station.geometry.coordinates[1], station.geometry.coordinates[0]])
-      .setContent(`<div> ID:  ${station.properties.id} </div><div> ${station.properties.label} </div>`)
-      .openOn(this.mapCache.getMap('map'));
+    if (!station.properties.timeseries) {
+      this.stationPopup = L.popup().setLatLng([station.geometry.coordinates[1], station.geometry.coordinates[0]])
+        .setContent(`<div> ID:  ${station.properties.id} </div><div> ${station.properties.label} </div>`)
+        .openOn(this.mapCache.getMap('map'));
       console.log('No timeseries');
     }
     else {
       this.stationPopup = L.popup().setLatLng([station.geometry.coordinates[1], station.geometry.coordinates[0]])
-      .setContent(`<div> ID:  ${station.properties.id} </div><div> ${station.properties.label} </div><div> LetzterWert: ${station.properties.timeseries} </div>`)
-      .openOn(this.mapCache.getMap('map'));
+        .setContent(`<div> ID:  ${station.properties.id} </div><div> ${station.properties.label} </div><div> LetzterWert: ${station.properties.timeseries} </div>`)
+        .openOn(this.mapCache.getMap('map'));
     }
   }
 
@@ -88,13 +88,15 @@ export class MapViewComponent implements OnInit, AfterViewInit {
     console.log(this.providerUrl);
   }
 
-  public setProviderUrl(url: Service){
+  public setProviderUrl(url: Service) {
     this.providerUrl = url.apiUrl;
-    if(this.stationFilter){
-      this.stationFilter ={};
+    if (this.stationFilter) {
+      this.stationFilter = {};
     }
-    this.label=url.label;
+    this.label = url.label;
     console.log("SelectedProvider: " + url);
   }
-
+  removeStationFilter() {
+    this.stationFilter = {};
+  }
 }

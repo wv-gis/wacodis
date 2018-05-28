@@ -7,13 +7,6 @@
     
 }
 
-.phenomenon {
-    margin: 5px;
-    width: 20%;
-    height: 50%;
-    padding: 5px;
-}
-
 .nav .selection {
     margin-right: 5px;
     margin-left: 5px;
@@ -24,21 +17,4 @@
     height: 40px;
     margin-left: 5px;
     margin-right: 5px;
-}
-/* .nav .selection :active{
-    background-color: lightgrey;
-} */
-.phenomenon.collapse.show,
-.phenomenon.collapse.show + .col {
-    transition: .18s linear;
-    left: 0;
-}
-
-.phenomenon.collapse ,
-.phenomenon.collapsing,
-.phenomenon.collapsing + .col {
-    transition: .18s linear;
-    z-index: 1050;
-    left: -25%;
-    height: auto !important;
 }

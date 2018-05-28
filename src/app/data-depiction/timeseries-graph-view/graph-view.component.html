@@ -1,6 +1,17 @@
-<div style="height: 800px; width: 800px; padding: 5px; position: absolute;">
-  <n52-d3-timeseries-graph [datasetIds]="datasetIdsMultiple" [selectedDatasetIds]="selectedIds" [datasetOptions]="datasetOptionsMultiple" [timeInterval]="timespan" (onTimespanChanged)="timespanChanged($event)" [graphOptions]="diagramOptionsD3"></n52-d3-timeseries-graph>
+<div class="diagram" style="height: 800px; width: 800px; padding: 5px; position: absolute;">
+  <n52-d3-timeseries-graph [datasetIds]="datasetIdsMultiple" [selectedDatasetIds]="selectedIds" [datasetOptions]="datasetOptionsMultiple"
+    [timeInterval]="timespan" (onTimespanChanged)="timespanChanged($event)" [graphOptions]="diagramOptionsD3" #diagram></n52-d3-timeseries-graph>
 </div>
-<!-- <div>
-  <pre><code>{{diagramOptionsD3.togglePanZoom}}</code></pre>
-</div> -->
+<div>
+  <n52-timespan-shift-selector [timespan]="timespan" (onTimespanChange)="timespanChanged($event)"></n52-timespan-shift-selector>
+  <n52-refresh-button [refreshInterval]=10 (refreshing)="diagram.drawLineGrap()"></n52-refresh-button>
+</div>
+<div class="bottom" style="float: right;" *ngFor="let id of datasetIdsMultiple">
+  <n52-timeseries-entry [datasetId]="id" [selected]="isSelected(id)" [datasetOptions]="datasetOptionsMultiple.get(id)" [timeInterval]="timespan"
+    (onSelectDataset)="selectDataset($event, id)"></n52-timeseries-entry>
+</div>
+<!-- <div *ngFor="let id of datasetIds">
+    <n52-timeseries-entry [datasetId]="id" [selected]="isSelected(id)" [highlight]="id === highlightId" [datasetOptions]="datasetOptions.get(id)"
+      [timeInterval]="timespan" (onDeleteDataset)="deleteTimeseries(id)" (onSelectDataset)="selectTimeseries($event, id)" (onUpdateOptions)="updateOptions($event, id)"
+      (onEditOptions)="editOption($event)" (onShowGeometry)="showGeometry($event)" (onSelectDate)="dateChanged($event)"></n52-timeseries-entry>
+  </div> -->

@@ -1,13 +1,20 @@
-<button class="btn btn-primary icon-arrow-right" type="button" data-toggle="collapse" data-target="#multiCollapseExample2"
-  aria-expanded="false" aria-controls="multiCollapseExample2">Phänomen</button>
-<div class="row">
-  <div class="col">
-    <div class="collapse" id="multiCollapseExample2">
+<div class="container-fluid">
+  <div class="row p-0">
+    <div class="col p-0">
+      <div class="col-12 p-0">
+        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseButton" aria-expanded="false"
+          aria-controls="multiCollapseExample2" href="#collapseButton" style="float: right;">
+          <i class="arrow left"></i>
+        </button>
+      </div>
+    </div>
+    <div class="col-5 col-md-3 collapse m-0 h-100" id="collapseButton" style="padding-right: 20px">
+      <div class="card-header" (click)="removeFilter()">Alle Phänomene
+        <!-- <button type="button" ></button> -->
+      </div>
       <div class="card card-body">
         <n52-service-filter-selector [serviceUrl]="apiUrl" endpoint="phenomenon" (onItemSelected)="onPhenomenonSelected($event)"></n52-service-filter-selector>
       </div>
     </div>
   </div>
 </div>
-
-

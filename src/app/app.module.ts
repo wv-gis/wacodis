@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, Injectable } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
-import { DatasetApiInterface, SplittedDataDatasetApiInterface, HelgolandCoreModule, SettingsService, Settings} from '@helgoland/core';
+import { DatasetApiInterface, SplittedDataDatasetApiInterface, HelgolandCoreModule, SettingsService, Settings } from '@helgoland/core';
 import { HelgolandMapModule } from '@helgoland/map';
 import { HelgolandMapViewModule } from '../../node_modules/@helgoland/map/view';
 import { HelgolandD3Module } from '../../node_modules/@helgoland/d3';
@@ -15,8 +15,11 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { MapModule } from './map/map.module';
 import { DataDepictionModule } from './data-depiction/data-depiction.module';
-import { ServiceModule} from './service-selector/service-selector/service.module';
+import { ServiceModule } from './service-selector/service-selector/service.module';
 import { HelgolandSelectorModule } from '@helgoland/selector';
+import { HelgolandModificationModule } from '@helgoland/modification';
+import { HelgolandControlModule } from '@helgoland/control';
+import { HelgolandTimeModule } from '@helgoland/time';
 
 import { AppComponent } from './app.component';
 import { SelectViewDashboardComponent } from './select-view-dashboard/select-view-dashboard.component';
@@ -61,6 +64,9 @@ export function HttpLoaderFactory(http: HttpClient) {
     HelgolandMapSelectorModule,
     HelgolandMapViewModule,
     HelgolandDatasetlistModule,
+    HelgolandModificationModule,
+    HelgolandTimeModule,
+    HelgolandControlModule,
     MapModule,
     DataDepictionModule,
     HelgolandSelectorModule
