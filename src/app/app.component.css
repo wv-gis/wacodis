@@ -1,4 +1,17 @@
 .content {
-    overflow: auto;
-    height: 100%;
+    /* overflow: auto;
+    height: 100%; */
+    top: 60px;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    left: 0;
+}
+.header{
+    position: absolute;
+    height: 60px;
+    width: 100%;
+    top: 0;
+    z-index: 9;
+    background-color: #fff;
 }

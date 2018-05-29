@@ -5,7 +5,7 @@ import { D3PlotOptions } from '@helgoland/d3';
 @Component({
     selector: 'wv-graph-view',
     templateUrl: './graph-view.component.html',
-    styleUrls: ['./graph-view.component.css']
+    styleUrls: ['./graph-view.component.scss']
 })
 export class GraphViewComponent {
 

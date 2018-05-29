@@ -1,24 +1,29 @@
-.nav-item .dropdown a{
-    padding: 10px;
-}
 
-.modal-dialog.modal-content.modal-header.modal-title{
-    text-align: center;
-    
-}
-
-.nav .selection {
-    margin-right: 5px;
-    margin-left: 5px;
-}
-
-.selection a {
-    width: 100px;
-    height: 40px;
-    margin-left: 5px;
-    margin-right: 5px;
-}
-.btn.btn-secondary{
+.btn.btn-default{
     background-color: #2c4869;
     color: white;
+    display: inline-block;
+}
+.selectionMenu{
+    position: absolute;
+    height: 48px;
+    width: 100%;
+    background-color: #718296;
+    color: #fff;
+    /* z-index: 800; */
+}
+.mapContent {
+    position: absolute;
+    right: 0;
+    left: 0;
+    top: 48px;
+    bottom: 0;
+    width: 100%;
+}
+h5{
+    color: black;
+    text-align: center;
+}
+.btn.btn-default.dropdown-toggle.serviceSelect{
+    border-right: solid 1px #dfe4e6;
 }

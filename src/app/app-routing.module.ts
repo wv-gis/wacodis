@@ -6,15 +6,19 @@ import { GraphViewComponent } from './data-depiction/timeseries-graph-view/graph
 import { SelectViewDashboardComponent } from './select-view-dashboard/select-view-dashboard.component';
 import { TimespanMapComponent } from './map/map-view/timespan-map/timespan-map.component';
 import { RasterMapComponent } from './map/map-view/raster-map/raster-map.component';
+import { TrajectoryViewComponent } from './data-depiction/trajectory-view/trajectory-view.component';
+import { ProfileViewComponent } from './data-depiction/profile-view/profile-view.component';
 
 const routes: Routes = [
-  { path: '' , redirectTo: 'start', pathMatch: 'full'},
-  { path: 'selection-map', component: MapViewComponent, data: { title: 'WaCoDiS Web Client'}},
-  { path: 'table', component: DataTableComponent, data: { title: 'Tabellenansicht'}},
-  { path: 'timeseries', component: GraphViewComponent, data: { title: 'WaCoDiS Web Client'}},
-  { path: 'start', component: SelectViewDashboardComponent, data: { title: 'WaCoDiS Web Client'}},
-  { path: 'timespan-map', component: TimespanMapComponent, data: { title: 'WaCoDiS Web Client'}},
-  { path: 'raster-map', component: RasterMapComponent, data: { title: 'WaCoDiS Web Client'}},
+  { path: '', redirectTo: 'start', pathMatch: 'full' },
+  { path: 'selection-map', component: MapViewComponent, data: { title: 'WaCoDiS Web Client' } },
+  { path: 'table', component: DataTableComponent, data: { title: 'Tabellenansicht' } },
+  { path: 'timeseries', component: GraphViewComponent, data: { title: 'WaCoDiS Web Client' } },
+  { path: 'start', component: SelectViewDashboardComponent, data: { title: 'WaCoDiS Web Client' } },
+  { path: 'timespan-map', component: TimespanMapComponent, data: { title: 'WaCoDiS Web Client' } },
+  { path: 'raster-map', component: RasterMapComponent, data: { title: 'WaCoDiS Web Client' } },
+  { path: 'trajectory-view', component: TrajectoryViewComponent, data: { title: 'WaCoDiS Web Client' } },
+  { path: 'profile-view', component: ProfileViewComponent, data: { title: 'WaCoDiS Web Client' } },
 ];
 
 @NgModule({

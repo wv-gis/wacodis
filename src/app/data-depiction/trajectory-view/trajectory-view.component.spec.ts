@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TimeseriesLegendComponent } from './timeseries-legend.component';
+import { TrajectoryViewComponent } from './trajectory-view.component';
 
-describe('TimeseriesLegendComponent', () => {
-  let component: TimeseriesLegendComponent;
-  let fixture: ComponentFixture<TimeseriesLegendComponent>;
+describe('TrajectoryViewComponent', () => {
+  let component: TrajectoryViewComponent;
+  let fixture: ComponentFixture<TrajectoryViewComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TimeseriesLegendComponent ]
+      declarations: [ TrajectoryViewComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TimeseriesLegendComponent);
+    fixture = TestBed.createComponent(TrajectoryViewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

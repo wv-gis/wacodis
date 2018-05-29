@@ -4,12 +4,15 @@ import { DataTableComponent } from './data-table/data-table.component';
 import { GraphViewComponent } from './timeseries-graph-view/graph-view.component';
 import { HelgolandD3Module } from '@helgoland/d3';
 import { HelgolandDatasetTableModule } from '../../../node_modules/@helgoland/depiction/dataset-table';
-import { TimeseriesLegendComponent } from './timeseries-graph-view/timeseries-legend/timeseries-legend.component'
+
 import { HelgolandLabelMapperModule } from '../../../node_modules/@helgoland/depiction/label-mapper';
 import { HelgolandModificationModule } from '@helgoland/modification';
 import { HelgolandControlModule } from '@helgoland/control';
 import { HelgolandTimeModule } from '@helgoland/time';
 import { HelgolandDatasetlistModule } from '../../../node_modules/@helgoland/depiction/datasetlist';
+import { TrajectoryViewComponent } from './trajectory-view/trajectory-view.component';
+import { ProfileViewComponent } from './profile-view/profile-view.component';
+import {HelgolandMapModule} from '@helgoland/map';
 
 @NgModule({
   imports: [
@@ -21,8 +24,9 @@ import { HelgolandDatasetlistModule } from '../../../node_modules/@helgoland/dep
     HelgolandTimeModule,
     HelgolandDatasetlistModule,
     HelgolandLabelMapperModule,
+    HelgolandMapModule
   ],
-  declarations: [DataTableComponent, GraphViewComponent, TimeseriesLegendComponent],
-  exports: [DataTableComponent, GraphViewComponent]
+  declarations: [DataTableComponent, GraphViewComponent, TrajectoryViewComponent, ProfileViewComponent],
+  exports: [DataTableComponent, GraphViewComponent, TrajectoryViewComponent, ProfileViewComponent]
 })
 export class DataDepictionModule { }
