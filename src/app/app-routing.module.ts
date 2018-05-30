@@ -8,6 +8,7 @@ import { TimespanMapComponent } from './map/map-view/timespan-map/timespan-map.c
 import { RasterMapComponent } from './map/map-view/raster-map/raster-map.component';
 import { TrajectoryViewComponent } from './data-depiction/trajectory-view/trajectory-view.component';
 import { ProfileViewComponent } from './data-depiction/profile-view/profile-view.component';
+import { CategorySelectorComponent } from './filter-selector/category-selector/category-selector.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'start', pathMatch: 'full' },
@@ -19,6 +20,7 @@ const routes: Routes = [
   { path: 'raster-map', component: RasterMapComponent, data: { title: 'WaCoDiS Web Client' } },
   { path: 'trajectory-view', component: TrajectoryViewComponent, data: { title: 'WaCoDiS Web Client' } },
   { path: 'profile-view', component: ProfileViewComponent, data: { title: 'WaCoDiS Web Client' } },
+  { path: 'select-category', component: CategorySelectorComponent, data: { title: 'WaCoDiS Web Client' } },
 ];
 
 @NgModule({

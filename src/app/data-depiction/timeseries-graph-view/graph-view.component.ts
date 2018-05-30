@@ -10,11 +10,12 @@ import { D3PlotOptions } from '@helgoland/d3';
 export class GraphViewComponent {
 
     // These variables define the links for accessing the datasets and in which colors they are styled.
-    public datasetIdsMultiple = ['http://www.fluggs.de/sos2/api/v1/__63', 'http://www.fluggs.de/sos2/api/v1/__72'];
+    public datasetIdsMultiple = ['http://www.fluggs.de/sos2/api/v1/__53', 'http://www.fluggs.de/sos2/api/v1/__72'];
     public colors = ['#123456', '#FF0000'];
 
     // The timespan will be set to the last 28 hours which is calculated in milliseconds (milliseconds*1000 = 100000000).
     public timespan = new Timespan(new Date().getTime() - 100000000, new Date().getTime());
+    public timelist = [this.timespan.from, this.timespan.to];
 
     // These are the plotting options. The boolen of 'togglePanZoom' is set to 'true' to pan the graph.
     public diagramOptionsD3: D3PlotOptions = {

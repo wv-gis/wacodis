@@ -25,6 +25,7 @@ import { AppComponent } from './app.component';
 import { SelectViewDashboardComponent } from './select-view-dashboard/select-view-dashboard.component';
 import { settings } from '../main.browser';
 
+
 @Injectable()
 export class ExtendedSettingsService extends SettingsService<Settings> {
   constructor() {
@@ -42,7 +43,8 @@ export function HttpLoaderFactory(http: HttpClient) {
 @NgModule({
   declarations: [
     AppComponent,
-    SelectViewDashboardComponent
+    SelectViewDashboardComponent,
+
   ],
   imports: [
     BrowserModule,
