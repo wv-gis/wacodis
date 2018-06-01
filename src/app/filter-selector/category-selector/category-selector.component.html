@@ -1,19 +1,3 @@
 <div class="container-fluid">
-  <!-- <div class="row"> -->
-    <!-- <div class="col-3"> -->
-      <!-- <n52-service-filter-selector [serviceUrl]="apiUrl" endpoint="category" (onItemSelected)="onCategorySelected($event)"></n52-service-filter-selector> -->
-      <n52-list-selector [parameters]="categoryParams" [selectorId]="'category'" [providerList]="selectedProviderList" (onDatasetSelection)="onDatasetSelected($event)"></n52-list-selector>
-    <!-- </div> -->
-<!-- 
-
-  <div class="col-3">
-    <n52-service-filter-selector [serviceUrl]="apiUrl" endpoint="station" (onItemSelected)="onStationSelected($event)"></n52-service-filter-selector>
-  </div>
-  <div class="col-3">
-    <n52-service-filter-selector [serviceUrl]="apiUrl" endpoint="phenomenon" (onItemSelected)="onPhenomenonSelected($event)"></n52-service-filter-selector>
-  </div>
-  <div class="col-3">
-    <n52-service-filter-selector [serviceUrl]="apiUrl" endpoint="features" (onItemSelected)="onValueSelected($event)"></n52-service-filter-selector>
-  </div> -->
-<!-- </div> -->
+  <wv-extended-list-selector [parameters]="categoryParams" [selectorId]="'category'" [providerList]="selectedProviderList" (onDatasetSelection)="onDatasetSelected($event)"></wv-extended-list-selector>
 </div>

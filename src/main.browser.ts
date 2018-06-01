@@ -7,6 +7,7 @@ export const settingsPromise = new Promise<Settings>((resolve, reject) => {
   xhr.onload = () => {
     if (xhr.status === 200) {
       settings = JSON.parse(xhr.responseText);
+      console.log('Settings: ' + settings.datasetApis);
       resolve(settings);
     } else {
       reject('Cannot load configuration');

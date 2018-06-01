@@ -1,5 +1,6 @@
 {
     "solveLabels": true,
     "proxyUrl": "https://cors-anywhere.herokuapp.com/",
-    "refreshDataInterval": "10"
+    "refreshDataInterval": "10",
+    "datasetApis": ["http://www.fluggs.de/sos2/api/v1/","http://sensorweb.demo.52north.org/sensorwebtestbed/api/v1/"]
 }

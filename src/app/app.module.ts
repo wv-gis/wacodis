@@ -25,16 +25,15 @@ import { AppComponent } from './app.component';
 import { SelectViewDashboardComponent } from './select-view-dashboard/select-view-dashboard.component';
 import { settings } from '../main.browser';
 
-
 @Injectable()
 export class ExtendedSettingsService extends SettingsService<Settings> {
   constructor() {
     super();
     this.setSettings(settings);
-    // console.log("Settings: " + settings.refreshDataInterval);
+    console.log(settings);
   }
+ 
 }
-
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
