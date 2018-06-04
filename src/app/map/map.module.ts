@@ -10,7 +10,8 @@ import {FilterModule} from '../filter-selector/filter.module';
 import { HelgolandMapSelectorModule } from '../../../node_modules/@helgoland/map/selector';
 import { HelgolandSelectorModule } from '../../../node_modules/@helgoland/selector';
 import { HelgolandLabelMapperModule } from '../../../node_modules/@helgoland/depiction/label-mapper';
-import { AppRoutingModule } from '../app-routing.module'
+import { AppRoutingModule } from '../app-routing.module';
+
 
 @NgModule({
   imports: [

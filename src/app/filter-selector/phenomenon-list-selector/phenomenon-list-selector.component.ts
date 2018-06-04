@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ListSelectorParameter } from '@helgoland/selector';
-import { Provider, IDataset } from '@helgoland/core';
+import { Provider, IDataset, Service } from '@helgoland/core';
 
 @Component({
   selector: 'wv-phenomenon-list-selector',
@@ -36,6 +36,18 @@ export class PhenomenonListSelectorComponent {
 
   public onDatasetSelected(datasets: IDataset[]) {
     datasets.forEach((dataset) => console.log('Select Dataset: ' + dataset.label + ' with ID: ' + dataset.id));
+
+  }
+
+  public getProviderUrl(service: Service){
+    this.selectedProviderList.pop();
+    this.selectedProviderList.push({
+      id: service.id,
+      url: service.apiUrl
+    });
+    this.selectedProviderList.forEach((entry)=>{
+      console.log(entry.url);
+    });
 
   }
 

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ListSelectorComponent } from '@helgoland/selector';
+import { ListSelectorComponent, ListSelectorService } from '@helgoland/selector';
+import { DatasetApiInterface, DatasetApiMapping } from '@helgoland/core';
 
 @Component({
   selector: 'wv-extended-list-selector',
@@ -8,5 +9,18 @@ import { ListSelectorComponent } from '@helgoland/selector';
 })
 export class ExtendedListSelectorComponent extends ListSelectorComponent {
 
+
+
+
+ constructor( protected listSelectorService: ListSelectorService,
+  protected apiInterface: DatasetApiInterface,
+  protected apiMapping: DatasetApiMapping){
+    super(listSelectorService, apiInterface, apiMapping);
+  }
+onInit(){
+
+this.listSelectorService.providerList = this.providerList;
+
+}
 
 }

@@ -1,5 +1,7 @@
-import { Component, Input, Output, EventEmitter } from "@angular/core";
-import { Phenomenon } from "@helgoland/core";
+import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges } from "@angular/core";
+import { Phenomenon, DatasetApi, FilteredProvider, Provider } from "@helgoland/core";
+import { ExtendedSettingsService } from "../../app.module";
+import { ListSelectorParameter } from "@helgoland/selector";
 
 @Component(
     {
@@ -9,8 +11,9 @@ import { Phenomenon } from "@helgoland/core";
     })
 
 
-export class PhenomenonSelectorComponent {
+export class PhenomenonSelectorComponent implements OnChanges {
 
+    
     @Input()
     public apiUrl: string;
     @Output()
@@ -18,6 +21,15 @@ export class PhenomenonSelectorComponent {
     @Output()
     stationFilter = new EventEmitter();
 
+    selectedProviderList: Provider[]=[];
+   
+
+    ngOnChanges(changes: SimpleChanges): void {
+      this.selectedProviderList.push({
+          id: '1',
+          url: this.apiUrl
+      })
+    }
     onPhenomenonSelected(phenomenon: Phenomenon) {
         this.selectedPhenomenon.emit(phenomenon);
         console.log(this.apiUrl);

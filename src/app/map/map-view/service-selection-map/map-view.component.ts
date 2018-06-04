@@ -94,7 +94,7 @@ export class MapViewComponent implements OnInit, AfterViewInit {
       this.stationFilter = {};
     }
     this.label = url.label;
-    console.log("SelectedProvider: " + url);
+    // console.log("SelectedProvider: " + url.apiUrl);
   }
   removeStationFilter() {
     this.stationFilter = {};

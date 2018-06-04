@@ -7,6 +7,7 @@ import { HelgolandLabelMapperModule } from '../../../node_modules/@helgoland/dep
 import { ExtendedListSelectorComponent } from './extended-list-selector/extended-list-selector.component';
 import { PhenomenonListSelectorComponent } from './phenomenon-list-selector/phenomenon-list-selector.component';
 import { StationListSelectorComponent } from './station-list-selector/station-list-selector.component';
+import { ServiceModule } from '../service-selector/service-selector/service.module';
 
 
 
@@ -15,9 +16,10 @@ import { StationListSelectorComponent } from './station-list-selector/station-li
     CommonModule,
     HelgolandSelectorModule,
     HelgolandLabelMapperModule,
+    ServiceModule,
   ],
   declarations: [CategorySelectorComponent, PhenomenonSelectorComponent, ExtendedListSelectorComponent, PhenomenonListSelectorComponent, StationListSelectorComponent],
-  exports: [CategorySelectorComponent, PhenomenonSelectorComponent],
+  exports: [CategorySelectorComponent, PhenomenonSelectorComponent, PhenomenonListSelectorComponent, StationListSelectorComponent],
 
 })
 

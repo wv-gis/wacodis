@@ -1,3 +1,9 @@
-<div class="container-fluid">
-  <wv-extended-list-selector [parameters]="categoryParams" [selectorId]="'category'" [providerList]="selectedProviderList" (onDatasetSelection)="onDatasetSelected($event)"></wv-extended-list-selector>
+<!-- <div class="container-fluid"> -->
+<div class="selectionMenu">
+  <wv-selection-menu (selectedProvider)="getProviderUrl($event)"></wv-selection-menu>
 </div>
+<div class="selectContent" style="position: absolute; top: 48px;">
+  <wv-extended-list-selector [parameters]="categoryParams" [selectorId]="'category'" [providerList]="selectedProviderList"
+    (onDatasetSelection)="onDatasetSelected($event)"></wv-extended-list-selector>
+</div>
+<!-- </div> -->

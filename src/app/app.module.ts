@@ -24,6 +24,7 @@ import { HelgolandTimeModule } from '@helgoland/time';
 import { AppComponent } from './app.component';
 import { SelectViewDashboardComponent } from './select-view-dashboard/select-view-dashboard.component';
 import { settings } from '../main.browser';
+import { FilterModule } from './filter-selector/filter.module';
 
 @Injectable()
 export class ExtendedSettingsService extends SettingsService<Settings> {
@@ -71,7 +72,9 @@ export function HttpLoaderFactory(http: HttpClient) {
     HelgolandControlModule,
     MapModule,
     DataDepictionModule,
-    HelgolandSelectorModule
+    HelgolandSelectorModule,
+    ServiceModule,
+    FilterModule
   ],
   providers: [
     {

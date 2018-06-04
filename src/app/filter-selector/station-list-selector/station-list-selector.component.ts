@@ -1,5 +1,5 @@
 import { Component, OnInit} from '@angular/core';
-import { IDataset, Provider } from '@helgoland/core';
+import { IDataset, Provider, Service } from '@helgoland/core';
 import { ListSelectorParameter } from '@helgoland/selector';
 
 @Component({
@@ -36,6 +36,18 @@ export class StationListSelectorComponent  {
 
   public onDatasetSelected(datasets: IDataset[]) {
     datasets.forEach((dataset) => console.log('Select Dataset: ' + dataset.label + ' with ID: ' + dataset.id));
+
+  }
+
+  public getProviderUrl(service: Service){
+    this.selectedProviderList.pop();
+    this.selectedProviderList.push({
+      id: service.id,
+      url: service.apiUrl
+    });
+    this.selectedProviderList.forEach((entry)=>{
+      console.log(entry.url);
+    });
 
   }
 
