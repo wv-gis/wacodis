@@ -8,6 +8,9 @@ import { ExtendedListSelectorComponent } from './extended-list-selector/extended
 import { PhenomenonListSelectorComponent } from './phenomenon-list-selector/phenomenon-list-selector.component';
 import { StationListSelectorComponent } from './station-list-selector/station-list-selector.component';
 import { ServiceModule } from '../service-selector/service-selector/service.module';
+import { ExtendedMultiservicefilterComponent } from './extended-multiservicefilter/extended-multiservicefilter.component';
+import { ExtendedServiceFilterSelectorComponent } from './extended-service-filter-selector/extended-service-filter-selector.component';
+
 
 
 
@@ -18,8 +21,13 @@ import { ServiceModule } from '../service-selector/service-selector/service.modu
     HelgolandLabelMapperModule,
     ServiceModule,
   ],
-  declarations: [CategorySelectorComponent, PhenomenonSelectorComponent, ExtendedListSelectorComponent, PhenomenonListSelectorComponent, StationListSelectorComponent],
-  exports: [CategorySelectorComponent, PhenomenonSelectorComponent, PhenomenonListSelectorComponent, StationListSelectorComponent],
+  declarations: [CategorySelectorComponent, PhenomenonSelectorComponent,
+     ExtendedListSelectorComponent, PhenomenonListSelectorComponent, 
+     StationListSelectorComponent, ExtendedMultiservicefilterComponent,
+    ExtendedServiceFilterSelectorComponent],
+  exports: [CategorySelectorComponent, PhenomenonSelectorComponent, 
+    PhenomenonListSelectorComponent, StationListSelectorComponent,
+     ExtendedMultiservicefilterComponent, ExtendedServiceFilterSelectorComponent],
 
 })
 

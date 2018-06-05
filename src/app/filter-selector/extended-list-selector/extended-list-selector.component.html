@@ -7,9 +7,9 @@
             <thead>
               <tr>
                 <th scope="col">
-                  <h3>
+                  <div class="card-header">
                     <span>{{param.header}}</span>
-                  </h3>
+                  </div>
                 </th>
               </tr>
             </thead>
@@ -17,7 +17,8 @@
               <tr>
                 <td>
                   <div *ngIf="!param.isDisabled">
-                    <n52-multi-service-filter-selector [endpoint]="param.type" [filterList]="param.filterList" (onItemSelected)="itemSelected($event, i)"></n52-multi-service-filter-selector>
+                    <!-- <n52-multi-service-filter-selector [endpoint]="param.type" [filterList]="param.filterList" (onItemSelected)="itemSelected($event, i)"></n52-multi-service-filter-selector> -->
+                    <wv-extended-multiservicefilter [endpoint]="param.type" [filterList]="param.filterList" (onItemSelected)="itemSelected($event, i)"></wv-extended-multiservicefilter>
                   </div>
                 </td>
               </tr>
@@ -26,79 +27,82 @@
         </div>
       </div>
       <div class="col-3">
-          <div *ngIf="param.header=='Station'">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th scope="col">
-                    <h3>
-                      <span>{{param.header}}</span>
-                    </h3>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>
-                    <div *ngIf="!param.isDisabled">
-                      <n52-multi-service-filter-selector [endpoint]="param.type" [filterList]="param.filterList" (onItemSelected)="itemSelected($event, i)"></n52-multi-service-filter-selector>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+        <div *ngIf="param.header=='Station'">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">
+                  <div class="card-header">
+                    <span>{{param.header}}</span>
+                  </div>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div *ngIf="!param.isDisabled">
+                    <!-- <n52-multi-service-filter-selector [endpoint]="param.type" [filterList]="param.filterList" (onItemSelected)="itemSelected($event, i)"></n52-multi-service-filter-selector> -->
+                    <wv-extended-multiservicefilter [endpoint]="param.type" [filterList]="param.filterList" (onItemSelected)="itemSelected($event, i)"></wv-extended-multiservicefilter>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
+      </div>
 
-        <div class="col-3">
-            <div *ngIf="param.header=='Phänomen'">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th scope="col">
-                      <h3>
-                        <span>{{param.header}}</span>
-                      </h3>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>
-                      <div *ngIf="!param.isDisabled">
-                        <n52-multi-service-filter-selector [endpoint]="param.type" [filterList]="param.filterList" (onItemSelected)="itemSelected($event, i)"></n52-multi-service-filter-selector>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+      <div class="col-3">
+        <div *ngIf="param.header=='Phänomen'">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">
+                  <div class="card-header">
+                    <span>{{param.header}}</span>
+                  </div>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div *ngIf="!param.isDisabled">
+                    <!-- <n52-multi-service-filter-selector [endpoint]="param.type" [filterList]="param.filterList" (onItemSelected)="itemSelected($event, i)"></n52-multi-service-filter-selector> -->
+                    <wv-extended-multiservicefilter [endpoint]="param.type" [filterList]="param.filterList" (onItemSelected)="itemSelected($event, i)"></wv-extended-multiservicefilter>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
 
-          <div class="col-3">
-              <div *ngIf="param.header=='Sensor'">
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th scope="col">
-                        <h3>
-                          <span>{{param.header}}</span>
-                        </h3>
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <div *ngIf="!param.isDisabled">
-                          <n52-multi-service-filter-selector [endpoint]="param.type" [filterList]="param.filterList" (onItemSelected)="itemSelected($event, i)"></n52-multi-service-filter-selector>
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
+      <div class="col-3">
+        <div *ngIf="param.header=='Sensor'">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">
+                  <div class="card-header">
+                    <span>{{param.header}}</span>
+                  </div>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div *ngIf="!param.isDisabled">
+                    <!-- <n52-multi-service-filter-selector [endpoint]="param.type" [filterList]="param.filterList" (onItemSelected)="itemSelected($event, i)"></n52-multi-service-filter-selector> -->
+                    <wv-extended-multiservicefilter [endpoint]="param.type" [filterList]="param.filterList" (onItemSelected)="itemSelected($event, i)"></wv-extended-multiservicefilter>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
 
     </div>
   </div>

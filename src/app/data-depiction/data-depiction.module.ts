@@ -13,8 +13,9 @@ import { HelgolandDatasetlistModule } from '../../../node_modules/@helgoland/dep
 import { TrajectoryViewComponent } from './trajectory-view/trajectory-view.component';
 import { ProfileViewComponent } from './profile-view/profile-view.component';
 import { HelgolandMapModule } from '@helgoland/map';
-import { AppRoutingModule } from '../app-routing.module'
-import { HelgolandTimeRangeSliderModule } from '../../../node_modules/@helgoland/time/time-range-slider'
+import { AppRoutingModule } from '../app-routing.module';
+import { HelgolandTimeRangeSliderModule } from '../../../node_modules/@helgoland/time/time-range-slider';
+import { HelgolandMapViewModule } from '../../../node_modules/@helgoland/map/view';
 
 @NgModule({
   imports: [
@@ -29,6 +30,7 @@ import { HelgolandTimeRangeSliderModule } from '../../../node_modules/@helgoland
     HelgolandMapModule,
     AppRoutingModule,
     HelgolandTimeRangeSliderModule,
+    HelgolandMapViewModule,
   ],
   declarations: [DataTableComponent, GraphViewComponent, TrajectoryViewComponent, ProfileViewComponent],
   exports: [DataTableComponent, GraphViewComponent, TrajectoryViewComponent, ProfileViewComponent]
