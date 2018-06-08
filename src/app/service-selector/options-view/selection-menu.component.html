@@ -15,8 +15,8 @@
             </div>
         </div>
     </div>
-    <a class="btn btn-default active" routerLink='/selection-map' >Karte</a>
-    <a class="btn btn-default" routerLink='/select-category'>Kategorie</a>
-    <a class="btn btn-default " routerLink='/select-station'>Station</a>
-    <a class="btn btn-default "  routerLink='/select-phenomenon'>Phänomen</a>
+    <a class="btn btn-default active" routerLink='/selection-map'>Karte</a>
+    <a class="btn btn-default" routerLink='/select-category'(click)="onFilterselected(id='category')" id="category">Kategorie</a>
+    <a class="btn btn-default " routerLink='/select-station'(click)="onFilterselected(id='station')" id="station">Station</a>
+    <a class="btn btn-default " routerLink='/select-phenomenon'(click)="onFilterselected(id='phenomenon')" id="phenomenon">Phänomen</a>
 </div>

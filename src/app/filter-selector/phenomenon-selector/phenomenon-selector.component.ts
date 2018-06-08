@@ -1,6 +1,5 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges } from "@angular/core";
 import { Phenomenon, DatasetApi, FilteredProvider, Provider } from "@helgoland/core";
-import { ExtendedSettingsService } from "../../app.module";
 import { ListSelectorParameter } from "@helgoland/selector";
 
 @Component(

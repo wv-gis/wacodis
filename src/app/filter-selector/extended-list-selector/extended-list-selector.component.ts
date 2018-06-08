@@ -17,10 +17,6 @@ export class ExtendedListSelectorComponent extends ListSelectorComponent {
   protected apiMapping: DatasetApiMapping){
     super(listSelectorService, apiInterface, apiMapping);
   }
-onInit(){
 
-this.listSelectorService.providerList = this.providerList;
-
-}
 
 }

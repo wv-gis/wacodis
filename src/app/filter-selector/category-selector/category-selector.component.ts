@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject, Input } from '@angular/core';
 import { Station, Phenomenon, Category, Provider, IDataset, Feature, SettingsService, Settings, DatasetApiInterface, DatasetApiMapping, ParameterFilter, Service } from '@helgoland/core';
 import { ListSelectorParameter, ListSelectorComponent, ListSelectorService, FilteredParameter } from '@helgoland/selector';
-import { ExtendedSettingsService } from '../../app.module';
+
 
 @Component({
   selector: 'wv-category-selector',
@@ -13,6 +13,7 @@ export class CategorySelectorComponent implements OnInit {
 
 
   public apiUrl: string;
+  public selectorId = '';
 
   public categoryParams: ListSelectorParameter[] = [{
     type: 'category',
@@ -31,16 +32,16 @@ export class CategorySelectorComponent implements OnInit {
   public selectedProviderList: Provider[] = [];
 
   constructor(protected listSelectorService: ListSelectorService) {
-      this.selectedProviderList.push({
-      id: '1',
-      url: 'http://www.fluggs.de/sos2/api/v1/'
-    });
+    //   this.selectedProviderList.push({
+    //   id: '1',
+    //   url: 'http://www.fluggs.de/sos2/api/v1/'
+    // });
    
     }
   
     
   public getProviderUrl(service: Service){
-    this.selectedProviderList.pop();
+    // this.selectedProviderList.pop();
     this.selectedProviderList.push({
       id: service.id,
       url: service.apiUrl
@@ -53,10 +54,19 @@ export class CategorySelectorComponent implements OnInit {
 
 
   ngOnInit() {
+       this.selectedProviderList.push({
+      id: '1',
+      url: 'http://www.fluggs.de/sos2/api/v1/'
+    });
     }
     
   public onDatasetSelected(datasets: IDataset[]) {
     datasets.forEach((dataset) => console.log('Select Dataset: ' + dataset.label + ' with ID: ' + dataset.id));
+  }
+
+  setSelector(id: string){
+    this.selectorId = id;
+    console.log('ID: ' + this.selectorId);
   }
 
 

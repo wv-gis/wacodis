@@ -11,6 +11,19 @@
     "typeRoots": [
       "node_modules/@types"
     ],
+    "baseUrl": ".",
+    "paths": {
+      "@helgoland/depiction/datasetlist": ["../node_modules/@helgoland/depiction/datasetlist"],
+      "@helgoland/depiction/label-mapper": ["../node_modules/@helgoland/depiction/label-mapper"],
+      "@helgoland/depiction/dataset-table": ["../node_modules/@helgoland/depiction/dataset-table"],
+      "@helgoland/map/view": ["../node_modules/@helgoland/map/view"],
+      "@helgoland/time/time-range-slider": ["../node_modules/@helgoland/time/time-range-slider"],
+      "@helgoland/d3": ["../node_modules/@helgoland/d3"],
+      "@helgoland/map/selector": ["../node_modules/@helgoland/map/selector"],
+      "@helgoland/selector": ["../node_modules/@helgoland/selector"],
+      "@helgoland/map/control": ["../node_modules/@helgoland/map/control"],
+
+    },
     "lib": [
       "es2017",
       "dom"

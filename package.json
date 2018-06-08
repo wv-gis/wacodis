@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
+    "bp": "ng build --prod --output-hashing none --base-href /wacodis-depiction",
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build --prod",
@@ -32,10 +33,12 @@
     "@ngx-translate/http-loader": "^3.0.1",
     "bootstrap": "^4.1.1",
     "bootstrap-slider": "^10.0.2",
+    "classlist.js": "^1.1.20150312",
     "core-js": "^2.4.1",
     "jquery": "^3.3.1",
     "popper.js": "^1.14.3",
     "rxjs": "^5.5.6",
+    "web-animations-js": "^2.3.1",
     "zone.js": "^0.8.19"
   },
   "devDependencies": {
