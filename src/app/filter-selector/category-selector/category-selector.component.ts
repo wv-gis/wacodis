@@ -1,17 +1,24 @@
-import { Component, OnInit, Inject, Input } from '@angular/core';
+import { Component, OnInit, Inject, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { Station, Phenomenon, Category, Provider, IDataset, Feature, SettingsService, Settings, DatasetApiInterface, DatasetApiMapping, ParameterFilter, Service } from '@helgoland/core';
 import { ListSelectorParameter, ListSelectorComponent, ListSelectorService, FilteredParameter } from '@helgoland/selector';
+import { ExtendedSettingsService } from '../../app.module';
 
 
 @Component({
   selector: 'wv-category-selector',
   templateUrl: './category-selector.component.html',
   styleUrls: ['./category-selector.component.scss'],
+  // providers: [ExtendedSettingsService],
 })
 
-export class CategorySelectorComponent implements OnInit {
+export class CategorySelectorComponent implements OnInit, OnChanges {
 
 
+  ngOnChanges(changes: SimpleChanges): void {
+  
+
+    
+  }
   public apiUrl: string;
   public selectorId = '';
 
@@ -67,6 +74,7 @@ export class CategorySelectorComponent implements OnInit {
   setSelector(id: string){
     this.selectorId = id;
     console.log('ID: ' + this.selectorId);
+    
   }
 
 

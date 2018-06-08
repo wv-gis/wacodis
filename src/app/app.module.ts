@@ -86,7 +86,8 @@ export function HttpLoaderFactory(http: HttpClient) {
       useClass: ExtendedSettingsService
     }
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  exports: [TranslateModule],
 })
 export class AppModule { }
 

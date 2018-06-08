@@ -1,7 +1,9 @@
 <div class="provider-item">
-    <div class="form-check">
+    <!-- <div class="form-check">
         <input class="form-check-input" name="group100" type="radio" id="radio100">
         <n52-service-selector class="form-check-label" for="radio100" [datasetApiList]="datasetApis" [supportStations]="true" [showUnresolvableServices]="true"
             (onServiceSelected)="switchProvider($event)"></n52-service-selector>
-    </div>
+    </div> -->
+    <wv-extended-service-selector [datasetApiList]="datasetApis" [supportStations]="true" [showUnresolvableServices]="true"
+    (onServiceSelected)="switchProvider($event)"></wv-extended-service-selector>
 </div>
