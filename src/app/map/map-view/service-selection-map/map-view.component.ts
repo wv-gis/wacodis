@@ -28,6 +28,7 @@ export class MapViewComponent implements OnInit, AfterViewInit {
   public fitBounds: L.LatLngBoundsExpression = [[50.985, 6.924], [51.319, 7.607]];
 
   public providerUrl = 'http://www.fluggs.de/sos2/api/v1/';
+  public label = 'Wupperverband Zeitreihen Dienst';
   public avoidZoomToSelection = false;
   public cluster = true;
   public loadingStations: boolean;
@@ -66,16 +67,16 @@ export class MapViewComponent implements OnInit, AfterViewInit {
 
   public onStationSelected(station: Station) {
     console.log('Clicked station: ' + station.properties.label);
-    if(!station.properties.timeseries){
-    this.stationPopup = L.popup().setLatLng([station.geometry.coordinates[1], station.geometry.coordinates[0]])
-      .setContent(`<div> ID:  ${station.properties.id} </div><div> ${station.properties.label} </div>`)
-      .openOn(this.mapCache.getMap('map'));
+    if (!station.properties.timeseries) {
+      this.stationPopup = L.popup().setLatLng([station.geometry.coordinates[1], station.geometry.coordinates[0]])
+        .setContent(`<div> ID:  ${station.properties.id} </div><div> ${station.properties.label} </div>`)
+        .openOn(this.mapCache.getMap('map'));
       console.log('No timeseries');
     }
     else {
       this.stationPopup = L.popup().setLatLng([station.geometry.coordinates[1], station.geometry.coordinates[0]])
-      .setContent(`<div> ID:  ${station.properties.id} </div><div> ${station.properties.label} </div><div> LetzterWert: ${station.properties.timeseries} </div>`)
-      .openOn(this.mapCache.getMap('map'));
+        .setContent(`<div> ID:  ${station.properties.id} </div><div> ${station.properties.label} </div><div> LetzterWert: ${station.properties.timeseries} </div>`)
+        .openOn(this.mapCache.getMap('map'));
     }
   }
 
@@ -84,15 +85,18 @@ export class MapViewComponent implements OnInit, AfterViewInit {
     this.stationFilter = {
       phenomenon: phenomenon.id
     };
-    console.log(this.providerUrl);
+    // console.log(this.providerUrl);
   }
 
-  public setProviderUrl(url: string){
-    this.providerUrl = url;
-    if(this.stationFilter){
-      this.stationFilter ={};
+  public setProviderUrl(url: Service) {
+    this.providerUrl = url.apiUrl;
+    if (this.stationFilter) {
+      this.stationFilter = {};
     }
-    console.log("SelectedProvider: " + url);
+    this.label = url.label;
+    // console.log("SelectedProvider: " + url.apiUrl);
   }
-
+  removeStationFilter() {
+    this.stationFilter = {};
+  }
 }

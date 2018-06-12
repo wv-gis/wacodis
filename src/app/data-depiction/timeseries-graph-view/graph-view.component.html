@@ -1,6 +1,25 @@
-<div style="height: 800px; width: 800px; padding: 5px; position: absolute;">
-  <n52-d3-timeseries-graph [datasetIds]="datasetIdsMultiple" [selectedDatasetIds]="selectedIds" [datasetOptions]="datasetOptionsMultiple" [timeInterval]="timespan" (onTimespanChanged)="timespanChanged($event)" [graphOptions]="diagramOptionsD3"></n52-d3-timeseries-graph>
+<div class="container-fluid">
+  <div style="padding: 10px;">
+    <n52-timespan-shift-selector [timespan]="timespan" (onTimespanChange)="timespanChanged($event)"></n52-timespan-shift-selector>
+    <!-- <n52-refresh-button (refreshing)="diagram.reloadData()"></n52-refresh-button> -->
+      <div style="padding: 5px">
+            <button class="btn btn-default" routerLink='/trajectory-view'>Trajectories</button>
+            <button class="btn btn-default" routerLink='/profile-view'>Profile</button>
+      </div>
+  </div>
+  <div class="row">
+    <div class="col-8 col-md-8 col-sm-6">
+      <div class="diagramEntry" style="height: 800px; padding: 5px; position: relative;">
+        <n52-d3-timeseries-graph [datasetIds]="datasetIdsMultiple" [selectedDatasetIds]="selectedIds" [datasetOptions]="datasetOptionsMultiple"
+          [timeInterval]="timespan" (onTimespanChanged)="timespanChanged($event)" [graphOptions]="diagramOptionsD3" #diagram></n52-d3-timeseries-graph>
+      </div>
+      <!-- <n52-time-range-slider id="time-test" [timeList]="timelist"></n52-time-range-slider> -->
+    </div>
+    <div class="col-4 col-md-4 col-sm-6">
+      <div class="legendEntry" *ngFor="let id of datasetIdsMultiple">
+        <n52-timeseries-entry [datasetId]="id" [selected]="isSelected(id)" [datasetOptions]="datasetOptionsMultiple.get(id)" [timeInterval]="timespan"
+          (onSelectDataset)="selectDataset($event, id)"></n52-timeseries-entry>
+      </div>
+    </div>
+  </div>
 </div>
-<!-- <div>
-  <pre><code>{{diagramOptionsD3.togglePanZoom}}</code></pre>
-</div> -->

@@ -1,0 +1,18 @@
+
+:host {
+    .diagramEntry {
+        height: 500px;
+        flex: 1;
+    }
+    .legendEntry {
+        display: flex;
+        flex-direction: row;
+        .left,
+        .right {
+            width: 50%;
+        }
+    }
+    .btn-light {
+        background-color: pink;
+    }
+}

@@ -1,3 +1,19 @@
-.nav-item a{
-    padding: 10px;
+
+
+.selectionMenu{
+    position: absolute;
+    height: 48px;
+    width: 100%;
+    background-color: #718296;
+    color: #fff;
+    /* z-index: 800; */
 }
+.mapContent {
+    position: absolute;
+    right: 0;
+    left: 0;
+    top: 48px;
+    bottom: 0;
+    width: 100%;
+}
+

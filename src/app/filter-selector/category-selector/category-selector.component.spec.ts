@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TimeseriesLegendComponent } from './timeseries-legend.component';
+import { CategorySelectorComponent } from './category-selector.component';
 
-describe('TimeseriesLegendComponent', () => {
-  let component: TimeseriesLegendComponent;
-  let fixture: ComponentFixture<TimeseriesLegendComponent>;
+describe('CategorySelectorComponent', () => {
+  let component: CategorySelectorComponent;
+  let fixture: ComponentFixture<CategorySelectorComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TimeseriesLegendComponent ]
+      declarations: [ CategorySelectorComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TimeseriesLegendComponent);
+    fixture = TestBed.createComponent(CategorySelectorComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

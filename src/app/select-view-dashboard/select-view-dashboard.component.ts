@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { EventEmitter } from 'protractor';
 
 @Component({
   selector: 'wv-select-view-dashboard',
@@ -6,6 +7,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./select-view-dashboard.component.css']
 })
 export class SelectViewDashboardComponent implements OnInit {
+
 
   constructor() { }
 

@@ -1,0 +1,8 @@
+<!-- <div class="container-fluid"> -->
+<div class="selectionMenu">
+  <wv-selection-menu (selectedProvider)="getProviderUrl($event)" #select></wv-selection-menu>
+</div>
+<div class="selectContent" style="position: absolute; top: 48px;">
+  <wv-category-entry [selectedProviderList]="selectedProviderList"></wv-category-entry>
+</div>
+<!-- </div> -->

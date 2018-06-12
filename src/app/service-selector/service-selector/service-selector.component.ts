@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { DatasetApi, Service } from '@helgoland/core';
+import { DatasetApi, Service, ParameterFilter, PlatformTypes, ValueTypes } from '@helgoland/core';
 
 
 @Component({
@@ -12,7 +12,7 @@ import { DatasetApi, Service } from '@helgoland/core';
 export class ServiceSelectorComponent {
 
   @Output()
-  public onProviderSelected: EventEmitter<String> = new EventEmitter<String>();
+  public onProviderSelected: EventEmitter<Service> = new EventEmitter<Service>();
 
   public datasetApis: DatasetApi[] = [
     {
@@ -27,7 +27,12 @@ export class ServiceSelectorComponent {
 
 
   public switchProvider(service: Service) {
-    this.onProviderSelected.emit(service.apiUrl);
+    this.onProviderSelected.emit(service);
+
   }
+  public providerFilter: ParameterFilter = {
+    platformTypes: PlatformTypes.stationary,
+    valueTypes: ValueTypes.quantity
+};
 
 }
