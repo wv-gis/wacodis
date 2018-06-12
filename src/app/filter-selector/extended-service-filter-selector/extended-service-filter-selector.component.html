@@ -5,7 +5,7 @@
     no results found
 </div>
 <div class="selector-entry" *ngFor="let item of items" (click)="onSelectItem(item)" [ngClass]="{'selected': selectionId === item.id}">
-    <div class="card" style="width: 18rem;">
+    <div class="card" >
         <ul class="list-group list-group-flush">
             <li class="list-group-item list-group-item-action" style="cursor: pointer;">
                 <n52-label-mapper label="{{item.label}}"></n52-label-mapper>

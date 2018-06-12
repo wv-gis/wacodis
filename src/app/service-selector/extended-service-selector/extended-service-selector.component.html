@@ -5,18 +5,18 @@
 
     <div class="service-item" *ngFor="let service of services; let i = index" (click)="selectService(service)" [ngClass]="{'selected': isSelected(service)}">
         <div class="form-check">
-            <input class="form-check-input" name="group100" type="radio" id="radio100">
-            <label class="form-check-label" for=radio100>
+            <input class="form-check-input" name="group100" type="radio" id="{{i}}">
+            <label class="form-check-label" [attr.for]='i'>
                 <div>{{service.label}}</div>
                 <div class="small">{{service.type}}, {{service.version}}
                 </div>
-                <div class="small" *ngIf="service.serviceUrl">{{'service-selector.service-url' | translate}}: {{service.serviceUrl}}</div>
+                <div class="small" *ngIf="service.serviceUrl">{{'extended-service-selector.service-url' | translate}}: {{service.serviceUrl}}</div>
                 <div class="small">
-                    <span *ngIf="service.quantities.stations !== undefined">{{'service-selector.stations' | translate}}: {{service.quantities.stations}}</span>
-                    <span *ngIf="service.quantities.platforms !== undefined">{{'service-selector.platforms' | translate}}: {{service.quantities.platforms}}</span>
-                    <span *ngIf="service.quantities.timeseries !== undefined">{{'service-selector.timeseries' | translate}}: {{service.quantities.timeseries}}</span>
-                    <span *ngIf="service.quantities.datasets !== undefined">{{'service-selector.datasets' | translate}}: {{service.quantities.datasets}}</span>
-                    <span>{{'service-selector.phenomena' | translate}}: {{service.quantities.phenomena}}</span>
+                    <span *ngIf="service.quantities.stations !== undefined">{{'extended-service-selector.stations' | translate}}: {{service.quantities.stations}}</span>
+                    <span *ngIf="service.quantities.platforms !== undefined">{{'extended-service-selector.platforms' | translate}}: {{service.quantities.platforms}}</span>
+                    <span *ngIf="service.quantities.timeseries !== undefined">{{'extended-service-selector.timeseries' | translate}}: {{service.quantities.timeseries}}</span>
+                    <span *ngIf="service.quantities.datasets !== undefined">{{'extended-service-selector.datasets' | translate}}: {{service.quantities.datasets}}</span>
+                    <span>{{'extended-service-selector.phenomena' | translate}}: {{service.quantities.phenomena}}</span>
                 </div>
             </label>
         </div>

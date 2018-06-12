@@ -9,7 +9,7 @@
   </div>
   <div class="row">
     <div class="col-8 col-md-8 col-sm-6">
-      <div class="diagramEntry" style="height: 800px; width: 800px; padding: 5px; position: relative;">
+      <div class="diagramEntry" style="height: 800px; padding: 5px; position: relative;">
         <n52-d3-timeseries-graph [datasetIds]="datasetIdsMultiple" [selectedDatasetIds]="selectedIds" [datasetOptions]="datasetOptionsMultiple"
           [timeInterval]="timespan" (onTimespanChanged)="timespanChanged($event)" [graphOptions]="diagramOptionsD3" #diagram></n52-d3-timeseries-graph>
       </div>

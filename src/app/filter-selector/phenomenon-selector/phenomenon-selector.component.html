@@ -6,14 +6,14 @@
         <i class="arrow left"></i>
       </button>
     </div>
-    <div class="col-lg-11 col-md-11 col-sm-8 collapse m-0 h-100" id="collapseButton">
+    <div class="col-lg-11 col-md-11 col-sm-8 collapse m-0 h-100" id="collapseButton" style="width: 300px">
       <div class="card-header" (click)="removeFilter()">Alle Phänomene
       </div>
       <div class="card card-body">
         <ul class="list-group">
           <li class="list-group-item">
             <!-- <n52-service-filter-selector [serviceUrl]="apiUrl" endpoint="phenomenon" (onItemSelected)="onPhenomenonSelected($event)"></n52-service-filter-selector> -->
-            <wv-extended-service-filter-selector [serviceUrl]="apiUrl" endpoint="phenomenon" (onItemSelected)="onPhenomenonSelected($event)"></wv-extended-service-filter-selector>
+            <wv-extended-service-filter-selector [(serviceUrl)]="apiUrl" endpoint="phenomenon" (onItemSelected)="onPhenomenonSelected($event)"></wv-extended-service-filter-selector>
           </li>
         </ul>
       </div>

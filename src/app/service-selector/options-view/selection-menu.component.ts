@@ -16,15 +16,15 @@ export class SelectionMenuComponent {
     public label= 'Wupperverband Zeitreihen Dienst';
     @Output()
     selectedProvider = new EventEmitter<Service>();
-    @Output()
-    selectedFilter = new EventEmitter<String>();
+    // @Output()
+    // selectedFilter = new EventEmitter<String>();
 
     emitProviderUrl(service: Service){
         this.selectedProvider.emit(service);
         this.label=service.label;
     }
-    onFilterselected(id: string){
-        console.log('Event ' + id);
-        this.selectedFilter.emit(id);
-    }
+    // onFilterselected(id: string){
+    //     console.log('Event ' + id);
+    //     this.selectedFilter.emit(id);
+    // }
 }

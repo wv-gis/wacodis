@@ -1,10 +1,7 @@
-<!-- <div class="container-fluid"> -->
 <div class="selectionMenu">
     <wv-selection-menu (selectedProvider)="setProviderUrl($event)"></wv-selection-menu>
 </div>
-<!-- <div class="container-fluid"> -->
 <div class="mapContent">
-    <!-- <div class="content" style="width: 100%; padding: 5px; "> -->
     <div style="width: 25%; position: absolute; z-index: 800;right: 0px;">
         <wv-phenomenon-selector [apiUrl]="providerUrl" (selectedPhenomenon)="onSelectPhenomenon($event)" id="phenomenon" (stationFilter)="removeStationFilter()"></wv-phenomenon-selector>
     </div>
@@ -16,7 +13,4 @@
             [overlayMaps]="overlayMaps" [layerControlOptions]="layerControlOptions" (onSelected)="onStationSelected($event)"
             [cluster]="cluster" [statusIntervals]="statusIntervals" (onContentLoading)="loadingStations = $event"></n52-station-map-selector>
     </div>
-    <!-- </div> -->
 </div>
-<!-- </div> -->
-<!-- </div> -->

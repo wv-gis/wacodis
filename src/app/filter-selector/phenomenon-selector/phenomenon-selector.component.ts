@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges } from "@angular/core";
-import { Phenomenon, DatasetApi, FilteredProvider, Provider } from "@helgoland/core";
+import { Phenomenon, DatasetApi, FilteredProvider, Provider, DatasetApiInterface } from "@helgoland/core";
 import { ListSelectorParameter } from "@helgoland/selector";
 
 @Component(
@@ -21,17 +21,26 @@ export class PhenomenonSelectorComponent implements OnChanges {
     stationFilter = new EventEmitter();
 
     selectedProviderList: Provider[]=[];
-   
+   id: string;
+   isFirst = true;
 
     ngOnChanges(changes: SimpleChanges): void {
+        if(this.isFirst){
+            this.id = '1';
+            this.isFirst= false;
+        }
+
       this.selectedProviderList.push({
-          id: '1',
-          url: this.apiUrl
+          id: this.id,
+          url: changes.apiUrl.currentValue,
+          
       })
+      this.apiUrl = changes.apiUrl.currentValue;
+      
+      console.log(this.apiUrl);
     }
     onPhenomenonSelected(phenomenon: Phenomenon) {
         this.selectedPhenomenon.emit(phenomenon);
-        console.log(this.apiUrl);
     }
 
     removeFilter() {

@@ -85,7 +85,7 @@ export class MapViewComponent implements OnInit, AfterViewInit {
     this.stationFilter = {
       phenomenon: phenomenon.id
     };
-    console.log(this.providerUrl);
+    // console.log(this.providerUrl);
   }
 
   public setProviderUrl(url: Service) {

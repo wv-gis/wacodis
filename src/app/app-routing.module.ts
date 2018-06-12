@@ -25,7 +25,7 @@ const routes: Routes = [
   { path: 'trajectory-view', component: TrajectoryViewComponent, data: { title: 'WaCoDiS Web Client' } },
   { path: 'profile-view', component: ProfileViewComponent, data: { title: 'WaCoDiS Web Client' } },
   { path: 'select-category', component: CategorySelectorComponent, data: { title: 'WaCoDiS Web Client' } },
-  { path: 'select-station', component: CategorySelectorComponent, data: { title: 'WaCoDiS Web Client' } },
+  { path: 'select-station', component: StationListSelectorComponent, data: { title: 'WaCoDiS Web Client' } },
   { path: 'select-phenomenon', component: PhenomenonListSelectorComponent, data: { title: 'WaCoDiS Web Client' } },
 ];
 

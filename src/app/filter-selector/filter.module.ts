@@ -10,6 +10,7 @@ import { StationListSelectorComponent } from './station-list-selector/station-li
 import { ServiceModule } from '../service-selector/service-selector/service.module';
 import { ExtendedMultiservicefilterComponent } from './extended-multiservicefilter/extended-multiservicefilter.component';
 import { ExtendedServiceFilterSelectorComponent } from './extended-service-filter-selector/extended-service-filter-selector.component';
+import { CategoryEntryComponent } from './entry-content/category-entry/category-entry.component';
 
 
 
@@ -24,7 +25,7 @@ import { ExtendedServiceFilterSelectorComponent } from './extended-service-filte
   declarations: [CategorySelectorComponent, PhenomenonSelectorComponent,
      ExtendedListSelectorComponent, PhenomenonListSelectorComponent, 
      StationListSelectorComponent, ExtendedMultiservicefilterComponent,
-    ExtendedServiceFilterSelectorComponent],
+    ExtendedServiceFilterSelectorComponent, CategoryEntryComponent],
   exports: [CategorySelectorComponent, PhenomenonSelectorComponent, 
     PhenomenonListSelectorComponent, StationListSelectorComponent,
      ExtendedMultiservicefilterComponent, ExtendedServiceFilterSelectorComponent],

@@ -2,6 +2,7 @@
   <div class="row">
     <div *ngFor="let param of parameters; let i = index">
       <div class="col-3">
+
         <div *ngIf="param.header=='Kategorie'">
           <table class="table">
             <thead>
@@ -13,20 +14,24 @@
                 </th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <td>
-                  <div *ngIf="!param.isDisabled">
-                    <!-- <n52-multi-service-filter-selector [endpoint]="param.type" [filterList]="param.filterList" (onItemSelected)="itemSelected($event, i)"></n52-multi-service-filter-selector> -->
-                    <wv-extended-multiservicefilter [endpoint]="param.type" [filterList]="param.filterList" (onItemSelected)="itemSelected($event, i)"></wv-extended-multiservicefilter>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
+            <div class="auto">
+              <tbody>
+                <tr>
+                  <td>
+                    <div *ngIf="!param.isDisabled">
+                      <!-- <n52-multi-service-filter-selector [endpoint]="param.type" [filterList]="param.filterList" (onItemSelected)="itemSelected($event, i)"></n52-multi-service-filter-selector> -->
+                      <wv-extended-multiservicefilter [endpoint]="param.type" [filterList]="param.filterList" (onItemSelected)="itemSelected($event, i)"></wv-extended-multiservicefilter>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </div>
           </table>
         </div>
       </div>
+
       <div class="col-3">
+
         <div *ngIf="param.header=='Station'">
           <table class="table">
             <thead>
@@ -38,16 +43,18 @@
                 </th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <td>
-                  <div *ngIf="!param.isDisabled">
-                    <!-- <n52-multi-service-filter-selector [endpoint]="param.type" [filterList]="param.filterList" (onItemSelected)="itemSelected($event, i)"></n52-multi-service-filter-selector> -->
-                    <wv-extended-multiservicefilter [endpoint]="param.type" [filterList]="param.filterList" (onItemSelected)="itemSelected($event, i)"></wv-extended-multiservicefilter>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
+            <div class="auto">
+              <tbody>
+                <tr>
+                  <td>
+                    <div *ngIf="!param.isDisabled">
+                      <!-- <n52-multi-service-filter-selector [endpoint]="param.type" [filterList]="param.filterList" (onItemSelected)="itemSelected($event, i)"></n52-multi-service-filter-selector> -->
+                      <wv-extended-multiservicefilter [endpoint]="param.type" [filterList]="param.filterList" (onItemSelected)="itemSelected($event, i)"></wv-extended-multiservicefilter>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </div>
           </table>
         </div>
       </div>
@@ -64,16 +71,18 @@
                 </th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <td>
-                  <div *ngIf="!param.isDisabled">
-                    <!-- <n52-multi-service-filter-selector [endpoint]="param.type" [filterList]="param.filterList" (onItemSelected)="itemSelected($event, i)"></n52-multi-service-filter-selector> -->
-                    <wv-extended-multiservicefilter [endpoint]="param.type" [filterList]="param.filterList" (onItemSelected)="itemSelected($event, i)"></wv-extended-multiservicefilter>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
+            <div class="auto">
+              <tbody>
+                <tr>
+                  <td>
+                    <div *ngIf="!param.isDisabled">
+                      <!-- <n52-multi-service-filter-selector [endpoint]="param.type" [filterList]="param.filterList" (onItemSelected)="itemSelected($event, i)"></n52-multi-service-filter-selector> -->
+                      <wv-extended-multiservicefilter [endpoint]="param.type" [filterList]="param.filterList" (onItemSelected)="itemSelected($event, i)"></wv-extended-multiservicefilter>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </div>
           </table>
         </div>
       </div>
@@ -90,16 +99,18 @@
                 </th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <td>
-                  <div *ngIf="!param.isDisabled">
-                    <!-- <n52-multi-service-filter-selector [endpoint]="param.type" [filterList]="param.filterList" (onItemSelected)="itemSelected($event, i)"></n52-multi-service-filter-selector> -->
-                    <wv-extended-multiservicefilter [endpoint]="param.type" [filterList]="param.filterList" (onItemSelected)="itemSelected($event, i)"></wv-extended-multiservicefilter>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
+            <div class="auto">
+              <tbody>
+                <tr>
+                  <td>
+                    <div *ngIf="!param.isDisabled">
+                      <!-- <n52-multi-service-filter-selector [endpoint]="param.type" [filterList]="param.filterList" (onItemSelected)="itemSelected($event, i)"></n52-multi-service-filter-selector> -->
+                      <wv-extended-multiservicefilter [endpoint]="param.type" [filterList]="param.filterList" (onItemSelected)="itemSelected($event, i)"></wv-extended-multiservicefilter>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </div>
           </table>
         </div>
       </div>

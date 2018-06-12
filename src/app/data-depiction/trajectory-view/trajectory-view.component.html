@@ -1,8 +1,8 @@
 <div class="content">
-    <div class="container">
+    <div class="container mapView">
       <n52-geometry-map-viewer class="map" mapId="map" [geometry]="geometry" [highlight]="highlightGeometry" [zoomTo]="zoomToGeometry"></n52-geometry-map-viewer>
     </div>
-    <div class="container">
+    <div class="container trajG">
       <div class="chart">
         <n52-d3-trajectory-graph [datasetIds]="datasetIds" [timeInterval]="timespan" [datasetOptions]="options" [graphOptions]="graphOptions"
           [selection]="selection" (onSelectionChanged)="onChartSelectionChanged($event)" (onSelectionChangedFinished)="onChartSelectionChangedFinished($event)"

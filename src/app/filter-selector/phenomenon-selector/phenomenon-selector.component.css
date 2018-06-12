@@ -23,6 +23,7 @@ body{
     background-color: #2c4869;
     position: absolute;
     right: 0px;
+
 }
 .card-header{
     background-color: #2c4869;
@@ -32,9 +33,11 @@ body{
     background-color: #2c4869;
     color: #fff;
     border-color: #2c4869;
+    margin-left: 0px;
 }
 .list-group-item {
     border: 0px;
+   padding: 0.75rem;
 }
 .list-group-item :active {
     border: 0px;
