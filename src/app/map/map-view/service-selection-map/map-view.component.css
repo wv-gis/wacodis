@@ -10,10 +10,19 @@
 }
 .mapContent {
     position: absolute;
-    right: 0;
+    right: 400px;
     left: 0;
     top: 48px;
     bottom: 0;
-    width: 100%;
+    /* width: 100%; */
 }
 
+#main {
+    height: 100%;
+    width: 100%;
+}
+n52-station-map-selector{
+    width: 100%;
+    height: 100%;
+    position: relative;
+}

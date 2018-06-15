@@ -1,8 +1,21 @@
-.list-group-item {
-background-color: rgba(113, 130, 150, 0.5);
-}
-.list-group-item ::selection{
-    background-color: black !important;
- border-color: #aed248;
 
+.entry+.entry {
+    border-top: solid 1px #dfe4e6;
+}
+
+.entry {
+    height: 52px;
+    color: #fff;
+    padding: 18px 25px;
+}
+.mid {
+    font-size: 13px;
+    line-height: 18px;
+}
+.entry.selected {
+    background-color: #2c4869;
+}
+.entry:hover {
+    background-color: #8b9cae;
+    cursor: pointer;
 }

@@ -1,11 +1,11 @@
 .content {
-    /* overflow: auto;
-    height: 100%; */
     top: 60px;
     right: 0;
     bottom: 0;
-    position: absolute;
+}
+.content {
     left: 0;
+    position: absolute;
 }
 .header{
     position: absolute;

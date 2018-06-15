@@ -23,6 +23,8 @@ export class PhenomenonSelectorComponent implements OnChanges {
     selectedProviderList: Provider[]=[];
    id: string;
    isFirst = true;
+   public isActive: boolean = true;
+   public selectionId: string = null;
 
     ngOnChanges(changes: SimpleChanges): void {
         if(this.isFirst){
@@ -41,9 +43,22 @@ export class PhenomenonSelectorComponent implements OnChanges {
     }
     onPhenomenonSelected(phenomenon: Phenomenon) {
         this.selectedPhenomenon.emit(phenomenon);
+        this.selectionId= phenomenon.id;
     }
 
     removeFilter() {
         this.stationFilter.emit();
+        this.selectionId= null;
     }
+    public change(){
+        if(this.isActive){
+            this.isActive = false;
+            return false;
+        }
+        else{
+            this.isActive= true;
+            return true;
+        }
+    }
+
 }

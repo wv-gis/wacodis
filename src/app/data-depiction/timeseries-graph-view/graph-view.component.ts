@@ -44,7 +44,7 @@ export class GraphViewComponent {
         if (selected) {
             this.selectedIds.push(id);
         } else {
-            // this.selectedIds.splice(this.selectedIds.findIndex((entry) => entry === id), 1);
+            this.selectedIds.splice(this.selectedIds.findIndex((entry) => entry === id), 1);
         }
     }
     public isSelected(id: string) {

@@ -12,11 +12,11 @@ export class ExtendedListSelectorComponent extends ListSelectorComponent {
 
 
 
- constructor( protected listSelectorService: ListSelectorService,
-  protected apiInterface: DatasetApiInterface,
-  protected apiMapping: DatasetApiMapping){
-    super(listSelectorService, apiInterface, apiMapping);
-  }
+//  constructor( protected listSelectorService: ListSelectorService,
+//   protected apiInterface: DatasetApiInterface,
+//   protected apiMapping: DatasetApiMapping){
+//     super(listSelectorService, apiInterface, apiMapping);
+//   }
 
 
 }

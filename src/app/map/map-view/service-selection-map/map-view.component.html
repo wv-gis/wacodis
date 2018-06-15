@@ -1,16 +1,14 @@
 <div class="selectionMenu">
-    <wv-selection-menu (selectedProvider)="setProviderUrl($event)"></wv-selection-menu>
+    <wv-selection-menu (onProviderSelected)="setProviderUrl($event)"></wv-selection-menu>
 </div>
 <div class="mapContent">
-    <div style="width: 25%; position: absolute; z-index: 800;right: 0px;">
-        <wv-phenomenon-selector [apiUrl]="providerUrl" (selectedPhenomenon)="onSelectPhenomenon($event)" id="phenomenon" (stationFilter)="removeStationFilter()"></wv-phenomenon-selector>
-    </div>
-    <div style="height: 100%; width: 100%;">
+    <div id="main">
         <!-- <n52-geometry-map-viewer [mapOptions]="mapOptions" [fitBounds]="fitBounds" [layerControlOptions]="layerControlOptions" [zoomControlOptions]="zoomControlOptions"
-                  [overlayMaps]="overlayMaps" [baseMaps]="baseMaps" mapId="map"></n52-geometry-map-viewer> -->
+                      [overlayMaps]="overlayMaps" [baseMaps]="baseMaps" mapId="map"></n52-geometry-map-viewer> -->
         <n52-station-map-selector [mapId]="'map'" [serviceUrl]="providerUrl" [filter]="stationFilter" [zoomControlOptions]="zoomControlOptions"
             [mapOptions]="mapOptions" [fitBounds]="fitBounds" [avoidZoomToSelection]="avoidZoomToSelection" [baseMaps]="baseMaps"
             [overlayMaps]="overlayMaps" [layerControlOptions]="layerControlOptions" (onSelected)="onStationSelected($event)"
             [cluster]="cluster" [statusIntervals]="statusIntervals" (onContentLoading)="loadingStations = $event"></n52-station-map-selector>
     </div>
 </div>
+<wv-phenomenon-selector [apiUrl]="providerUrl" (selectedPhenomenon)="onSelectPhenomenon($event)" id="phenomenon" (stationFilter)="removeStationFilter()"></wv-phenomenon-selector>

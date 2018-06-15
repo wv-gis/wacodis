@@ -1,53 +1,64 @@
 
-body{
-    height : 100vh;
-    overflow : hidden;
-  }
-  i {
-    border: solid white;
-    border-width: 0 3px 3px 0;
-    display: inline-block;
-    padding: 3px;
-}
-
-.right {
-    transform: rotate(-45deg);
-    -webkit-transform: rotate(-45deg);
-}
-.left {
-    transform: rotate(135deg);
-    -webkit-transform: rotate(135deg);
-}
-
-.btn.btn-primary {
+.phenomena .expand-button.active {
+    right: 400px;
     background-color: #2c4869;
+}
+.phenomena .expand-button {
+    top: 123px;
+}
+.phenomena .expand-button {
     position: absolute;
-    right: 0px;
+    top: 75px;
+    right: 0;
+    width: 49px;
+    height: 54px;
+    border-radius: 3px 0 0 3px;
+    box-shadow: inset -3px 0 0 rgba(0,0,0,.2);
+    text-align: center;
+    background-color: #718296;
+    z-index: 800;
+    cursor: pointer;
+}
+.phenomena .expand-button .icon {
+    color: #fff;
+    font-size: 20px;
+    line-height: 52px;
+} 
 
+/* .phenomenon-list-active  */
+.phenomena .phenomenonSelector.active {
+    top: 111px;
+    width: 400px;
 }
-.card-header{
-    background-color: #2c4869;
+.phenomena .phenomenonSelector.active {
+    display: inline;
+    position: absolute;
+    top: 48px;
+    right: 0;
+    bottom: 0;
+    background-color: #718296;
+    /* width: 400px; */
+}
+.phenomena .phenomenonSelector {
+    overflow: auto;
+    display: none;
+}
+.phenomena .phenomenonSelector.active .entry {
+    height: 52px;
     color: #fff;
+    padding: 18px 25px;
 }
-.card-header button{
+
+.mid {
+    font-size: 13px;
+    line-height: 18px;
+}
+.phenomena .phenomenonSelector.active .entry.selected {
     background-color: #2c4869;
-    color: #fff;
-    border-color: #2c4869;
-    margin-left: 0px;
 }
-.list-group-item {
-    border: 0px;
-   padding: 0.75rem;
+.phenomena .phenomenonSelector.active .entry+.entry {
+    border-top: solid 1px #dfe4e6;
 }
-.list-group-item :active {
-    border: 0px;
-    background-color: lightgray;
-}
-.col-lg-11, .col-md-11 ,.col-sm-8 collapse{
-    padding-left: 0px;
-    padding-right: 0px;
-}
-.card-body{
-    padding: 0px;
-    background-color: rgba(113, 130, 150, 0.5);
+.phenomena .phenomenonSelector.active .entry:hover{
+    cursor: pointer;
 }
