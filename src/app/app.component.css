@@ -15,3 +15,10 @@
     z-index: 9;
     background-color: #fff;
 }
+nav {
+    background-color: #e9ecef;
+    
+}
+.nav-link {
+    color: gray;        
+}
