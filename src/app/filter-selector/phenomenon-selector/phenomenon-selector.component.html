@@ -1,57 +1,18 @@
-<!-- <div class="container-fluid">
-  <div class="row p-0" style="float: right;">
-    <div class="col col-lg-1 col-md-1 p-0">
-      <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseButton" aria-expanded="false"
-        aria-controls="multiCollapseExample2" href="#collapseButton">
-        <i class="arrow left"></i>
-      </button>
-    </div>
-    <div class="col-lg-11 col-md-11 col-sm-8 collapse m-0 h-100" id="collapseButton" style="width: 300px">
-      <div class="card-header" (click)="removeFilter()">Alle Phänomene
-      </div>
-      <div class="card card-body">
-        <ul class="list-group">
-          <li class="list-group-item"> -->
-<!-- <n52-service-filter-selector [serviceUrl]="apiUrl" endpoint="phenomenon" (onItemSelected)="onPhenomenonSelected($event)"></n52-service-filter-selector> -->
-<!-- <wv-extended-service-filter-selector [serviceUrl]="apiUrl" endpoint="phenomenon" (onItemSelected)="onPhenomenonSelected($event)"></wv-extended-service-filter-selector>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</div> -->
 
-<!-- <input type="button" id="phenomenonToggle" class="btn btn-primary">
-
-    <i class="arrow left"></i>
-    <nav class="phenomenonSelector">
-      <div class="navbar-header">
-        <a class="navbar-brand" (click)="removeFilter()">Alle Phänomene</a>
-      </div>
-      <ul class="list-group">
-        <li class="list-group-item">
-          <wv-extended-service-filter-selector [serviceUrl]="apiUrl" endpoint="phenomenon" (onItemSelected)="onPhenomenonSelected($event)"></wv-extended-service-filter-selector>
-        </li>
-      </ul>
-    </nav> -->
 <div class="phenomena">
-  <div class="expand-button" [ngClass]="{'active': isActive}" (click)="change()">
-    <span class="icon" >
-      <i class="fas fa-angle-right" [ngClass]="{'fa-angle-right': isActive, 'fa-angle-left': !isActive}"></i>
-    </span>
-  </div>
-  <!-- <nav class="phenomenonSelector" [ngClass]="{'active': isActive}" >
-              <div class="navbar-header">
-                <a class="navbar-brand" (click)="removeFilter()">Alle Phänomene</a>
-              </div>
-              <wv-extended-service-filter-selector [serviceUrl]="apiUrl" endpoint="phenomenon" (onItemSelected)="onPhenomenonSelected($event)"></wv-extended-service-filter-selector>
-          </nav> -->
-  <div class="phenomenonSelector" [ngClass]="{'active': isActive}">
-    <div class="mid entry" (click)="removeFilter()" [ngClass]="{'selected': selectionId === null}">
-      <span> Alle Phänomene</span>
+  <!-- <div *ngIf="isVisible"> -->
+    <div class="expand-button" [ngClass]="{'active': isActive}" (click)="change()">
+      <span class="icon">
+        <i class="fas fa-angle-right" [ngClass]="{'fa-angle-right': isActive, 'fa-angle-left': !isActive}"></i>
+      </span>
     </div>
-    <!-- <div class="mid entry"> -->
-    <wv-extended-service-filter-selector [serviceUrl]="apiUrl" endpoint="phenomenon" [selectionId]="selectionId" (onItemSelected)="onPhenomenonSelected($event)"></wv-extended-service-filter-selector>
-    <!-- </div> -->
-  </div>
+
+    <div class="phenomenonSelector" [ngClass]="{'active': isActive}">
+      <div class="mid entry" (click)="removeFilter()" [ngClass]="{'selected': selectionId === null}">
+        <span> Alle Phänomene</span>
+      </div>
+      <!-- <wv-extended-service-filter-selector [serviceUrl]="apiUrl" endpoint="phenomenon" [selectionId]="selectionId" (onItemSelected)="onPhenomenonSelected($event)"></wv-extended-service-filter-selector> -->
+     <wv-extended-service-filter-selector [endpoint]="'phenomenon'" [filterList]="selectedProviderList" (onItemSelected)="onPhenomenonSelected($event)"></wv-extended-service-filter-selector>
+    </div>
+  <!-- </div> -->
 </div>

@@ -1,5 +1,5 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { Service, DatasetApi, ParameterFilter, PlatformTypes, ValueTypes } from '@helgoland/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Service, DatasetApi, ParameterFilter, PlatformTypes, ValueTypes, SettingsService, Settings } from '@helgoland/core';
 import { Router } from '@angular/router';
 
 
@@ -10,16 +10,21 @@ import { Router } from '@angular/router';
   styleUrls: ['./selection-menu.component.css']
 })
 
-export class SelectionMenuComponent {
+export class SelectionMenuComponent implements OnInit{
 
+ 
   public label = 'Wupperverband Zeitreihen Dienst';
   public active: boolean;
+  public selectedService: Service;
 
   @Output()
   public onProviderSelected: EventEmitter<Service> = new EventEmitter<Service>();
 
 
-  constructor(private router: Router) { }
+  // public datasetApis: DatasetApi[];
+  constructor(private router: Router) { 
+   
+  }
 
   public datasetApis: DatasetApi[] = [
     {
@@ -32,16 +37,26 @@ export class SelectionMenuComponent {
     }
   ];
 
-
-  public switchProvider(service: Service) {
-    this.onProviderSelected.emit(service);
-    this.label = service.label;
-    // console.log(service.apiUrl);
+  ngOnInit(): void {
+ 
+  //   this.datasetApis = this.settings.getSettings().datasetApis;
+  //   this.datasetApis.forEach((entry)=>{
+  //     console.log(entry.url);
+  //   }
+  // );
   }
+ 
   public providerFilter: ParameterFilter = {
     platformTypes: PlatformTypes.stationary,
     valueTypes: ValueTypes.quantity
   };
+
+  public switchProvider(service: Service) {
+    this.onProviderSelected.emit(service);
+    // this.selectedService = service;
+    this.label = service.label;
+
+  }
 
   navigateTo(url: string) {
     this.router.navigateByUrl(url);

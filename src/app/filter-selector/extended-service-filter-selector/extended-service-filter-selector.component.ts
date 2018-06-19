@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import { ServiceFilterSelectorComponent } from '@helgoland/selector';
+import { MultiServiceFilterSelectorComponent } from '@helgoland/selector';
 
 
 @Component({
@@ -8,6 +8,6 @@ import { ServiceFilterSelectorComponent } from '@helgoland/selector';
     styleUrls: ['./extended-service-filter-selector.component.scss']
 })
 
-export class ExtendedServiceFilterSelectorComponent extends ServiceFilterSelectorComponent{
+export class ExtendedServiceFilterSelectorComponent extends MultiServiceFilterSelectorComponent{
 
 }

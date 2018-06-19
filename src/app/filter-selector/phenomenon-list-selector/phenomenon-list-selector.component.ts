@@ -30,8 +30,9 @@ export class PhenomenonListSelectorComponent {
   constructor() {
     this.selectedProviderList.push({
       id: '1',
-      url: 'http://www.fluggs.de/sos2/api/v1/'//'http://sensorweb.demo.52north.org/sensorwebtestbed/api/v1/'
+      url: 'http://www.fluggs.de/sos2/api/v1/'
     });
+   
   }
 
   public onDatasetSelected(datasets: IDataset[]) {
@@ -40,14 +41,16 @@ export class PhenomenonListSelectorComponent {
   }
 
   public getProviderUrl(service: Service){
-    this.selectedProviderList.pop();
+    this.selectedProviderList = [];
     this.selectedProviderList.push({
       id: service.id,
-      url: service.apiUrl
-    });
-    this.selectedProviderList.forEach((entry)=>{
-      console.log(entry.url);
-    });
+      url: service.apiUrl,
+    })
+    // this.selectedProviderList.forEach((entry)=>{
+    //   if(entry.url==service.apiUrl){
+        
+    //   }
+    // });
 
   }
 

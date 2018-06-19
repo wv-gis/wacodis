@@ -1,123 +1,40 @@
-<div class="container-fluid">
-  <div class="row">
-    <div *ngFor="let param of parameters; let i = index">
-      <div class="col-3">
-
-        <div >
-          <table class="table">
-            <thead>
-              <tr>
-                <th scope="col">
-                  <div class="card-header">
-                    <span>{{param.header}}</span>
-                  </div>
-                </th>
-              </tr>
-            </thead>
-            <div class="auto">
-              <tbody>
-                <tr>
-                  <td>
-                    <div *ngIf="!param.isDisabled">
-                     
-                      <wv-extended-multiservicefilter [endpoint]="param.type" [filterList]="param.filterList" (onItemSelected)="itemSelected($event, i)"></wv-extended-multiservicefilter>
-                    </div>
-                  </td>
-                </tr>
-                <div *ngIf="i==3">
-                <button type="button" id="timeseriesRoute" (click)="moveToDiagram()"><span>Zur Zeitreihenansicht </span> <i class="far fa-chart-bar"></i></button>
+<div class="row">
+  <div *ngFor="let param of parameters; let i = index">
+    <div class="col-3">
+      <table class="table" [ngClass]="{'disabled': param.isDisabled }">
+        <thead>
+          <tr>
+            <th scope="col">
+              <div class="card-header">
+                <span>{{param.header}}</span>
+                <span *ngIf="param.headerAddition">-</span>
+                <span>{{param.headerAddition}}</span>
               </div>
-              </tbody>
-            </div>
-          </table>
-        </div>
-      </div>
+            </th>
+          </tr>
+        </thead>
 
-      <!-- <div class="col-3">
+        <tbody>
+          <tr>
+            <td>
+              <div class="auto">
+                <div *ngIf="!param.isDisabled">
+                  <!-- <wv-extended-service-filter-selector [serviceUrl]="param.filterList[i].url" [endpoint]="param.type" (onItemSelected)="itemSelected($event, i)"></wv-extended-service-filter-selector> -->
+                  <wv-extended-multiservicefilter [endpoint]="param.type" [filterList]="param.filterList" (onItemSelected)="itemSelected($event, i)"></wv-extended-multiservicefilter>
+                
+                </div>
+              </div>
+            </td>
+          </tr>
+          <div *ngIf="i==3">
+            <button type="button" id="timeseriesRoute" (click)="moveToDiagram('/timeseries')">
+              <span>Zur Zeitreihenansicht </span>
+              <i class="far fa-chart-bar"></i>
+            </button>
+          </div>
+        </tbody>
 
-        <div *ngIf="param.header=='Station'">
-          <table class="table">
-            <thead>
-              <tr>
-                <th scope="col">
-                  <div class="card-header">
-                    <span>{{param.header}}</span>
-                  </div>
-                </th>
-              </tr>
-            </thead>
-            <div class="auto">
-              <tbody>
-                <tr>
-                  <td>
-                    <div *ngIf="!param.isDisabled">
-                    
-                      <wv-extended-multiservicefilter [endpoint]="param.type" [filterList]="param.filterList" (onItemSelected)="itemSelected($event, i)"></wv-extended-multiservicefilter>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </div>
-          </table>
-        </div>
-      </div>
-
-      <div class="col-3">
-        <div *ngIf="param.header=='Phänomen'">
-          <table class="table">
-            <thead>
-              <tr>
-                <th scope="col">
-                  <div class="card-header">
-                    <span>{{param.header}}</span>
-                  </div>
-                </th>
-              </tr>
-            </thead>
-            <div class="auto">
-              <tbody>
-                <tr>
-                  <td>
-                    <div *ngIf="!param.isDisabled">
-                   
-                      <wv-extended-multiservicefilter [endpoint]="param.type" [filterList]="param.filterList" (onItemSelected)="itemSelected($event, i)"></wv-extended-multiservicefilter>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </div>
-          </table>
-        </div>
-      </div>
-
-      <div class="col-3">
-        <div *ngIf="param.header=='Sensor'">
-          <table class="table">
-            <thead>
-              <tr>
-                <th scope="col">
-                  <div class="card-header">
-                    <span>{{param.header}}</span>
-                  </div>
-                </th>
-              </tr>
-            </thead>
-            <div class="auto">
-              <tbody>
-                <tr>
-                  <td>
-                    <div *ngIf="!param.isDisabled">
-                     
-                      <wv-extended-multiservicefilter [endpoint]="param.type" [filterList]="param.filterList" (onItemSelected)="itemSelected($event, i)"></wv-extended-multiservicefilter>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </div>
-          </table>
-        </div>
-      </div> -->
-
+      </table>
     </div>
   </div>
 </div>

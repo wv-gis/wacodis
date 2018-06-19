@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { DatasetOptions, Timespan } from '@helgoland/core';
 import { D3PlotOptions } from '@helgoland/d3';
+import { ListSelectorService } from '@helgoland/selector';
+import { DatasetEmitService } from '../../filter-selector/filter';
+
 
 @Component({
     selector: 'wv-graph-view',
@@ -29,6 +32,7 @@ export class GraphViewComponent {
     public datasetOptionsMultiple: Map<string, DatasetOptions> = new Map();
 
     constructor() {
+        //  __emitService.dataEmit.subscribe(data => console.log(data));
         this.datasetIdsMultiple.forEach((entry, i) => {
             this.datasetOptionsMultiple.set(entry, new DatasetOptions(entry, this.colors[i]));
             console.log('DatasetIds: ' + this.colors[i]);

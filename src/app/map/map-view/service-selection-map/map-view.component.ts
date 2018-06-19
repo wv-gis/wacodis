@@ -38,8 +38,8 @@ export class MapViewComponent implements OnInit, AfterViewInit {
   public statusIntervals: boolean = true;
   public searchOptions: GeoSearchOptions = { countrycodes: [] };
   public stationPopup: L.Popup;
-  public isVisible: true;
-
+  // public isVisible: true;
+  public serviceProvider: Service;
 
   constructor(private mapCache: MapCache) { }
 
@@ -91,11 +91,11 @@ export class MapViewComponent implements OnInit, AfterViewInit {
 
   public setProviderUrl(url: Service) {
     this.providerUrl = url.apiUrl;
+    this.serviceProvider = url;
     if (this.stationFilter) {
       this.stationFilter = {};
     }
     this.label = url.label;
-    console.log("SelectedProvider: " + url.apiUrl);
   }
   removeStationFilter() {
     this.stationFilter = {};

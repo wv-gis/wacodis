@@ -16,6 +16,7 @@ import { HelgolandMapModule } from '@helgoland/map';
 import { AppRoutingModule } from '../app-routing.module';
 import { HelgolandTimeRangeSliderModule } from '@helgoland/time/time-range-slider';
 import { HelgolandMapViewModule } from '@helgoland/map/view';
+import { DatasetService } from '@helgoland/core';
 
 @NgModule({
   imports: [
@@ -33,6 +34,6 @@ import { HelgolandMapViewModule } from '@helgoland/map/view';
     HelgolandMapViewModule,
   ],
   declarations: [DataTableComponent, GraphViewComponent, TrajectoryViewComponent, ProfileViewComponent],
-  exports: [DataTableComponent, GraphViewComponent, TrajectoryViewComponent, ProfileViewComponent]
+  exports: [DataTableComponent, GraphViewComponent, TrajectoryViewComponent, ProfileViewComponent,],
 })
 export class DataDepictionModule { }

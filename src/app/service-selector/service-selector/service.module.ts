@@ -14,7 +14,7 @@ import { TranslateModule } from '@ngx-translate/core';
     AppRoutingModule, TranslateModule
   ],
   declarations: [SelectionMenuComponent, ExtendedServiceSelectorComponent],
-  exports: [SelectionMenuComponent, ExtendedServiceSelectorComponent]
+  exports: [SelectionMenuComponent,]
 })
 
 export class ServiceModule {

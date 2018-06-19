@@ -11,4 +11,4 @@
             [cluster]="cluster" [statusIntervals]="statusIntervals" (onContentLoading)="loadingStations = $event"></n52-station-map-selector>
     </div>
 </div>
-<wv-phenomenon-selector [apiUrl]="providerUrl" (selectedPhenomenon)="onSelectPhenomenon($event)" id="phenomenon" (stationFilter)="removeStationFilter()"></wv-phenomenon-selector>
+<wv-phenomenon-selector [provider]="serviceProvider" (selectedPhenomenon)="onSelectPhenomenon($event)" id="phenomenon" (stationFilter)="removeStationFilter()"></wv-phenomenon-selector>

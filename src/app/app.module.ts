@@ -25,6 +25,8 @@ import { AppComponent } from './app.component';
 import { SelectViewDashboardComponent } from './select-view-dashboard/select-view-dashboard.component';
 import { settings } from '../main.browser';
 import { FilterModule } from './filter-selector/filter.module';
+import { DatasetEmitService } from './filter-selector/filter';
+
 
 @Injectable()
 export class ExtendedSettingsService extends SettingsService<Settings> {
@@ -84,7 +86,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     {
       provide: SettingsService,
       useClass: ExtendedSettingsService
-    }
+    },
+    // DatasetEmitService,
   ],
   bootstrap: [AppComponent],
   exports: [TranslateModule],

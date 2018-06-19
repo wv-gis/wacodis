@@ -10,6 +10,7 @@ import { StationListSelectorComponent } from './station-list-selector/station-li
 import { ServiceModule } from '../service-selector/service-selector/service.module';
 import { ExtendedMultiservicefilterComponent } from './extended-multiservicefilter/extended-multiservicefilter.component';
 import { ExtendedServiceFilterSelectorComponent } from './extended-service-filter-selector/extended-service-filter-selector.component';
+import { DatasetEmitService } from './datasetEmitService/datasetEmit.service';
 
 
 
@@ -27,8 +28,8 @@ import { ExtendedServiceFilterSelectorComponent } from './extended-service-filte
      StationListSelectorComponent, ExtendedMultiservicefilterComponent,
     ExtendedServiceFilterSelectorComponent],
   exports: [CategorySelectorComponent, PhenomenonSelectorComponent, 
-    PhenomenonListSelectorComponent, StationListSelectorComponent,
-     ExtendedMultiservicefilterComponent, ExtendedServiceFilterSelectorComponent],
+    PhenomenonListSelectorComponent, StationListSelectorComponent,],
+    // providers: [DatasetEmitService],
 
 })
 

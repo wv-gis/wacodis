@@ -4,7 +4,21 @@
     width: 300px;
     margin-left: 0px;
 }
-.list-group-item{
+// .list-group-item{
+//     background-color: lightgray;
+//     width: 300px;
+// }
+.list-group-item {
+    height: 50px;
+    line-height: 30px;
+    padding: 10px;
     background-color: lightgray;
-    width: 300px;
+    border-bottom: #dfe4e6 1px solid;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.card
+{
+    background-color: lightgray;
 }

@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges } from "@angular/core";
-import { Phenomenon, DatasetApi, FilteredProvider, Provider, DatasetApiInterface } from "@helgoland/core";
+import { Phenomenon, DatasetApi, FilteredProvider, Provider, DatasetApiInterface, Service } from "@helgoland/core";
 import { ListSelectorParameter } from "@helgoland/selector";
 
 @Component(
@@ -12,51 +12,54 @@ import { ListSelectorParameter } from "@helgoland/selector";
 
 export class PhenomenonSelectorComponent implements OnChanges {
 
-    
+
     @Input()
-    public apiUrl: string;
+    public provider: Service;
     @Output()
     selectedPhenomenon: EventEmitter<Phenomenon> = new EventEmitter<Phenomenon>();
     @Output()
     stationFilter = new EventEmitter();
 
-    selectedProviderList: Provider[]=[];
-   id: string;
-   isFirst = true;
-   public isActive: boolean = true;
-   public selectionId: string = null;
+    selectedProviderList: Provider[] = [];
+    id: string;
+    isFirst = true;
+    // isVisible = true;
+    isActive = true;
+    public selectionId: string = null;
 
     ngOnChanges(changes: SimpleChanges): void {
-        if(this.isFirst){
-            this.id = '1';
-            this.isFirst= false;
+  
+        if(this.isFirst && !this.provider){
+            this.isFirst = false;
+            this.selectedProviderList.push({
+                id: '1',
+                url: 'http://www.fluggs.de/sos2/api/v1/',
+            })
         }
-
-      this.selectedProviderList.push({
-          id: this.id,
-          url: changes.apiUrl.currentValue,
-          
-      })
-      this.apiUrl = changes.apiUrl.currentValue;
-      
-      console.log(this.apiUrl);
+        else{
+            this.selectedProviderList = [];
+            this.selectedProviderList.push({
+                id: this.provider.id,
+                url: this.provider.apiUrl,
+            })
+        }
     }
     onPhenomenonSelected(phenomenon: Phenomenon) {
         this.selectedPhenomenon.emit(phenomenon);
-        this.selectionId= phenomenon.id;
+        this.selectionId = phenomenon.id;
     }
 
     removeFilter() {
         this.stationFilter.emit();
-        this.selectionId= null;
+        this.selectionId = null;
     }
-    public change(){
-        if(this.isActive){
+    public change() {
+        if (this.isActive) {
             this.isActive = false;
             return false;
         }
-        else{
-            this.isActive= true;
+        else {
+            this.isActive = true;
             return true;
         }
     }

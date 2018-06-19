@@ -1,8 +1,7 @@
-import { Component, OnInit, Inject, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
-import { Station, Phenomenon, Category, Provider, IDataset, Feature, SettingsService, Settings, DatasetApiInterface, DatasetApiMapping, ParameterFilter, Service } from '@helgoland/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Station, Phenomenon, Category, Provider, IDataset, Feature,  ParameterFilter, Service } from '@helgoland/core';
 import { ListSelectorParameter, ListSelectorComponent, ListSelectorService, FilteredParameter } from '@helgoland/selector';
-import { ExtendedSettingsService } from '../../app.module';
-import { settings } from '../../../main.browser';
+
 
 
 @Component({
@@ -12,9 +11,11 @@ import { settings } from '../../../main.browser';
   // providers: [ExtendedSettingsService],
 })
 
-export class CategorySelectorComponent implements OnInit, OnChanges {
+export class CategorySelectorComponent implements OnInit {
 
+  constructor(){
 
+  }
 
 
   public apiUrl: string;
@@ -24,6 +25,7 @@ export class CategorySelectorComponent implements OnInit, OnChanges {
   @Output()
   selectedDataset: EventEmitter<IDataset> = new EventEmitter<IDataset>();
 
+  public selectedProviderList: Provider[] = [];
   public categoryParams: ListSelectorParameter[] = [{
     type: 'category',
     header: 'Kategorie',
@@ -42,33 +44,28 @@ export class CategorySelectorComponent implements OnInit, OnChanges {
     isDisabled: true,
   }];
 
-  ngOnChanges(changes: SimpleChanges) {
-    console.log('Change');
-    if (changes.apiUrl) {
-      console.log('Change API');
-    }
-  }
+ 
 
 
   public onDatasetSelected(datasets: IDataset[]) {
     datasets.forEach((dataset) => {
-      this.selectedDataset.emit(dataset);
-      console.log('Select Dataset: ' + dataset.label + ' with ID: ' + dataset.id);
+      // this.selectedDataset.emit(dataset);
+      console.log('InternalId: ' + dataset.internalId);
+    //  this.__emitService.sendMessage(dataset); 
     });
 
   }
 
-  public selectedProviderList: Provider[] = [];
+
 
   public getProviderUrl(service: Service) {
-    this.selectedProviderList.pop();
+      this.selectedProviderList =[];
+
     this.selectedProviderList.push({
       id: service.id,
       url: service.apiUrl,
     });
-    this.selectedProviderList.forEach((entry) => {
-      // console.log(entry.url);
-    });
+
 
   }
 
@@ -80,15 +77,6 @@ export class CategorySelectorComponent implements OnInit, OnChanges {
     });
 
   }
-
-
-
-  // setSelector(id: string){
-  //   this.selectorId = id;
-  //   console.log('ID: ' + this.selectorId);
-
-  // }
-
 
 
 }

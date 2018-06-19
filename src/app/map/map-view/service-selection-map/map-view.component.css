@@ -17,6 +17,15 @@
     /* width: 100%; */
 }
 
+/* .mapContent {
+    position: absolute;
+    right: 0;
+    left: 0;
+    top: 48px;
+    bottom: 0;
+     width: 100%; 
+} */
+
 #main {
     height: 100%;
     width: 100%;
