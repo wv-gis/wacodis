@@ -15,7 +15,7 @@ export class SelectionMenuComponent implements OnInit{
  
   public label = 'Wupperverband Zeitreihen Dienst';
   public active: boolean;
-  public selectedService: Service;
+  public selectedService: Service = null;
 
   @Output()
   public onProviderSelected: EventEmitter<Service> = new EventEmitter<Service>();
@@ -50,7 +50,7 @@ export class SelectionMenuComponent implements OnInit{
       
 
   //   ]
-  // }); 
+  // });
   }
  
   public providerFilter: ParameterFilter = {
@@ -60,8 +60,9 @@ export class SelectionMenuComponent implements OnInit{
 
   public switchProvider(service: Service) {
     this.onProviderSelected.emit(service);
-    // this.selectedService = service;
+    this.selectedService = service;
     this.label = service.label;
+   
 
   }
 

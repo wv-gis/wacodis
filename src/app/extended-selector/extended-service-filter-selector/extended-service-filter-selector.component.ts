@@ -1,5 +1,5 @@
-import {Component} from '@angular/core';
-import { MultiServiceFilterSelectorComponent } from '@helgoland/selector';
+import {Component, Input, SimpleChanges} from '@angular/core';
+import { MultiServiceFilterSelectorComponent, FilteredParameter } from '@helgoland/selector';
 
 
 @Component({
@@ -10,4 +10,15 @@ import { MultiServiceFilterSelectorComponent } from '@helgoland/selector';
 
 export class ExtendedServiceFilterSelectorComponent extends MultiServiceFilterSelectorComponent{
 
+    public selectionID: string = null;
+
+    onSelectItem(item: FilteredParameter ){
+        super.onSelectItem(item);
+        this.selectionID = item.id;
+       
+    }
+    removeFilter(){
+        this.onItemSelected.emit();
+        this.selectionID = null;
+    }
 }

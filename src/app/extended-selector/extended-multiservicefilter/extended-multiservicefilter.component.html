@@ -5,9 +5,9 @@
                 <li class="list-group-item">
                     <div class="form-check"   (click)="onSelectItem(item)">
 
-                        <input class="form-check-input" name="group100" type="radio" id="{{i}}" checked="item.selected">
+                            <input class="form-check-input" name="group100" type="radio" id="{{i}}" checked="selected === item.id">
                         <n52-label-mapper class="form-check-label" [attr.for]="i" label="{{item.label}}"></n52-label-mapper>
-
+                        
                     </div>
                 </li>
             </label>

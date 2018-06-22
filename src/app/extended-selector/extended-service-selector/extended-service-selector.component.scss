@@ -5,4 +5,19 @@
     padding: 10px;
     display: block;
     color: gray;
+    border-top: solid 2px white;
+    }
+
+    input{
+        right: 20px;
+    }
+    .form-check:hover{
+        background-color: rgba(157, 160, 158, 0.822);
+       
+    }
+    .service-item{
+        cursor: pointer;
+    }
+    .form-check-label{
+        cursor: pointer;
     }

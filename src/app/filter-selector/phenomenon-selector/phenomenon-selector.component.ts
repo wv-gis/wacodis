@@ -45,13 +45,14 @@ export class PhenomenonSelectorComponent implements OnChanges {
         }
     }
     onPhenomenonSelected(phenomenon: Phenomenon) {
-        this.selectedPhenomenon.emit(phenomenon);
-        this.selectionId = phenomenon.id;
-    }
-
-    removeFilter() {
-        this.stationFilter.emit();
-        this.selectionId = null;
+        if(!phenomenon){
+            this.stationFilter.emit();
+        }
+        else {
+            this.selectedPhenomenon.emit(phenomenon);
+            this.selectionId = phenomenon.id;
+        }
+        
     }
     public change() {
         if (this.isActive) {

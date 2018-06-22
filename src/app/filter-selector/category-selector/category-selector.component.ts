@@ -13,14 +13,6 @@ import { ListSelectorParameter, ListSelectorComponent, ListSelectorService, Filt
 
 export class CategorySelectorComponent implements OnInit {
 
-  constructor(){
-
-  }
-
-
-  public apiUrl: string;
-  // public selectorId = '';
-
 
   @Output()
   selectedDataset: EventEmitter<IDataset> = new EventEmitter<IDataset>();
@@ -45,18 +37,14 @@ export class CategorySelectorComponent implements OnInit {
   }];
 
  
-
-
   public onDatasetSelected(datasets: IDataset[]) {
     datasets.forEach((dataset) => {
-      // this.selectedDataset.emit(dataset);
+      this.selectedDataset.emit(dataset);
       console.log('InternalId: ' + dataset.internalId);
     //  this.__emitService.sendMessage(dataset); 
     });
 
   }
-
-
 
   public getProviderUrl(service: Service) {
       this.selectedProviderList =[];
@@ -65,10 +53,7 @@ export class CategorySelectorComponent implements OnInit {
       id: service.id,
       url: service.apiUrl,
     });
-
-
   }
-
 
   ngOnInit() {
     this.selectedProviderList.push({
@@ -77,6 +62,5 @@ export class CategorySelectorComponent implements OnInit {
     });
 
   }
-
 
 }

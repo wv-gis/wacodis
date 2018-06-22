@@ -3,14 +3,11 @@ import { CommonModule } from '@angular/common';
 import { AppRoutingModule } from '../app-routing.module';
 
 import { HelgolandD3Module } from '@helgoland/d3';
-import { HelgolandDatasetTableModule } from '@helgoland/depiction';
-import { HelgolandLabelMapperModule } from '@helgoland/depiction';
+import { HelgolandDatasetTableModule , HelgolandLabelMapperModule,  HelgolandDatasetlistModule } from '@helgoland/depiction';
 import { HelgolandModificationModule } from '@helgoland/modification';
 import { HelgolandControlModule } from '@helgoland/control';
 import { HelgolandTimeModule } from '@helgoland/time';
-import { HelgolandDatasetlistModule } from '@helgoland/depiction';
-import { HelgolandMapModule } from '@helgoland/map';
-import { HelgolandMapViewModule } from '@helgoland/map';
+import { HelgolandMapModule , HelgolandMapViewModule } from '@helgoland/map';
 // import { HelgolandTimeModule } from '@helgoland/time';
 
 import { TrajectoryViewComponent } from './trajectory-view/trajectory-view.component';

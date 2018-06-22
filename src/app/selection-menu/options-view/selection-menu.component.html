@@ -2,7 +2,7 @@
     <button class="btn btn-default dropdown-toggle entry provider" type="button" data-toggle="modal" data-target="#serviceModal">
         <i class="fas fa-broadcast-tower" style="padding: 3px"></i>Services: {{label}}
     </button>
-    <div class="modal fade" id="serviceModal" tabindex="-1" role="dialog" aria-labelledby="serviceProviderLabel" aria-hidden="true">
+    <div class="modal fade" id="serviceModal" tabindex="-1" role="dialog" aria-labelledby="serviceProviderLabel" aria-hidden="true" #modal>
         <div class="modal-dialog" role="navigation">
             <div class="modal-content">
                 <div class="modal-header">
@@ -13,8 +13,8 @@
                 </div>
                 <div class="modal-body">
                     <!-- <wv-service-selector (onProviderSelected)="emitProviderUrl($event)"></wv-service-selector> -->
-                    <wv-extended-service-selector [datasetApiList]="datasetApis" [filter]="providerFilter" [supportStations]="true" [showUnresolvableServices]="true"
-                        (onServiceSelected)="switchProvider($event)"></wv-extended-service-selector>
+                    <wv-extended-service-selector [datasetApiList]="datasetApis" [selectedService]="selectedService" [filter]="providerFilter" [supportStations]="true" [showUnresolvableServices]="true"
+                        (onServiceSelected)="switchProvider($event)" data-dismiss="modal"></wv-extended-service-selector>
                 </div>
             </div>
         </div>

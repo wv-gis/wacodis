@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ListSelectorComponent, ListSelectorService } from '@helgoland/selector';
+import { ListSelectorComponent, ListSelectorService, FilteredParameter } from '@helgoland/selector';
 import { DatasetApiInterface, DatasetApiMapping } from '@helgoland/core';
 import { Router } from '@angular/router';
 
@@ -11,16 +11,37 @@ import { Router } from '@angular/router';
 export class ExtendedListSelectorComponent extends ListSelectorComponent {
 
 
+public i: number = 0;
 
-
-   constructor( protected listSelectorService: ListSelectorService,
+  constructor(protected listSelectorService: ListSelectorService,
     protected apiInterface: DatasetApiInterface,
-    protected apiMapping: DatasetApiMapping, protected router: Router){
-      super(listSelectorService, apiInterface, apiMapping);
-      listSelectorService.cache
-    }
+    protected apiMapping: DatasetApiMapping, protected router: Router) {
+    super(listSelectorService, apiInterface, apiMapping);
+
+  }
   moveToDiagram(url: string) {
     this.router.navigateByUrl(url);
+  }
+
+  itemSelected(item: FilteredParameter, index: number) {
+    // TODO: heruasfinden was neu gesetzt werden muss um neue Abfrage starten zu können
+    if (index < this.i) {
+      this.parameters[index + 1].filterList = item.filterList.map((entry) => {
+        entry.filter[this.parameters[index].type] = entry.itemId;
+        console.log('Entry: ' + entry.filter.phenomenon);
+        return entry;
+        
+    });
+      this.parameters[index].headerAddition = '';
+    }
+    else{
+      super.itemSelected(item, index);
+    }
+    
+    this.i = index;
+    
+   
+    
   }
 
 }

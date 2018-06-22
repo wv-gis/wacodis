@@ -1,5 +1,5 @@
-import {Component} from '@angular/core';
-import { MultiServiceFilterSelectorComponent } from '@helgoland/selector';
+import { Component } from '@angular/core';
+import { MultiServiceFilterSelectorComponent, FilteredParameter } from '@helgoland/selector';
 
 @Component({
     selector: 'wv-extended-multiservicefilter',
@@ -7,6 +7,13 @@ import { MultiServiceFilterSelectorComponent } from '@helgoland/selector';
     styleUrls: ['./extended-multiservicefilter.component.scss']
 })
 
-export class ExtendedMultiservicefilterComponent extends MultiServiceFilterSelectorComponent{
+export class ExtendedMultiservicefilterComponent extends MultiServiceFilterSelectorComponent {
+
+    public selected: string = null;
+
+    onSelectItem(item: FilteredParameter) {
+        super.onSelectItem(item);
+        this.selected = item.id;
+    }
 
 }

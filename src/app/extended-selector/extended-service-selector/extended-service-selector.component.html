@@ -5,7 +5,7 @@
 
     <div class="service-item" *ngFor="let service of services; let i = index" >
         <div class="form-check" (click)="selectService(service)" [ngClass]="{'selected': isSelected(service)}">
-            <input class="form-check-input" name="group100" type="radio" id="{{i}}" checked="service.selected">
+           
             <label class="form-check-label" [attr.for]='i'>
                 <div>{{service.label}}</div>
                 <div class="small">{{service.type}}, {{service.version}}
@@ -19,6 +19,7 @@
                     <span>{{'phenomena' | translate}}: {{service.quantities.phenomena}} </span>
                 </div>
             </label>
+            <input class="form-check-input" name="group100" type="radio" id="{{i}}" checked="service.selected">
         </div>
     </div>
     <div *ngFor="let item of unResolvableServices">

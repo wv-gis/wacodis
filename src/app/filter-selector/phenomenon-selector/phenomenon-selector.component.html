@@ -8,10 +8,6 @@
     </div>
 
     <div class="phenomenonSelector" [ngClass]="{'active': isActive}">
-      <div class="mid entry" (click)="removeFilter()" [ngClass]="{'selected': selectionId === null}">
-        <span> Alle Phänomene</span>
-      </div>
-      <!-- <wv-extended-service-filter-selector [serviceUrl]="apiUrl" endpoint="phenomenon" [selectionId]="selectionId" (onItemSelected)="onPhenomenonSelected($event)"></wv-extended-service-filter-selector> -->
      <wv-extended-service-filter-selector [endpoint]="'phenomenon'" [filterList]="selectedProviderList" (onItemSelected)="onPhenomenonSelected($event)"></wv-extended-service-filter-selector>
     </div>
   <!-- </div> -->

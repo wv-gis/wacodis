@@ -43,22 +43,3 @@
     overflow: auto;
     display: none;
 }
-.phenomena .phenomenonSelector.active .entry {
-    height: 52px;
-    color: #fff;
-    padding: 18px 25px;
-}
-
-.mid {
-    font-size: 13px;
-    line-height: 18px;
-}
-.phenomena .phenomenonSelector.active .entry.selected {
-    background-color: #2c4869;
-}
-.phenomena .phenomenonSelector.active .entry+.entry {
-    border-top: solid 1px #dfe4e6;
-}
-.phenomena .phenomenonSelector.active .entry:hover{
-    cursor: pointer;
-}
