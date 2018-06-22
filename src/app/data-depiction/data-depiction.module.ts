@@ -1,22 +1,22 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DataTableComponent } from './data-table/data-table.component';
-import { GraphViewComponent } from './timeseries-graph-view/graph-view.component';
-import { HelgolandD3Module } from '@helgoland/d3';
-import { HelgolandDatasetTableModule } from '@helgoland/depiction/dataset-table';
+import { AppRoutingModule } from '../app-routing.module';
 
-import { HelgolandLabelMapperModule } from '@helgoland/depiction/label-mapper';
+import { HelgolandD3Module } from '@helgoland/d3';
+import { HelgolandDatasetTableModule } from '@helgoland/depiction';
+import { HelgolandLabelMapperModule } from '@helgoland/depiction';
 import { HelgolandModificationModule } from '@helgoland/modification';
 import { HelgolandControlModule } from '@helgoland/control';
 import { HelgolandTimeModule } from '@helgoland/time';
-import { HelgolandDatasetlistModule } from '@helgoland/depiction/datasetlist';
+import { HelgolandDatasetlistModule } from '@helgoland/depiction';
+import { HelgolandMapModule } from '@helgoland/map';
+import { HelgolandMapViewModule } from '@helgoland/map';
+// import { HelgolandTimeModule } from '@helgoland/time';
+
 import { TrajectoryViewComponent } from './trajectory-view/trajectory-view.component';
 import { ProfileViewComponent } from './profile-view/profile-view.component';
-import { HelgolandMapModule } from '@helgoland/map';
-import { AppRoutingModule } from '../app-routing.module';
-import { HelgolandTimeRangeSliderModule } from '@helgoland/time/time-range-slider';
-import { HelgolandMapViewModule } from '@helgoland/map/view';
-import { DatasetService } from '@helgoland/core';
+import { DataTableComponent } from './data-table/data-table.component';
+import { GraphViewComponent } from './timeseries-graph-view/graph-view.component';
 
 @NgModule({
   imports: [
@@ -30,7 +30,7 @@ import { DatasetService } from '@helgoland/core';
     HelgolandLabelMapperModule,
     HelgolandMapModule,
     AppRoutingModule,
-    HelgolandTimeRangeSliderModule,
+    // HelgolandTimeRangeSliderModule,
     HelgolandMapViewModule,
   ],
   declarations: [DataTableComponent, GraphViewComponent, TrajectoryViewComponent, ProfileViewComponent],

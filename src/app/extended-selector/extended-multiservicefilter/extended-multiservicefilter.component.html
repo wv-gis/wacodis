@@ -1,12 +1,12 @@
-<div class="selector-entry" *ngFor="let item of items">
+<div class="selector-entry" *ngFor="let item of items;let i = index">
     <div class="card" >
         <ul class="list-group list-group-flush">
             <label style="cursor: pointer;">
                 <li class="list-group-item">
                     <div class="form-check"   (click)="onSelectItem(item)">
 
-                        <input class="form-check-input" name="group100" type="radio" id="radio100" checked="item.selected">
-                        <n52-label-mapper class="form-check-label" for="radio100" label="{{item.label}}"></n52-label-mapper>
+                        <input class="form-check-input" name="group100" type="radio" id="{{i}}" checked="item.selected">
+                        <n52-label-mapper class="form-check-label" [attr.for]="i" label="{{item.label}}"></n52-label-mapper>
 
                     </div>
                 </li>

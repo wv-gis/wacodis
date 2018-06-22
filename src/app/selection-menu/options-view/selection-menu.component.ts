@@ -25,17 +25,18 @@ export class SelectionMenuComponent implements OnInit{
   constructor(private router: Router) { 
    
   }
-
   public datasetApis: DatasetApi[] = [
-    {
+    { 
       name: 'Fluggs Rest Api',
       url: 'http://www.fluggs.de/sos2/api/v1/'
     },
-    {
-      name: 'Sensorweb Testbed Api',
-      url: 'http://sensorweb.demo.52north.org/sensorwebtestbed/api/v1/'
-    }
-  ];
+ 
+  {
+    name: 'Sensorweb Testbed Api',
+    url: 'http://sensorweb.demo.52north.org/sensorwebtestbed/api/v1/'
+  }
+    
+]
 
   ngOnInit(): void {
  
@@ -44,6 +45,12 @@ export class SelectionMenuComponent implements OnInit{
   //     console.log(entry.url);
   //   }
   // );
+  // this.settings.getSettings().datasetApis.forEach((entry) => {
+  //   let datasetApis: DatasetApi[] = [
+      
+
+  //   ]
+  // }); 
   }
  
   public providerFilter: ParameterFilter = {

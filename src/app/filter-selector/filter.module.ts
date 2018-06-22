@@ -1,20 +1,16 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CategorySelectorComponent } from './category-selector/category-selector.component';
+
 import { HelgolandSelectorModule } from '@helgoland/selector';
+import { HelgolandLabelMapperModule } from '@helgoland/depiction';
+import { ServiceModule } from '../selection-menu/service.module';
+// import { DatasetEmitService } from './datasetEmitService/datasetEmit.service';
+
+import { CategorySelectorComponent } from './category-selector/category-selector.component';
 import { PhenomenonSelectorComponent } from './phenomenon-selector/phenomenon-selector.component';
-import { HelgolandLabelMapperModule } from '@helgoland/depiction/label-mapper';
-import { ExtendedListSelectorComponent } from './extended-list-selector/extended-list-selector.component';
 import { PhenomenonListSelectorComponent } from './phenomenon-list-selector/phenomenon-list-selector.component';
 import { StationListSelectorComponent } from './station-list-selector/station-list-selector.component';
-import { ServiceModule } from '../service-selector/service-selector/service.module';
-import { ExtendedMultiservicefilterComponent } from './extended-multiservicefilter/extended-multiservicefilter.component';
-import { ExtendedServiceFilterSelectorComponent } from './extended-service-filter-selector/extended-service-filter-selector.component';
-import { DatasetEmitService } from './datasetEmitService/datasetEmit.service';
-
-
-
-
+import { ExtendedSelectorModule } from '../extended-selector/extended-selector.module';
 
 @NgModule({
   imports: [
@@ -22,11 +18,11 @@ import { DatasetEmitService } from './datasetEmitService/datasetEmit.service';
     HelgolandSelectorModule,
     HelgolandLabelMapperModule,
     ServiceModule,
+    ExtendedSelectorModule
   ],
   declarations: [CategorySelectorComponent, PhenomenonSelectorComponent,
-     ExtendedListSelectorComponent, PhenomenonListSelectorComponent, 
-     StationListSelectorComponent, ExtendedMultiservicefilterComponent,
-    ExtendedServiceFilterSelectorComponent],
+     PhenomenonListSelectorComponent, 
+     StationListSelectorComponent],
   exports: [CategorySelectorComponent, PhenomenonSelectorComponent, 
     PhenomenonListSelectorComponent, StationListSelectorComponent,],
     // providers: [DatasetEmitService],

@@ -40,6 +40,8 @@ export class MapViewComponent implements OnInit, AfterViewInit {
   public stationPopup: L.Popup;
   // public isVisible: true;
   public serviceProvider: Service;
+  public imageUrl = 'http://sentinel-s2-l1c.s3-website.eu-central-1.amazonaws.com/tiles/32/U/LB/2018/6/4/0/preview.jpg';
+
 
   constructor(private mapCache: MapCache) { }
 
@@ -63,6 +65,12 @@ export class MapViewComponent implements OnInit, AfterViewInit {
       {
         label: "Wupperverbandsgebiet", visible: false,
         layer: L.tileLayer.wms(WvG_URL, { layers: '0', format: 'image/png', transparent: true })
+      });
+
+    this.overlayMaps.set('Sentinel0406',
+      {
+        label: "Sentinel Raster", visible: false,
+        layer: L.imageOverlay(this.imageUrl, [[50.429727,5.81551], [51.366602, 7.45059]])
       });
   }
 
