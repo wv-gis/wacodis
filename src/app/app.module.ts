@@ -2,24 +2,32 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, Injectable } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
-import { DatasetApiInterface, SplittedDataDatasetApiInterface, HelgolandCoreModule, SettingsService, Settings } from '@helgoland/core';
-import { HelgolandMapModule } from '@helgoland/map';
-import { HelgolandMapViewModule } from '@helgoland/map/view';
+import {
+  DatasetApiInterface,
+  SplittedDataDatasetApiInterface,
+  HelgolandCoreModule,
+  SettingsService,
+  Settings
+} from '@helgoland/core';
 import { HelgolandD3Module } from '@helgoland/d3';
-import { HelgolandMapControlModule } from '@helgoland/map/control';
-import { HelgolandMapSelectorModule } from '@helgoland/map/selector';
-import { HelgolandDatasetTableModule } from '@helgoland/depiction/dataset-table';
-import { HelgolandDatasetlistModule } from '@helgoland/depiction/datasetlist';
+import {
+  HelgolandMapModule,
+  HelgolandMapSelectorModule,
+  HelgolandMapControlModule,
+  HelgolandMapViewModule
+} from '@helgoland/map';
+import { HelgolandDatasetTableModule, HelgolandDatasetlistModule } from '@helgoland/depiction';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { MapModule } from './map/map.module';
 import { DataDepictionModule } from './data-depiction/data-depiction.module';
-import { ServiceModule } from './service-selector/service-selector/service.module';
+import { ServiceModule } from './selection-menu/service.module';
 import { HelgolandSelectorModule } from '@helgoland/selector';
 import { HelgolandModificationModule } from '@helgoland/modification';
 import { HelgolandControlModule } from '@helgoland/control';
 import { HelgolandTimeModule } from '@helgoland/time';
+import { ExtendedSelectorModule } from './extended-selector/extended-selector.module';
 
 import { AppComponent } from './app.component';
 import { SelectViewDashboardComponent } from './select-view-dashboard/select-view-dashboard.component';
@@ -35,7 +43,7 @@ export class ExtendedSettingsService extends SettingsService<Settings> {
     this.setSettings(settings);
     console.log(settings);
   }
- 
+
 }
 
 export function HttpLoaderFactory(http: HttpClient) {
@@ -76,7 +84,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     DataDepictionModule,
     HelgolandSelectorModule,
     ServiceModule,
-    FilterModule
+    FilterModule,
+    ExtendedSelectorModule
   ],
   providers: [
     {

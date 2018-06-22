@@ -2,14 +2,14 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MapViewComponent } from './map-view/service-selection-map/map-view.component';
 import { HelgolandMapModule } from '@helgoland/map';
-import { HelgolandMapViewModule } from '@helgoland/map/view';
+import { HelgolandMapViewModule } from '@helgoland/map';
 import { TimespanMapComponent } from './map-view/timespan-map/timespan-map.component';
 import { RasterMapComponent } from './map-view/raster-map/raster-map.component';
-import { ServiceModule } from '../service-selector/service-selector/service.module';
+import { ServiceModule } from '../selection-menu/service.module';
 import {FilterModule} from '../filter-selector/filter.module';
-import { HelgolandMapSelectorModule } from '@helgoland/map/selector';
+import { HelgolandMapSelectorModule } from '@helgoland/map';
 import { HelgolandSelectorModule } from '@helgoland/selector';
-import { HelgolandLabelMapperModule } from '@helgoland/depiction/label-mapper';
+import { HelgolandLabelMapperModule } from '@helgoland/depiction';
 import { AppRoutingModule } from '../app-routing.module';
 
 

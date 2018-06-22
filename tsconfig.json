@@ -13,15 +13,15 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@helgoland/depiction/datasetlist": ["../node_modules/@helgoland/depiction/datasetlist"],
-      "@helgoland/depiction/label-mapper": ["../node_modules/@helgoland/depiction/label-mapper"],
-      "@helgoland/depiction/dataset-table": ["../node_modules/@helgoland/depiction/dataset-table"],
-      "@helgoland/map/view": ["../node_modules/@helgoland/map/view"],
-      "@helgoland/time/time-range-slider": ["../node_modules/@helgoland/time/time-range-slider"],
+      "@helgoland/depiction/lib/datasetlist": ["../node_modules/@helgoland/depiction/lib/datasetlist"],
+      "@helgoland/depiction/lib/label-mapper": ["../node_modules/@helgoland/depiction/lib/label-mapper"],
+      "@helgoland/depiction/lib/dataset-table": ["../node_modules/@helgoland/depiction/lib/dataset-table"],
+      "@helgoland/map/lib/view": ["../node_modules/@helgoland/map/lib/view"],
+      // "@helgoland/time/time-range-slider": ["../node_modules/@helgoland/time/time-range-slider"],
       "@helgoland/d3": ["../node_modules/@helgoland/d3"],
-      "@helgoland/map/selector": ["../node_modules/@helgoland/map/selector"],
+      "@helgoland/map/lib/selector": ["../node_modules/@helgoland/map/lib/selector"],
       "@helgoland/selector": ["../node_modules/@helgoland/selector"],
-      "@helgoland/map/control": ["../node_modules/@helgoland/map/control"],
+      "@helgoland/map/lib/control": ["../node_modules/@helgoland/map/lib/control"],
 
     },
     "lib": [
