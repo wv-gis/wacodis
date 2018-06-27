@@ -24,7 +24,9 @@
                 <div *ngIf="!param.isDisabled">
                   <!-- <wv-extended-service-filter-selector [serviceUrl]="param.filterList[i].url" [endpoint]="param.type" (onItemSelected)="itemSelected($event, i)"></wv-extended-service-filter-selector> -->
                   <wv-extended-multiservicefilter [endpoint]="param.type" [filterList]="param.filterList" (onItemSelected)="itemSelected($event, i)"></wv-extended-multiservicefilter>
-                
+                  <div *ngIf="i==3">
+                    <i class= "fas fa-chart-bar" style="float: right;"></i>
+                  </div>                  
                 </div>
               </div>
             </td>

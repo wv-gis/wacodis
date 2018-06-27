@@ -96,7 +96,7 @@ export function HttpLoaderFactory(http: HttpClient) {
       provide: SettingsService,
       useClass: ExtendedSettingsService
     },
-    // DatasetEmitService,
+    DatasetEmitService,
   ],
   bootstrap: [AppComponent],
   exports: [TranslateModule],

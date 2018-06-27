@@ -15,15 +15,15 @@ export class PhenomenonListSelectorComponent {
       header: 'Phänomen'
     },
     {
-    type: 'category',
-    header: 'Kategorie'
-  }, {
-    type: 'feature',
-    header: 'Station'
-  },  {
-    type: 'procedure',
-    header: 'Sensor'
-  }];
+      type: 'category',
+      header: 'Kategorie'
+    }, {
+      type: 'feature',
+      header: 'Station'
+    }, {
+      type: 'procedure',
+      header: 'Sensor'
+    }];
 
   public selectedProviderList: Provider[] = [];
 
@@ -32,7 +32,7 @@ export class PhenomenonListSelectorComponent {
       id: '1',
       url: 'http://www.fluggs.de/sos2/api/v1/'
     });
-   
+
   }
 
   public onDatasetSelected(datasets: IDataset[]) {
@@ -40,7 +40,7 @@ export class PhenomenonListSelectorComponent {
 
   }
 
-  public getProviderUrl(service: Service){
+  public getProviderUrl(service: Service) {
     this.selectedProviderList = [];
     this.selectedProviderList.push({
       id: service.id,
@@ -48,7 +48,7 @@ export class PhenomenonListSelectorComponent {
     })
     // this.selectedProviderList.forEach((entry)=>{
     //   if(entry.url==service.apiUrl){
-        
+
     //   }
     // });
 

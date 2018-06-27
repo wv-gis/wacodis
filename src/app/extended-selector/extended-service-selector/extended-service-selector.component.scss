@@ -7,9 +7,18 @@
     color: gray;
     border-top: solid 2px white;
     }
-
+    .form-check .selected {
+        text-align: left;
+        white-space: normal;
+        background-color: wheat;
+        padding: 10px;
+        display: block;
+        color: gray;
+        border-top: solid 2px white;
+        }
     input{
         right: 20px;
+        margin-top: -2.0rem;
     }
     .form-check:hover{
         background-color: rgba(157, 160, 158, 0.822);

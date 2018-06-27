@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, SimpleChanges } from '@angular/core';
 import { MultiServiceFilterSelectorComponent, FilteredParameter } from '@helgoland/selector';
 
 @Component({
@@ -14,6 +14,10 @@ export class ExtendedMultiservicefilterComponent extends MultiServiceFilterSelec
     onSelectItem(item: FilteredParameter) {
         super.onSelectItem(item);
         this.selected = item.id;
+    }
+    ngOnChanges(changes: SimpleChanges){
+        console.log('Change');
+        super.ngOnChanges(changes);
     }
 
 }

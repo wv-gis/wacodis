@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "bp": "ng build --prod --output-hashing none --base-href /wacodis-depiction",
+    "bp": "ng build --prod --output-hashing none --base-href /wacodis",
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build --prod",

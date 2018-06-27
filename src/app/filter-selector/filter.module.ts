@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { HelgolandSelectorModule } from '@helgoland/selector';
 import { HelgolandLabelMapperModule } from '@helgoland/depiction';
 import { ServiceModule } from '../selection-menu/service.module';
-// import { DatasetEmitService } from './datasetEmitService/datasetEmit.service';
+import { DatasetEmitService } from './datasetEmitService/datasetEmit.service';
 
 import { CategorySelectorComponent } from './category-selector/category-selector.component';
 import { PhenomenonSelectorComponent } from './phenomenon-selector/phenomenon-selector.component';
@@ -25,7 +25,7 @@ import { ExtendedSelectorModule } from '../extended-selector/extended-selector.m
      StationListSelectorComponent],
   exports: [CategorySelectorComponent, PhenomenonSelectorComponent, 
     PhenomenonListSelectorComponent, StationListSelectorComponent,],
-    // providers: [DatasetEmitService],
+    providers: [DatasetEmitService],
 
 })
 

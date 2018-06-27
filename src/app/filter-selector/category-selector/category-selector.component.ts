@@ -1,6 +1,7 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { Station, Phenomenon, Category, Provider, IDataset, Feature,  ParameterFilter, Service } from '@helgoland/core';
+import { Station, Phenomenon, Category, Provider, IDataset, Feature, ParameterFilter, Service } from '@helgoland/core';
 import { ListSelectorParameter, ListSelectorComponent, ListSelectorService, FilteredParameter } from '@helgoland/selector';
+import { NavigationExtras, Router } from '@angular/router';
 
 
 
@@ -13,7 +14,9 @@ import { ListSelectorParameter, ListSelectorComponent, ListSelectorService, Filt
 
 export class CategorySelectorComponent implements OnInit {
 
+  constructor(private router: Router){
 
+  }
   @Output()
   selectedDataset: EventEmitter<IDataset> = new EventEmitter<IDataset>();
 
@@ -36,18 +39,27 @@ export class CategorySelectorComponent implements OnInit {
     isDisabled: true,
   }];
 
- 
+
   public onDatasetSelected(datasets: IDataset[]) {
+
     datasets.forEach((dataset) => {
       this.selectedDataset.emit(dataset);
       console.log('InternalId: ' + dataset.internalId);
-    //  this.__emitService.sendMessage(dataset); 
+      console.log('LastValue: '+dataset.firstValue);
+      let navigationExtras: NavigationExtras = {
+        queryParams: {
+          datasetIdsMultiple: dataset.internalId,
+        }
+      }
+      
+      this.router.navigate(['/timeseries'], navigationExtras);
+      //  this.__emitService.sendMessage(dataset); 
     });
 
   }
 
   public getProviderUrl(service: Service) {
-      this.selectedProviderList =[];
+    this.selectedProviderList = [];
 
     this.selectedProviderList.push({
       id: service.id,

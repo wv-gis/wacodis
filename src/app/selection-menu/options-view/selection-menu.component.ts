@@ -39,18 +39,8 @@ export class SelectionMenuComponent implements OnInit{
 ]
 
   ngOnInit(): void {
+    // this.onProviderSelected.emit(this.selectedService);
  
-  //   this.datasetApis = this.settings.getSettings().datasetApis;
-  //   this.datasetApis.forEach((entry)=>{
-  //     console.log(entry.url);
-  //   }
-  // );
-  // this.settings.getSettings().datasetApis.forEach((entry) => {
-  //   let datasetApis: DatasetApi[] = [
-      
-
-  //   ]
-  // });
   }
  
   public providerFilter: ParameterFilter = {

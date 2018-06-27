@@ -5,6 +5,7 @@
       <div style="padding: 5px">
             <button class="btn btn-default" routerLink='/trajectory-view'>Trajectories</button>
             <button class="btn btn-default" routerLink='/profile-view'>Profile</button>
+            <button class="btn btn-default" routerLink='/table'> <i class="far fa-list-alt"></i></button>
       </div>
   </div>
   <div class="row">
@@ -13,6 +14,10 @@
         <n52-d3-timeseries-graph [datasetIds]="datasetIdsMultiple" [selectedDatasetIds]="selectedIds" [datasetOptions]="datasetOptionsMultiple"
           [timeInterval]="timespan" (onTimespanChanged)="timespanChanged($event)" [graphOptions]="diagramOptionsD3" #diagram></n52-d3-timeseries-graph>
       </div>
+      <!-- <div style="height: 200px;">
+        <n52-d3-overview-timeseries-graph [datasetIds]="datasetIdsMultiple" [rangefactor]="2" [datasetOptions]="datasetOptionsMultiple" [graphOptions]="overviewOptions"
+        [timeInterval]="timespan" (onTimespanChanged)="timespanChanged($event)" (onContentLoading)="onOverviewLoading($event)"></n52-d3-overview-timeseries-graph>
+      </div> -->
       <!-- <n52-time-range-slider id="time-test" [timeList]="timelist"></n52-time-range-slider> -->
     </div>
     <div class="col-4 col-md-4 col-sm-6">
