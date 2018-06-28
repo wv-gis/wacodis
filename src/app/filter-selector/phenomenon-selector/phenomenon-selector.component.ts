@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges } from "@angular/core";
+import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges, AfterViewInit } from "@angular/core";
 import { Phenomenon, DatasetApi, FilteredProvider, Provider, DatasetApiInterface, Service } from "@helgoland/core";
 import { ListSelectorParameter } from "@helgoland/selector";
 
@@ -10,8 +10,7 @@ import { ListSelectorParameter } from "@helgoland/selector";
     })
 
 
-export class PhenomenonSelectorComponent implements OnChanges {
-
+export class PhenomenonSelectorComponent implements  OnChanges {
 
     @Input()
     public provider: Service;
@@ -26,33 +25,45 @@ export class PhenomenonSelectorComponent implements OnChanges {
     // isVisible = true;
     isActive = true;
     public selectionId: string = null;
+    public selectedService: Service;
 
+    constructor() {
+
+    }
+
+
+        
+   
     ngOnChanges(changes: SimpleChanges): void {
-  
-        if(this.isFirst && !this.provider){
+        
+        this.selectedService = this.provider;
+
+         if(this.isFirst && !this.selectedService){
             this.isFirst = false;
             this.selectedProviderList.push({
                 id: '1',
                 url: 'http://www.fluggs.de/sos2/api/v1/',
             })
+            console.log('OnInit First');
         }
         else{
             this.selectedProviderList = [];
             this.selectedProviderList.push({
-                id: this.provider.id,
-                url: this.provider.apiUrl,
+                id: this.selectedService.id,
+                url: this.selectedService.apiUrl,
             })
         }
     }
-    onPhenomenonSelected(phenomenon: Phenomenon) {
-        if(!phenomenon){
+ 
+    private onPhenomenonSelected(phenomenon: Phenomenon) {
+        if (!phenomenon) {
             this.stationFilter.emit();
         }
         else {
             this.selectedPhenomenon.emit(phenomenon);
             this.selectionId = phenomenon.id;
         }
-        
+
     }
     public change() {
         if (this.isActive) {

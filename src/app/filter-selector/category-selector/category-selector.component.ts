@@ -1,7 +1,7 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { Station, Phenomenon, Category, Provider, IDataset, Feature, ParameterFilter, Service } from '@helgoland/core';
 import { ListSelectorParameter, ListSelectorComponent, ListSelectorService, FilteredParameter } from '@helgoland/selector';
-import { NavigationExtras, Router } from '@angular/router';
+import { NavigationExtras, Router, ActivatedRoute } from '@angular/router';
 
 
 
@@ -14,8 +14,15 @@ import { NavigationExtras, Router } from '@angular/router';
 
 export class CategorySelectorComponent implements OnInit {
 
-  constructor(private router: Router){
-
+  constructor(private router: Router, private activatedRoute: ActivatedRoute){
+    // this.activatedRoute.queryParams.subscribe(params => {
+    //   console.log('Parameter: ' + params.selectedService.apiUrl);
+      // this.selectedProviderList.push({
+      //   id: params.selectedService.id,
+      //   url: params.selectedService.apiUrl
+      // });
+      // this.timespan = new Timespan(params.firstValueTime, params.lastValueTime);
+  // });
   }
   @Output()
   selectedDataset: EventEmitter<IDataset> = new EventEmitter<IDataset>();
@@ -44,12 +51,11 @@ export class CategorySelectorComponent implements OnInit {
 
     datasets.forEach((dataset) => {
       this.selectedDataset.emit(dataset);
-      console.log('InternalId: ' + dataset.internalId);
-      console.log('LastValue: '+dataset.firstValue);
       let navigationExtras: NavigationExtras = {
         queryParams: {
           datasetIdsMultiple: dataset.internalId,
-        }
+        },
+        skipLocationChange: true
       }
       
       this.router.navigate(['/timeseries'], navigationExtras);

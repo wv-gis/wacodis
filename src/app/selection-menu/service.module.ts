@@ -4,6 +4,7 @@ import { AppRoutingModule } from '../app-routing.module';
 import { ExtendedSelectorModule } from '../extended-selector/extended-selector.module';
 
 import { SelectionMenuComponent } from './options-view/selection-menu.component';
+import { ExtendedSettingsService } from '../settings/settings.service';
 
 
 
@@ -14,7 +15,8 @@ import { SelectionMenuComponent } from './options-view/selection-menu.component'
     AppRoutingModule,
   ],
   declarations: [SelectionMenuComponent],
-  exports: [SelectionMenuComponent,]
+  exports: [SelectionMenuComponent,],
+  providers: [ExtendedSettingsService],
 })
 
 export class ServiceModule {

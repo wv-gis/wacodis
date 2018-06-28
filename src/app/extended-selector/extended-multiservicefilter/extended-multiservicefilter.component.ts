@@ -16,7 +16,6 @@ export class ExtendedMultiservicefilterComponent extends MultiServiceFilterSelec
         this.selected = item.id;
     }
     ngOnChanges(changes: SimpleChanges){
-        console.log('Change');
         super.ngOnChanges(changes);
     }
 

@@ -2,6 +2,7 @@ import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { MapCache, LayerOptions, GeoSearchOptions } from '@helgoland/map';
 import * as L from 'leaflet';
 import { ParameterFilter, Phenomenon, Station, DatasetApi, Service } from '@helgoland/core';
+import { ExtendedSettingsService } from '../../../settings/settings.service';
 
 
 L.Marker.prototype.options.icon = L.icon({
@@ -27,28 +28,32 @@ export class MapViewComponent implements OnInit, AfterViewInit {
   public mapOptions: L.MapOptions = { dragging: true, zoomControl: true, boxZoom: false };
   public fitBounds: L.LatLngBoundsExpression = [[50.985, 6.924], [51.319, 7.607]];
 
-  public providerUrl = 'http://www.fluggs.de/sos2/api/v1/';
+  public providerUrl = '';
   public label = 'Wupperverband Zeitreihen Dienst';
   public avoidZoomToSelection = false;
   public cluster = true;
   public loadingStations: boolean;
-  public stationFilter: ParameterFilter = {
-    // phenomenon: '8'
-  };
+  public stationFilter: ParameterFilter = {};
   public statusIntervals: boolean = true;
   public searchOptions: GeoSearchOptions = { countrycodes: [] };
   public stationPopup: L.Popup;
-  // public isVisible: true;
   public serviceProvider: Service;
   public imageUrl = 'http://sentinel-s2-l1c.s3-website.eu-central-1.amazonaws.com/tiles/32/U/LB/2018/6/4/0/preview.jpg';
 
 
-  constructor(private mapCache: MapCache) { }
+  constructor(private mapCache: MapCache, private settings: ExtendedSettingsService) {
+    // if(settings.getSettings().datasetApis){
+    //   this.providerUrl = settings.getSettings().datasetApis[0].url;
+    // }
+    // else{
+    //   this.providerUrl = 'http://www.fluggs.de/sos2/api/v1/';
+    // }
+    
+   }
 
   ngAfterViewInit(): void {
     this.mapCache.getMap('map').on('zoomend', (event) => {
       const map: L.Map = event.target;
-      console.log(map.getBounds());
 
     });
   }
@@ -74,13 +79,13 @@ export class MapViewComponent implements OnInit, AfterViewInit {
       });
   }
 
+
+
   public onStationSelected(station: Station) {
-    console.log('Clicked station: ' + station.properties.label);
     if (!station.properties.timeseries) {
       this.stationPopup = L.popup().setLatLng([station.geometry.coordinates[1], station.geometry.coordinates[0]])
         .setContent(`<div> ID:  ${station.properties.id} </div><div> ${station.properties.label} </div>`)
         .openOn(this.mapCache.getMap('map'));
-      console.log('No timeseries');
     }
     else {
       this.stationPopup = L.popup().setLatLng([station.geometry.coordinates[1], station.geometry.coordinates[0]])
@@ -90,22 +95,22 @@ export class MapViewComponent implements OnInit, AfterViewInit {
   }
 
   public onSelectPhenomenon(phenomenon: Phenomenon) {
-    console.log('Select: ' + phenomenon.label + ' with ID: ' + phenomenon.id);
     this.stationFilter = {
       phenomenon: phenomenon.id
     };
-    // console.log(this.providerUrl);
   }
 
   public setProviderUrl(url: Service) {
     this.providerUrl = url.apiUrl;
     this.serviceProvider = url;
-    if (this.stationFilter) {
+    console.log('Test');
+    if (this.stationFilter.phenomenon !== undefined) {
       this.stationFilter = {};
     }
     this.label = url.label;
   }
-  removeStationFilter() {
+
+  private removeStationFilter() {
     this.stationFilter = {};
   }
 }

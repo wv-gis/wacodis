@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import 'rxjs/add/operator/filter';
+import { StatusCheckService } from '@helgoland/core';
 
 @Component({
   selector: 'wv-root',
@@ -10,8 +11,8 @@ import 'rxjs/add/operator/filter';
 })
 export class AppComponent implements OnInit{
   defaultTitle = '';
-  constructor(private router: Router,private activatedRoute: ActivatedRoute, private titleService: Title){
-
+  constructor(private router: Router,private activatedRoute: ActivatedRoute, private titleService: Title, status: StatusCheckService){
+    status.checkAll().subscribe((res) => res.forEach((entry) => console.log(entry)));
   }
   
   ngOnInit() {
@@ -19,7 +20,6 @@ export class AppComponent implements OnInit{
     this.router.events
       .filter(event => event instanceof NavigationEnd)
       .subscribe(event => {
-        console.log(event);
         this.setBrowserTitle();
       });
   }

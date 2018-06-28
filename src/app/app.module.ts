@@ -7,7 +7,8 @@ import {
   SplittedDataDatasetApiInterface,
   HelgolandCoreModule,
   SettingsService,
-  Settings
+  Settings,
+  StatusCheckService
 } from '@helgoland/core';
 import { HelgolandD3Module } from '@helgoland/d3';
 import {
@@ -31,20 +32,13 @@ import { ExtendedSelectorModule } from './extended-selector/extended-selector.mo
 
 import { AppComponent } from './app.component';
 import { SelectViewDashboardComponent } from './select-view-dashboard/select-view-dashboard.component';
-import { settings } from '../main.browser';
+
 import { FilterModule } from './filter-selector/filter.module';
-import { DatasetEmitService } from './filter-selector/filter';
+import { ExtendedSettingsService } from './settings/settings.service';
 
 
-@Injectable()
-export class ExtendedSettingsService extends SettingsService<Settings> {
-  constructor() {
-    super();
-    this.setSettings(settings);
-    console.log(settings);
-  }
 
-}
+
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -89,6 +83,13 @@ export function HttpLoaderFactory(http: HttpClient) {
   ],
   providers: [
     {
+      provide: StatusCheckService,
+      useFactory: (settingsService: SettingsService<Settings>, client: HttpClient) => {
+        return new StatusCheckService(settingsService, client, true);
+      },
+      deps: [SettingsService, HttpClient]
+    },
+    {
       provide: DatasetApiInterface,
       useClass: SplittedDataDatasetApiInterface
     },
@@ -96,7 +97,7 @@ export function HttpLoaderFactory(http: HttpClient) {
       provide: SettingsService,
       useClass: ExtendedSettingsService
     },
-    DatasetEmitService,
+   
   ],
   bootstrap: [AppComponent],
   exports: [TranslateModule],

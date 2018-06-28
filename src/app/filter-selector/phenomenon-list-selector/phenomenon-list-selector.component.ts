@@ -36,7 +36,7 @@ export class PhenomenonListSelectorComponent {
   }
 
   public onDatasetSelected(datasets: IDataset[]) {
-    datasets.forEach((dataset) => console.log('Select Dataset: ' + dataset.label + ' with ID: ' + dataset.id));
+    // datasets.forEach((dataset) => console.log('Select Dataset: ' + dataset.label + ' with ID: ' + dataset.id));
 
   }
 

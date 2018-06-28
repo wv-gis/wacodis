@@ -31,7 +31,6 @@ export class ExtendedListSelectorComponent extends ListSelectorComponent {
       if(index == 0){
         this.parameters[0].filterList = this.providerList.map((entry) => {
           entry.filter = this.filter;
-          console.log('Filter0: ' + this.filter);
           return entry;
         });
       }
@@ -39,8 +38,6 @@ export class ExtendedListSelectorComponent extends ListSelectorComponent {
         this.parameters[index + 1].filterList = item.filterList.map((entry) => {
          
           entry.filter[this.parameters[index].type] = entry.itemId;
-         
-         console.log('Filter2: ' + this.filter);
           return entry;
         });
       }
@@ -50,7 +47,6 @@ export class ExtendedListSelectorComponent extends ListSelectorComponent {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    console.log('Changes in ListSelector')
     super.ngOnChanges(changes);
   }
 
