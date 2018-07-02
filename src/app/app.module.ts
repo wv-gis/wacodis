@@ -8,7 +8,8 @@ import {
   HelgolandCoreModule,
   SettingsService,
   Settings,
-  StatusCheckService
+  StatusCheckService,
+  LocalStorage,
 } from '@helgoland/core';
 import { HelgolandD3Module } from '@helgoland/d3';
 import {
@@ -35,6 +36,9 @@ import { SelectViewDashboardComponent } from './select-view-dashboard/select-vie
 
 import { FilterModule } from './filter-selector/filter.module';
 import { ExtendedSettingsService } from './settings/settings.service';
+import { settings } from '../environments/environment';
+import { DatasetEmitService } from './services/dataset-emit.service';
+
 
 
 
@@ -83,9 +87,9 @@ export function HttpLoaderFactory(http: HttpClient) {
   ],
   providers: [
     {
-      provide: StatusCheckService,
-      useFactory: (settingsService: SettingsService<Settings>, client: HttpClient) => {
-        return new StatusCheckService(settingsService, client, true);
+      provide: StatusCheckService,     
+      useFactory: (client: HttpClient) => {
+        return new StatusCheckService(client);
       },
       deps: [SettingsService, HttpClient]
     },
@@ -97,6 +101,16 @@ export function HttpLoaderFactory(http: HttpClient) {
       provide: SettingsService,
       useClass: ExtendedSettingsService
     },
+    {
+      provide: DatasetEmitService,
+      useFactory: (localStore: LocalStorage) => {
+        return new DatasetEmitService(localStore);
+      },
+      deps: [LocalStorage]
+    }
+    
+    
+    
    
   ],
   bootstrap: [AppComponent],

@@ -44,7 +44,6 @@ export class PhenomenonSelectorComponent implements  OnChanges {
                 id: '1',
                 url: 'http://www.fluggs.de/sos2/api/v1/',
             })
-            console.log('OnInit First');
         }
         else{
             this.selectedProviderList = [];
@@ -55,7 +54,7 @@ export class PhenomenonSelectorComponent implements  OnChanges {
         }
     }
  
-    private onPhenomenonSelected(phenomenon: Phenomenon) {
+     onPhenomenonSelected(phenomenon: Phenomenon) {
         if (!phenomenon) {
             this.stationFilter.emit();
         }

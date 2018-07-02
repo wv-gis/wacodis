@@ -14,6 +14,7 @@ import { TrajectoryViewComponent } from './trajectory-view/trajectory-view.compo
 import { ProfileViewComponent } from './profile-view/profile-view.component';
 import { DataTableComponent } from './data-table/data-table.component';
 import { GraphViewComponent } from './timeseries-graph-view/graph-view.component';
+import { HelgolandCoreModule } from '@helgoland/core';
 
 @NgModule({
   imports: [
@@ -29,6 +30,7 @@ import { GraphViewComponent } from './timeseries-graph-view/graph-view.component
     AppRoutingModule,
     // HelgolandTimeRangeSliderModule,
     HelgolandMapViewModule,
+    HelgolandCoreModule
   ],
   declarations: [DataTableComponent, GraphViewComponent, TrajectoryViewComponent, ProfileViewComponent],
   exports: [DataTableComponent, GraphViewComponent, TrajectoryViewComponent, ProfileViewComponent,],

@@ -42,9 +42,9 @@ export class MapViewComponent implements OnInit, AfterViewInit {
 
 
   constructor(private mapCache: MapCache, private settings: ExtendedSettingsService) {
-    // if(settings.getSettings().datasetApis){
-    //   this.providerUrl = settings.getSettings().datasetApis[0].url;
-    // }
+    if(settings.getSettings().datasetApis && this.providerUrl == ''){
+      this.providerUrl = settings.getSettings().datasetApis[0].url;
+    }
     // else{
     //   this.providerUrl = 'http://www.fluggs.de/sos2/api/v1/';
     // }
@@ -103,14 +103,13 @@ export class MapViewComponent implements OnInit, AfterViewInit {
   public setProviderUrl(url: Service) {
     this.providerUrl = url.apiUrl;
     this.serviceProvider = url;
-    console.log('Test');
     if (this.stationFilter.phenomenon !== undefined) {
       this.stationFilter = {};
     }
     this.label = url.label;
   }
 
-  private removeStationFilter() {
+   removeStationFilter() {
     this.stationFilter = {};
   }
 }

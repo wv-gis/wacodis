@@ -2,6 +2,8 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { Station, Phenomenon, Category, Provider, IDataset, Feature, ParameterFilter, Service } from '@helgoland/core';
 import { ListSelectorParameter, ListSelectorComponent, ListSelectorService, FilteredParameter } from '@helgoland/selector';
 import { NavigationExtras, Router, ActivatedRoute } from '@angular/router';
+import { DatasetEmitService } from '../../services/dataset-emit.service';
+
 
 
 
@@ -14,7 +16,7 @@ import { NavigationExtras, Router, ActivatedRoute } from '@angular/router';
 
 export class CategorySelectorComponent implements OnInit {
 
-  constructor(private router: Router, private activatedRoute: ActivatedRoute){
+  constructor(private router: Router, private activatedRoute: ActivatedRoute, private datasetService: DatasetEmitService){
     // this.activatedRoute.queryParams.subscribe(params => {
     //   console.log('Parameter: ' + params.selectedService.apiUrl);
       // this.selectedProviderList.push({
@@ -49,18 +51,21 @@ export class CategorySelectorComponent implements OnInit {
 
   public onDatasetSelected(datasets: IDataset[]) {
 
+    // datasets.forEach((dataset) => {
+    //   this.selectedDataset.emit(dataset);
+    //   let navigationExtras: NavigationExtras = {
+    //     queryParams: {
+    //       datasetIdsMultiple: dataset.internalId,
+    //     },
+    //     skipLocationChange: true
+    //   }
+    //   console.log(dataset.internalId);
+    //   this.router.navigate(['/timeseries'], navigationExtras);
+    // });
     datasets.forEach((dataset) => {
-      this.selectedDataset.emit(dataset);
-      let navigationExtras: NavigationExtras = {
-        queryParams: {
-          datasetIdsMultiple: dataset.internalId,
-        },
-        skipLocationChange: true
-      }
-      
-      this.router.navigate(['/timeseries'], navigationExtras);
-      //  this.__emitService.sendMessage(dataset); 
-    });
+      this.datasetService.addDataset(dataset.internalId);
+      console.log('StationSelect: ' + dataset.internalId);
+    })
 
   }
 

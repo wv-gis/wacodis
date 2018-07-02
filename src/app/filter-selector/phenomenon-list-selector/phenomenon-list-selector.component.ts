@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ListSelectorParameter } from '@helgoland/selector';
 import { Provider, IDataset, Service } from '@helgoland/core';
+import { DatasetEmitService } from '../../services/dataset-emit.service';
 
 @Component({
   selector: 'wv-phenomenon-list-selector',
@@ -27,7 +28,7 @@ export class PhenomenonListSelectorComponent {
 
   public selectedProviderList: Provider[] = [];
 
-  constructor() {
+  constructor(private datasetService: DatasetEmitService) {
     this.selectedProviderList.push({
       id: '1',
       url: 'http://www.fluggs.de/sos2/api/v1/'
@@ -36,8 +37,10 @@ export class PhenomenonListSelectorComponent {
   }
 
   public onDatasetSelected(datasets: IDataset[]) {
-    // datasets.forEach((dataset) => console.log('Select Dataset: ' + dataset.label + ' with ID: ' + dataset.id));
-
+    datasets.forEach((dataset) => {
+      this.datasetService.addDataset(dataset.internalId);
+      console.log('StationSelect: ' + dataset.internalId);
+    })
   }
 
   public getProviderUrl(service: Service) {

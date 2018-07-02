@@ -3,6 +3,8 @@ import { DatasetOptions, Timespan } from '@helgoland/core';
 import { D3PlotOptions } from '@helgoland/d3';
 import { ListSelectorService } from '@helgoland/selector';
 import { ActivatedRoute } from '@angular/router';
+import { DatasetEmitService } from '../../services/dataset-emit.service';
+
 
 
 @Component({
@@ -27,11 +29,23 @@ export class GraphViewComponent {
 
 
 
-    constructor(private cdr: ChangeDetectorRef, private route: ActivatedRoute) {
-
+    constructor(private cdr: ChangeDetectorRef, private route: ActivatedRoute, private dataEmitService: DatasetEmitService ) {
+        // this.dataEmitService.dataEmit.subscribe((entry) => console.log(entry))
+       if(dataEmitService !== undefined && dataEmitService.hasDatasets()){
+           for(let k = 0; k< dataEmitService.datasetIds.length; k++){
+            this.datasetIdsMultiple.push( dataEmitService.datasetIds[k]);
+            console.log(dataEmitService.datasetIds[0]);
+           }
+       
+          
+       }
         this.route.queryParams.subscribe(params => {
-            this.datasetIdsMultiple.push(params.datasetIdsMultiple);
+            if (params.datasetIdsMultiple !== undefined) {
+                console.log('Test');
+                this.datasetIdsMultiple.push(params.datasetIdsMultiple);
+            }
         });
+
         this.createColors();
 
         this.datasetIdsMultiple.forEach((entry, i) => {
@@ -44,9 +58,8 @@ export class GraphViewComponent {
         for (let i = 0; i < this.datasetIdsMultiple.length; i++) {
             this.colors.push("rgb(" + Math.floor(Math.random() * 255) + "," + Math.floor(Math.random() * 255) + "," + Math.floor(Math.random() * 255) + ")");
         }
-
     }
-    
+
     public overviewOptions: D3PlotOptions = {
         generalizeAllways: true
     };

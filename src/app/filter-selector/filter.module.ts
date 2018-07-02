@@ -11,6 +11,8 @@ import { PhenomenonSelectorComponent } from './phenomenon-selector/phenomenon-se
 import { PhenomenonListSelectorComponent } from './phenomenon-list-selector/phenomenon-list-selector.component';
 import { StationListSelectorComponent } from './station-list-selector/station-list-selector.component';
 import { ExtendedSelectorModule } from '../extended-selector/extended-selector.module';
+import { HelgolandCoreModule } from '@helgoland/core';
+
 
 @NgModule({
   imports: [
@@ -18,14 +20,16 @@ import { ExtendedSelectorModule } from '../extended-selector/extended-selector.m
     HelgolandSelectorModule,
     HelgolandLabelMapperModule,
     ServiceModule,
-    ExtendedSelectorModule
+    ExtendedSelectorModule,
+    HelgolandCoreModule
+    
   ],
   declarations: [CategorySelectorComponent, PhenomenonSelectorComponent,
      PhenomenonListSelectorComponent, 
      StationListSelectorComponent],
   exports: [CategorySelectorComponent, PhenomenonSelectorComponent, 
     PhenomenonListSelectorComponent, StationListSelectorComponent,],
-   
+
 
 })
 

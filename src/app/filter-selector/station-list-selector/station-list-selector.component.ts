@@ -1,6 +1,7 @@
 import { Component, OnInit} from '@angular/core';
-import { IDataset, Provider, Service } from '@helgoland/core';
+import { IDataset, Provider, Service, LocalStorage} from '@helgoland/core';
 import { ListSelectorParameter } from '@helgoland/selector';
+import { DatasetEmitService } from '../../services/dataset-emit.service';
 
 @Component({
   selector: 'wv-station-list-selector',
@@ -27,7 +28,7 @@ export class StationListSelectorComponent  {
 
   public selectedProviderList: Provider[] = [];
 
-  constructor() {
+  constructor(private datasetService: DatasetEmitService) {
     this.selectedProviderList.push({
       id: '1',
       url: 'http://www.fluggs.de/sos2/api/v1/',
@@ -35,7 +36,10 @@ export class StationListSelectorComponent  {
   }
 
   public onDatasetSelected(datasets: IDataset[]) {
-    // datasets.forEach((dataset) => console.log('Select Dataset: ' + dataset.label + ' with ID: ' + dataset.id));
+    datasets.forEach((dataset) => {
+      this.datasetService.addDataset(dataset.internalId);
+      console.log('StationSelect: ' + dataset.internalId);
+    })
 
   }
 

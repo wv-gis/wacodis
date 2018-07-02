@@ -2,7 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import 'rxjs/add/operator/filter';
-import { StatusCheckService } from '@helgoland/core';
+import { StatusCheckService, LocalStorage } from '@helgoland/core';
+import { DatasetEmitService } from './services/dataset-emit.service';
+
 
 @Component({
   selector: 'wv-root',
@@ -11,7 +13,11 @@ import { StatusCheckService } from '@helgoland/core';
 })
 export class AppComponent implements OnInit{
   defaultTitle = '';
-  constructor(private router: Router,private activatedRoute: ActivatedRoute, private titleService: Title, status: StatusCheckService){
+  constructor(private router: Router,private activatedRoute: ActivatedRoute, 
+    private titleService: Title, status: StatusCheckService, 
+    private localStore: LocalStorage){
+
+    localStore = new LocalStorage();
     status.checkAll().subscribe((res) => res.forEach((entry) => console.log(entry)));
   }
   
