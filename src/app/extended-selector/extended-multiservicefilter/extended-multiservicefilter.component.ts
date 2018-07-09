@@ -14,6 +14,7 @@ export class ExtendedMultiservicefilterComponent extends MultiServiceFilterSelec
     onSelectItem(item: FilteredParameter) {
         super.onSelectItem(item);
         this.selected = item.id;
+        
     }
     ngOnChanges(changes: SimpleChanges){
         super.ngOnChanges(changes);

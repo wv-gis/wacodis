@@ -3,12 +3,11 @@
     .container-fluid {
         background-color: lightgray;
     }
-    .btn.btn-default{
-        background-color: #718296;
-    }
+
     .diagramEntry {
         height: 500px;
         flex: 1;
+        padding: 5px;
         
     }
     .legendEntry {
@@ -26,7 +25,20 @@
     .row {
         background-color: white;
     }
+    .menu{
+        position: inherit;
+    }
+
 }
-button {
-    margin-right: 1.0rem;
-}
+
+// .menu {
+//     width: 80%;
+//     padding: 15px;
+//     padding-right: 40px;
+// }
+
+// .menu.active{
+//     width: 100%;
+//     padding: 15px;
+//     padding-right: 40px; 
+// }

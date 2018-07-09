@@ -1,0 +1,15 @@
+.container-fluid {
+    background-color: lightgray;
+}
+
+.table {
+    width: 80%;
+    padding: 15px;
+    padding-right: 40px;
+}
+
+.table.active{
+    width: 100%;
+    padding: 15px;
+    padding-right: 40px; 
+}

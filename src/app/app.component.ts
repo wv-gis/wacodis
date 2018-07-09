@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import 'rxjs/add/operator/filter';
-import { StatusCheckService, LocalStorage } from '@helgoland/core';
-import { DatasetEmitService } from './services/dataset-emit.service';
+// import { LocalStorage } from '@helgoland/core';
+// import { DatasetEmitService } from './services/dataset-emit.service';
 
 
 @Component({
@@ -14,11 +14,12 @@ import { DatasetEmitService } from './services/dataset-emit.service';
 export class AppComponent implements OnInit{
   defaultTitle = '';
   constructor(private router: Router,private activatedRoute: ActivatedRoute, 
-    private titleService: Title, status: StatusCheckService, 
-    private localStore: LocalStorage){
+    private titleService: Title, //status: StatusCheckService, 
+   // private localStore: LocalStorage
+  ){
 
-    localStore = new LocalStorage();
-    status.checkAll().subscribe((res) => res.forEach((entry) => console.log(entry)));
+    // localStore = new LocalStorage();
+  //  status.checkAll().subscribe((res) => res.forEach((entry) => console.log(entry)));
   }
   
   ngOnInit() {

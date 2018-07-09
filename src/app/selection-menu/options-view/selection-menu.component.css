@@ -1,12 +1,12 @@
 .btn.btn-default{
-    background-color: inherit;
+    background-color:  #718296;
     color: white;
     display: inline-block;
 }
 .selectionsMenu .entry.provider{
         border-right: solid 1px #dfe4e6;
-        width: max-content;
-
+        width: 350px;
+        white-space: nowrap;
 }
 h5{
     color: black;

@@ -5,7 +5,7 @@ import { HelgolandMapModule } from '@helgoland/map';
 import { HelgolandMapViewModule } from '@helgoland/map';
 import { TimespanMapComponent } from './map-view/timespan-map/timespan-map.component';
 import { RasterMapComponent } from './map-view/raster-map/raster-map.component';
-import { ServiceModule } from '../selection-menu/service.module';
+import { MenuModule } from '../selection-menu/menu.module';
 import {FilterModule} from '../filter-selector/filter.module';
 import { HelgolandMapSelectorModule } from '@helgoland/map';
 import { HelgolandSelectorModule } from '@helgoland/selector';
@@ -18,7 +18,7 @@ import { AppRoutingModule } from '../app-routing.module';
     CommonModule,
     HelgolandMapModule,
     HelgolandMapViewModule,
-    ServiceModule,
+    MenuModule,
     HelgolandMapSelectorModule,
     HelgolandSelectorModule,
     HelgolandLabelMapperModule,

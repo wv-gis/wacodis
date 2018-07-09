@@ -8,6 +8,7 @@ import { ExtendedMultiservicefilterComponent } from "./extended-multiservicefilt
 import { ExtendedServiceFilterSelectorComponent } from "./extended-service-filter-selector/extended-service-filter-selector.component";
 import { ExtendedListSelectorComponent } from "./extended-list-selector/extended-list-selector.component";
 import { ExtendedServiceSelectorComponent } from './extended-service-selector/extended-service-selector.component';
+import { HelgolandCoreModule } from "@helgoland/core";
 
 
 
@@ -16,7 +17,8 @@ import { ExtendedServiceSelectorComponent } from './extended-service-selector/ex
       CommonModule,
       HelgolandSelectorModule,
       HelgolandLabelMapperModule,
-      TranslateModule
+      TranslateModule,
+      HelgolandCoreModule
     ],
     declarations: [ ExtendedMultiservicefilterComponent,
       ExtendedServiceFilterSelectorComponent, ExtendedListSelectorComponent, ExtendedServiceSelectorComponent],

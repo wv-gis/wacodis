@@ -1,19 +1,19 @@
-<div class="selector-entry" >
+<div class="selector-entry">
     <div class="card" *ngFor="let item of items;let i = index">
-        <ul class="list-group list-group-flush" >
+        <ul class="list-group list-group-flush">
             <label style="cursor: pointer;">
                 <li class="list-group-item">
                     <div class="form-check" (click)="onSelectItem(item)">
-                        <div *ngIf="selected == item.id">
-                            <input class="form-check-input" name="group100" type="radio" id="i" checked="checked">
-                            <n52-label-mapper class="form-check-label" [attr.for]="i" label="{{item.label}}"></n52-label-mapper>
-                            
-                        </div>
-                        <div *ngIf="selected != item.id">
-                            <input class="form-check-input" name="group100" type="radio" id="i" >
-                            <n52-label-mapper class="form-check-label" [attr.for]="i" label="{{item.label}}"></n52-label-mapper>
-                        </div>
-
+                        <!-- <div *ngFor="let selectedItem of selected; let j = index"> -->
+                            <div *ngIf="selected == item.id">
+                                <input class="form-check-input" name="group100" type="radio" id="item.id" checked="checked">
+                                <n52-label-mapper class="form-check-label" [attr.for]="item.id" label="{{item.label}}"></n52-label-mapper>
+                            </div>
+                            <div *ngIf="selected != item.id">
+                                <input class="form-check-input" name="group100" type="radio" id="i">
+                                <n52-label-mapper class="form-check-label" [attr.for]="i" label="{{item.label}}"></n52-label-mapper>
+                            </div>
+                        <!-- </div> -->
                     </div>
                 </li>
             </label>

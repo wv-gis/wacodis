@@ -1,0 +1,14 @@
+<div class="datasetMenu">
+    <div class="expand-button" [ngClass]="{'active': isActive}" (click)="change()">
+        <span class="icon">
+            <i class="fas fa-angle-right" [ngClass]="{'fa-angle-right': isActive, 'fa-angle-left': !isActive}"></i>
+        </span>
+    </div>
+
+    <div class="selectedDataset" [ngClass]="{'active': isActive}">
+        <div class="legendEntry" *ngFor="let id of datasetIdsMultiple">
+            <n52-timeseries-entry [datasetId]="id" [selected]="isSelected(id)" [datasetOptions]="datasetOptionsMultiple.get(id)" [timeInterval]="timespan"
+                (onSelectDataset)="selectDataset($event, id)"></n52-timeseries-entry>
+        </div>
+    </div>
+</div>

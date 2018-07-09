@@ -1,6 +1,6 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { Station, Phenomenon, Category, Provider, IDataset, Feature, ParameterFilter, Service } from '@helgoland/core';
-import { ListSelectorParameter, ListSelectorComponent, ListSelectorService, FilteredParameter } from '@helgoland/selector';
+import { ListSelectorParameter, FilteredParameter } from '@helgoland/selector';
 import { NavigationExtras, Router, ActivatedRoute } from '@angular/router';
 import { DatasetEmitService } from '../../services/dataset-emit.service';
 
@@ -33,19 +33,19 @@ export class CategorySelectorComponent implements OnInit {
   public categoryParams: ListSelectorParameter[] = [{
     type: 'category',
     header: 'Kategorie',
-    isDisabled: false,
+   
   }, {
     type: 'feature',
     header: 'Station',
-    isDisabled: true,
+   
   }, {
     type: 'phenomenon',
     header: 'Phänomen',
-    isDisabled: true,
+ 
   }, {
     type: 'procedure',
     header: 'Sensor',
-    isDisabled: true,
+  
   }];
 
 

@@ -1,28 +1,32 @@
-import { Injectable} from '@angular/core';
-import { IDataset, DatasetService, DatasetOptions } from '@helgoland/core';
-import { FilterModule } from '../filter-selector/filter';
-import { DataDepictionModule } from '../data-depiction/data-depiction.module';
+import { Injectable } from '@angular/core';
+import { DatasetService, DatasetOptions, LocalStorage } from '@helgoland/core';
 
-@Injectable({
-  providedIn: 'root'
-})
+// @Injectable({
+//   providedIn: 'root'
+// })
+@Injectable()
 export class DatasetEmitService extends DatasetService<DatasetOptions>{
- 
- colors = [];
- dataOptions: DatasetOptions;
-internID: string;
+
+  // colors = [];
+  dataOptions: DatasetOptions;
+  internID: string;
+
+  constructor(protected localStorage: LocalStorage){
+    super(localStorage);
+
+  }
 
   protected createStyles(internalId: string): DatasetOptions {
-   this.dataOptions = new DatasetOptions(internalId,"rgb(" + Math.floor(Math.random() * 255) + "," + Math.floor(Math.random() * 255) + "," + Math.floor(Math.random() * 255) + ")" )
-      return this.dataOptions;
+    return new DatasetOptions(internalId, "rgb(" + Math.floor(Math.random() * 255) + "," + Math.floor(Math.random() * 255) + "," + Math.floor(Math.random() * 255) + ")")
+    //return this.dataOptions;
   }
-  
+
   protected saveState(): void {
-  this.datasetOptions.forEach((entry) => { this.internID = entry.internalId});
-   this.localStorage.save(this.datasetIds.indexOf(this.internID).toString(), this.datasetOptions);
+    this.datasetOptions.forEach((entry) => { this.internID = entry.internalId });
+    this.localStorage.save(this.datasetIds.indexOf(this.internID).toString(), this.datasetOptions);
   }
   protected loadState(): void {
-    
+
   }
 
 }

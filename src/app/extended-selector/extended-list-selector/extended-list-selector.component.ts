@@ -25,7 +25,6 @@ export class ExtendedListSelectorComponent extends ListSelectorComponent {
   }
 
   itemSelected(item: FilteredParameter, index: number){
-    super.itemSelected(item, index);
     if (index < this.i) {
       
       if(index == 0){
@@ -44,6 +43,7 @@ export class ExtendedListSelectorComponent extends ListSelectorComponent {
       
     }
     this.i = index;
+    super.itemSelected(item, index);
   }
 
   ngOnChanges(changes: SimpleChanges) {

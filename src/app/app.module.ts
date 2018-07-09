@@ -8,7 +8,7 @@ import {
   HelgolandCoreModule,
   SettingsService,
   Settings,
-  StatusCheckService,
+  //StatusCheckService,
   LocalStorage,
 } from '@helgoland/core';
 import { HelgolandD3Module } from '@helgoland/d3';
@@ -24,7 +24,7 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { MapModule } from './map/map.module';
 import { DataDepictionModule } from './data-depiction/data-depiction.module';
-import { ServiceModule } from './selection-menu/service.module';
+import { MenuModule } from './selection-menu/menu.module';
 import { HelgolandSelectorModule } from '@helgoland/selector';
 import { HelgolandModificationModule } from '@helgoland/modification';
 import { HelgolandControlModule } from '@helgoland/control';
@@ -38,6 +38,7 @@ import { FilterModule } from './filter-selector/filter.module';
 import { ExtendedSettingsService } from './settings/settings.service';
 import { settings } from '../environments/environment';
 import { DatasetEmitService } from './services/dataset-emit.service';
+import { ExtendedDepictionModule } from './extended-depiction/extended-depiction.module';
 
 
 
@@ -46,6 +47,9 @@ import { DatasetEmitService } from './services/dataset-emit.service';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
+}
+export function DatasetEmitFactory(localStore: LocalStorage){
+  return new DatasetEmitService(localStore);
 }
 
 @NgModule({
@@ -81,18 +85,19 @@ export function HttpLoaderFactory(http: HttpClient) {
     MapModule,
     DataDepictionModule,
     HelgolandSelectorModule,
-    ServiceModule,
+    MenuModule,
     FilterModule,
-    ExtendedSelectorModule
+    ExtendedSelectorModule,
+    ExtendedDepictionModule
   ],
   providers: [
-    {
-      provide: StatusCheckService,     
-      useFactory: (client: HttpClient) => {
-        return new StatusCheckService(client);
-      },
-      deps: [SettingsService, HttpClient]
-    },
+    // {
+    //   provide: StatusCheckService,     
+    //   useFactory: (client: HttpClient) => {
+    //     return new StatusCheckService(client);
+    //   },
+    //   deps: [SettingsService, HttpClient]
+    // },
     {
       provide: DatasetApiInterface,
       useClass: SplittedDataDatasetApiInterface
@@ -103,9 +108,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     },
     {
       provide: DatasetEmitService,
-      useFactory: (localStore: LocalStorage) => {
-        return new DatasetEmitService(localStore);
-      },
+      useFactory: DatasetEmitFactory,
       deps: [LocalStorage]
     }
     

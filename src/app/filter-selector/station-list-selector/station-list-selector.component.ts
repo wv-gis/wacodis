@@ -1,5 +1,5 @@
 import { Component, OnInit} from '@angular/core';
-import { IDataset, Provider, Service, LocalStorage} from '@helgoland/core';
+import { IDataset, Provider, Service} from '@helgoland/core';
 import { ListSelectorParameter } from '@helgoland/selector';
 import { DatasetEmitService } from '../../services/dataset-emit.service';
 

@@ -1,7 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { DatasetOptions, Timespan } from '@helgoland/core';
 import { D3PlotOptions } from '@helgoland/d3';
-import { ListSelectorService } from '@helgoland/selector';
 import { ActivatedRoute } from '@angular/router';
 import { DatasetEmitService } from '../../services/dataset-emit.service';
 
@@ -14,7 +13,7 @@ import { DatasetEmitService } from '../../services/dataset-emit.service';
 })
 export class GraphViewComponent {
 
-    public datasetIdsMultiple = ['http://www.fluggs.de/sos2/api/v1/__53', 'http://www.fluggs.de/sos2/api/v1/__72'];
+    public datasetIdsMultiple = [];// ['http://www.fluggs.de/sos2/api/v1/__53', 'http://www.fluggs.de/sos2/api/v1/__72'];
     public colors = []; //= ['#123456', '#FF0000'];
     public overviewLoading: boolean;
     public timespan = new Timespan(new Date().getTime() - 100000000, new Date().getTime());
@@ -26,7 +25,7 @@ export class GraphViewComponent {
     };
     public selectedIds: string[] = [];
     public datasetOptionsMultiple: Map<string, DatasetOptions> = new Map();
-
+    public isActive = true;
 
 
     constructor(private cdr: ChangeDetectorRef, private route: ActivatedRoute, private dataEmitService: DatasetEmitService ) {
@@ -35,16 +34,19 @@ export class GraphViewComponent {
            for(let k = 0; k< dataEmitService.datasetIds.length; k++){
             this.datasetIdsMultiple.push( dataEmitService.datasetIds[k]);
             console.log(dataEmitService.datasetIds[0]);
+            // dataEmitService.datasetOptions.forEach((entry) =>this.colors.push(entry.color) )
+            // this.datasetOptionsMultiple.set(dataEmitService.datasetIds[k],this.colors[k] );
+            
            }
        
           
        }
-        this.route.queryParams.subscribe(params => {
-            if (params.datasetIdsMultiple !== undefined) {
-                console.log('Test');
-                this.datasetIdsMultiple.push(params.datasetIdsMultiple);
-            }
-        });
+        // this.route.queryParams.subscribe(params => {
+        //     if (params.datasetIdsMultiple !== undefined) {
+        //         console.log('Test');
+        //         this.datasetIdsMultiple.push(params.datasetIdsMultiple);
+        //     }
+        // });
 
         this.createColors();
 
@@ -83,5 +85,19 @@ export class GraphViewComponent {
     public onOverviewLoading(loading: boolean) {
         this.overviewLoading = loading;
         this.cdr.detectChanges();
+    }
+    select(event: string[]){
+        this.selectedIds = event;
+    }
+
+    private change(){
+        if(this.isActive){
+            this.isActive = false;
+            return false;
+        }
+        else{
+            this.isActive = true;
+            return true;
+        }
     }
 }
