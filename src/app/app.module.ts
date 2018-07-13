@@ -10,6 +10,7 @@ import {
   Settings,
   //StatusCheckService,
   LocalStorage,
+  DatasetService,
 } from '@helgoland/core';
 import { HelgolandD3Module } from '@helgoland/d3';
 import {
@@ -20,7 +21,7 @@ import {
 } from '@helgoland/map';
 import { HelgolandDatasetTableModule, HelgolandDatasetlistModule } from '@helgoland/depiction';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { MapModule } from './map/map.module';
 import { DataDepictionModule } from './data-depiction/data-depiction.module';
@@ -48,8 +49,8 @@ import { ExtendedDepictionModule } from './extended-depiction/extended-depiction
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
 }
-export function DatasetEmitFactory(localStore: LocalStorage){
-  return new DatasetEmitService(localStore);
+export function DatasetEmitFactory(localstorage: LocalStorage){
+  return new DatasetEmitService(localstorage);
 }
 
 @NgModule({
@@ -108,10 +109,10 @@ export function DatasetEmitFactory(localStore: LocalStorage){
     },
     {
       provide: DatasetEmitService,
+      // useClass: DatasetEmitService,
       useFactory: DatasetEmitFactory,
       deps: [LocalStorage]
-    }
-    
+    }, TranslateService
     
     
    

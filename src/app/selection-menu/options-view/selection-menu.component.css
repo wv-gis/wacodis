@@ -19,13 +19,13 @@ h5{
 
 .selectionsMenu{
     position: absolute;
-    height: 48px;
+    height: 100%;
     width: 100%;
     background-color: #718296;
     color: #fff;
 }
 
-.selectionsMenu .entry{
+/* .selectionsMenu .entry{
     height: 48px;
     line-height: 48px;
     width: 130px;
@@ -42,7 +42,7 @@ h5{
     margin-right: auto;
     width: 523px;
     border-right: solid 1px #dfe4e6;
-}
+} */
 
 button{
     padding: 2px;
@@ -53,10 +53,10 @@ button{
     line-height: 18px;
 }
 
-.selectionsMenu .entry span {
+/* .selectionsMenu .entry span {
     vertical-align: middle;
     cursor: pointer;
 }
 .selectionsMenu .entry:hover{
     background-color: #8b9cae;
-}
+} */

@@ -1,5 +1,5 @@
 .datasetMenu .expand-button.active {
-    right: 400px;
+    right: 350px;
     background-color: #2c4869;
 }
 .datasetMenu .expand-button {
@@ -27,7 +27,7 @@
 /* .phenomenon-list-active  */
 .datasetMenu .selectedDataset.active {
     top: 110px;
-    width: 400px;
+    width: 350px;
 }
 .datasetMenu .selectedDataset.active {
     display: inline;
@@ -50,4 +50,7 @@
     .right {
         width: 50%;
     }
+    // n52-timeseries-entry svg{
+    //     overflow: inherit;
+    // }
 }

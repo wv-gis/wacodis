@@ -26,7 +26,7 @@ export class DatasetEmitService extends DatasetService<DatasetOptions>{
     this.localStorage.save(this.datasetIds.indexOf(this.internID).toString(), this.datasetOptions);
   }
   protected loadState(): void {
-
+    return this.localStorage.load(this.internID);
   }
 
 }

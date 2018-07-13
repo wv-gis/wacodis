@@ -18,7 +18,7 @@ import { AppRoutingModule } from '../app-routing.module';
     CommonModule,
     HelgolandMapModule,
     HelgolandMapViewModule,
-    MenuModule,
+    // MenuModule,
     HelgolandMapSelectorModule,
     HelgolandSelectorModule,
     HelgolandLabelMapperModule,

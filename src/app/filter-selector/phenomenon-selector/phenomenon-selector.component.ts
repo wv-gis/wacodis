@@ -1,6 +1,5 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges, AfterViewInit } from "@angular/core";
-import { Phenomenon, DatasetApi, FilteredProvider, Provider, DatasetApiInterface, Service } from "@helgoland/core";
-import { ListSelectorParameter } from "@helgoland/selector";
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from "@angular/core";
+import { Phenomenon, Provider, Service } from "@helgoland/core";
 
 @Component(
     {
@@ -27,31 +26,30 @@ export class PhenomenonSelectorComponent implements  OnChanges {
     public selectionId: string = null;
     public selectedService: Service;
 
-    constructor() {
+    constructor() { }
 
-    }
-
-
-        
-   
     ngOnChanges(changes: SimpleChanges): void {
         
-        this.selectedService = this.provider;
-
-         if(this.isFirst && !this.selectedService){
-            this.isFirst = false;
-            this.selectedProviderList.push({
-                id: '1',
-                url: 'http://www.fluggs.de/sos2/api/v1/',
-            })
-        }
-        else{
+        if(this.provider){
+            this.selectedService = this.provider;
             this.selectedProviderList = [];
             this.selectedProviderList.push({
                 id: this.selectedService.id,
                 url: this.selectedService.apiUrl,
             })
         }
+        
+
+        //  if(this.isFirst && !this.selectedService){
+        //     this.isFirst = false;
+        //     this.selectedProviderList.push({
+        //         id: '1',
+        //         url: 'http://www.fluggs.de/sos2/api/v1/',
+        //     })
+        // }
+        // else{
+          
+        // }
     }
  
      onPhenomenonSelected(phenomenon: Phenomenon) {
@@ -69,7 +67,7 @@ export class PhenomenonSelectorComponent implements  OnChanges {
             this.isActive = false;
             return false;
         }
-        else {
+        else {          
             this.isActive = true;
             return true;
         }

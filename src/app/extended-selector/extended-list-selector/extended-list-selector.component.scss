@@ -25,3 +25,17 @@
 .table.disabled {
     opacity: .5;
 }
+.badge.badge-success 
+    {
+        animation: autoHide 0s ease-in 2s forwards;
+        top: 10px;
+         }
+
+    @keyframes autoHide {
+        to {
+            width:0;
+            height:0;
+            overflow:hidden;
+            padding: 0;
+        }
+    }

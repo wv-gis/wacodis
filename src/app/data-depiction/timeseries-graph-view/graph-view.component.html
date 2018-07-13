@@ -2,7 +2,7 @@
   <wv-depiction-menu [timespan]="timespan" (onTimespanChanged)="timespanChanged($event)"></wv-depiction-menu>
   <div class="row">
     <div class="diagram" [ngClass]="{'col col-md-11 col-sm-11': isActive, 'col-8 col-md-8 col-sm-6': !isActive }">
-      <div class="diagramEntry" style="height: 800px; padding: 5px; position: relative;">
+      <div class="diagramEntry" style="height: 800px; padding: 5px;">
         <n52-d3-timeseries-graph [datasetIds]="datasetIdsMultiple" [selectedDatasetIds]="selectedIds" [datasetOptions]="datasetOptionsMultiple"
           [timeInterval]="timespan" (onTimespanChanged)="timespanChanged($event)" [graphOptions]="diagramOptionsD3" #diagram></n52-d3-timeseries-graph>
       </div>

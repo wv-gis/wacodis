@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, HostListener } from '@angular/core';
 import { DatasetOptions, Timespan } from '@helgoland/core';
 import { D3PlotOptions } from '@helgoland/d3';
 import { ActivatedRoute } from '@angular/router';
@@ -28,19 +28,19 @@ export class GraphViewComponent {
     public isActive = true;
 
 
-    constructor(private cdr: ChangeDetectorRef, private route: ActivatedRoute, private dataEmitService: DatasetEmitService ) {
+    constructor(private cdr: ChangeDetectorRef, private route: ActivatedRoute, private dataEmitService: DatasetEmitService) {
         // this.dataEmitService.dataEmit.subscribe((entry) => console.log(entry))
-       if(dataEmitService !== undefined && dataEmitService.hasDatasets()){
-           for(let k = 0; k< dataEmitService.datasetIds.length; k++){
-            this.datasetIdsMultiple.push( dataEmitService.datasetIds[k]);
-            console.log(dataEmitService.datasetIds[0]);
-            // dataEmitService.datasetOptions.forEach((entry) =>this.colors.push(entry.color) )
-            // this.datasetOptionsMultiple.set(dataEmitService.datasetIds[k],this.colors[k] );
-            
-           }
-       
-          
-       }
+        if (dataEmitService !== undefined && dataEmitService.hasDatasets()) {
+            for (let k = 0; k < dataEmitService.datasetIds.length; k++) {
+                this.datasetIdsMultiple.push(dataEmitService.datasetIds[k]);
+                console.log(dataEmitService.datasetIds[0]);
+                // dataEmitService.datasetOptions.forEach((entry) =>this.colors.push(entry.color) )
+                // this.datasetOptionsMultiple.set(dataEmitService.datasetIds[k],this.colors[k] );
+
+            }
+
+
+        }
         // this.route.queryParams.subscribe(params => {
         //     if (params.datasetIdsMultiple !== undefined) {
         //         console.log('Test');
@@ -70,34 +70,35 @@ export class GraphViewComponent {
         this.timespan = timespan;
     }
 
-    public selectDataset(selected: boolean, id: string) {
-        if (selected) {
-            this.selectedIds.push(id);
-        } else {
-            this.selectedIds.splice(this.selectedIds.findIndex((entry) => entry === id), 1);
-        }
-    }
+    // public selectDataset(selected: boolean, id: string) {
+    //     if (selected) {
+    //         this.selectedIds.push(id);
+    //     } else {
+    //         this.selectedIds.splice(this.selectedIds.findIndex((entry) => entry === id), 1);
+    //     }
+    // }
 
-    public isSelected(id: string) {
-        return this.selectedIds.indexOf(id) > -1;
-    }
+    // public isSelected(id: string) {
+    //     return this.selectedIds.indexOf(id) > -1;
+    // }
 
     public onOverviewLoading(loading: boolean) {
         this.overviewLoading = loading;
         this.cdr.detectChanges();
     }
-    select(event: string[]){
+    public select(event: string[]) {
         this.selectedIds = event;
     }
 
-    private change(){
-        if(this.isActive){
+    public change() {
+        if (this.isActive) {
             this.isActive = false;
             return false;
         }
-        else{
+        else {
             this.isActive = true;
             return true;
         }
     }
+
 }

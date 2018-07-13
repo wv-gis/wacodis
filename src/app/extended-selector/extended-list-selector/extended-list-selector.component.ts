@@ -12,6 +12,7 @@ export class ExtendedListSelectorComponent extends ListSelectorComponent {
 
 
   public i: number = 0;
+  public datasetSelected: boolean = false;
 
   constructor(protected listSelectorService: ListSelectorService,
     protected apiInterface: DatasetApiInterface,
@@ -42,12 +43,19 @@ export class ExtendedListSelectorComponent extends ListSelectorComponent {
       }
       
     }
+    if(index === this.parameters.length-1){
+      this.datasetSelected = true;
+    }
+    else{
+      this.datasetSelected = false;
+    }
     this.i = index;
     super.itemSelected(item, index);
   }
 
   ngOnChanges(changes: SimpleChanges) {
     super.ngOnChanges(changes);
+
   }
 
 }

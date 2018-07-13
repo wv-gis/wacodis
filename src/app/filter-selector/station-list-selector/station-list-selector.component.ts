@@ -1,4 +1,4 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges} from '@angular/core';
 import { IDataset, Provider, Service} from '@helgoland/core';
 import { ListSelectorParameter } from '@helgoland/selector';
 import { DatasetEmitService } from '../../services/dataset-emit.service';
@@ -8,7 +8,11 @@ import { DatasetEmitService } from '../../services/dataset-emit.service';
   templateUrl: './station-list-selector.component.html',
   styleUrls: ['./station-list-selector.component.scss']
 })
-export class StationListSelectorComponent  {
+export class StationListSelectorComponent implements OnChanges {
+
+  
+  @Input()
+  selectedProvider: Service;
 
   public categoryParams: ListSelectorParameter[] = [
     {
@@ -28,11 +32,17 @@ export class StationListSelectorComponent  {
 
   public selectedProviderList: Provider[] = [];
 
-  constructor(private datasetService: DatasetEmitService) {
-    this.selectedProviderList.push({
-      id: '1',
-      url: 'http://www.fluggs.de/sos2/api/v1/',
-    });
+  constructor(private datasetService: DatasetEmitService) { }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if(this.selectedProvider){
+      this.selectedProviderList = [];
+      this.selectedProviderList.push({
+        id: this.selectedProvider.id,
+        url: this.selectedProvider.apiUrl,
+      });
+     }
+    //  console.log(changes.selectedProvider.currentValue);
   }
 
   public onDatasetSelected(datasets: IDataset[]) {
@@ -43,12 +53,12 @@ export class StationListSelectorComponent  {
 
   }
 
-  public getProviderUrl(service: Service){
-    this.selectedProviderList = [];
-    this.selectedProviderList.push({
-      id: service.id,
-      url: service.apiUrl
-    });
-  }
+  // public getProviderUrl(service: Service){
+  //   this.selectedProviderList = [];
+  //   this.selectedProviderList.push({
+  //     id: service.id,
+  //     url: service.apiUrl
+  //   });
+  // }
 
 }

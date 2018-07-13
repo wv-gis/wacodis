@@ -10,6 +10,10 @@ import { HelgolandTimeModule } from '@helgoland/time';
 import { DatasetMenuComponent } from './dataset-menu/dataset-menu.component';
 import { HelgolandCoreModule } from '@helgoland/core';
 import { HelgolandDatasetlistModule } from '@helgoland/depiction';
+import { DatasetEmitService } from '../services/dataset-emit.service';
+import { TabsComponent, TabComponent } from './tabs/tabs.component';
+import { FilterModule } from '../filter-selector/filter';
+import { MapModule } from '../map/map.module';
 
 
 
@@ -20,11 +24,12 @@ import { HelgolandDatasetlistModule } from '@helgoland/depiction';
     AppRoutingModule,
     HelgolandTimeModule,
     HelgolandCoreModule,
-    HelgolandDatasetlistModule
+    HelgolandDatasetlistModule,
+    FilterModule, MapModule
   ],
-  declarations: [SelectionMenuComponent, DepictionMenuComponent, DatasetMenuComponent],
-  exports: [SelectionMenuComponent,DepictionMenuComponent, DatasetMenuComponent],
-  providers: [ExtendedSettingsService],
+  declarations: [SelectionMenuComponent, DepictionMenuComponent, DatasetMenuComponent, TabsComponent, TabComponent],
+  exports: [SelectionMenuComponent,DepictionMenuComponent, DatasetMenuComponent, TabComponent, TabsComponent],
+  providers: [ExtendedSettingsService, DatasetEmitService],
 })
 
 export class MenuModule {

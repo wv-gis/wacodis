@@ -21,8 +21,8 @@
             </div>
         </div>
     </div>
-    <div class="center">
-        <div class="entry" [ngClass]="{'active': checkSelection('/selection-map')}" (click)="navigateTo('/selection-map');">
+    <!-- <div class="center"> -->
+        <!-- <div class="entry" [ngClass]="{'active': checkSelection('/selection-map')}" (click)="navigateTo('/selection-map');">
             <i class="fas fa-map"></i>
             <span class="mid"> Karte</span>
         </div>
@@ -39,7 +39,24 @@
         <div class="entry" [ngClass]="{'active': checkSelection('/select-phenomenon')}">
             <i class="fas fa-ruler-vertical"></i>
             <span class="mid" routerLink='/select-phenomenon'> Phänomen</span>
-        </div>
+        </div> -->
+        <wv-tabs>
 
-    </div>
+            <wv-tab title="Karte" picture="fas fa-map">
+                <wv-map-view [selectedProvider] = "selectedService"></wv-map-view>
+            </wv-tab>
+            <wv-tab title="Kategorie" picture="fas fa-tint" >
+                <wv-category-selector [selectedProvider] = "selectedService"></wv-category-selector>
+            </wv-tab>
+            <wv-tab title="Station" picture="fas fa-home">
+                <wv-station-list-selector [selectedProvider] = "selectedService"></wv-station-list-selector>
+                <!-- <wv-category-selector [endpoint]="title" [selectedProvider] = "selectedService"></wv-category-selector> -->
+            </wv-tab>
+            <wv-tab title="Phänomen" picture="fas fa-ruler-vertical" >
+                <wv-phenomenon-list-selector [selectedProvider] = "selectedService"></wv-phenomenon-list-selector>
+            </wv-tab>
+
+        </wv-tabs>
+
+    <!-- </div> -->
  </div>

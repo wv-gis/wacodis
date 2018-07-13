@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { Service, DatasetApi, ParameterFilter, PlatformTypes, ValueTypes, SettingsService, Settings, DatasetApiInterface } from '@helgoland/core';
 import { Router, NavigationExtras } from '@angular/router';
 import { ExtendedSettingsService } from '../../settings/settings.service';
@@ -11,12 +11,14 @@ import { ExtendedSettingsService } from '../../settings/settings.service';
   styleUrls: ['./selection-menu.component.css']
 })
 
-export class SelectionMenuComponent implements OnInit{
+export class SelectionMenuComponent implements OnInit, OnChanges{
 
  
+  
   public label = 'Wupperverband Zeitreihen Dienst';
   public active: boolean;
-  public selectedService: Service = null;
+  public selectedService: Service ;//= null;
+  public endpoint: string;
 
   @Output()
   public onProviderSelected: EventEmitter<Service> = new EventEmitter<Service>();
@@ -42,8 +44,17 @@ export class SelectionMenuComponent implements OnInit{
   ngOnInit(): void {
     // this.onProviderSelected.emit(this.selectedService);
     if(this.settings.getSettings().datasetApis){
-      for(let i = 0; i < this.settings.getSettings().datasetApis.length; i++){
-        this.datasetApis.push( this.settings.getSettings().datasetApis[i]);
+      if(this.selectedService){
+        this.datasetApiInt.getService(this.selectedService.id,this.selectedService.apiUrl).subscribe((service) => {
+          this.selectedService = service;
+          this.onProviderSelected.emit(this.selectedService);
+        });
+      }else{
+        for(let i = 0; i < this.settings.getSettings().datasetApis.length; i++){
+          this.datasetApis.push( this.settings.getSettings().datasetApis[i]);
+         console.log('Test')
+        }
+       
       }
       this.datasetApiInt.getService('1',this.settings.getSettings().datasetApis[0].url).subscribe((service) => {
         this.selectedService = service;
@@ -51,6 +62,12 @@ export class SelectionMenuComponent implements OnInit{
       });
     }
     
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if(changes.endpoint){
+      this.endpoint = '';
+    }
   }
  
   public providerFilter: ParameterFilter = {
@@ -77,14 +94,14 @@ export class SelectionMenuComponent implements OnInit{
     
     // this.router.navigate([url], navigationExtras);
   }
-  checkSelection(route: string) {
-    if (this.router.isActive(route, true)) {
-      return true;
+  // checkSelection(route: string) {
+  //   if (this.router.isActive(route, true)) {
+  //     return true;
 
-    }
-    else {
-      return false;
-    }
-  }
+  //   }
+  //   else {
+  //     return false;
+  //   }
+  // }
 
 }

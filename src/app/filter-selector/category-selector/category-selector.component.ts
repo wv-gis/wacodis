@@ -1,5 +1,5 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { Station, Phenomenon, Category, Provider, IDataset, Feature, ParameterFilter, Service } from '@helgoland/core';
+import { Component, OnInit, Output, EventEmitter, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Station, Phenomenon, Category, Provider, IDataset, Feature, ParameterFilter, Service, DatasetService } from '@helgoland/core';
 import { ListSelectorParameter, FilteredParameter } from '@helgoland/selector';
 import { NavigationExtras, Router, ActivatedRoute } from '@angular/router';
 import { DatasetEmitService } from '../../services/dataset-emit.service';
@@ -11,12 +11,11 @@ import { DatasetEmitService } from '../../services/dataset-emit.service';
   selector: 'wv-category-selector',
   templateUrl: './category-selector.component.html',
   styleUrls: ['./category-selector.component.scss'],
-  // providers: [ExtendedSettingsService],
 })
 
-export class CategorySelectorComponent implements OnInit {
+export class CategorySelectorComponent implements OnChanges {
 
-  constructor(private router: Router, private activatedRoute: ActivatedRoute, private datasetService: DatasetEmitService){
+  constructor( private datasetService: DatasetEmitService){
     // this.activatedRoute.queryParams.subscribe(params => {
     //   console.log('Parameter: ' + params.selectedService.apiUrl);
       // this.selectedProviderList.push({
@@ -26,8 +25,9 @@ export class CategorySelectorComponent implements OnInit {
       // this.timespan = new Timespan(params.firstValueTime, params.lastValueTime);
   // });
   }
-  @Output()
-  selectedDataset: EventEmitter<IDataset> = new EventEmitter<IDataset>();
+@Input()
+selectedProvider: Service;
+
 
   public selectedProviderList: Provider[] = [];
   public categoryParams: ListSelectorParameter[] = [{
@@ -66,24 +66,28 @@ export class CategorySelectorComponent implements OnInit {
       this.datasetService.addDataset(dataset.internalId);
       console.log('StationSelect: ' + dataset.internalId);
     })
-
+    
   }
 
-  public getProviderUrl(service: Service) {
-    this.selectedProviderList = [];
+  // public getProviderUrl(service: Service) {
+  //   
 
-    this.selectedProviderList.push({
-      id: service.id,
-      url: service.apiUrl,
-    });
-  }
+  //   this.selectedProviderList.push({
+  //     id: service.id,
+  //     url: service.apiUrl,
+  //   });
+  // }
 
-  ngOnInit() {
-    this.selectedProviderList.push({
-      id: '1',
-      url: 'http://www.fluggs.de/sos2/api/v1/',
-    });
+  ngOnChanges(changes: SimpleChanges) {
+    // console.log(changes.selectedProvider.currentValue);
+    if(this.selectedProvider){
+      this.selectedProviderList = [];
+      this.selectedProviderList.push({
+        id: this.selectedProvider.id,
+        url: this.selectedProvider.apiUrl,
+      });
 
+    }
   }
 
 }

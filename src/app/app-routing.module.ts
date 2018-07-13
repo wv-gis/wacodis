@@ -11,12 +11,13 @@ import { ProfileViewComponent } from './data-depiction/profile-view/profile-view
 import { CategorySelectorComponent } from './filter-selector/category-selector/category-selector.component';
 import { PhenomenonListSelectorComponent } from './filter-selector/phenomenon-list-selector/phenomenon-list-selector.component';
 import { StationListSelectorComponent } from './filter-selector/station-list-selector/station-list-selector.component';
+import { SelectionMenuComponent } from './selection-menu/options-view/selection-menu.component';
 
 
 
 const routes: Routes = [
   { path: '', redirectTo: 'start', pathMatch: 'full' },
-  { path: 'selection-map', component: MapViewComponent, data: { title: 'WaCoDiS Web Client' } },
+  { path: 'selection-map', component: SelectionMenuComponent, data: { title: 'WaCoDiS Web Client' } },
   { path: 'table', component: DataTableComponent, data: { title: 'Tabellenansicht' } },
   { path: 'timeseries', component: GraphViewComponent, data: { title: 'WaCoDiS Web Client' } },
   { path: 'start', component: SelectViewDashboardComponent, data: { title: 'WaCoDiS Web Client' } },

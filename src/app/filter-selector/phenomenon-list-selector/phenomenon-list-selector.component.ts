@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { ListSelectorParameter } from '@helgoland/selector';
 import { Provider, IDataset, Service } from '@helgoland/core';
 import { DatasetEmitService } from '../../services/dataset-emit.service';
@@ -8,9 +8,13 @@ import { DatasetEmitService } from '../../services/dataset-emit.service';
   templateUrl: './phenomenon-list-selector.component.html',
   styleUrls: ['./phenomenon-list-selector.component.scss']
 })
-export class PhenomenonListSelectorComponent {
+export class PhenomenonListSelectorComponent implements OnChanges{
 
-  public categoryParams: ListSelectorParameter[] = [
+ 
+  @Input()
+  selectedProvider: Service;
+
+  public phenomenonParams: ListSelectorParameter[] = [
     {
       type: 'phenomenon',
       header: 'Phänomen'
@@ -28,12 +32,16 @@ export class PhenomenonListSelectorComponent {
 
   public selectedProviderList: Provider[] = [];
 
-  constructor(private datasetService: DatasetEmitService) {
-    this.selectedProviderList.push({
-      id: '1',
-      url: 'http://www.fluggs.de/sos2/api/v1/'
-    });
+  constructor(private datasetService: DatasetEmitService) { }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if(this.selectedProvider){
+      this.selectedProviderList = [];
+      this.selectedProviderList.push({
+        id: this.selectedProvider.id,
+        url: this.selectedProvider.apiUrl,
+      });
+    }
   }
 
   public onDatasetSelected(datasets: IDataset[]) {
@@ -43,18 +51,18 @@ export class PhenomenonListSelectorComponent {
     })
   }
 
-  public getProviderUrl(service: Service) {
-    this.selectedProviderList = [];
-    this.selectedProviderList.push({
-      id: service.id,
-      url: service.apiUrl,
-    })
+  // public getProviderUrl(service: Service) {
+  //   this.selectedProviderList = [];
+  //   this.selectedProviderList.push({
+  //     id: service.id,
+  //     url: service.apiUrl,
+  //   })
     // this.selectedProviderList.forEach((entry)=>{
     //   if(entry.url==service.apiUrl){
 
     //   }
     // });
 
-  }
+  // }
 
 }

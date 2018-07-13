@@ -16,6 +16,7 @@ import { DataTableComponent } from './data-table/data-table.component';
 import { GraphViewComponent } from './timeseries-graph-view/graph-view.component';
 import { HelgolandCoreModule } from '@helgoland/core';
 import { MenuModule } from '../selection-menu/menu.module';
+import { DatasetEmitService } from '../services/dataset-emit.service';
 
 @NgModule({
   imports: [
@@ -36,5 +37,6 @@ import { MenuModule } from '../selection-menu/menu.module';
   ],
   declarations: [DataTableComponent, GraphViewComponent, TrajectoryViewComponent, ProfileViewComponent],
   exports: [DataTableComponent, GraphViewComponent, TrajectoryViewComponent, ProfileViewComponent,],
+  providers: [DatasetEmitService],
 })
 export class DataDepictionModule { }

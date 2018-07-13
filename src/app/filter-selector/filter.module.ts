@@ -11,7 +11,7 @@ import { PhenomenonSelectorComponent } from './phenomenon-selector/phenomenon-se
 import { PhenomenonListSelectorComponent } from './phenomenon-list-selector/phenomenon-list-selector.component';
 import { StationListSelectorComponent } from './station-list-selector/station-list-selector.component';
 import { ExtendedSelectorModule } from '../extended-selector/extended-selector.module';
-import { HelgolandCoreModule } from '@helgoland/core';
+import { HelgolandCoreModule, DatasetService } from '@helgoland/core';
 import { DatasetEmitService } from '../services/dataset-emit.service';
 
 
@@ -20,7 +20,7 @@ import { DatasetEmitService } from '../services/dataset-emit.service';
     CommonModule,
     HelgolandSelectorModule,
     HelgolandLabelMapperModule,
-    MenuModule,
+    // MenuModule,
     ExtendedSelectorModule,
     HelgolandCoreModule
     
@@ -30,7 +30,7 @@ import { DatasetEmitService } from '../services/dataset-emit.service';
      StationListSelectorComponent],
   exports: [CategorySelectorComponent, PhenomenonSelectorComponent, 
     PhenomenonListSelectorComponent, StationListSelectorComponent,],
-    providers: [ DatasetEmitService]
+    providers: [ DatasetEmitService ]
 
 
 })
