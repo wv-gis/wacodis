@@ -21,7 +21,6 @@ export class PhenomenonSelectorComponent implements  OnChanges {
     selectedProviderList: Provider[] = [];
     id: string;
     isFirst = true;
-    // isVisible = true;
     isActive = true;
     public selectionId: string = null;
     public selectedService: Service;
@@ -38,18 +37,7 @@ export class PhenomenonSelectorComponent implements  OnChanges {
                 url: this.selectedService.apiUrl,
             })
         }
-        
-
-        //  if(this.isFirst && !this.selectedService){
-        //     this.isFirst = false;
-        //     this.selectedProviderList.push({
-        //         id: '1',
-        //         url: 'http://www.fluggs.de/sos2/api/v1/',
-        //     })
-        // }
-        // else{
-          
-        // }
+       
     }
  
      onPhenomenonSelected(phenomenon: Phenomenon) {

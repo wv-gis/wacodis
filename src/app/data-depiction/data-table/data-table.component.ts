@@ -42,7 +42,6 @@ export class DataTableComponent implements OnInit {
   }
 
   menuIsActive(){
-    // console.log(document.getElementById('datasetMenu').getElementsByClassName('selectedDataset').item(0).className);
     if(this.isActive){
       //if(document.getElementById('datasetMenu').getElementsByClassName('selectedDataset').item(0).className.endsWith('active')){
       this.isActive = false;

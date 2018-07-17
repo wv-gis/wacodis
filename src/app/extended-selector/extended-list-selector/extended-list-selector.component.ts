@@ -55,7 +55,10 @@ export class ExtendedListSelectorComponent extends ListSelectorComponent {
 
   ngOnChanges(changes: SimpleChanges) {
     super.ngOnChanges(changes);
-
+    this.parameters[0].filterList = this.providerList.map((entry) => {
+      entry.filter = this.filter;
+      return entry;
+    });
   }
 
 }

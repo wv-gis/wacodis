@@ -1,6 +1,5 @@
 
 <div class="phenomena">
-  <!-- <div *ngIf="isVisible"> -->
     <div class="expand-button" [ngClass]="{'active': isActive}" (click)="change()">
       <span class="icon">
         <i class="fas fa-angle-right" [ngClass]="{'fa-angle-right': isActive, 'fa-angle-left': !isActive}"></i>
@@ -10,5 +9,4 @@
     <div class="phenomenonSelector" [ngClass]="{'active': isActive}">
      <wv-extended-service-filter-selector [endpoint]="'phenomenon'" [filterList]="selectedProviderList" (onItemSelected)="onPhenomenonSelected($event)"></wv-extended-service-filter-selector>
     </div>
-  <!-- </div> -->
 </div>

@@ -29,8 +29,7 @@ export class GraphViewComponent {
 
 
     constructor(private cdr: ChangeDetectorRef, private route: ActivatedRoute, private dataEmitService: DatasetEmitService) {
-        // this.dataEmitService.dataEmit.subscribe((entry) => console.log(entry))
-        if (dataEmitService !== undefined && dataEmitService.hasDatasets()) {
+               if (dataEmitService !== undefined && dataEmitService.hasDatasets()) {
             for (let k = 0; k < dataEmitService.datasetIds.length; k++) {
                 this.datasetIdsMultiple.push(dataEmitService.datasetIds[k]);
                 console.log(dataEmitService.datasetIds[0]);
@@ -41,12 +40,7 @@ export class GraphViewComponent {
 
 
         }
-        // this.route.queryParams.subscribe(params => {
-        //     if (params.datasetIdsMultiple !== undefined) {
-        //         console.log('Test');
-        //         this.datasetIdsMultiple.push(params.datasetIdsMultiple);
-        //     }
-        // });
+       
 
         this.createColors();
 

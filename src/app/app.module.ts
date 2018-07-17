@@ -40,6 +40,7 @@ import { ExtendedSettingsService } from './settings/settings.service';
 import { settings } from '../environments/environment';
 import { DatasetEmitService } from './services/dataset-emit.service';
 import { ExtendedDepictionModule } from './extended-depiction/extended-depiction.module';
+import { SelectedUrlService } from './services/selected-url.service';
 
 
 
@@ -112,7 +113,7 @@ export function DatasetEmitFactory(localstorage: LocalStorage){
       // useClass: DatasetEmitService,
       useFactory: DatasetEmitFactory,
       deps: [LocalStorage]
-    }, TranslateService
+    }, TranslateService, SelectedUrlService
     
     
    

@@ -1,48 +1,58 @@
-import { Component, OnInit, Input, OnChanges, SimpleChanges} from '@angular/core';
-import { IDataset, Provider, Service} from '@helgoland/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
+import { IDataset, Provider, Service } from '@helgoland/core';
 import { ListSelectorParameter } from '@helgoland/selector';
 import { DatasetEmitService } from '../../services/dataset-emit.service';
+import { SelectedUrlService } from '../../services/selected-url.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'wv-station-list-selector',
   templateUrl: './station-list-selector.component.html',
   styleUrls: ['./station-list-selector.component.scss']
 })
-export class StationListSelectorComponent implements OnChanges {
+export class StationListSelectorComponent implements OnChanges, OnDestroy {
 
-  
-  @Input()
-  selectedProvider: Service;
 
-  public categoryParams: ListSelectorParameter[] = [
+ 
+  // @Input()
+  // selectedProvider: Service;
+
+  public stationParams: ListSelectorParameter[] = [
     {
       type: 'feature',
       header: 'Station'
-    }, 
+    },
     {
-    type: 'category',
-    header: 'Kategorie'
-  },    {
-    type: 'phenomenon',
-    header: 'Phänomen'
-  }, {
-    type: 'procedure',
-    header: 'Sensor'
-  }];
+      type: 'category',
+      header: 'Kategorie'
+    }, {
+      type: 'phenomenon',
+      header: 'Phänomen'
+    }, {
+      type: 'procedure',
+      header: 'Sensor'
+    }];
 
   public selectedProviderList: Provider[] = [];
+  public subscription: Subscription;
 
-  constructor(private datasetService: DatasetEmitService) { }
+
+  constructor(private datasetService: DatasetEmitService, private selectedService: SelectedUrlService) {
+
+    this.subscription = selectedService.service$.subscribe((res) => {
+      if (this.selectedProviderList) {
+        this.selectedProviderList = [];
+      }
+      this.selectedProviderList.push({
+        id: res.id,
+        url: res.apiUrl
+      });
+    });
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if(this.selectedProvider){
-      this.selectedProviderList = [];
-      this.selectedProviderList.push({
-        id: this.selectedProvider.id,
-        url: this.selectedProvider.apiUrl,
-      });
-     }
-    //  console.log(changes.selectedProvider.currentValue);
+
+    console.log('Change StationListSelector');
   }
 
   public onDatasetSelected(datasets: IDataset[]) {
@@ -53,12 +63,7 @@ export class StationListSelectorComponent implements OnChanges {
 
   }
 
-  // public getProviderUrl(service: Service){
-  //   this.selectedProviderList = [];
-  //   this.selectedProviderList.push({
-  //     id: service.id,
-  //     url: service.apiUrl
-  //   });
-  // }
-
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
 }

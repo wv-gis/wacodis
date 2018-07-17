@@ -4,16 +4,14 @@
             <label style="cursor: pointer;">
                 <li class="list-group-item">
                     <div class="form-check" (click)="onSelectItem(item)">
-                        <!-- <div *ngFor="let selectedItem of selected; let j = index"> -->
-                            <div *ngIf="selected == item.id">
-                                <input class="form-check-input" name="group100" type="radio" id="item.id" checked="checked">
-                                <n52-label-mapper class="form-check-label" [attr.for]="item.id" label="{{item.label}}"></n52-label-mapper>
-                            </div>
-                            <div *ngIf="selected != item.id">
-                                <input class="form-check-input" name="group100" type="radio" id="i">
-                                <n52-label-mapper class="form-check-label" [attr.for]="i" label="{{item.label}}"></n52-label-mapper>
-                            </div>
-                        <!-- </div> -->
+                        <div *ngIf="selectedItems[i] == item.label else unchecked">
+                            <input class="form-check-input" name="{{endpoint}}" type="radio" id="item.id" checked="checked">
+                            <n52-label-mapper class="form-check-label" [attr.for]="item.id" label="{{item.label}}"></n52-label-mapper>
+                        </div>
+                        <ng-template #unchecked>
+                            <input class="form-check-input" name="{{endpoint}}" type="radio" id="i">
+                            <n52-label-mapper class="form-check-label" [attr.for]="i" label="{{item.label}}"></n52-label-mapper>
+                        </ng-template>
                     </div>
                 </li>
             </label>

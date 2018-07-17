@@ -10,7 +10,7 @@ import {FilterModule} from '../filter-selector/filter.module';
 import { HelgolandMapSelectorModule } from '@helgoland/map';
 import { HelgolandSelectorModule } from '@helgoland/selector';
 import { HelgolandLabelMapperModule } from '@helgoland/depiction';
-import { AppRoutingModule } from '../app-routing.module';
+
 
 
 @NgModule({
@@ -18,12 +18,11 @@ import { AppRoutingModule } from '../app-routing.module';
     CommonModule,
     HelgolandMapModule,
     HelgolandMapViewModule,
-    // MenuModule,
+    MenuModule,
     HelgolandMapSelectorModule,
     HelgolandSelectorModule,
     HelgolandLabelMapperModule,
     FilterModule,
-    AppRoutingModule,
   ],
   declarations: [MapViewComponent, TimespanMapComponent, RasterMapComponent],
   exports: [MapViewComponent, TimespanMapComponent, RasterMapComponent]

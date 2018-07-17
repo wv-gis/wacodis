@@ -24,7 +24,7 @@
     line-height: 52px;
 } 
 
-/* .phenomenon-list-active  */
+
 .datasetMenu .selectedDataset.active {
     top: 110px;
     width: 350px;
@@ -32,11 +32,9 @@
 .datasetMenu .selectedDataset.active {
     display: inline;
     position: absolute;
-    // top: 48px;
     right: 0;
     bottom: 0;
     background-color: #718296;
-    /* width: 400px; */
 }
 .datasetMenu .selectedDataset {
     overflow: auto;
@@ -50,7 +48,5 @@
     .right {
         width: 50%;
     }
-    // n52-timeseries-entry svg{
-    //     overflow: inherit;
-    // }
+
 }

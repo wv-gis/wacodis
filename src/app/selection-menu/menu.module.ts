@@ -12,8 +12,9 @@ import { HelgolandCoreModule } from '@helgoland/core';
 import { HelgolandDatasetlistModule } from '@helgoland/depiction';
 import { DatasetEmitService } from '../services/dataset-emit.service';
 import { TabsComponent, TabComponent } from './tabs/tabs.component';
-import { FilterModule } from '../filter-selector/filter';
-import { MapModule } from '../map/map.module';
+
+
+
 
 
 
@@ -25,7 +26,7 @@ import { MapModule } from '../map/map.module';
     HelgolandTimeModule,
     HelgolandCoreModule,
     HelgolandDatasetlistModule,
-    FilterModule, MapModule
+      AppRoutingModule
   ],
   declarations: [SelectionMenuComponent, DepictionMenuComponent, DatasetMenuComponent, TabsComponent, TabComponent],
   exports: [SelectionMenuComponent,DepictionMenuComponent, DatasetMenuComponent, TabComponent, TabsComponent],

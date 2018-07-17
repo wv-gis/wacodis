@@ -2,106 +2,83 @@ import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChange
 import { Service, DatasetApi, ParameterFilter, PlatformTypes, ValueTypes, SettingsService, Settings, DatasetApiInterface } from '@helgoland/core';
 import { Router, NavigationExtras } from '@angular/router';
 import { ExtendedSettingsService } from '../../settings/settings.service';
+import { SelectedUrlService } from '../../services/selected-url.service';
 
 
 
 @Component({
   selector: 'wv-selection-menu',
   templateUrl: './selection-menu.component.html',
-  styleUrls: ['./selection-menu.component.css']
+  styleUrls: ['./selection-menu.component.css'], providers: [SelectedUrlService]
 })
 
-export class SelectionMenuComponent implements OnInit, OnChanges{
+export class SelectionMenuComponent implements OnInit, OnChanges {
 
- 
-  
   public label = 'Wupperverband Zeitreihen Dienst';
   public active: boolean;
-  public selectedService: Service ;//= null;
+  public isFirst: boolean = true;
+  public selectedService: Service;
   public endpoint: string;
 
-  @Output()
-  public onProviderSelected: EventEmitter<Service> = new EventEmitter<Service>();
 
+  constructor(private router: Router, private settings: ExtendedSettingsService, private datasetApiInt: DatasetApiInterface, private selService: SelectedUrlService) {
+    if (this.settings.getSettings().datasetApis) {
+      for (let i = 0; i < this.settings.getSettings().datasetApis.length; i++) {
+        this.datasetApis.push(this.settings.getSettings().datasetApis[i]);
 
-  // public datasetApis: DatasetApi[];
-  constructor(private router: Router, private settings: ExtendedSettingsService, private datasetApiInt: DatasetApiInterface) { 
-   
+      }
+      if (this.isFirst) {
+        this.isFirst = false;
+        this.datasetApiInt.getService('1', this.settings.getSettings().datasetApis[0].url).subscribe((service) => {
+          this.selService.setService(service);
+          this.selectedService = service;
+        });
+      }
+      else{
+        this.selService.service$.subscribe((res) => {
+          this.selectedService = res;
+         this.datasetApiInt.getService(res.id, res.apiUrl).subscribe();
+        });
+      }
+     
+    }
   }
-  public datasetApis: DatasetApi[] = [
-  //   { 
-  //     name: 'Fluggs Rest Api',
-  //     url: 'http://www.fluggs.de/sos2/api/v1/'
-  //   },
- 
-  // {
-  //   name: 'Sensorweb Testbed Api',
-  //   url: 'http://sensorweb.demo.52north.org/sensorwebtestbed/api/v1/'
-  // }
-    
-];
+  public datasetApis: DatasetApi[] = [  ];
 
   ngOnInit(): void {
-    // this.onProviderSelected.emit(this.selectedService);
-    if(this.settings.getSettings().datasetApis){
-      if(this.selectedService){
-        this.datasetApiInt.getService(this.selectedService.id,this.selectedService.apiUrl).subscribe((service) => {
-          this.selectedService = service;
-          this.onProviderSelected.emit(this.selectedService);
-        });
-      }else{
-        for(let i = 0; i < this.settings.getSettings().datasetApis.length; i++){
-          this.datasetApis.push( this.settings.getSettings().datasetApis[i]);
-         console.log('Test')
-        }
-       
-      }
-      this.datasetApiInt.getService('1',this.settings.getSettings().datasetApis[0].url).subscribe((service) => {
-        this.selectedService = service;
-        this.onProviderSelected.emit(this.selectedService);
-      });
-    }
-    
+
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if(changes.endpoint){
-      this.endpoint = '';
-    }
+
+    console.log('Change on Selection');
   }
- 
+
   public providerFilter: ParameterFilter = {
     platformTypes: PlatformTypes.stationary,
     valueTypes: ValueTypes.quantity
   };
 
   public switchProvider(service: Service) {
-    this.onProviderSelected.emit(service);
-    this.selectedService = service;
-    this.label = service.label;
-   
 
+    this.selectedService = service;
+    this.selService.setService(service);
+    this.label = service.label;
   }
 
   navigateTo(url: string) {
-    // let navigationExtras: NavigationExtras = {
-    //   queryParams: {
-    //     selectedService: this.selectedService,
-    //     selectorId: url.split('-')[1]
-    //   }
-    // }
-    this.router.navigateByUrl(url);
-    
-    // this.router.navigate([url], navigationExtras);
-  }
-  // checkSelection(route: string) {
-  //   if (this.router.isActive(route, true)) {
-  //     return true;
 
-  //   }
-  //   else {
-  //     return false;
-  //   }
-  // }
+    this.router.navigateByUrl(url);
+  }
+  
+  checkSelection(route: string) {
+    if (this.router.isActive(route, true)) {
+      return true;
+
+    }
+    else {
+      return false;
+    }
+  }
 
 }

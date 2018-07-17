@@ -17,7 +17,20 @@ import { SelectionMenuComponent } from './selection-menu/options-view/selection-
 
 const routes: Routes = [
   { path: '', redirectTo: 'start', pathMatch: 'full' },
-  { path: 'selection-map', component: SelectionMenuComponent, data: { title: 'WaCoDiS Web Client' } },
+  { path: '', component: SelectionMenuComponent, 
+  children: [{
+    path: 'select-category',
+    component: CategorySelectorComponent
+  }, {
+    path:'selection-map',
+    component: MapViewComponent
+  }, {
+    path: 'select-station',
+    component: StationListSelectorComponent,
+  },{
+    path: 'select-phenomenon',
+    component: PhenomenonListSelectorComponent
+  }], data: { title: 'WaCoDiS Web Client' } },
   { path: 'table', component: DataTableComponent, data: { title: 'Tabellenansicht' } },
   { path: 'timeseries', component: GraphViewComponent, data: { title: 'WaCoDiS Web Client' } },
   { path: 'start', component: SelectViewDashboardComponent, data: { title: 'WaCoDiS Web Client' } },
@@ -25,9 +38,7 @@ const routes: Routes = [
   { path: 'raster-map', component: RasterMapComponent, data: { title: 'WaCoDiS Web Client' } },
   { path: 'trajectory-view', component: TrajectoryViewComponent, data: { title: 'WaCoDiS Web Client' } },
   { path: 'profile-view', component: ProfileViewComponent, data: { title: 'WaCoDiS Web Client' } },
-  { path: 'select-category', component: CategorySelectorComponent, data: { title: 'WaCoDiS Web Client' } },
-  { path: 'select-station', component: StationListSelectorComponent, data: { title: 'WaCoDiS Web Client' } },
-  { path: 'select-phenomenon', component: PhenomenonListSelectorComponent, data: { title: 'WaCoDiS Web Client' } },
+
 ];
 
 @NgModule({

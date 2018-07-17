@@ -1,13 +1,10 @@
 import { Injectable } from '@angular/core';
 import { DatasetService, DatasetOptions, LocalStorage } from '@helgoland/core';
 
-// @Injectable({
-//   providedIn: 'root'
-// })
+
 @Injectable()
 export class DatasetEmitService extends DatasetService<DatasetOptions>{
 
-  // colors = [];
   dataOptions: DatasetOptions;
   internID: string;
 
@@ -18,7 +15,7 @@ export class DatasetEmitService extends DatasetService<DatasetOptions>{
 
   protected createStyles(internalId: string): DatasetOptions {
     return new DatasetOptions(internalId, "rgb(" + Math.floor(Math.random() * 255) + "," + Math.floor(Math.random() * 255) + "," + Math.floor(Math.random() * 255) + ")")
-    //return this.dataOptions;
+
   }
 
   protected saveState(): void {

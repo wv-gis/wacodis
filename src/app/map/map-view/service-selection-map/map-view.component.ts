@@ -1,8 +1,11 @@
-import { Component, OnInit, AfterViewInit, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, AfterViewInit, Input, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
 import { MapCache, LayerOptions, GeoSearchOptions } from '@helgoland/map';
 import * as L from 'leaflet';
 import { ParameterFilter, Phenomenon, Station, DatasetApi, Service } from '@helgoland/core';
 import { ExtendedSettingsService } from '../../../settings/settings.service';
+import { ListSelectorService } from '@helgoland/selector';
+import { SelectedUrlService } from '../../../services/selected-url.service';
+import { Subscription } from 'rxjs';
 
 
 L.Marker.prototype.options.icon = L.icon({
@@ -18,11 +21,8 @@ const WvG_URL = 'http://fluggs.wupperverband.de/secman_wss_v2/service/WMS_WV_Obe
   templateUrl: './map-view.component.html',
   styleUrls: ['./map-view.component.css']
 })
-export class MapViewComponent implements OnInit, AfterViewInit, OnChanges {
+export class MapViewComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
 
- 
-  @Input()
-  selectedProvider: Service;
 
   public baseMaps: Map<string, LayerOptions> = new Map<string, LayerOptions>();
   public overlayMaps: Map<string, LayerOptions> = new Map<string, LayerOptions>();
@@ -43,18 +43,24 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnChanges {
   public stationPopup: L.Popup;
   public serviceProvider: Service;
   public imageUrl = 'http://sentinel-s2-l1c.s3-website.eu-central-1.amazonaws.com/tiles/32/U/LB/2018/6/4/0/preview.jpg';
+  public subscription: Subscription;
+  public isFirst: boolean = true;
 
+  constructor(private mapCache: MapCache, private settings: ExtendedSettingsService, private selectedService: SelectedUrlService) {
 
-  constructor(private mapCache: MapCache, private settings: ExtendedSettingsService) {
-    if(settings.getSettings().datasetApis && this.providerUrl == ''){
-      this.providerUrl = settings.getSettings().datasetApis[0].url;
-      console.log('ProviderURL: ' + this.providerUrl)
-    }
-    // else{
-    //   this.providerUrl = 'http://www.fluggs.de/sos2/api/v1/';
-    // }
-   
-   }
+      if(this.isFirst){
+        this.isFirst = false;
+        this.providerUrl = this.settings.getSettings().datasetApis[0].url;
+      }
+      this.subscription = selectedService.service$.subscribe((res) => {
+        this.providerUrl = res.apiUrl;
+        this.serviceProvider = res;
+          if (this.stationFilter.phenomenon !== undefined) {
+          this.stationFilter = {};
+        }
+      });
+
+  }
 
   ngAfterViewInit(): void {
     this.mapCache.getMap('map').on('zoomend', (event) => {
@@ -63,16 +69,8 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnChanges {
     });
   }
   ngOnChanges(changes: SimpleChanges): void {
-    if(this.selectedProvider){
-      this.providerUrl = this.selectedProvider.apiUrl;
-      this.label = this.selectedProvider.label;
-      this.serviceProvider = this.selectedProvider;
-    }
-
    
-    if (this.stationFilter.phenomenon !== undefined) {
-          this.stationFilter = {};
-        }
+ 
   }
 
   ngOnInit() {
@@ -91,11 +89,10 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnChanges {
     this.overlayMaps.set('Sentinel0406',
       {
         label: "Sentinel Raster", visible: false,
-        layer: L.imageOverlay(this.imageUrl, [[50.429727,5.81551], [51.366602, 7.45059]])
-      });
+        layer: L.imageOverlay(this.imageUrl, [[50.429727, 5.81551], [51.366602, 7.45059]])
+      }); 
      
   }
-
 
 
   public onStationSelected(station: Station) {
@@ -117,16 +114,11 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnChanges {
     };
   }
 
-  // public setProviderUrl(url: Service) {
-  //   this.providerUrl = url.apiUrl;
-  //   this.serviceProvider = url;
-  //   if (this.stationFilter.phenomenon !== undefined) {
-  //     this.stationFilter = {};
-  //   }
-  //   this.label = url.label;
-  // }
 
-   removeStationFilter() {
+  removeStationFilter() {
     this.stationFilter = {};
+  }
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 }

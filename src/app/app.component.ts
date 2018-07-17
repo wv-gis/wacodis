@@ -14,12 +14,8 @@ import 'rxjs/add/operator/filter';
 export class AppComponent implements OnInit{
   defaultTitle = '';
   constructor(private router: Router,private activatedRoute: ActivatedRoute, 
-    private titleService: Title, //status: StatusCheckService, 
-   // private localStore: LocalStorage
-  ){
+    private titleService: Title){
 
-    // localStore = new LocalStorage();
-  //  status.checkAll().subscribe((res) => res.forEach((entry) => console.log(entry)));
   }
   
   ngOnInit() {

@@ -25,7 +25,6 @@
     line-height: 52px;
 } 
 
-/* .phenomenon-list-active  */
 .phenomena .phenomenonSelector.active {
     top: 111px;
     width: 400px;
@@ -37,7 +36,6 @@
     right: 0;
     bottom: 0;
     background-color: #718296;
-    /* width: 400px; */
 }
 .phenomena .phenomenonSelector {
     overflow: auto;

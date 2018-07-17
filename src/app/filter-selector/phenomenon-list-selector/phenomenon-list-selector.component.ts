@@ -1,14 +1,16 @@
-import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
 import { ListSelectorParameter } from '@helgoland/selector';
 import { Provider, IDataset, Service } from '@helgoland/core';
 import { DatasetEmitService } from '../../services/dataset-emit.service';
+import { SelectedUrlService } from '../../services/selected-url.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'wv-phenomenon-list-selector',
   templateUrl: './phenomenon-list-selector.component.html',
   styleUrls: ['./phenomenon-list-selector.component.scss']
 })
-export class PhenomenonListSelectorComponent implements OnChanges{
+export class PhenomenonListSelectorComponent implements OnChanges, OnDestroy{
 
  
   @Input()
@@ -31,8 +33,19 @@ export class PhenomenonListSelectorComponent implements OnChanges{
     }];
 
   public selectedProviderList: Provider[] = [];
+    public subscription: Subscription;
+  constructor(private datasetService: DatasetEmitService, private selectedService: SelectedUrlService) { 
 
-  constructor(private datasetService: DatasetEmitService) { }
+    this.subscription = selectedService.service$.subscribe((res) => {
+      if(this.selectedProviderList){
+        this.selectedProviderList = [];
+      }
+      this.selectedProviderList.push({
+        id: res.id,
+        url: res.apiUrl
+      });
+    });
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if(this.selectedProvider){
@@ -42,6 +55,7 @@ export class PhenomenonListSelectorComponent implements OnChanges{
         url: this.selectedProvider.apiUrl,
       });
     }
+
   }
 
   public onDatasetSelected(datasets: IDataset[]) {
@@ -51,18 +65,8 @@ export class PhenomenonListSelectorComponent implements OnChanges{
     })
   }
 
-  // public getProviderUrl(service: Service) {
-  //   this.selectedProviderList = [];
-  //   this.selectedProviderList.push({
-  //     id: service.id,
-  //     url: service.apiUrl,
-  //   })
-    // this.selectedProviderList.forEach((entry)=>{
-    //   if(entry.url==service.apiUrl){
 
-    //   }
-    // });
-
-  // }
-
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
 }

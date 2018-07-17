@@ -9,16 +9,17 @@ import { MultiServiceFilterSelectorComponent, FilteredParameter } from '@helgola
 
 export class ExtendedMultiservicefilterComponent extends MultiServiceFilterSelectorComponent {
 
-    public selected: string = null;
-
+    
+    public selectedItems =[];
+    public endpoint: string = this.endpoint;
     onSelectItem(item: FilteredParameter) {
         super.onSelectItem(item);
-        this.selected = item.id;
+        this.selectedItems.push(item.label);
+      
         
     }
     ngOnChanges(changes: SimpleChanges){
         super.ngOnChanges(changes);
-        console.log(this.endpoint);
     }
 
 }
