@@ -1,5 +1,5 @@
 import { Component, OnInit, Output, EventEmitter, Input, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
-import { Station, Phenomenon, Category, Provider, IDataset, Feature, ParameterFilter, Service, DatasetService } from '@helgoland/core';
+import { Station, Phenomenon, Category, Provider, IDataset, Feature, ParameterFilter, Service, DatasetService, DatasetOptions } from '@helgoland/core';
 import { ListSelectorParameter, FilteredParameter, ListSelectorService } from '@helgoland/selector';
 import { NavigationExtras, Router, ActivatedRoute } from '@angular/router';
 import { DatasetEmitService } from '../../services/dataset-emit.service';
@@ -18,9 +18,10 @@ import { Subscription } from 'rxjs';
 export class CategorySelectorComponent implements OnChanges, OnDestroy {
   public selectedProviderList: Provider[] = [];
   public subscription: Subscription;
-  constructor( private datasetService: DatasetEmitService, private selectedService: SelectedUrlService){
+  constructor( private datasetService: DatasetService<DatasetOptions>, private selectedService: SelectedUrlService){
 
     this.subscription = selectedService.service$.subscribe((res) => {
+      console.log('CatgeoryURL: ' + res.apiUrl);
       if(this.selectedProviderList){
         this.selectedProviderList = [];
       }

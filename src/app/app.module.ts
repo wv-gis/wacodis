@@ -11,6 +11,8 @@ import {
   //StatusCheckService,
   LocalStorage,
   DatasetService,
+  ColorService,
+  HttpService,
 } from '@helgoland/core';
 import { HelgolandD3Module } from '@helgoland/d3';
 import {
@@ -26,7 +28,7 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { MapModule } from './map/map.module';
 import { DataDepictionModule } from './data-depiction/data-depiction.module';
 import { MenuModule } from './selection-menu/menu.module';
-import { HelgolandSelectorModule } from '@helgoland/selector';
+import { HelgolandSelectorModule, ListSelectorService } from '@helgoland/selector';
 import { HelgolandModificationModule } from '@helgoland/modification';
 import { HelgolandControlModule } from '@helgoland/control';
 import { HelgolandTimeModule } from '@helgoland/time';
@@ -41,6 +43,7 @@ import { settings } from '../environments/environment';
 import { DatasetEmitService } from './services/dataset-emit.service';
 import { ExtendedDepictionModule } from './extended-depiction/extended-depiction.module';
 import { SelectedUrlService } from './services/selected-url.service';
+
 
 
 
@@ -102,18 +105,23 @@ export function DatasetEmitFactory(localstorage: LocalStorage){
     // },
     {
       provide: DatasetApiInterface,
-      useClass: SplittedDataDatasetApiInterface
+      useClass: SplittedDataDatasetApiInterface,
     },
     {
       provide: SettingsService,
       useClass: ExtendedSettingsService
     },
+    // {
+    //   provide: DatasetEmitService,
+    //   useFactory: DatasetEmitFactory,
+    //   deps: [LocalStorage]
+    // },
     {
-      provide: DatasetEmitService,
-      // useClass: DatasetEmitService,
+      provide: DatasetService,
       useFactory: DatasetEmitFactory,
-      deps: [LocalStorage]
-    }, TranslateService, SelectedUrlService
+      deps:[LocalStorage]
+      }
+    , SelectedUrlService,// HttpService
     
     
    

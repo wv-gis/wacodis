@@ -7,8 +7,8 @@
 
     <div class="selectedDataset" [ngClass]="{'active': isActive}">
         <div class="legendEntry" *ngFor="let id of datasetIdsMultiple">
-            <n52-timeseries-entry [datasetId]="id" [selected]="isSelected(id)" [datasetOptions]="datasetOptionsMultiple.get(id)" [timeInterval]="timespan"
-                (onSelectDataset)="selectDataset($event, id)"></n52-timeseries-entry>
+            <wv-extended-timeseries-entry [datasetId]="id" [selected]="isSelected(id)" [datasetOptions]="datasetOptionsMultiple.get(id)" [timeInterval]="timespan"
+                (onSelectDataset)="selectDataset($event, id)" (onSelectDate)="changeDate($event)" (onDeleteDataset)="removeDataset(id)"></wv-extended-timeseries-entry>
         </div>
     </div>
 </div>

@@ -1,23 +1,23 @@
 <div class="container-fluid">
   <wv-depiction-menu [timespan]="timespan" (onTimespanChanged)="timespanChanged($event)"></wv-depiction-menu>
-  <div class="row">
-    <div class="diagram" [ngClass]="{'col col-md-11 col-sm-11': isActive, 'col-8 col-md-8 col-sm-6': !isActive }">
-      <div class="diagramEntry" style="height: 800px; padding: 5px;">
+  <!-- <div class="row"> -->
+    <div class="diagram">
+      <div class="diagramEntry" style="height: 650px; padding: 5px;" id="#diagram" [ngClass]="{'active': isActive}">
         <n52-d3-timeseries-graph [datasetIds]="datasetIdsMultiple" [selectedDatasetIds]="selectedIds" [datasetOptions]="datasetOptionsMultiple"
-          [timeInterval]="timespan" (onTimespanChanged)="timespanChanged($event)" [graphOptions]="diagramOptionsD3" #diagram></n52-d3-timeseries-graph>
+          [timeInterval]="timespan" (onTimespanChanged)="timespanChanged($event)" [graphOptions]="diagramOptionsD3" #diagram ></n52-d3-timeseries-graph>
       </div>
-      <!-- <div style="height: 200px;">
+      <div style="height: 100px; width: 80%;">
         <n52-d3-overview-timeseries-graph [datasetIds]="datasetIdsMultiple" [rangefactor]="2" [datasetOptions]="datasetOptionsMultiple" [graphOptions]="overviewOptions"
         [timeInterval]="timespan" (onTimespanChanged)="timespanChanged($event)" (onContentLoading)="onOverviewLoading($event)"></n52-d3-overview-timeseries-graph>
-      </div> -->
+      </div>
       <!-- <n52-time-range-slider id="time-test" [timeList]="timelist"></n52-time-range-slider> -->
     </div>
-    <div class="menu" [ngClass]="{'col-md-1': isActive, 'col-4 col-md-4 col-sm-6': !isActive}" (click)="change()">
+    <div class="menu" [ngClass]="{'active': isActive}" (click)="change()">
       <!-- <div class="legendEntry" *ngFor="let id of datasetIdsMultiple">
         <n52-timeseries-entry [datasetId]="id" [selected]="isSelected(id)" [datasetOptions]="datasetOptionsMultiple.get(id)" [timeInterval]="timespan"
           (onSelectDataset)="selectDataset($event, id)"></n52-timeseries-entry>
       </div> -->
-      <wv-dataset-menu [datasetOptionsMultiple]="datasetOptionsMultiple" [timespan]="timespan" (changeSelectedIdList)="select($event)"></wv-dataset-menu>
+      <wv-dataset-menu [datasetOptionsMultiple]="datasetOptionsMultiple" [timespan]="timespan" (changeSelectedIdList)="select($event)" (changeSelectedDataset)="removeDataset($event)" (changeTimespan)="timespanChanged($event)"></wv-dataset-menu>
     </div>
-  </div>
+  <!-- </div> -->
 </div>

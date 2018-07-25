@@ -10,6 +10,7 @@ import {FilterModule} from '../filter-selector/filter.module';
 import { HelgolandMapSelectorModule } from '@helgoland/map';
 import { HelgolandSelectorModule } from '@helgoland/selector';
 import { HelgolandLabelMapperModule } from '@helgoland/depiction';
+import { SelectedUrlService } from '../services/selected-url.service';
 
 
 
@@ -25,6 +26,6 @@ import { HelgolandLabelMapperModule } from '@helgoland/depiction';
     FilterModule,
   ],
   declarations: [MapViewComponent, TimespanMapComponent, RasterMapComponent],
-  exports: [MapViewComponent, TimespanMapComponent, RasterMapComponent]
+  exports: [MapViewComponent, TimespanMapComponent, RasterMapComponent],
 })
 export class MapModule { }

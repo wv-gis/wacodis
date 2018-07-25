@@ -19,7 +19,8 @@ const WvG_URL = 'http://fluggs.wupperverband.de/secman_wss_v2/service/WMS_WV_Obe
 @Component({
   selector: 'wv-map-view',
   templateUrl: './map-view.component.html',
-  styleUrls: ['./map-view.component.css']
+  styleUrls: ['./map-view.component.css'],
+  // providers: [SelectedUrlService]
 })
 export class MapViewComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
 
@@ -48,17 +49,22 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnChanges, OnDes
 
   constructor(private mapCache: MapCache, private settings: ExtendedSettingsService, private selectedService: SelectedUrlService) {
 
-      if(this.isFirst){
-        this.isFirst = false;
-        this.providerUrl = this.settings.getSettings().datasetApis[0].url;
-      }
+    // if (this.isFirst) {
+    //   this.isFirst = false;
+    //   this.providerUrl = this.settings.getSettings().datasetApis[0].url;
+  
+    //   console.log(this.providerUrl);
+    // }
       this.subscription = selectedService.service$.subscribe((res) => {
         this.providerUrl = res.apiUrl;
         this.serviceProvider = res;
-          if (this.stationFilter.phenomenon !== undefined) {
+        console.log(this.serviceProvider);
+        if (this.stationFilter.phenomenon !== undefined) {
           this.stationFilter = {};
         }
       });
+    
+   
 
   }
 
@@ -69,8 +75,8 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnChanges, OnDes
     });
   }
   ngOnChanges(changes: SimpleChanges): void {
-   
- 
+
+console.log('Change');
   }
 
   ngOnInit() {
@@ -90,19 +96,19 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnChanges, OnDes
       {
         label: "Sentinel Raster", visible: false,
         layer: L.imageOverlay(this.imageUrl, [[50.429727, 5.81551], [51.366602, 7.45059]])
-      }); 
-     
+      });
+
   }
 
 
   public onStationSelected(station: Station) {
     if (!station.properties.timeseries) {
-      this.stationPopup = L.popup().setLatLng([station.geometry.coordinates[1], station.geometry.coordinates[0]])
-        .setContent(`<div> ID:  ${station.properties.id} </div><div> ${station.properties.label} </div>`)
-        .openOn(this.mapCache.getMap('map'));
+      this.stationPopup = L.popup().setLatLng([station.geometry.bbox["1"], station.geometry.bbox["0"]])
+      .setContent(`<div> ID:  ${station.properties.id} </div><div> ${station.properties.label} </div>`)
+      .openOn(this.mapCache.getMap('map'));
     }
     else {
-      this.stationPopup = L.popup().setLatLng([station.geometry.coordinates[1], station.geometry.coordinates[0]])
+      this.stationPopup = L.popup().setLatLng([station.geometry.bbox[1], station.geometry.bbox[0]])
         .setContent(`<div> ID:  ${station.properties.id} </div><div> ${station.properties.label} </div><div> LetzterWert: ${station.properties.timeseries} </div>`)
         .openOn(this.mapCache.getMap('map'));
     }

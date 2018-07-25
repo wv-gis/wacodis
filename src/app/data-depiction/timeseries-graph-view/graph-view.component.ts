@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef, HostListener } from '@angular/core';
-import { DatasetOptions, Timespan } from '@helgoland/core';
-import { D3PlotOptions } from '@helgoland/d3';
+import { DatasetOptions, Timespan, DatasetService } from '@helgoland/core';
+import { D3TimeseriesGraphComponent, D3PlotOptions } from '@helgoland/d3';
 import { ActivatedRoute } from '@angular/router';
 import { DatasetEmitService } from '../../services/dataset-emit.service';
 
@@ -22,31 +22,28 @@ export class GraphViewComponent {
         togglePanZoom: false,
         showReferenceValues: false,
         generalizeAllways: true,
+
     };
     public selectedIds: string[] = [];
     public datasetOptionsMultiple: Map<string, DatasetOptions> = new Map();
-    public isActive = true;
+    public isActive = false;
 
 
-    constructor(private cdr: ChangeDetectorRef, private route: ActivatedRoute, private dataEmitService: DatasetEmitService) {
-               if (dataEmitService !== undefined && dataEmitService.hasDatasets()) {
+    constructor(private cdr: ChangeDetectorRef, private route: ActivatedRoute, private dataEmitService: DatasetService<DatasetOptions>) {
+        if (dataEmitService !== undefined && dataEmitService.hasDatasets()) {
             for (let k = 0; k < dataEmitService.datasetIds.length; k++) {
                 this.datasetIdsMultiple.push(dataEmitService.datasetIds[k]);
-                console.log(dataEmitService.datasetIds[0]);
-                // dataEmitService.datasetOptions.forEach((entry) =>this.colors.push(entry.color) )
-                // this.datasetOptionsMultiple.set(dataEmitService.datasetIds[k],this.colors[k] );
-
             }
-
-
         }
-       
 
-        this.createColors();
-
-        this.datasetIdsMultiple.forEach((entry, i) => {
-            this.datasetOptionsMultiple.set(entry, new DatasetOptions(entry, this.colors[i]));
+        dataEmitService.datasetOptions.forEach((option) => {
+            console.log(option.color)
+            this.colors.push(option.color);
+            this.datasetIdsMultiple.forEach((entry, i) => {
+                this.datasetOptionsMultiple.set(entry, new DatasetOptions(entry, this.colors[i]));
+            });
         });
+
     }
 
 
@@ -57,7 +54,8 @@ export class GraphViewComponent {
     }
 
     public overviewOptions: D3PlotOptions = {
-        generalizeAllways: true
+        overview: true,
+        yaxis: false,
     };
 
     public timespanChanged(timespan: Timespan) {
@@ -86,13 +84,26 @@ export class GraphViewComponent {
 
     public change() {
         if (this.isActive) {
+            // this.diagramOptionsD3.yaxis =document.getElementById('#diagram').getBoundingClientRect().width;
             this.isActive = false;
+
+
             return false;
         }
         else {
+            // this.diagramOptionsD3.yaxis =document.getElementById('#diagram').getBoundingClientRect().width;
             this.isActive = true;
             return true;
         }
+    }
+
+    public removeDataset(id: string) {
+        const datasetIdx = this.datasetIdsMultiple.indexOf(id);
+        if (datasetIdx > -1) {
+            this.datasetIdsMultiple.splice(datasetIdx, 1);
+            this.datasetOptionsMultiple.delete(id);
+        }
+        this.dataEmitService.removeDataset(id);
     }
 
 }

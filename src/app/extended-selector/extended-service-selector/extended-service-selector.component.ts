@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ServiceSelectorComponent } from '@helgoland/selector';
+import { ServiceSelectorComponent, ServiceSelectorService } from '@helgoland/selector';
 
 
 
@@ -11,4 +11,7 @@ import { ServiceSelectorComponent } from '@helgoland/selector';
 
 export class ExtendedServiceSelectorComponent extends ServiceSelectorComponent{
 
+        constructor(protected serviceSelectorService: ServiceSelectorService){
+            super(serviceSelectorService);
+        }
 }

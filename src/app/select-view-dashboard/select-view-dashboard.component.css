@@ -69,3 +69,15 @@ h5 {
     color: black;
     margin: auto;
 }
+
+.backgroundImage .card {
+    width: 350px;
+    height: 150px;
+    top: 50px;
+    margin: auto;
+    padding: 10px;
+}
+.backgroundImage table{
+    top: 100px;
+    margin: auto;
+}

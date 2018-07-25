@@ -8,10 +8,13 @@ import { ExtendedSettingsService } from '../settings/settings.service';
 import { DepictionMenuComponent } from './depiction-menu/depiction-menu.component';
 import { HelgolandTimeModule } from '@helgoland/time';
 import { DatasetMenuComponent } from './dataset-menu/dataset-menu.component';
-import { HelgolandCoreModule } from '@helgoland/core';
+import { HelgolandCoreModule, DatasetService, LocalStorage, HttpService } from '@helgoland/core';
 import { HelgolandDatasetlistModule } from '@helgoland/depiction';
-import { DatasetEmitService } from '../services/dataset-emit.service';
+// import { DatasetEmitService } from '../services/dataset-emit.service';
 import { TabsComponent, TabComponent } from './tabs/tabs.component';
+import { DatasetEmitService } from '../services/dataset-emit.service';
+import { HttpClientModule } from '@angular/common/http';
+import { ExtendedDepictionModule } from '../extended-depiction/extended-depiction.module';
 
 
 
@@ -26,11 +29,11 @@ import { TabsComponent, TabComponent } from './tabs/tabs.component';
     HelgolandTimeModule,
     HelgolandCoreModule,
     HelgolandDatasetlistModule,
-      AppRoutingModule
+      AppRoutingModule,ExtendedDepictionModule,
   ],
   declarations: [SelectionMenuComponent, DepictionMenuComponent, DatasetMenuComponent, TabsComponent, TabComponent],
   exports: [SelectionMenuComponent,DepictionMenuComponent, DatasetMenuComponent, TabComponent, TabsComponent],
-  providers: [ExtendedSettingsService, DatasetEmitService],
+  providers: [ExtendedSettingsService],
 })
 
 export class MenuModule {

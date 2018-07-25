@@ -14,9 +14,10 @@ import { TrajectoryViewComponent } from './trajectory-view/trajectory-view.compo
 import { ProfileViewComponent } from './profile-view/profile-view.component';
 import { DataTableComponent } from './data-table/data-table.component';
 import { GraphViewComponent } from './timeseries-graph-view/graph-view.component';
-import { HelgolandCoreModule } from '@helgoland/core';
+import { HelgolandCoreModule, LocalStorage, DatasetService } from '@helgoland/core';
 import { MenuModule } from '../selection-menu/menu.module';
 import { DatasetEmitService } from '../services/dataset-emit.service';
+// import { DatasetEmitService } from '../services/dataset-emit.service';
 
 @NgModule({
   imports: [
@@ -37,6 +38,6 @@ import { DatasetEmitService } from '../services/dataset-emit.service';
   ],
   declarations: [DataTableComponent, GraphViewComponent, TrajectoryViewComponent, ProfileViewComponent],
   exports: [DataTableComponent, GraphViewComponent, TrajectoryViewComponent, ProfileViewComponent,],
-  providers: [DatasetEmitService],
+  // providers: [{ provide: DatasetService, useClass: DatasetEmitService, deps: [LocalStorage]}],
 })
 export class DataDepictionModule { }

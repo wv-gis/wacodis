@@ -1,5 +1,7 @@
 import {Component, Input, SimpleChanges} from '@angular/core';
 import { MultiServiceFilterSelectorComponent, FilteredParameter } from '@helgoland/selector';
+import { DatasetApiInterface } from '@helgoland/core';
+import { TranslateService } from '@ngx-translate/core';
 
 
 @Component({
@@ -11,6 +13,9 @@ import { MultiServiceFilterSelectorComponent, FilteredParameter } from '@helgola
 export class ExtendedServiceFilterSelectorComponent extends MultiServiceFilterSelectorComponent{
 
     public selectionID: string = null;
+    constructor(protected datasetApiInterface: DatasetApiInterface,protected translate: TranslateService){
+        super(datasetApiInterface, translate);
+    }
 
     onSelectItem(item: FilteredParameter ){
         super.onSelectItem(item);

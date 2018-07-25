@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
-import { IDataset, Provider, Service } from '@helgoland/core';
+import { IDataset, Provider, Service, DatasetService, DatasetOptions } from '@helgoland/core';
 import { ListSelectorParameter } from '@helgoland/selector';
 import { DatasetEmitService } from '../../services/dataset-emit.service';
 import { SelectedUrlService } from '../../services/selected-url.service';
@@ -37,7 +37,7 @@ export class StationListSelectorComponent implements OnChanges, OnDestroy {
   public subscription: Subscription;
 
 
-  constructor(private datasetService: DatasetEmitService, private selectedService: SelectedUrlService) {
+  constructor(private datasetService: DatasetService<DatasetOptions>, private selectedService: SelectedUrlService) {
 
     this.subscription = selectedService.service$.subscribe((res) => {
       if (this.selectedProviderList) {

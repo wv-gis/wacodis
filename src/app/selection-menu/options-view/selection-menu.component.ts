@@ -29,14 +29,15 @@ export class SelectionMenuComponent implements OnInit, OnChanges {
       }
       if (this.isFirst) {
         this.isFirst = false;
-        this.datasetApiInt.getService('1', this.settings.getSettings().datasetApis[0].url).subscribe((service) => {
-          this.selService.setService(service);
-          this.selectedService = service;
+        this.datasetApiInt.getServices( this.settings.getSettings().datasetApis[0].url).subscribe((service) => {
+          this.selService.setService(service[0]);
+          this.selectedService = service[0];
         });
       }
       else{
         this.selService.service$.subscribe((res) => {
           this.selectedService = res;
+          this.selService.setService(res);
          this.datasetApiInt.getService(res.id, res.apiUrl).subscribe();
         });
       }

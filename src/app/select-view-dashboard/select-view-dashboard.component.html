@@ -1,5 +1,5 @@
 <div class="backgroundImage">
-  <div id="carouselMapViewIndicators" class="carousel slide" data-ride="carousel">
+  <!-- <div id="carouselMapViewIndicators" class="carousel slide" data-ride="carousel">
     <ol class="carousel-indicators">
       <li data-target="#carouselMapViewIndicators" data-slide-to="0" class="active"></li>
       <li data-target="#carouselMapViewIndicators" data-slide-to="1"></li>
@@ -42,5 +42,37 @@
         <span class="carousel-control-next-icon" aria-hidden="true"></span>
         <span class="sr-only">Next</span>
       </a>
-    </div>
+    </div> -->
+  <table>
+    <tbody>
+      <tr>
+        <td>
+          <div class="card">
+            <h5>Zeitreihe über die Kartenansicht wählen</h5>
+            <a class="btn btn-success" role="button" routerLink="/selection-map">Karte ansehen und Zeitreihe wählen</a>
+          </div>
+        </td>
+        <td>
+          <div class="card">
+            <h5>Zeitreihe über die Kategorie auswählen</h5>
+            <a class="btn btn-success" role="button" routerLink="/select-category">Kategorie wählen und Zeitreihe wählen</a>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <div class="card">
+            <h5>Zeitreihe über ein Phänomen wählen</h5>
+            <a class="btn btn-success" role="button" routerLink="/select-phenomenon">Phänomen wählen und Zeitreihe wählen</a>
+          </div>
+        </td>
+        <td>
+          <div class="card">
+            <h5>Zeitreihe über die Station auswählen</h5>
+            <a class="btn btn-success" role="button" routerLink="/select-station">Station wählen und Zeitreihe wählen</a>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </div>

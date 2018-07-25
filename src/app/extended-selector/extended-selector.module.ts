@@ -1,6 +1,6 @@
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { HelgolandSelectorModule } from "@helgoland/selector";
+import { HelgolandSelectorModule, ListSelectorService } from "@helgoland/selector";
 import { HelgolandLabelMapperModule } from "@helgoland/depiction";
 import { TranslateModule } from "@ngx-translate/core";
 
@@ -24,7 +24,7 @@ import { HelgolandCoreModule } from "@helgoland/core";
       ExtendedServiceFilterSelectorComponent, ExtendedListSelectorComponent, ExtendedServiceSelectorComponent],
     exports: [ExtendedMultiservicefilterComponent,
         ExtendedServiceFilterSelectorComponent, ExtendedListSelectorComponent, ExtendedServiceSelectorComponent],
-  
+  providers: [ListSelectorService]
   })
   
   export class ExtendedSelectorModule {

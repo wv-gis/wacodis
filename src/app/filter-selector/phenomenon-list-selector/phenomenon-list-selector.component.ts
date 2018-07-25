@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
 import { ListSelectorParameter } from '@helgoland/selector';
-import { Provider, IDataset, Service } from '@helgoland/core';
+import { Provider, IDataset, Service, DatasetService, DatasetOptions } from '@helgoland/core';
 import { DatasetEmitService } from '../../services/dataset-emit.service';
 import { SelectedUrlService } from '../../services/selected-url.service';
 import { Subscription } from 'rxjs';
@@ -34,7 +34,7 @@ export class PhenomenonListSelectorComponent implements OnChanges, OnDestroy{
 
   public selectedProviderList: Provider[] = [];
     public subscription: Subscription;
-  constructor(private datasetService: DatasetEmitService, private selectedService: SelectedUrlService) { 
+  constructor(private datasetService: DatasetService<DatasetOptions>, private selectedService: SelectedUrlService) { 
 
     this.subscription = selectedService.service$.subscribe((res) => {
       if(this.selectedProviderList){

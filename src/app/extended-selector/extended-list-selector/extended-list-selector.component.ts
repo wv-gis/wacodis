@@ -27,7 +27,7 @@ export class ExtendedListSelectorComponent extends ListSelectorComponent {
 
   itemSelected(item: FilteredParameter, index: number){
     if (index < this.i) {
-      
+      console.log(this.parameters[index + 1].filterList[0]);
       if(index == 0){
         this.parameters[0].filterList = this.providerList.map((entry) => {
           entry.filter = this.filter;
@@ -35,11 +35,18 @@ export class ExtendedListSelectorComponent extends ListSelectorComponent {
         });
       }
       else{
-        this.parameters[index + 1].filterList = item.filterList.map((entry) => {
-         
-          entry.filter[this.parameters[index].type] = entry.itemId;
-          return entry;
-        });
+        console.log('Label: ' + item.label+ ' Id: ' + item.id);
+        item.filterList.splice(index);
+       this.parameters[index+1].filterList.splice(index,2);
+          this.parameters[(index + 1)].filterList = item.filterList.map((entry) => {
+        console.log(this.parameters[index].type);
+                   entry.filter[this.parameters[index].type] = entry.itemId;
+            return entry;
+          });
+        
+        
+       
+     console.log(this.parameters[index + 1].filterList[0]);
       }
       
     }
@@ -51,6 +58,7 @@ export class ExtendedListSelectorComponent extends ListSelectorComponent {
     }
     this.i = index;
     super.itemSelected(item, index);
+
   }
 
   ngOnChanges(changes: SimpleChanges) {
