@@ -5,16 +5,16 @@ import { ExtendedTimeseriesEntryComponent } from "./extended-timeseries-entry/ex
 import { HelgolandLabelMapperModule } from "@helgoland/depiction";
 
 @NgModule({
-    imports: [
-      CommonModule,
-HelgolandLabelMapperModule
-    ],
-    declarations: [ExtendedDatasetTableComponent, ExtendedTimeseriesEntryComponent],
-    exports: [ExtendedDatasetTableComponent, ExtendedTimeseriesEntryComponent],
-  })
+  imports: [
+    CommonModule,
+    HelgolandLabelMapperModule
+  ],
+  declarations: [ExtendedDatasetTableComponent, ExtendedTimeseriesEntryComponent],
+  exports: [ExtendedDatasetTableComponent, ExtendedTimeseriesEntryComponent],
+})
 
 
 
-export class ExtendedDepictionModule{
+export class ExtendedDepictionModule {
 
 }

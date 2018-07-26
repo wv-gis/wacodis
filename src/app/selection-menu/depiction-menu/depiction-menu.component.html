@@ -13,8 +13,10 @@
         <button class="btn btn-default" [ngClass]="{'active': checkSelection('/table')}" routerLink='/table'>
           <i class="far fa-list-alt"></i>
         </button>
-        <button class="btn btn-default" [ngClass]="{'active': checkSelection('/trajectory-view')}" routerLink='/trajectory-view'>Trajectories</button>
-        <button class="btn btn-default" [ngClass]="{'active': checkSelection('/profile-view')}" routerLink='/profile-view'>Profile</button>
+        <!-- <button class="btn btn-default" [ngClass]="{'active': checkSelection('/trajectory-view')}" routerLink='/trajectory-view'>Trajectories</button>
+        <button class="btn btn-default" [ngClass]="{'active': checkSelection('/profile-view')}" routerLink='/profile-view'>Profile</button> -->
+        <button class="btn btn-default" (click)="setTimespan('day')"> 1 Tag</button> 
+        <button class="btn btn-default" (click)="setTimespan('week')">1 Woche</button> 
       </ul>
     </div>
   </div>

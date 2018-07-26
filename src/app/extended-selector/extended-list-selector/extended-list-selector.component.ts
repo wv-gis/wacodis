@@ -18,42 +18,55 @@ export class ExtendedListSelectorComponent extends ListSelectorComponent {
     protected apiInterface: DatasetApiInterface,
     protected apiMapping: DatasetApiMapping, protected router: Router) {
     super(listSelectorService, apiInterface, apiMapping);
-
+    this.listSelectorService.cache.clear();
   }
   moveToDiagram(url: string) {
     this.router.navigateByUrl(url);
-     
+
   }
 
-  itemSelected(item: FilteredParameter, index: number){
+  itemSelected(item: FilteredParameter, index: number) {
     if (index < this.i) {
       console.log(this.parameters[index + 1].filterList[0]);
-      if(index == 0){
+      if (index == 0) {
         this.parameters[0].filterList = this.providerList.map((entry) => {
           entry.filter = this.filter;
           return entry;
         });
       }
-      else{
-        console.log('Label: ' + item.label+ ' Id: ' + item.id);
-        item.filterList.splice(index);
-       this.parameters[index+1].filterList.splice(index,2);
-          this.parameters[(index + 1)].filterList = item.filterList.map((entry) => {
-        console.log(this.parameters[index].type);
-                   entry.filter[this.parameters[index].type] = entry.itemId;
-            return entry;
-          });
-        
-        
-       
-     console.log(this.parameters[index + 1].filterList[0]);
+      else {
+        console.log('Label: ' + item.label + ' Id: ' + item.id);
+        // const difIndex = this.listSelectorService.cache.get(this.selectorId).indexOf(this.parameters[index + 1]);
+        // if (difIndex > -1) {
+        //   console.log('Cache deleted');
+        //   this.listSelectorService.cache.get(this.selectorId)
+        //     .forEach((entry) => {
+        //     entry.filterList[difIndex] = item.filterList
+        //       .map((entry) => {
+        //         // console.log(this.parameters[index].type);
+        //         entry.filter[this.parameters[index].type] = entry.itemId;
+        //         return entry;
+        //       });
+        //     });
+        // }
+        // item.filterList.splice(index);
+        //  this.parameters[index+1].filterList.splice(index,2);
+        this.parameters[(index + 1)].filterList = item.filterList.map((entry) => {
+          // console.log(this.parameters[index].type);
+          entry.filter[this.parameters[index].type] = entry.itemId;
+          return entry;
+        });
+        // this.listSelectorService.cache.set(this.selectorId,this.parameters);
+
+
+        console.log(this.parameters[index + 1].filterList[0].filter);
       }
-      
+
     }
-    if(index === this.parameters.length-1){
+    if (index === this.parameters.length - 1) {
       this.datasetSelected = true;
     }
-    else{
+    else {
       this.datasetSelected = false;
     }
     this.i = index;
@@ -67,6 +80,7 @@ export class ExtendedListSelectorComponent extends ListSelectorComponent {
       entry.filter = this.filter;
       return entry;
     });
+
   }
 
 }
