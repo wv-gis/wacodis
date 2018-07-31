@@ -11,7 +11,7 @@ export class DataTableComponent implements OnInit {
   public datasetIds = [  ];
   public selectedIds: string[] = [];
 
-  // timeframe for which data should be fetchedin table
+  // timeframe for which data should be fetched in table
   public timespan = new Timespan(new Date().getTime() - 100000000, new Date().getTime());
   public isActive = true;
   public datasetOptions: Map<string, DatasetOptions> = new Map();

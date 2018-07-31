@@ -52,13 +52,11 @@ export class StationListSelectorComponent implements OnChanges, OnDestroy {
 
   ngOnChanges(changes: SimpleChanges): void {
 
-    console.log('Change StationListSelector');
   }
 
   public onDatasetSelected(datasets: IDataset[]) {
     datasets.forEach((dataset) => {
       this.datasetService.addDataset(dataset.internalId);
-      console.log('StationSelect: ' + dataset.internalId);
     })
 
   }

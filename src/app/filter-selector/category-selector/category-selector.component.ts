@@ -21,7 +21,6 @@ export class CategorySelectorComponent implements OnChanges, OnDestroy {
   constructor( private datasetService: DatasetService<DatasetOptions>, private selectedService: SelectedUrlService){
 
     this.subscription = selectedService.service$.subscribe((res) => {
-      console.log('CatgeoryURL: ' + res.apiUrl);
       if(this.selectedProviderList){
         this.selectedProviderList = [];
       }
@@ -56,22 +55,14 @@ export class CategorySelectorComponent implements OnChanges, OnDestroy {
 
     datasets.forEach((dataset) => {
       this.datasetService.addDataset(dataset.internalId);
-      console.log('StationSelect: ' + dataset.internalId);
     })
     
   }
 
   ngOnChanges(changes: SimpleChanges) {
 
-    console.log('Change Kategorie Selector');
-    this.selectedService.service$.subscribe((service) => {
-      console.log('ServiceObservable Kategorie ' + service.apiUrl);
-      this.selectedProviderList.push(
-        { id: service.id,
-        url: service.apiUrl
-      });
-    });
   }
+
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }

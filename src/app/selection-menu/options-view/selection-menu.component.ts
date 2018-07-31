@@ -52,7 +52,6 @@ export class SelectionMenuComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
 
-    console.log('Change on Selection');
   }
 
   public providerFilter: ParameterFilter = {

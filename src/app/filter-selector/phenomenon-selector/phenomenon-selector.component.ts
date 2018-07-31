@@ -12,13 +12,13 @@ import { Phenomenon, Provider, Service } from "@helgoland/core";
 export class PhenomenonSelectorComponent implements  OnChanges {
 
     @Input()
-    public provider: Service;
+    provider: Service;
     @Output()
     selectedPhenomenon: EventEmitter<Phenomenon> = new EventEmitter<Phenomenon>();
     @Output()
     stationFilter = new EventEmitter();
 
-    selectedProviderList: Provider[] = [];
+    selectedProviderList: Provider[];// = [];
     id: string;
     isFirst = true;
     isActive = true;
@@ -53,10 +53,17 @@ export class PhenomenonSelectorComponent implements  OnChanges {
     public change() {
         if (this.isActive) {
             this.isActive = false;
+            if(document.getElementById('mainMap')!== undefined){
+                document.getElementById('mainMap').setAttribute('style',' right: 0px;')
+            }
+          
             return false;
         }
         else {          
             this.isActive = true;
+            if(document.getElementById('mainMap')!== undefined){
+                document.getElementById('mainMap').setAttribute('style','right: 400px;')
+            }
             return true;
         }
     }

@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, Input, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
+import { Component, OnInit, AfterViewInit, Input, OnChanges, SimpleChanges, OnDestroy} from '@angular/core';
 import { MapCache, LayerOptions, GeoSearchOptions } from '@helgoland/map';
 import * as L from 'leaflet';
 import { ParameterFilter, Phenomenon, Station, DatasetApi, Service } from '@helgoland/core';
@@ -33,7 +33,7 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnChanges, OnDes
   public mapOptions: L.MapOptions = { dragging: true, zoomControl: true, boxZoom: false };
   public fitBounds: L.LatLngBoundsExpression = [[50.985, 6.924], [51.319, 7.607]];
 
-  public providerUrl = '';
+  public providerUrl: string;
   public label = 'Wupperverband Zeitreihen Dienst';
   public avoidZoomToSelection = false;
   public cluster = true;
@@ -49,12 +49,6 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnChanges, OnDes
 
   constructor(private mapCache: MapCache, private settings: ExtendedSettingsService, private selectedService: SelectedUrlService) {
 
-    // if (this.isFirst) {
-    //   this.isFirst = false;
-    //   this.providerUrl = this.settings.getSettings().datasetApis[0].url;
-  
-    //   console.log(this.providerUrl);
-    // }
       this.subscription = selectedService.service$.subscribe((res) => {
         this.providerUrl = res.apiUrl;
         this.serviceProvider = res;
@@ -63,8 +57,6 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnChanges, OnDes
           this.stationFilter = {};
         }
       });
-    
-   
 
   }
 
@@ -76,7 +68,6 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnChanges, OnDes
   }
   ngOnChanges(changes: SimpleChanges): void {
 
-console.log('Change');
   }
 
   ngOnInit() {
@@ -102,16 +93,11 @@ console.log('Change');
 
 
   public onStationSelected(station: Station) {
-    if (!station.properties.timeseries) {
-      this.stationPopup = L.popup().setLatLng([station.geometry.bbox["1"], station.geometry.bbox["0"]])
+    const point = station.geometry as GeoJSON.Point;
+        this.stationPopup = L.popup().setLatLng([point.coordinates[1], point.coordinates[0]])
       .setContent(`<div> ID:  ${station.properties.id} </div><div> ${station.properties.label} </div>`)
       .openOn(this.mapCache.getMap('map'));
-    }
-    else {
-      this.stationPopup = L.popup().setLatLng([station.geometry.bbox[1], station.geometry.bbox[0]])
-        .setContent(`<div> ID:  ${station.properties.id} </div><div> ${station.properties.label} </div><div> LetzterWert: ${station.properties.timeseries} </div>`)
-        .openOn(this.mapCache.getMap('map'));
-    }
+
   }
 
   public onSelectPhenomenon(phenomenon: Phenomenon) {

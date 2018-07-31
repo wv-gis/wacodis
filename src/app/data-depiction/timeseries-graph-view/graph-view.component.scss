@@ -43,6 +43,13 @@
         position: inherit;
         width: 250px;
     }
+    .overview{
+        height: 100px; 
+        width: 80%;
+    }
+    .overview.active{
+        width: 100%;
+    }
 
 }
 

@@ -4,8 +4,8 @@
     <div class="table"  [ngClass]="{'active': isActive }">
       <wv-extended-dataset-table [datasetIds]="datasetIds" [timeInterval]="timespan" [datasetOptions]="datasetOptions" [selectedDatasetIds]="selectedIds"></wv-extended-dataset-table>
     </div>
-    <div class="menu"  (click)="menuIsActive()">
-      <wv-dataset-menu [datasetOptionsMultiple]="datasetOptions" [timespan]="timespan" (changeSelectedIdList)="select($event)" id="datasetMenu" (changeTimespan)="timespanChanged($event)" (changeSelectedDataset)="removeDataset($event)"></wv-dataset-menu>
+    <div class="menu">
+      <wv-dataset-menu (clicked)="menuIsActive()" [datasetOptionsMultiple]="datasetOptions" [timespan]="timespan" (changeSelectedIdList)="select($event)" id="datasetMenu" (changeTimespan)="timespanChanged($event)" (changeSelectedDataset)="removeDataset($event)"></wv-dataset-menu>
     </div>
   </div>
 </div>

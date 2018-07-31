@@ -37,7 +37,6 @@ export class GraphViewComponent {
         }
 
         dataEmitService.datasetOptions.forEach((option) => {
-            console.log(option.color)
             this.colors.push(option.color);
             this.datasetIdsMultiple.forEach((entry, i) => {
                 this.datasetOptionsMultiple.set(entry, new DatasetOptions(entry, this.colors[i]));
@@ -86,12 +85,15 @@ export class GraphViewComponent {
         if (this.isActive) {
             // this.diagramOptionsD3.yaxis =document.getElementById('#diagram').getBoundingClientRect().width;
             this.isActive = false;
-
-
+            const time = new Timespan(this.timespan.from-1, this.timespan.to);
+            this.timespan = time;
             return false;
         }
         else {
             // this.diagramOptionsD3.yaxis =document.getElementById('#diagram').getBoundingClientRect().width;
+            this.isActive = false;
+            const time = new Timespan(this.timespan.from+1, this.timespan.to);
+            this.timespan = time;
             this.isActive = true;
             return true;
         }

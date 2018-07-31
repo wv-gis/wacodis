@@ -61,7 +61,6 @@ export class PhenomenonListSelectorComponent implements OnChanges, OnDestroy{
   public onDatasetSelected(datasets: IDataset[]) {
     datasets.forEach((dataset) => {
       this.datasetService.addDataset(dataset.internalId);
-      console.log('StationSelect: ' + dataset.internalId);
     })
   }
 

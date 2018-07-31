@@ -36,8 +36,6 @@ export class DepictionMenuComponent {
         const diff = this.timespan.to - this.timespan.from;
         switch (time) {
             case 'day':
-
-            console.log(diff);
             if(diff == 100000000){
                 break;
             }

@@ -10,15 +10,13 @@ export class DatasetEmitService extends DatasetService<DatasetOptions>{
   dataOptions: DatasetOptions;
   internID: string;
 
-  constructor(protected localStorage: LocalStorage){
+  constructor(protected localStorage: LocalStorage) {
     super(localStorage);
 
   }
 
   protected createStyles(internalId: string): DatasetOptions {
-    console.log('CreateStyle');
     return new DatasetOptions(internalId, "rgb(" + Math.floor(Math.random() * 255) + "," + Math.floor(Math.random() * 255) + "," + Math.floor(Math.random() * 255) + ")")
-
   }
 
   protected saveState(): void {

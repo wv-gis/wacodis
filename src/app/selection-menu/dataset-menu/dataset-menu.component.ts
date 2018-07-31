@@ -20,6 +20,8 @@ export class DatasetMenuComponent {
     changeSelectedDataset: EventEmitter<string> = new EventEmitter<string>();
     @Output()
     changeTimespan: EventEmitter<Timespan> = new EventEmitter<Timespan>();
+    @Output()
+    clicked: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     isActive = true;
     selectedIds: string[] = [];
@@ -51,10 +53,12 @@ export class DatasetMenuComponent {
     change() {
         if (this.isActive) {
             this.isActive = false;
+            this.clicked.emit(false);
             return false;
         }
         else {
             this.isActive = true;
+            this.clicked.emit(true);
             return true;
         }
     }

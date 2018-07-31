@@ -11,22 +11,28 @@ import { TranslateService } from '@ngx-translate/core';
 
 export class ExtendedMultiservicefilterComponent extends MultiServiceFilterSelectorComponent {
 
-    
-    public selectedItems =[];
+
+    public selectedItems = [];
     public endpoint: string = this.endpoint;
 
-    constructor(protected datasetApiInterface: DatasetApiInterface,protected translate: TranslateService){
+    constructor(protected datasetApiInterface: DatasetApiInterface, protected translate: TranslateService) {
         super(datasetApiInterface, translate);
     }
     onSelectItem(item: FilteredParameter) {
         super.onSelectItem(item);
         this.selectedItems.push(item.label);
-      
-        
-    }
-    ngOnChanges(changes: SimpleChanges){
-        super.ngOnChanges(changes);
-        // console.log('OnChanges MultiService');
-    }
 
+        // this.items.forEach((elem) => {
+        //   elem.filterList.forEach((entry) =>  console.log('Label Changes ' + entry.filter['phenomenon']))
+           
+        // });
+        // item.filterList.forEach((entry) => console.log(entry.filter['phenomenon']));
+    }
+    ngOnChanges(changes: SimpleChanges) {
+        super.ngOnChanges(changes);       
+        this.filterList.forEach((entry) => {
+         
+        });
+
+    }
 }
