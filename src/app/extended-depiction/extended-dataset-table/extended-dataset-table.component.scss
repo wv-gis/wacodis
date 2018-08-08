@@ -3,7 +3,7 @@
     flex: 1;
     overflow-y: scroll;  /* make table scrollable */
     overflow-x: hidden;  /* suppress horizontal scrollbar */
-  
+    height: auto;
     /* Start fixed table header: http://jsfiddle.net/yeAhU/261/ */
     tbody, thead tr {
       display: table;
@@ -15,7 +15,7 @@
       display: block;
       border-collapse: separate;
       border-spacing: 0 1px;
-      height: 750px;
+      height: 800px;
       overflow: auto;
     }
   

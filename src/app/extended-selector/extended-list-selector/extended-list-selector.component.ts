@@ -26,7 +26,7 @@ export class ExtendedListSelectorComponent extends ListSelectorComponent {
   }
 
   itemSelected(item: FilteredParameter, index: number) {
-
+console.log(item.filterList);
     if (index < this.i) {
         for (let k = index + 1; k < this.parameters.length; k++) {
           this.parameters[k].filterList = item.filterList.map((entry) => {

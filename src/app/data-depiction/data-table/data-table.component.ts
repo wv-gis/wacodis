@@ -40,11 +40,14 @@ export class DataTableComponent implements OnInit {
 
   menuIsActive(){
     if(this.isActive){
-      //if(document.getElementById('datasetMenu').getElementsByClassName('selectedDataset').item(0).className.endsWith('active')){
+      const time = new Timespan(this.timespan.from-1, this.timespan.to);
+      this.timespan = time;
       this.isActive = false;
       return false;
     }
     else{
+      const time = new Timespan(this.timespan.from-1, this.timespan.to);
+      this.timespan = time;
       this.isActive = true;
       return true;
     }
@@ -59,5 +62,6 @@ export class DataTableComponent implements OnInit {
       this.datasetOptions.delete(id);
     }
     this.dataEmitService.removeDataset(id);
+
   }
 }

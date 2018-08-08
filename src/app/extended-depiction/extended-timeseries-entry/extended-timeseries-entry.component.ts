@@ -8,5 +8,5 @@ import { TimeseriesEntryComponent } from "@helgoland/depiction";
 })
 
 export class ExtendedTimeseriesEntryComponent extends TimeseriesEntryComponent{
-
+    loading = this.loading;
 }

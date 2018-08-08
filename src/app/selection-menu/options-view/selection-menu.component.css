@@ -30,6 +30,7 @@ h5{
     width: 130px;
     float: left;
     text-align: center;
+    cursor: pointer;
 }
 .selectionsMenu .center,
 .selectionsMenu .entry+.entry {
@@ -55,8 +56,28 @@ button{
 
 .selectionsMenu .entry span {
     vertical-align: middle;
-    cursor: pointer;
+    
 }
 .selectionsMenu .entry:hover{
     background-color: #8b9cae;
 }
+.collapse.navbar-collapse.show {
+    z-index: 801;
+    position: absolute;
+    background-color: #718296;
+    border: none;
+}
+#selectionBar {
+    padding: 0;
+}
+
+ /* .selectionsMenu .center 
+.selectionsMenu .entry+.entry {
+    border: none;
+} */
+.collapse.navbar-collapse.show .entry{
+    border: none;
+}
+/* .navbar .center {
+    border: none;
+} */

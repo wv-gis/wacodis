@@ -14,25 +14,20 @@ export class ExtendedMultiservicefilterComponent extends MultiServiceFilterSelec
 
     public selectedItems = [];
     public endpoint: string = this.endpoint;
+    public i = 0;
 
     constructor(protected datasetApiInterface: DatasetApiInterface, protected translate: TranslateService) {
         super(datasetApiInterface, translate);
     }
     onSelectItem(item: FilteredParameter) {
         super.onSelectItem(item);
+        console.log(this.filterList[this.filterList.length - 1].filter);
         this.selectedItems.push(item.label);
 
-        // this.items.forEach((elem) => {
-        //   elem.filterList.forEach((entry) =>  console.log('Label Changes ' + entry.filter['phenomenon']))
-           
-        // });
-        // item.filterList.forEach((entry) => console.log(entry.filter['phenomenon']));
+
     }
     ngOnChanges(changes: SimpleChanges) {
-        super.ngOnChanges(changes);       
-        this.filterList.forEach((entry) => {
-         
-        });
-
+        super.ngOnChanges(changes);
+        this.selectedItems.splice(0,this.selectedItems.length-1);
     }
 }

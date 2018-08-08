@@ -20,25 +20,41 @@
             </div>
         </div>
     </div>
-    <div class="center">
-        <div class="entry" [ngClass]="{'active': checkSelection('/selection-map')}" (click)="navigateTo('/selection-map');">
-            <i class="fas fa-map"></i>
-            <span class="mid"> Karte</span>
-        </div>
-        <div class="entry" [ngClass]="{'active': checkSelection('/select-category')}" (click)="navigateTo('/select-category');">
-            <i class="fas fa-tint"></i>
-            <span class="mid"> Kategorie</span>
-        </div>
+    <div class="navbar navbar-expand-lg navbar-light" id="selectionBar">
+        <div class="center">
 
-        <div class="entry" [ngClass]="{'active': checkSelection('/select-station')}" (click)="navigateTo('/select-station');">
-            <i class="fas fa-home"></i>
-            <span class="mid"> Station</span>
-        </div>
+        <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#selectionToggler" aria-controls="selectionToggler"
+            aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="selectionToggler">
 
-        <div class="entry" [ngClass]="{'active': checkSelection('/select-phenomenon')}">
-            <i class="fas fa-ruler-vertical"></i>
-            <span class="mid" routerLink='/select-phenomenon'> Phänomen</span>
+            <ul class="navbar-nav mr-auto">
+
+                <li class="entry" [ngClass]="{'active': checkSelection('/selection-map')}"  routerLink='/selection-map' >
+                    <i class="fas fa-map"></i>
+                    <span class="mid" data-toggle="collapse" data-target=".navbar-collapse.show"> Karte</span>
+                </li>
+
+
+                <li class="entry" [ngClass]="{'active': checkSelection('/select-category')}"  routerLink='/select-category'>
+                    <i class="fas fa-tint"></i>
+                    <span class="mid" data-toggle="collapse" data-target=".navbar-collapse.show"> Kategorie</span>
+                </li>
+
+                <li class="entry" [ngClass]="{'active': checkSelection('/select-station')}"   routerLink='/select-station'>
+                    <i class="fas fa-home"></i>
+                    <span class="mid" data-toggle="collapse" data-target=".navbar-collapse.show"> Station</span>
+                </li>
+
+                <li class="entry" [ngClass]="{'active': checkSelection('/select-phenomenon')}"  routerLink='/select-phenomenon'>
+                    <i class="fas fa-ruler-vertical"></i>
+                    <span class="mid" data-toggle="collapse" data-target=".navbar-collapse.show"> Phänomen</span>
+                </li>
+
+            </ul>
         </div>
+    </div>
         <!-- <wv-tabs>
 
             <wv-tab title="Karte" picture="fas fa-map">
@@ -55,7 +71,6 @@
             </wv-tab>
 
         </wv-tabs> -->
-
     </div>
- </div>
- <router-outlet></router-outlet>
+</div>
+<router-outlet></router-outlet>
