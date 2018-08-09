@@ -54,7 +54,7 @@ export class PhenomenonSelectorComponent implements  OnChanges {
         if (this.isActive) {
             this.isActive = false;
             if(document.getElementById('mainMap')!== undefined){
-                document.getElementById('mainMap').setAttribute('style',' right: 0px;')
+                document.getElementById('mainMap').setAttribute('style',' right: 0px;');
             }
           
             return false;
@@ -62,7 +62,7 @@ export class PhenomenonSelectorComponent implements  OnChanges {
         else {          
             this.isActive = true;
             if(document.getElementById('mainMap')!== undefined){
-                document.getElementById('mainMap').setAttribute('style','right: 400px;')
+                document.getElementById('mainMap').setAttribute('style','right: 400px;');
             }
             return true;
         }

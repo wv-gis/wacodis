@@ -63,11 +63,13 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnChanges, OnDes
   ngAfterViewInit(): void {
     this.mapCache.getMap('map').on('zoomend', (event) => {
       const map: L.Map = event.target;
-
+      this.mapCache.getMap('map').fitBounds(map.getBounds());
+    
     });
+   
   }
   ngOnChanges(changes: SimpleChanges): void {
-
+ 
   }
 
   ngOnInit() {
