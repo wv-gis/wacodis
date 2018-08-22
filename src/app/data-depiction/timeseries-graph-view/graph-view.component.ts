@@ -103,6 +103,7 @@ export class GraphViewComponent {
         const datasetIdx = this.datasetIdsMultiple.indexOf(id);
         if (datasetIdx > -1) {
             this.datasetIdsMultiple.splice(datasetIdx, 1);
+            this.datasetIdsMultiple.sort();
             this.datasetOptionsMultiple.delete(id);
         }
         this.dataEmitService.removeDataset(id);

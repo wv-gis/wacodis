@@ -9,7 +9,7 @@ import { PhenomenonSelectorComponent } from './phenomenon-selector/phenomenon-se
 import { PhenomenonListSelectorComponent } from './phenomenon-list-selector/phenomenon-list-selector.component';
 import { StationListSelectorComponent } from './station-list-selector/station-list-selector.component';
 import { ExtendedSelectorModule } from '../extended-selector/extended-selector.module';
-import { HelgolandCoreModule, DatasetService, LocalStorage } from '@helgoland/core';
+import { HelgolandCoreModule } from '@helgoland/core';
 import { DatasetEmitService } from '../services/dataset-emit.service';
 import { SelectedUrlService } from '../services/selected-url.service';
 // import { DatasetEmitService } from '../services/dataset-emit.service';

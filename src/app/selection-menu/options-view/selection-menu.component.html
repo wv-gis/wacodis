@@ -2,6 +2,9 @@
     <button class="btn btn-default dropdown-toggle entry provider" type="button" data-toggle="modal" data-target="#serviceModal">
         <i class="fas fa-broadcast-tower" style="padding: 3px"></i>Services: {{label}}
     </button>
+    <!-- <div *ngIf="checkSelection('/selection-map')">
+        <button id="splitter" type='button' class="btn btn-default entry split">SplitScreen</button>
+    </div> -->
     <div class="modal fade" id="serviceModal" tabindex="-1" role="dialog" aria-labelledby="serviceProviderLabel" aria-hidden="true"
         #modal>
         <div class="modal-dialog" role="navigation">
@@ -51,7 +54,7 @@
                     <i class="fas fa-ruler-vertical"></i>
                     <span class="mid" data-toggle="collapse" data-target=".navbar-collapse.show"> Phänomen</span>
                 </li>
-
+                
             </ul>
         </div>
     </div>

@@ -58,10 +58,15 @@ export class DataTableComponent implements OnInit {
   public removeDataset(id: string){
     const datasetIdx = this.datasetIds.indexOf(id);
     if(datasetIdx > -1){
+      
       this.datasetIds.splice(datasetIdx, 1);
       this.datasetOptions.delete(id);
+     
+      this.dataEmitService.removeDataset(id);
+   
     }
-    this.dataEmitService.removeDataset(id);
-
+    const time = new Timespan(this.timespan.from-1, this.timespan.to);
+    this.timespan = time;
+   
   }
 }

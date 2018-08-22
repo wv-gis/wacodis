@@ -11,6 +11,8 @@ import { HelgolandMapSelectorModule } from '@helgoland/map';
 import { HelgolandSelectorModule } from '@helgoland/selector';
 import { HelgolandLabelMapperModule } from '@helgoland/depiction';
 import { SelectedUrlService } from '../services/selected-url.service';
+import { HttpClientModule } from '@angular/common/http';
+
 
 
 
@@ -24,6 +26,7 @@ import { SelectedUrlService } from '../services/selected-url.service';
     HelgolandSelectorModule,
     HelgolandLabelMapperModule,
     FilterModule,
+    HttpClientModule
   ],
   declarations: [MapViewComponent, TimespanMapComponent, RasterMapComponent],
   exports: [MapViewComponent, TimespanMapComponent, RasterMapComponent],

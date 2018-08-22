@@ -8,7 +8,7 @@ import { ExtendedSettingsService } from '../settings/settings.service';
 import { DepictionMenuComponent } from './depiction-menu/depiction-menu.component';
 import { HelgolandTimeModule } from '@helgoland/time';
 import { DatasetMenuComponent } from './dataset-menu/dataset-menu.component';
-import { HelgolandCoreModule, DatasetService, LocalStorage, HttpService } from '@helgoland/core';
+import { HelgolandCoreModule } from '@helgoland/core';
 import { HelgolandDatasetlistModule } from '@helgoland/depiction';
 // import { DatasetEmitService } from '../services/dataset-emit.service';
 import { TabsComponent, TabComponent } from './tabs/tabs.component';
@@ -30,6 +30,7 @@ import { ExtendedDepictionModule } from '../extended-depiction/extended-depictio
     HelgolandCoreModule,
     HelgolandDatasetlistModule,
       AppRoutingModule,ExtendedDepictionModule,
+      HttpClientModule
   ],
   declarations: [SelectionMenuComponent, DepictionMenuComponent, DatasetMenuComponent, TabsComponent, TabComponent],
   exports: [SelectionMenuComponent,DepictionMenuComponent, DatasetMenuComponent, TabComponent, TabsComponent],

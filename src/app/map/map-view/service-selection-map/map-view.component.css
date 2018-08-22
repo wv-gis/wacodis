@@ -33,3 +33,7 @@ n52-station-map-selector{
     height: 100%;
     position: relative;
 }
+.range{
+    position: absolute;
+    width: 100%;
+}

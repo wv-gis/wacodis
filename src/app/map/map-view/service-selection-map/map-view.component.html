@@ -5,5 +5,6 @@
             [overlayMaps]="overlayMaps" [layerControlOptions]="layerControlOptions" (onSelected)="onStationSelected($event)"
             [cluster]="cluster" [statusIntervals]="statusIntervals" (onContentLoading)="loadingStations = $event"></n52-station-map-selector>
     </div>
+    <!-- <input id="range" class="range" type="range" min="0" max="1.0" step="any"/> -->
 </div>
 <wv-phenomenon-selector [provider]="serviceProvider" (selectedPhenomenon)="onSelectPhenomenon($event)" id="phenomenon" (stationFilter)="removeStationFilter()"></wv-phenomenon-selector>

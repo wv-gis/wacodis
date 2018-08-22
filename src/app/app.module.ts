@@ -13,6 +13,7 @@ import {
   DatasetService,
   ColorService,
   HttpService,
+  StatusIntervalResolverService,
 } from '@helgoland/core';
 import { HelgolandD3Module } from '@helgoland/d3';
 import {
@@ -43,6 +44,7 @@ import { settings } from '../environments/environment';
 import { DatasetEmitService } from './services/dataset-emit.service';
 import { ExtendedDepictionModule } from './extended-depiction/extended-depiction.module';
 import { SelectedUrlService } from './services/selected-url.service';
+import { RestApiService } from './services/rest-api.service';
 
 
 
@@ -121,6 +123,7 @@ export function DatasetEmitFactory(localstorage: LocalStorage){
       useFactory: DatasetEmitFactory,
       deps:[LocalStorage]
       }, 
+      RestApiService,StatusIntervalResolverService,
     SelectedUrlService,// HttpService
     
     

@@ -19,7 +19,7 @@ export class SelectionMenuComponent implements OnInit, OnChanges {
   public isFirst: boolean = true;
   public selectedService: Service;
   public endpoint: string;
-
+  public clicked: boolean = false;
 
   constructor(private router: Router, private settings: ExtendedSettingsService, private datasetApiInt: DatasetApiInterface, private selService: SelectedUrlService) {
     if (this.settings.getSettings().datasetApis) {
@@ -80,5 +80,17 @@ export class SelectionMenuComponent implements OnInit, OnChanges {
       return false;
     }
   }
+
+  // setActive(){
+  //   if(document.getElementById('splitter').getAttribute('class').includes('active')){
+  //     console.log(document.getElementById('splitter').getAttribute('class'));
+     
+  //     return true;
+  //   }
+  //   else{
+     
+  //     return false;
+  //   }
+  // }
 
 }

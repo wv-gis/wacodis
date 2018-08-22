@@ -11,8 +11,7 @@ export class DatasetEmitService extends DatasetService<DatasetOptions | DatasetO
   internID: string;
 
   constructor(protected localStorage: LocalStorage) {
-    super(localStorage);
-
+    super();
   }
 
   protected createStyles(internalId: string): DatasetOptions {

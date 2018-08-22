@@ -8,6 +8,11 @@
         width: 350px;
         white-space: nowrap;
 }
+.selectionsMenu .entry.split{
+    border-right: solid 1px #dfe4e6;
+    width: 50px;
+    white-space: nowrap;
+}
 h5{
     color: black;
     text-align: center;

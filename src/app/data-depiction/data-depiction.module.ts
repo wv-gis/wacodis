@@ -14,7 +14,7 @@ import { TrajectoryViewComponent } from './trajectory-view/trajectory-view.compo
 import { ProfileViewComponent } from './profile-view/profile-view.component';
 import { DataTableComponent } from './data-table/data-table.component';
 import { GraphViewComponent } from './timeseries-graph-view/graph-view.component';
-import { HelgolandCoreModule, LocalStorage, DatasetService } from '@helgoland/core';
+import { HelgolandCoreModule } from '@helgoland/core';
 import { MenuModule } from '../selection-menu/menu.module';
 import { DatasetEmitService } from '../services/dataset-emit.service';
 import { ExtendedDepictionModule } from '../extended-depiction/extended-depiction.module';
