@@ -33,7 +33,12 @@ n52-station-map-selector{
     height: 100%;
     position: relative;
 }
-.range{
+.leaflet-sps-range{
     position: absolute;
     width: 100%;
+}
+.leaflet-sps-divider{
+position: absolute;
+z-index: 902;
+size: 10px;
 }
