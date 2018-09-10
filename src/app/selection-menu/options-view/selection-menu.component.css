@@ -10,7 +10,7 @@
 }
 .selectionsMenu .entry.split{
     border-right: solid 1px #dfe4e6;
-    width: 50px;
+    width: 80px;
     white-space: nowrap;
 }
 h5{
@@ -86,3 +86,12 @@ button{
 /* .navbar .center {
     border: none;
 } */
+
+
+.modal-body.layerSelect{
+    color: black;
+}
+
+.layerRow{
+width: 50%;
+}

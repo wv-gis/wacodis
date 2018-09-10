@@ -53,7 +53,7 @@ import { RestApiService } from './services/rest-api.service';
 
 
 export function HttpLoaderFactory(http: HttpClient) {
-  return new TranslateHttpLoader(http);
+  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
 export function DatasetEmitFactory(localstorage: LocalStorage){
   return new DatasetEmitService(localstorage);

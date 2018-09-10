@@ -13,12 +13,12 @@ export class RestApiService {
   tokenCache: string;
   requestToken(): Observable<Object> {
     if (!this._token) {
-      this._token = this.http.post('https://www.arcgis.com/sharing/rest/oauth2/token/', { 'client_id': 'nbWzj4cLu1iBIIdR', 'client_secret': 'ef51a52a1e76410ba3298e440bb14d4b', 'grant_type': 'client_credentials' },
+      this._token = this.http.post('https://www.arcgis.com/sharing/rest/oauth2/token/', { 'client_id': 'xy3kRucXy392s2dg', 'client_secret': 'c55f6b8434d244409b43f237faaa47a9', 'grant_type': 'client_credentials' },
         {
           headers: new HttpHeaders({
             // 'Access-Control-Allow-Headers': 'Access-Control-Allow-Headers,content-type', 
             'Content-Type': 'text/plain'
-          }), withCredentials: true, params: { 'client_id': 'nbWzj4cLu1iBIIdR', 'client_secret': 'ef51a52a1e76410ba3298e440bb14d4b', 'grant_type': 'client_credentials' }
+          }), withCredentials: true, params: { 'client_id': 'xy3kRucXy392s2dg', 'client_secret': 'c55f6b8434d244409b43f237faaa47a9', 'grant_type': 'client_credentials' }
         });
     }
 

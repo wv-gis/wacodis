@@ -9,10 +9,11 @@ import { Subscription, timer } from 'rxjs';
 import '../../../../../node_modules/leaflet-side-by-side/index.js';
 import { RestApiService } from '../../../services/rest-api.service';
 import * as esri from "esri-leaflet";
-
+// require ('./leaflet-sbs-range.css');
+require ('./split_layout.css')
 
 L.Marker.prototype.options.icon = L.icon({
-  iconUrl: 'http://openstationmap.org/0.2.0/client/leaflet/images/marker-icon.png',
+  iconUrl: 'assets/images/map-marker-alt-solid.svg',//'http://openstationmap.org/0.2.0/client/leaflet/images/marker-icon.png',
   iconAnchor: [12, 41],
   iconSize: [25, 41],
 });
@@ -48,13 +49,9 @@ export class MapViewComponent implements OnInit, AfterViewInit, AfterViewChecked
   public serviceProvider: Service;
   public subscription: Subscription;
   public token: string;
-  public range;
+
   public imageAccess: Object;
-  public controlLegend: L.Control;
-  public container: HTMLElement;
-  public divider;
-  public mapWasDragEnabled: boolean;
-  public mapWasTapEnabled: boolean;
+
   public sentinelLayer: esri.ImageMapLayer;
 
   constructor(private mapCache: MapCache, private settings: ExtendedSettingsService, private selectedService: SelectedUrlService, private resApiService: RestApiService) {
@@ -77,65 +74,14 @@ export class MapViewComponent implements OnInit, AfterViewInit, AfterViewChecked
 
     });
     // this.controlLegend = L.control.layers(null,this.overlayMaps.get('DWD').layer[0], this.layerControlOptions);
-    // document.getElementById('splitter').addEventListener('click', this.addSplitScreen());
+    // document.getElementById('splitter').addEventListener('click', this.createRange);
     // this.mapCache.getMap('map').addControl(this.controlLegend);
-   this.createRange();
-    // this.addSplitScreen();
   }
-  createRange() {
-    this.container = L.DomUtil.create('div', 'leaflet-sps', this.mapCache.getMap('map').getContainer().children['1']);
-    this.container.style.marginTop = '40%';
-    //setdivider symbol
-    this.divider = L.DomUtil.create('i', 'fas fa-circle leaflet-sps-divider', this.container)
-    this.divider.style.size = '3x';
-    this.divider.style.position = 'absolute';
-    this.divider.style.zIndex = 902;
-
-    //define range slider options
-    this.range = L.DomUtil.create('input', 'leaflet-sps-range', this.container);
-    this.range.id = 'range';
-    this.range.type = 'range';
-    this.range.min = 0;
-    this.range.max = 1;
-    this.range.value = 0.5;
-    this.range.step = 'any';
-    this.range.style.paddingLeft = this.range.style.paddingRight = 0 + 'px';
-    this.range.style.width = '100%';
-  }
-
-  addSplitScreen(){
-    let nw = this.mapCache.getMap('map').containerPointToLayerPoint([0, 0]);
-    let se = this.mapCache.getMap('map').containerPointToLayerPoint(this.mapCache.getMap('map').getSize());
-    // let clipX = nw.x + (se.x - nw.x) * this.range.value;
-    let clipX = nw.x + ((this.mapCache.getMap('map').getSize().x * this.range.value) + (0.5 - this.range.value) * 42);
-    let dividerX = ((this.mapCache.getMap('map').getSize().x * this.range.value) + (0.5 - this.range.value) * 42);
-    this.divider.style.left = dividerX + 'px';
-
-    for (let i = 0; i < this.mapCache.getMap('map').getPanes()['tilePane'].getElementsByClassName('leaflet-layer').length; i++) {
-      if (i == 0)
-        this.mapCache.getMap('map').getPanes()['tilePane'].getElementsByClassName('leaflet-layer')
-          .item(i).setAttribute('style', 'clip: rect(' + [nw.y, se.x, se.y, clipX].join('px,') + 'px);');
-      else {
-        if (i < 2) {
-          this.mapCache.getMap('map').getPanes()['tilePane'].getElementsByClassName('leaflet-layer')
-            .item(i).setAttribute('style', 'clip: rect(' + [nw.y, clipX, se.y, nw.x].join('px,') + 'px);');
-        }
-        else {
-
-        }
-      }
-    }
-    
-  }
-  ngAfterViewChecked(): void {
-    this.range = document.getElementById('range');
-    this.range['oninput' in this.range ? 'input' : 'change'] = this.addSplitScreen();
-    this.mapCache.getMap('map').on('move', this.addSplitScreen, this)
-
-   L.DomEvent.on(this.range,'mouseover',this.cancelMapDrag, this);
-   L.DomEvent.on(this.range, 'mouseout', this.uncancelMapDrag, this) ;
   
-    // this.addSplitScreen();
+  ngAfterViewChecked(): void {
+
+  
+
     // console.log(this.overlayMaps.get('DWD').visible);
     // if(this.overlayMaps.get('DWD').visible){
     //   console.log('test');
@@ -143,26 +89,7 @@ export class MapViewComponent implements OnInit, AfterViewInit, AfterViewChecked
     // }
   }
  
-  cancelMapDrag() {
-    this.mapWasDragEnabled = this.mapCache.getMap('map').dragging.enabled()
-    if (this.mapCache.getMap('map').tap && this.mapCache.getMap('map').tap.enabled()) {
-      this.mapWasTapEnabled = true;    
-       this.mapCache.getMap('map').tap.disable();
-    }
-    else {
-      this.mapWasTapEnabled = false
-    }
-     this.mapCache.getMap('map').dragging.disable();
-  }
-
-  uncancelMapDrag(e) { 
-    if (this.mapWasDragEnabled) {
-     this.mapCache.getMap('map').dragging.enable()
-    }
-    if (this.mapWasTapEnabled) {
-      this.mapCache.getMap('map').tap.enable()
-    }
-  }
+ 
 
   ngOnInit() {
 
@@ -171,11 +98,11 @@ export class MapViewComponent implements OnInit, AfterViewInit, AfterViewChecked
     this.baseMaps.set('map',
       {
         label: 'Open Street Map', visible: true, layer: L.tileLayer('https://{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png',
-          { maxZoom: 18, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>' })
+          { maxZoom: 18, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>' , className: 'Open Street Map'})
       });
     this.overlayMaps.set('Ter', {
       label: 'Terrain', visible: true, layer: L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}.png', {
-        maxZoom: 18, attribution: '&copy; <a href="http://maps.stamen.com">Stamen Tiles Design</a>'
+        maxZoom: 18, attribution: '&copy; <a href="http://maps.stamen.com">Stamen Tiles Design</a>', className: 'Terrain'
       })
     });
     this.overlayMaps.set('WvG',
@@ -206,7 +133,7 @@ export class MapViewComponent implements OnInit, AfterViewInit, AfterViewChecked
         this.imageAccess = res;
         this.token = this.imageAccess['access_token']; 
         this.sentinelLayer.authenticate(this.token);
-        this.sentinelLayer.setBandIds('8,4,3');
+        this.sentinelLayer.setBandIds('4,3,2');
         this.baseMaps.set('EsriSen', {
           label: 'Esri Sentinel Service', visible: false, layer: this.sentinelLayer
         });
