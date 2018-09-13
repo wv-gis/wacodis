@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from "@angular/core";
 import { Phenomenon, Provider, Service } from "@helgoland/core";
+import { MapCache } from "@helgoland/map";
 
 @Component(
     {
@@ -25,7 +26,7 @@ export class PhenomenonSelectorComponent implements  OnChanges {
     public selectionId: string = null;
     public selectedService: Service;
 
-    constructor() { }
+    constructor( protected mapCache : MapCache) { }
 
     ngOnChanges(changes: SimpleChanges): void {
         
@@ -56,7 +57,8 @@ export class PhenomenonSelectorComponent implements  OnChanges {
             if(document.getElementById('mainMap')!== undefined){
                 document.getElementById('mainMap').setAttribute('style',' right: 0px;');
             }
-          
+          this.mapCache.getMap('map').invalidateSize();
+          this.mapCache.getMap('map').setView(this.mapCache.getMap('map').getCenter(), this.mapCache.getMap('map').getZoom());
             return false;
         }
         else {          
@@ -64,6 +66,8 @@ export class PhenomenonSelectorComponent implements  OnChanges {
             if(document.getElementById('mainMap')!== undefined){
                 document.getElementById('mainMap').setAttribute('style','right: 400px;');
             }
+            this.mapCache.getMap('map').invalidateSize();
+            this.mapCache.getMap('map').setView(this.mapCache.getMap('map').getCenter(), this.mapCache.getMap('map').getZoom());
             return true;
         }
     }

@@ -40,22 +40,29 @@
                         </tbody>
                         <thead>
                             <tr>
-                                <th>Synced View</th>
                                 <th>Splitted View</th>
+                                <th>Synced View</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td>
+                                    <img src='assets/images/SliderPic.JPG'>
                                     <input class="form-check-input" name="group100" type="radio" id="split" checked="checked">
                                 </td>
                                 <td>
+                                    <img src='assets/images/SyncedPic.JPG'>
                                     <input class="form-check-input" name="group100" type="radio" id="synced">
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" (click)="splitMapView()" data-dismiss="modal">Save changes</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+
             </div>
         </div>
     </div>

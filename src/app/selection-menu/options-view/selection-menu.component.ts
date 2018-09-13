@@ -31,6 +31,8 @@ export class SelectionMenuComponent implements AfterViewInit {
   public mapWasDragEnabled: boolean;
   public mapWasTapEnabled: boolean;
   public range;
+  public datasetApis: DatasetApi[] = [];
+  public dividerSym;
 
   constructor(private router: Router, private settings: ExtendedSettingsService, private datasetApiInt: DatasetApiInterface, private selService: SelectedUrlService, private mapCache: MapCache) {
     if (this.settings.getSettings().datasetApis) {
@@ -55,17 +57,12 @@ export class SelectionMenuComponent implements AfterViewInit {
 
     }
   }
-  public datasetApis: DatasetApi[] = [];
-
 
   ngAfterViewInit(): void {
     this.mapCache.getMap('map').eachLayer((layer) => {
       this.baseLayers.push(layer);
-
-      // console.log(layer['options'].className);
     });
-    // console.log(this.baseLayers);
-    this.createRange();
+    
   }
 
   public providerFilter: ParameterFilter = {
@@ -108,17 +105,15 @@ export class SelectionMenuComponent implements AfterViewInit {
     this.selectRightLayer = 'Right Layer';
   }
 
-
   createRange() {
     this.container = L.DomUtil.create('div', 'leaflet-sbs', this.mapCache.getMap('map').getContainer().children['1']);
-    //setdivider symbol
-    this.divider = L.DomUtil.create('i', 'fas fa-arrows-alt-h leaflet-sps-divider', this.container)
-    this.divider.style.top = '50%';
-    // this.divider.style.zIndex = '999';
+    //set divider
+    this.divider = L.DomUtil.create('div', 'leaflet-sps-divider', this.container)
+    this.divider.style.height = '100%';
     this.divider.style.position = 'absolute';
     this.divider.style.backgroundColor = '#fff';
     this.divider.style.fontSize = '20px';
-    this.divider.style.width = "2px";
+    this.divider.style.width = "4px";
     this.divider.style.marginLeft = '-2px';
     this.divider.style.pointerEvents = 'none';
     //define range slider options
@@ -138,17 +133,28 @@ export class SelectionMenuComponent implements AfterViewInit {
     this.range.style.height = 0;
     this.range.style.cursor = 'pointer';
     this.range.style.zIndex = '-99';
+    this.range.style.background = 'rgba(0, 0, 0, 0.25)';
+    // set divider symbol
+    this.dividerSym = L.DomUtil.create('img', 'divider', this.divider);
+    this.dividerSym.style.paddingTop = '400px';
+    this.dividerSym.style.marginLeft = '-23px';
+    this.dividerSym.style.cursor = 'pointer';
+    this.dividerSym.src = "assets/images/divider.png";
+    this.dividerSym.style.zIndex = '-99';
+
   }
 
   addSplitScreen() {
     this.divider.style.zIndex = '999';
+    this.range.style.zIndex = '0';
+    this.dividerSym.style.zIndex = '999';
     let nw = this.mapCache.getMap('map').containerPointToLayerPoint([0, 0]);
     let se = this.mapCache.getMap('map').containerPointToLayerPoint(this.mapCache.getMap('map').getSize());
     // let clipX = nw.x + (se.x - nw.x) * this.range.value;
     let clipX = nw.x + ((this.mapCache.getMap('map').getSize().x * this.range.value) + (0.5 - this.range.value) * 42);
     let dividerX = ((this.mapCache.getMap('map').getSize().x * this.range.value) + (0.5 - this.range.value) * 42);
     this.divider.style.left = dividerX + 'px';
-
+    this.mapCache.getMap('map').fire('dividermove', { x: dividerX });
     for (let i = 0; i < this.mapCache.getMap('map').getPanes()['tilePane'].getElementsByClassName('leaflet-layer').length; i++) {
       if (i == 0)
         this.mapCache.getMap('map').getPanes()['tilePane'].getElementsByClassName('leaflet-layer')
@@ -184,16 +190,26 @@ export class SelectionMenuComponent implements AfterViewInit {
     if (this.mapWasTapEnabled) {
       this.mapCache.getMap('map').tap.enable()
     }
+
+  }
+
+  getRangeEvent(rangeInput: any) {
+    return 'oninput' in rangeInput ? 'input' : 'change'
   }
 
   splitMapView() {
-    this.range = document.getElementById('range');
-    this.range['oninput' in this.range ? 'input' : 'change'] = this.addSplitScreen();
-    this.mapCache.getMap('map').on('move', this.addSplitScreen, this)
-
+    this.createRange();
+    // this.range['oninput' in this.range ? 'input' : 'change'] = this.addSplitScreen();
+    L.DomEvent.on(this.range, this.getRangeEvent(this.range), this.addSplitScreen, this);
+    this.mapCache.getMap('map').on('move', this.addSplitScreen, this);
     L.DomEvent.on(this.range, 'mouseover', this.cancelMapDrag, this);
     L.DomEvent.on(this.range, 'mouseout', this.uncancelMapDrag, this);
+    this.mapCache.getMap('map').dragging.addHooks();
+
   }
+
+
+
   // setActive(){
   //   if(document.getElementById('splitter').getAttribute('class').includes('active')){
   //     console.log(document.getElementById('splitter').getAttribute('class'));

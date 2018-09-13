@@ -49,6 +49,7 @@ export class MapViewComponent implements OnInit, AfterViewInit, AfterViewChecked
   public serviceProvider: Service;
   public subscription: Subscription;
   public token: string;
+  public range;
 
   public imageAccess: Object;
 
@@ -79,8 +80,8 @@ export class MapViewComponent implements OnInit, AfterViewInit, AfterViewChecked
   }
   
   ngAfterViewChecked(): void {
-
-  
+   
+   
 
     // console.log(this.overlayMaps.get('DWD').visible);
     // if(this.overlayMaps.get('DWD').visible){
@@ -89,7 +90,7 @@ export class MapViewComponent implements OnInit, AfterViewInit, AfterViewChecked
     // }
   }
  
- 
+  
 
   ngOnInit() {
 
