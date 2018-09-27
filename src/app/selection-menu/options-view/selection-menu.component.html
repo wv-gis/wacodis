@@ -4,6 +4,10 @@
     </button>
     <div *ngIf="checkSelection('/selection-map')">
         <button id="splitter" type="button" class="btn btn-default entry split" data-toggle="modal" data-target="#splitModal">Compare</button>
+        <button id="sentinelLayer" class="btn btn-default dropdown-toggle entry layerSelect" type="button" data-toggle="dropdown">SentinelLayer: {{senLabel}}</button>
+        <div class="dropdown-menu" aria-labelledby="sentinelLayer">
+            <button class="dropdown-item" *ngFor="let senLayer of senLayers; let i = index" (click)="selectSentinelLayer(senLayer, i)">{{senLayer.options.alt}}</button>
+        </div>
     </div>
     <div class="modal fade" id="splitModal" tabindex="-1" role="dialog" aria-hidden="true" #modal>
         <div class="modal-dialog" role="navigation">
@@ -14,7 +18,9 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
+
                 <div class="modal-body layerSelect">
+
                     <table class="table">
                         <thead>
                             <tr>
@@ -27,42 +33,73 @@
                                 <td>
                                     <button id="leftLayer" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">{{selectLeftLayer}}</button>
                                     <div class="dropdown-menu" aria-labelledby="leftLayer">
-                                        <button class="dropdown-item" *ngFor="let layers of baseLayers; let i = index" (click)="checkLayer(layers['options'].className, 'left')">{{layers['options'].className}}</button>
+                                        <button class="dropdown-item" *ngFor="let layers of baseLayers; let i = index" (click)="checkLeftLayer(layers['options'].className|| layers.options.alt, i)">{{layers['options'].className || layers.options.alt}}</button>
                                     </div>
                                 </td>
                                 <td>
                                     <button id="rightLayer" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">{{selectRightLayer}}</button>
                                     <div class="dropdown-menu" aria-labelledby="rightLayer">
-                                        <button class="dropdown-item" *ngFor="let rightLayers of baseLayers; let i = index" (click)="checkLayer(rightLayers['options'].className, 'right')">{{rightLayers['options'].className}}</button>
+                                        <button class="dropdown-item" *ngFor="let rightLayers of baseLayers; let i = index" (click)="checkRightLayer(rightLayers['options'].className|| rightLayers.options.alt, i)">{{rightLayers['options'].className || rightLayers.options.alt}}</button>
                                     </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                        <thead>
-                            <tr>
-                                <th>Splitted View</th>
-                                <th>Synced View</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <img src='assets/images/SliderPic.JPG'>
-                                    <input class="form-check-input" name="group100" type="radio" id="split" checked="checked">
-                                </td>
-                                <td>
-                                    <img src='assets/images/SyncedPic.JPG'>
-                                    <input class="form-check-input" name="group100" type="radio" id="synced">
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" (click)="splitMapView()" data-dismiss="modal">Save changes</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
+                <form name="viewForm" id="selectForm">
+                    <div class="modal-body viewSelect">
+                        <table class="table view">
+                            <thead>
+                                <tr>
+                                    <th>Splitted View</th>
+                                    <th>Synced View</th>
+                                </tr>
+                            </thead>
 
+                            <tbody>
+
+                                <tr>
+                                     <td>
+                                        <img src='assets/images/SliderPic.JPG'>
+                                        <!-- <input class="form-check-input" name="group100" type="radio" id="synced" value="synced"> -->
+                                    </td>
+                                    <td>
+                                            <img src='assets/images/SyncedPic.JPG'>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <select id="selectedForm">
+                                            <option id="split" value="split">Split View
+                                                <!-- <img src'assets/images/SliderPic.JPG'> -->
+                                            </option>
+                                            <option id="synced" value="synced">Synced View
+                                                <!-- <img src="assets/images/SyncedPic.JPG"> -->
+                                            </option>
+                                        </select>
+                                        <!-- <div *ngIf="selectedId=='split' else unchecked"> -->
+                                        <!-- <img src='assets/images/SliderPic.JPG'>
+                                            <input class="form-check-input" name="group100" type="radio" id="split" value="split" checked="checked"> -->
+                                        <!-- </div>
+                                        <ng-template #unchecked>
+                                                <img src='assets/images/SliderPic.JPG'>
+                                                <input class="form-check-input" name="group100" type="radio" id="split">
+                                        </ng-template> -->
+                                    </td>
+                                   
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" style="margin-right: auto" (click)="resetViewSettings()">Reset</button>
+                        <button type="button" class="btn btn-primary" (click)="splitMapView()" data-dismiss="modal">Save changes</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="resetSelection()">Close</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

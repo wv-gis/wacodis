@@ -10,7 +10,7 @@ import '../../../../../node_modules/leaflet-side-by-side/index.js';
 import { RestApiService } from '../../../services/rest-api.service';
 import * as esri from "esri-leaflet";
 // require ('./leaflet-sbs-range.css');
-require ('./split_layout.css')
+require('./split_layout.css')
 
 L.Marker.prototype.options.icon = L.icon({
   iconUrl: 'assets/images/map-marker-alt-solid.svg',//'http://openstationmap.org/0.2.0/client/leaflet/images/marker-icon.png',
@@ -26,7 +26,7 @@ const WvG_URL = 'http://fluggs.wupperverband.de/secman_wss_v2/service/WMS_WV_Obe
   styleUrls: ['./map-view.component.css'],
   // providers: [SelectedUrlService]
 })
-export class MapViewComponent implements OnInit, AfterViewInit, AfterViewChecked, OnDestroy {
+export class MapViewComponent implements OnInit, AfterViewInit, AfterViewChecked, OnDestroy, OnChanges {
 
 
   public baseMaps: Map<string, LayerOptions> = new Map<string, LayerOptions>();
@@ -49,11 +49,9 @@ export class MapViewComponent implements OnInit, AfterViewInit, AfterViewChecked
   public serviceProvider: Service;
   public subscription: Subscription;
   public token: string;
-  public range;
-
   public imageAccess: Object;
-
   public sentinelLayer: esri.ImageMapLayer;
+  public control: L.Control;
 
   constructor(private mapCache: MapCache, private settings: ExtendedSettingsService, private selectedService: SelectedUrlService, private resApiService: RestApiService) {
 
@@ -65,23 +63,32 @@ export class MapViewComponent implements OnInit, AfterViewInit, AfterViewChecked
         this.stationFilter = {};
       }
     });
+    
+  }
+  ngOnChanges(simpleChanges) {
+    console.log('Change in Map View Component')
 
   }
-
   ngAfterViewInit(): void {
     this.mapCache.getMap('map').on('zoomend', (event) => {
       const map: L.Map = event.target;
       this.mapCache.getMap('map').fitBounds(map.getBounds());
 
     });
-    // this.controlLegend = L.control.layers(null,this.overlayMaps.get('DWD').layer[0], this.layerControlOptions);
-    // document.getElementById('splitter').addEventListener('click', this.createRange);
-    // this.mapCache.getMap('map').addControl(this.controlLegend);
+
+    let overlays = {
+      'DWD Prognose': this.overlayMaps.get('DWD').layer,
+      'Wupperverbandsgebiet': this.overlayMaps.get('WvG').layer,
+      'Terrain': this.baseMaps.get('Ter').layer
+    };
+    this.control = L.control.layers(null, overlays, this.layerControlOptions);
+    this.control.addTo(this.mapCache.getMap('map'));
+
   }
-  
+
   ngAfterViewChecked(): void {
-   
-   
+
+
 
     // console.log(this.overlayMaps.get('DWD').visible);
     // if(this.overlayMaps.get('DWD').visible){
@@ -89,8 +96,8 @@ export class MapViewComponent implements OnInit, AfterViewInit, AfterViewChecked
     //   this.controlLegend.getContainer().innerHTML=`<div> <img src="https://maps.dwd.de/geoserver/dwd/wms?version=1.1.0&request=GetLegendGraphic&layer=dwd:FX-Produkt&format=image/png"></img></div>`;
     // }
   }
- 
-  
+
+
 
   ngOnInit() {
 
@@ -99,17 +106,17 @@ export class MapViewComponent implements OnInit, AfterViewInit, AfterViewChecked
     this.baseMaps.set('map',
       {
         label: 'Open Street Map', visible: true, layer: L.tileLayer('https://{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png',
-          { maxZoom: 18, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>' , className: 'Open Street Map'})
+          { maxZoom: 16, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>', className: 'Open Street Map' })
       });
-    this.overlayMaps.set('Ter', {
+    this.baseMaps.set('Ter', {
       label: 'Terrain', visible: true, layer: L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}.png', {
-        maxZoom: 18, attribution: '&copy; <a href="http://maps.stamen.com">Stamen Tiles Design</a>', className: 'Terrain'
+        maxZoom: 16, attribution: '&copy; <a href="http://maps.stamen.com">Stamen Tiles Design</a>', className: 'Terrain'
       })
     });
     this.overlayMaps.set('WvG',
       {
         label: "Wupperverbandsgebiet", visible: false,
-        layer: L.tileLayer.wms(WvG_URL, { layers: '0', format: 'image/png', transparent: true, attribution: '', pane: 'overlayPane' })
+        layer: L.tileLayer.wms(WvG_URL, { layers: '0', format: 'image/png', transparent: true, attribution: '', pane: 'overlayPane', className: 'Verbandsgebiet' })
       });
 
     this.overlayMaps.set('DWD',
@@ -117,25 +124,26 @@ export class MapViewComponent implements OnInit, AfterViewInit, AfterViewChecked
         label: "DWD Daten", visible: false,
         layer: L.tileLayer.wms('https://maps.dwd.de/geoserver/dwd/wms?', {
           layers: 'dwd:Warnungen_Gemeinden_vereinigt, dwd:FX-Produkt', format: 'image/png', transparent: true,
-          attribution: '&copy; <a href="https://maps.dwd.de">DWD Geoserver</a>', pane: 'overlayPane', updateInterval: 300000
+          attribution: '&copy; <a href="https://maps.dwd.de">DWD Geoserver</a>', pane: 'overlayPane', updateInterval: 300000, className: 'DWD'
         })
       });
+
   }
 
   public addSentinelLayer(url: string) {
 
     this.sentinelLayer = esri.imageMapLayer({
-      url: url, position: 'pane', maxZoom: 18, pane: 'tilePane'
+      url: url, position: 'pane', maxZoom: 16, pane: 'tilePane'
     })
 
     if (!this.resApiService.getToken()) {
       this.resApiService.requestToken().subscribe((res) => {
 
         this.imageAccess = res;
-        this.token = this.imageAccess['access_token']; 
+        this.token = this.imageAccess['access_token'];
         this.sentinelLayer.authenticate(this.token);
         this.sentinelLayer.setBandIds('4,3,2');
-        this.baseMaps.set('EsriSen', {
+        this.overlayMaps.set('EsriSen', {
           label: 'Esri Sentinel Service', visible: false, layer: this.sentinelLayer
         });
 
@@ -144,14 +152,8 @@ export class MapViewComponent implements OnInit, AfterViewInit, AfterViewChecked
     }
     else {
       this.sentinelLayer.authenticate(this.resApiService.getToken())
-      this.baseMaps.set('EsriSen', {
+      this.overlayMaps.set('EsriSen', {
         label: 'Esri Sentinel Service', visible: false, layer: this.sentinelLayer
-        //  renderingRule: {
-        //   "rasterFunction": "NDVI", "rasterFunctionArguments": {
-        //     "VisibleBandID": 2, "InfraredBandID": 1
-        //   }, "variableName": "Raster"
-        // }
-        // })
       });
     }
   }

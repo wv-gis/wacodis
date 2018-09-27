@@ -2,7 +2,7 @@
     <div id="main">
         <n52-station-map-selector [mapId]="'map'" [serviceUrl]="providerUrl" [filter]="stationFilter" [zoomControlOptions]="zoomControlOptions"
             [mapOptions]="mapOptions" [fitBounds]="fitBounds" [avoidZoomToSelection]="avoidZoomToSelection" [baseMaps]="baseMaps"
-            [overlayMaps]="overlayMaps" [layerControlOptions]="layerControlOptions" (onSelected)="onStationSelected($event)"
+            [overlayMaps]="overlayMaps"  (onSelected)="onStationSelected($event)"
             [cluster]="cluster" [statusIntervals]="statusIntervals" (onContentLoading)="loadingStations = $event"></n52-station-map-selector>
     </div>
     <!-- <input id="range" class="range" type="range" min="0" max="1.0" step="any"/> -->

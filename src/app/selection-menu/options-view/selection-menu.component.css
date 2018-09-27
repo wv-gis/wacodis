@@ -95,3 +95,10 @@ button{
 .layerRow{
 width: 50%;
 }
+
+.modal-body.viewSelect{
+    color: black;
+}
+.dropdown-item.active{
+    background-color: darkblue;
+}
