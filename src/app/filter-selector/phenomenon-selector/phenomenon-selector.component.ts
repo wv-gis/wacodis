@@ -59,12 +59,20 @@ export class PhenomenonSelectorComponent implements  OnChanges {
             }
           this.mapCache.getMap('map').invalidateSize();
           this.mapCache.getMap('map').setView(this.mapCache.getMap('map').getCenter(), this.mapCache.getMap('map').getZoom());
+          if(this.mapCache.getMap('map2')){
+              this.mapCache.getMap('map2').invalidateSize();
+              this.mapCache.getMap('map2').setView(this.mapCache.getMap('map2').getCenter(), this.mapCache.getMap('map2').getZoom());
+          }
             return false;
         }
         else {          
             this.isActive = true;
             if(document.getElementById('mainMap')!== undefined){
                 document.getElementById('mainMap').setAttribute('style','right: 400px;');
+            }
+            if(this.mapCache.getMap('map2')){
+                this.mapCache.getMap('map2').invalidateSize();
+                this.mapCache.getMap('map2').setView(this.mapCache.getMap('map2').getCenter(), this.mapCache.getMap('map2').getZoom());
             }
             this.mapCache.getMap('map').invalidateSize();
             this.mapCache.getMap('map').setView(this.mapCache.getMap('map').getCenter(), this.mapCache.getMap('map').getZoom());

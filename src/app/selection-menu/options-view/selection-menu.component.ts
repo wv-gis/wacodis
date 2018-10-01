@@ -185,7 +185,7 @@ export class SelectionMenuComponent implements AfterViewInit, OnDestroy, OnInit 
     this.selectLeftLayer = layerName;
     this.selectedIdL = id;
     this._leftLayer = this.baseLayers[id];
-    this.updateLayers();
+    // this.updateLayers();
 
   }
   checkRightLayer(layerName: string, id: number) {
@@ -193,7 +193,7 @@ export class SelectionMenuComponent implements AfterViewInit, OnDestroy, OnInit 
     this.selectRightLayer = layerName;
     this.selectedIdR = id;
     this._rightLayer = this.baseLayers[id];
-    this.updateLayers();
+    // this.updateLayers();
   }
 
   updateLayers() {
@@ -445,25 +445,39 @@ export class SelectionMenuComponent implements AfterViewInit, OnDestroy, OnInit 
   setsyncedMap() {
     let newMap = document.createElement('div');
     newMap.setAttribute('id', 'map2');
-    newMap.style.width = '100%';
+    newMap.style.width = '49.5%';
     newMap.style.height = '100%';
+    newMap.style.position = 'relative';
+    newMap.style.cssFloat = 'right'
     console.log(document.getElementById('mainMap').appendChild(newMap));
     document.getElementById('mainMap').appendChild(newMap);
-
+    document.getElementById('main').style.width = '50%';
 
 
     this.syncedMap = new L.Map(newMap).setView(this.mapCache.getMap('map').getCenter(), this.mapCache.getMap('map').getZoom());
     L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}.png', {
       maxZoom: 16, attribution: '&copy; <a href="http://maps.stamen.com">Stamen Tiles Design</a>', className: 'Terrain'
     }).addTo(this.syncedMap);
-
+    this.mapCache.setMap('map2', this.syncedMap);
     // this.addSentinelLayertoSyncedMap(this.syncedMap);
-    
-    this._leftLayer.addTo(this.syncedMap);
-    this._rightLayer.addTo(this.mapCache.getMap('map'));
-    sentinelLayerOptions.forEach((name, index)=>{
-      if(name == this.selectLeftLayer || name == this.selectRightLayer){
-        this.senLayers[index].setRenderingRule(rasterFunctionOpt[index]);
+
+
+    sentinelLayerOptions.forEach((name, index) => {
+      if (name == this.selectLeftLayer || name == this.selectRightLayer) {
+        if (!this.syncedMap.getPane('imagePane' + index) && name == this.selectRightLayer) {
+          this.syncedMap.createPane('imagePane' + index);
+          this.senLayers[index].addTo(this.syncedMap);
+          this.senLayers[index].setRenderingRule(rasterFunctionOpt[index]);
+        }
+        else if (!this.mapCache.getMap('map').getPane('imagePane' + index) && name == this.selectLeftLayer) {
+          this.mapCache.getMap('map').createPane('imagePane' + index);
+          this.senLayers[index].addTo(this.mapCache.getMap('map'));
+          this.senLayers[index].setRenderingRule(rasterFunctionOpt[index]);
+        }
+      }
+      else {
+        this._rightLayer.addTo(this.syncedMap);
+        this._leftLayer.addTo(this.mapCache.getMap('map'));
       }
     });
 
@@ -471,28 +485,21 @@ export class SelectionMenuComponent implements AfterViewInit, OnDestroy, OnInit 
     this.syncedMap.sync(this.mapCache.getMap('map'));
   }
 
-  // addSentinelLayertoSyncedMap(syncMap: L.Map){
-  //   sentinelLayerOptions.forEach((name, index) => {
-  //     if (name == this.selectLeftLayer || name == this.selectRightLayer) {
-  //       if (!syncMap.getPane('imagePane' + index)) {
-  //         syncMap.createPane('imagePane' + index);
-  //       }
-
-  //       if (syncMap.hasLayer(this.senLayers[index])) {
-  //         this.senLayers[index].getPane().remove();
-  //         syncMap.removeLayer(this.senLayers[index])
-  //       }
-  //       // else {
-  //       // this.senLayers[index].setBandIds(bandIdOptions[index]).addTo(this._map);
-  //       this.senLayers[index].addTo(syncMap);
-  //       this.senLayers[index].setRenderingRule(rasterFunctionOpt[index]);
-  //       // }
-
-  //     }
-  //   });
-  // }
+  removeSync() {
+    this.mapCache.getMap('map').unsync(this.syncedMap);
+    this.syncedMap.unsync(this.mapCache.getMap('map'));
+    document.getElementById('map2').remove();
+    document.getElementById('main').style.width = '100%';
+    this.mapCache.getMap('map').invalidateSize();
+    this.syncedMap = null;
+  }
   resetViewSettings() {
-    this.remove();
+    if (this.range) {
+      this.remove();
+    }
+    if (this.syncedMap) {
+      this.removeSync();
+    }
     this.resetSelection();
 
   }
