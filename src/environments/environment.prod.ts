@@ -7,7 +7,7 @@ export const environment = {
 
 
 
-export let settings: Settings;
+export let settings: Settings = {};
 export const settingsPromise = new Promise<Settings>((resolve, reject) => {
   const xhr = new XMLHttpRequest();
   xhr.open('GET', './assets/settings.json');

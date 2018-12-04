@@ -127,6 +127,10 @@ export class SelectionMenuComponent implements AfterViewInit, OnDestroy, OnInit 
         this.token = this.imageAccess['access_token'];
         for (let k = 0; k < this.senLayers.length; k++) {
           this.senLayers[k].authenticate(this.token);
+          console.log('TimeRange: ' + this.senLayers[k].getTimeRange());
+          this.senLayers[k].metadata(function (error, metadata){
+           console.log('Metadata for Layer: ' + metadata['fields'][9]);
+           });
           this.baseLayers.push(this.senLayers[k]);
         }
 
@@ -161,8 +165,10 @@ export class SelectionMenuComponent implements AfterViewInit, OnDestroy, OnInit 
     if (sentinelLayerOptions[id] !== 'None') {
       // this.senLayers[id].setBandIds(bandIdOptions[id]).addTo(this.mapCache.getMap('map'));
       console.log(rasterFunctionOpt[id]);
+     
       this.senLayers[id].addTo(this.mapCache.getMap('map'));
       this.senLayers[id].setRenderingRule(rasterFunctionOpt[id]);
+    
     }
     else {
       this.oldLayer = null;

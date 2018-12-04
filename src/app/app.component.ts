@@ -8,6 +8,7 @@ import { registerLocaleData } from '@angular/common';
 // import { LocalStorage } from '@helgoland/core';
 // import { DatasetEmitService } from './services/dataset-emit.service';
 import localeDe from '@angular/common/locales/de';
+import { D3TimeFormatLocaleService } from '@helgoland/d3';
 
 @Component({
   selector: 'wv-root',
@@ -18,7 +19,7 @@ export class AppComponent implements OnInit{
   defaultTitle = '';
   public languageList: Language[];
   constructor(private router: Router,private activatedRoute: ActivatedRoute, 
-    private titleService: Title, translate: TranslateService){
+    private titleService: Title, translate: TranslateService, d3translate: D3TimeFormatLocaleService){
 
       translate.setDefaultLang('de');
       translate.use('de');
@@ -38,18 +39,18 @@ export class AppComponent implements OnInit{
         ]; 
     
        
-        //  d3translate.addTimeFormatLocale('de', 
-        //      { 
-        //    'dateTime': '%a %b %e %X %Y', 
-        //        'date': '%d-%m-%Y', 
-        //       'time': '%H:%M:%S', 
-        //        'periods': ['AM', 'PM'], 
-        //       'days': ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'], 
-        //      'shortDays': ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'], 
-        //      'months': ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'], 
-        //       'shortMonths': ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'] 
-        //    } 
-        //    ); 
+         d3translate.addTimeFormatLocale('de', 
+             { 
+           'dateTime': '%a %b %e %X %Y', 
+               'date': '%d-%m-%Y', 
+              'time': '%H:%M:%S', 
+               'periods': ['AM', 'PM'], 
+              'days': ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'], 
+             'shortDays': ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'], 
+             'months': ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'], 
+              'shortMonths': ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'] 
+           } 
+           ); 
       
   }
   

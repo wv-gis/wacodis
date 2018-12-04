@@ -34,7 +34,7 @@ import { HelgolandModificationModule } from '@helgoland/modification';
 import { HelgolandControlModule } from '@helgoland/control';
 import { HelgolandTimeModule } from '@helgoland/time';
 import { ExtendedSelectorModule } from './extended-selector/extended-selector.module';
-
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppComponent } from './app.component';
 import { SelectViewDashboardComponent } from './select-view-dashboard/select-view-dashboard.component';
 
@@ -46,7 +46,9 @@ import { ExtendedDepictionModule } from './extended-depiction/extended-depiction
 import { SelectedUrlService } from './services/selected-url.service';
 import { RestApiService } from './services/rest-api.service';
 
-
+import {MatCardModule, MatButtonModule, MatDialogModule, MatCheckboxModule, MatSelectModule, MatFormFieldModule} from '@angular/material';
+import { StyleModificationComponent } from './component-views/style-modification/style-modification.component';
+import { StyleModificationModule } from './component-views/style-modification/style-modification.module';
 
 
 
@@ -63,6 +65,7 @@ export function DatasetEmitFactory(localstorage: LocalStorage){
   declarations: [
     AppComponent,
     SelectViewDashboardComponent,
+    // StyleModificationComponent,
 
   ],
   imports: [
@@ -95,7 +98,16 @@ export function DatasetEmitFactory(localstorage: LocalStorage){
     MenuModule,
     FilterModule,
     ExtendedSelectorModule,
-    ExtendedDepictionModule
+    ExtendedDepictionModule,
+    MatCardModule, 
+    MatButtonModule, 
+    MatDialogModule, 
+    MatCheckboxModule, 
+    MatSelectModule,MatFormFieldModule, StyleModificationModule,
+   BrowserAnimationsModule,
+  ],
+  entryComponents: [
+    StyleModificationComponent,
   ],
   providers: [
     // {

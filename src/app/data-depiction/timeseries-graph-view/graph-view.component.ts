@@ -1,9 +1,9 @@
 import { Component, OnInit, ChangeDetectorRef, HostListener } from '@angular/core';
 import { DatasetOptions, Timespan, DatasetService } from '@helgoland/core';
-import { D3TimeseriesGraphComponent, D3PlotOptions } from '@helgoland/d3';
+import { D3TimeseriesGraphComponent, D3PlotOptions, HoveringStyle } from '@helgoland/d3';
 import { ActivatedRoute } from '@angular/router';
 import { DatasetEmitService } from '../../services/dataset-emit.service';
-
+import { HighlightOutput } from '../../../../node_modules/@helgoland/d3/lib/d3-timeseries-graph/d3-timeseries-graph.component';
 
 
 @Component({
@@ -18,16 +18,25 @@ export class GraphViewComponent {
     public overviewLoading: boolean;
     public timespan = new Timespan(new Date().getTime() - 100000000, new Date().getTime());
     public timelist = [this.timespan.from, this.timespan.to];
+    public hoverstyle: HoveringStyle;
+    public highlightedTime: Date;
+    public link: string ='http://www.google.de';
     public diagramOptionsD3: D3PlotOptions = {
         togglePanZoom: false,
-        showReferenceValues: false,
-        generalizeAllways: true,
+        showReferenceValues: true,
+        generalizeAllways: false,
+        hoverable: true,
+        hoverStyle: HoveringStyle.point,
+        copyright: { label: "Daten ohne Gewähr", positionX: 'right', positionY: 'bottom' },
+        yaxis: true,
+        groupYaxis: true,
+        showTimeLabel: false,
 
     };
     public selectedIds: string[] = [];
     public datasetOptionsMultiple: Map<string, DatasetOptions> = new Map();
     public isActive = false;
-
+    public reloadForDatasets = [];
 
     constructor(private cdr: ChangeDetectorRef, private route: ActivatedRoute, private dataEmitService: DatasetService<DatasetOptions>) {
         if (dataEmitService !== undefined && dataEmitService.hasDatasets()) {
@@ -39,7 +48,12 @@ export class GraphViewComponent {
         dataEmitService.datasetOptions.forEach((option) => {
             this.colors.push(option.color);
             this.datasetIdsMultiple.forEach((entry, i) => {
-                this.datasetOptionsMultiple.set(entry, new DatasetOptions(entry, this.colors[i]));
+                const option = new DatasetOptions(entry, this.colors[i]);
+                option.generalize = true;
+                option.lineWidth = 0;
+                option.pointRadius = 3;
+                option.yAxisRange = {min: 1, max: 2};
+                this.datasetOptionsMultiple.set(entry,option );
             });
         });
 
@@ -83,17 +97,17 @@ export class GraphViewComponent {
 
     public change() {
         if (this.isActive) {
-            // this.diagramOptionsD3.yaxis =document.getElementById('#diagram').getBoundingClientRect().width;
             this.isActive = false;
-            const time = new Timespan(this.timespan.from-1, this.timespan.to);
-            this.timespan = time;
+            // const time = new Timespan(this.timespan.from - 1, this.timespan.to);
+            this.refreshData();
+            // this.timespan = time;
             return false;
         }
         else {
-            // this.diagramOptionsD3.yaxis =document.getElementById('#diagram').getBoundingClientRect().width;
             this.isActive = false;
-            const time = new Timespan(this.timespan.from+1, this.timespan.to);
-            this.timespan = time;
+            // const time = new Timespan(this.timespan.from + 1, this.timespan.to);
+            // this.timespan = time;
+            this.refreshData();
             this.isActive = true;
             return true;
         }
@@ -108,5 +122,17 @@ export class GraphViewComponent {
         }
         this.dataEmitService.removeDataset(id);
     }
-
+    public groupYaxisChanged() {
+        this.diagramOptionsD3.groupYaxis = !this.diagramOptionsD3.groupYaxis;
+    }
+    public changeHovering(id: string){
+        this.hoverstyle = HoveringStyle[id];
+        this.diagramOptionsD3.hoverStyle = this.hoverstyle;
+    }
+    public highlightChanged(highlightObject: HighlightOutput){
+        this.highlightedTime = new Date(highlightObject.timestamp);
+    }
+    public refreshData(){
+        this.reloadForDatasets = [this.datasetIdsMultiple[0]];
+    }
 }

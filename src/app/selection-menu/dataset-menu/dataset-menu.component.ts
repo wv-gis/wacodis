@@ -1,6 +1,8 @@
 import { Component, Input, EventEmitter, Output } from "@angular/core";
-import { Timespan, DatasetOptions, DatasetService } from "@helgoland/core";
+import { Timespan, DatasetOptions, DatasetService, ColorService } from "@helgoland/core";
 import { DatasetEmitService } from "../../services/dataset-emit.service";
+import { StyleModificationComponent } from "../../component-views/style-modification/style-modification.component";
+import { MatDialog } from "@angular/material";
 
 @Component({
     selector: 'wv-dataset-menu',
@@ -23,18 +25,26 @@ export class DatasetMenuComponent {
     @Output()
     clicked: EventEmitter<boolean> = new EventEmitter<boolean>();
 
+    public datasetOptions: Map<string, DatasetOptions> = new Map();
     isActive = true;
     selectedIds: string[] = [];
     datasetIdsMultiple: string[] = [];
+    highlightId: string;
 
-    constructor(private dataEmitService: DatasetService<DatasetOptions>) {
+    constructor(private dataEmitService: DatasetService<DatasetOptions>, private color: ColorService, private dialog: MatDialog) {
         if (dataEmitService !== undefined && dataEmitService.hasDatasets()) {
             for (let k = 0; k < dataEmitService.datasetIds.length; k++) {
                 this.datasetIdsMultiple.push(dataEmitService.datasetIds[k]);
 
             }
         }
-
+        this.datasetIdsMultiple.forEach((entry) => { 
+            const option = new DatasetOptions(entry, this.color.getColor()); 
+             option.generalize = true; 
+             option.autoRangeSelection = true;
+            this.datasetOptions.set(entry, option); 
+         }); 
+            
     }
 
     public selectDataset(dataset: boolean, index: string) {
@@ -81,5 +91,20 @@ export class DatasetMenuComponent {
         if (datasetIdx > -1) {
             this.datasetIdsMultiple.splice(datasetIdx, 1);
         }
+    }
+    public highlight(selected: boolean, id: string){
+        this.highlightId = id;
+    }
+    public editOption(option: DatasetOptions){
+        this.dialog.open(StyleModificationComponent, {
+            data: option
+        });
+        console.log('Edit Option: ' + JSON.stringify(option));
+    }
+    public updateOptions(option: DatasetOptions){
+        console.log('updateOptions ' + JSON.stringify(option));
+    }
+    public showGeometry(geometry: GeoJSON.GeoJsonObject){
+        console.log('Geometry: ' + JSON.stringify(geometry));
     }
 }
