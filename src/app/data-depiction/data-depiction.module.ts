@@ -1,21 +1,24 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DataTableComponent } from './data-table/data-table.component';
-import { GraphViewComponent } from './timeseries-graph-view/graph-view.component';
-import { HelgolandD3Module } from '@helgoland/d3';
-import { HelgolandDatasetTableModule } from '@helgoland/depiction/dataset-table';
+import { AppRoutingModule } from '../app-routing.module';
 
-import { HelgolandLabelMapperModule } from '@helgoland/depiction/label-mapper';
+import { HelgolandD3Module } from '@helgoland/d3';
+import { HelgolandDatasetTableModule , HelgolandLabelMapperModule,  HelgolandDatasetlistModule } from '@helgoland/depiction';
 import { HelgolandModificationModule } from '@helgoland/modification';
 import { HelgolandControlModule } from '@helgoland/control';
 import { HelgolandTimeModule } from '@helgoland/time';
-import { HelgolandDatasetlistModule } from '@helgoland/depiction/datasetlist';
+import { HelgolandMapModule , HelgolandMapViewModule } from '@helgoland/map';
+// import { HelgolandTimeModule } from '@helgoland/time';
+
 import { TrajectoryViewComponent } from './trajectory-view/trajectory-view.component';
 import { ProfileViewComponent } from './profile-view/profile-view.component';
-import { HelgolandMapModule } from '@helgoland/map';
-import { AppRoutingModule } from '../app-routing.module';
-import { HelgolandTimeRangeSliderModule } from '@helgoland/time/time-range-slider';
-import { HelgolandMapViewModule } from '@helgoland/map/view';
+import { DataTableComponent } from './data-table/data-table.component';
+import { GraphViewComponent } from './timeseries-graph-view/graph-view.component';
+import { HelgolandCoreModule } from '@helgoland/core';
+import { MenuModule } from '../selection-menu/menu.module';
+import { DatasetEmitService } from '../services/dataset-emit.service';
+import { ExtendedDepictionModule } from '../extended-depiction/extended-depiction.module';
+// import { DatasetEmitService } from '../services/dataset-emit.service';
 
 @NgModule({
   imports: [
@@ -29,10 +32,13 @@ import { HelgolandMapViewModule } from '@helgoland/map/view';
     HelgolandLabelMapperModule,
     HelgolandMapModule,
     AppRoutingModule,
-    HelgolandTimeRangeSliderModule,
+    // HelgolandTimeRangeSliderModule,
     HelgolandMapViewModule,
+    HelgolandCoreModule,
+    MenuModule, ExtendedDepictionModule
   ],
   declarations: [DataTableComponent, GraphViewComponent, TrajectoryViewComponent, ProfileViewComponent],
-  exports: [DataTableComponent, GraphViewComponent, TrajectoryViewComponent, ProfileViewComponent]
+  exports: [DataTableComponent, GraphViewComponent, TrajectoryViewComponent, ProfileViewComponent,],
+  // providers: [{ provide: DatasetService, useClass: DatasetEmitService, deps: [LocalStorage]}],
 })
 export class DataDepictionModule { }

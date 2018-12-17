@@ -1,3 +1,11 @@
-<div class="table-view">
-  <n52-dataset-table [datasetIds]="datasetIds" [timeInterval]="timespan" [datasetOptions]="datasetOptions"></n52-dataset-table>
+<div class="container-fluid">
+  <div class="table-view">
+    <wv-depiction-menu [timespan]="timespan" (onTimespanChanged)="timespanChanged($event)"></wv-depiction-menu>
+    <div class="table"  [ngClass]="{'active': isActive }">
+      <wv-extended-dataset-table [datasetIds]="datasetIds" [timeInterval]="timespan" [datasetOptions]="datasetOptions" [selectedDatasetIds]="selectedIds"></wv-extended-dataset-table>
+    </div>
+    <div class="menu">
+      <wv-dataset-menu (clicked)="menuIsActive()" [datasetOptionsMultiple]="datasetOptions" [timespan]="timespan" (changeSelectedIdList)="select($event)" id="datasetMenu" (changeTimespan)="timespanChanged($event)" (changeSelectedDataset)="removeDataset($event)"></wv-dataset-menu>
+    </div>
   </div>
+</div>

@@ -2,6 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import 'rxjs/add/operator/filter';
+import { Language } from '@helgoland/core';
+import { TranslateService } from '@ngx-translate/core';
+import { registerLocaleData } from '@angular/common';
+// import { LocalStorage } from '@helgoland/core';
+// import { DatasetEmitService } from './services/dataset-emit.service';
+import localeDe from '@angular/common/locales/de';
+import { D3TimeFormatLocaleService } from '@helgoland/d3';
 
 @Component({
   selector: 'wv-root',
@@ -10,8 +17,41 @@ import 'rxjs/add/operator/filter';
 })
 export class AppComponent implements OnInit{
   defaultTitle = '';
-  constructor(private router: Router,private activatedRoute: ActivatedRoute, private titleService: Title){
+  public languageList: Language[];
+  constructor(private router: Router,private activatedRoute: ActivatedRoute, 
+    private titleService: Title, translate: TranslateService, d3translate: D3TimeFormatLocaleService){
 
+      translate.setDefaultLang('de');
+      translate.use('de');
+
+      registerLocaleData(localeDe); 
+       
+       
+         this.languageList = [ 
+          { 
+        label: 'Deutsch', 
+             code: 'de' 
+           }, 
+           { 
+           label: 'English', 
+              code: 'en' 
+           } 
+        ]; 
+    
+       
+         d3translate.addTimeFormatLocale('de', 
+             { 
+           'dateTime': '%a %b %e %X %Y', 
+               'date': '%d-%m-%Y', 
+              'time': '%H:%M:%S', 
+               'periods': ['AM', 'PM'], 
+              'days': ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'], 
+             'shortDays': ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'], 
+             'months': ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'], 
+              'shortMonths': ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'] 
+           } 
+           ); 
+      
   }
   
   ngOnInit() {
@@ -19,7 +59,6 @@ export class AppComponent implements OnInit{
     this.router.events
       .filter(event => event instanceof NavigationEnd)
       .subscribe(event => {
-        console.log(event);
         this.setBrowserTitle();
       });
   }

@@ -1,0 +1,177 @@
+<div class="selectionsMenu">
+    <button class="btn btn-default dropdown-toggle entry provider" type="button" data-toggle="modal" data-target="#serviceModal">
+        <i class="fas fa-broadcast-tower" style="padding: 3px"></i>Services: {{label}}
+    </button>
+    <div *ngIf="checkSelection('/selection-map')">
+        <button id="splitter" type="button" class="btn btn-default entry split" data-toggle="modal" data-target="#splitModal">Compare</button>
+        <button id="sentinelLayer" class="btn btn-default dropdown-toggle entry layerSelect" type="button" data-toggle="dropdown">SentinelLayer: {{senLabel}}</button>
+        <div class="dropdown-menu" aria-labelledby="sentinelLayer">
+            <button class="dropdown-item" *ngFor="let senLayer of senLayers; let i = index" (click)="selectSentinelLayer(senLayer, i)">{{senLayer.options.alt}}</button>
+        </div>
+    </div>
+    <div class="modal fade" id="splitModal" tabindex="-1" role="dialog" aria-hidden="true" #modal>
+        <div class="modal-dialog" role="navigation">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Settings for Comparing two Views</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="resetSelection()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body layerSelect">
+
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th class='layerRow'>Select Left Layer</th>
+                                <th class='layerRow'>Select Right Layer</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <button id="leftLayer" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">{{selectLeftLayer}}</button>
+                                    <div class="dropdown-menu" aria-labelledby="leftLayer">
+                                        <button class="dropdown-item" *ngFor="let layers of baseLayers; let i = index" (click)="checkLeftLayer(layers['options'].className|| layers.options.alt, i)">{{layers['options'].className || layers.options.alt}}</button>
+                                    </div>
+                                </td>
+                                <td>
+                                    <button id="rightLayer" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">{{selectRightLayer}}</button>
+                                    <div class="dropdown-menu" aria-labelledby="rightLayer">
+                                        <button class="dropdown-item" *ngFor="let rightLayers of baseLayers; let i = index" (click)="checkRightLayer(rightLayers['options'].className|| rightLayers.options.alt, i)">{{rightLayers['options'].className || rightLayers.options.alt}}</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <form name="viewForm" id="selectForm">
+                    <div class="modal-body viewSelect">
+                        <table class="table view">
+                            <thead>
+                                <tr>
+                                    <th>Splitted View</th>
+                                    <th>Synced View</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+
+                                <tr>
+                                     <td>
+                                        <img src='assets/images/SliderPic.JPG'>
+                                        <!-- <input class="form-check-input" name="group100" type="radio" id="synced" value="synced"> -->
+                                    </td>
+                                    <td>
+                                            <img src='assets/images/SyncedPic.JPG'>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <select id="selectedForm">
+                                            <option id="split" value="split">Split View
+                                                <!-- <img src'assets/images/SliderPic.JPG'> -->
+                                            </option>
+                                            <option id="synced" value="synced">Synced View
+                                                <!-- <img src="assets/images/SyncedPic.JPG"> -->
+                                            </option>
+                                        </select>
+                                        <!-- <div *ngIf="selectedId=='split' else unchecked"> -->
+                                        <!-- <img src='assets/images/SliderPic.JPG'>
+                                            <input class="form-check-input" name="group100" type="radio" id="split" value="split" checked="checked"> -->
+                                        <!-- </div>
+                                        <ng-template #unchecked>
+                                                <img src='assets/images/SliderPic.JPG'>
+                                                <input class="form-check-input" name="group100" type="radio" id="split">
+                                        </ng-template> -->
+                                    </td>
+                                   
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" style="margin-right: auto" (click)="resetViewSettings()">Reset</button>
+                        <button type="button" class="btn btn-primary" (click)="splitMapView()" data-dismiss="modal">Save changes</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="resetSelection()">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="serviceModal" tabindex="-1" role="dialog" aria-labelledby="serviceProviderLabel" aria-hidden="true"
+        #modal>
+        <div class="modal-dialog" role="navigation">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="serviceProviderLabel">Datenanbieter</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <wv-extended-service-selector [datasetApiList]="datasetApis" [selectedService]="selectedService" [filter]="providerFilter"
+                        [supportStations]="true" [showUnresolvableServices]="true" (onServiceSelected)="switchProvider($event)"
+                        data-dismiss="modal"></wv-extended-service-selector>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="navbar navbar-expand-lg navbar-light" id="selectionBar">
+        <div class="center">
+
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#selectionToggler" aria-controls="selectionToggler"
+                aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="selectionToggler">
+
+                <ul class="navbar-nav mr-auto">
+
+                    <li class="entry" [ngClass]="{'active': checkSelection('/selection-map')}" routerLink='/selection-map'>
+                        <i class="fas fa-map"></i>
+                        <span class="mid" data-toggle="collapse" data-target=".navbar-collapse.show"> Karte</span>
+                    </li>
+
+
+                    <li class="entry" [ngClass]="{'active': checkSelection('/select-category')}" routerLink='/select-category'>
+                        <i class="fas fa-tint"></i>
+                        <span class="mid" data-toggle="collapse" data-target=".navbar-collapse.show"> Kategorie</span>
+                    </li>
+
+                    <li class="entry" [ngClass]="{'active': checkSelection('/select-station')}" routerLink='/select-station'>
+                        <i class="fas fa-home"></i>
+                        <span class="mid" data-toggle="collapse" data-target=".navbar-collapse.show"> Station</span>
+                    </li>
+
+                    <li class="entry" [ngClass]="{'active': checkSelection('/select-phenomenon')}" routerLink='/select-phenomenon'>
+                        <i class="fas fa-ruler-vertical"></i>
+                        <span class="mid" data-toggle="collapse" data-target=".navbar-collapse.show"> Phänomen</span>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+        <!-- <wv-tabs>
+
+            <wv-tab title="Karte" picture="fas fa-map">
+                <wv-map-view [selectedProvider] = "selectedService"></wv-map-view>
+            </wv-tab>
+            <wv-tab title="Kategorie" picture="fas fa-tint" >
+                <wv-category-selector [selectedProvider] = "selectedService"></wv-category-selector>
+            </wv-tab>
+            <wv-tab title="Station" picture="fas fa-home">
+                <wv-station-list-selector [selectedProvider] = "selectedService"></wv-station-list-selector>
+            </wv-tab>
+            <wv-tab title="Phänomen" picture="fas fa-ruler-vertical" >
+                <wv-phenomenon-list-selector [selectedProvider] = "selectedService"></wv-phenomenon-list-selector>
+            </wv-tab>
+
+        </wv-tabs> -->
+    </div>
+</div>
+<router-outlet></router-outlet>

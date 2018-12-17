@@ -2,15 +2,18 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MapViewComponent } from './map-view/service-selection-map/map-view.component';
 import { HelgolandMapModule } from '@helgoland/map';
-import { HelgolandMapViewModule } from '@helgoland/map/view';
+import { HelgolandMapViewModule } from '@helgoland/map';
 import { TimespanMapComponent } from './map-view/timespan-map/timespan-map.component';
 import { RasterMapComponent } from './map-view/raster-map/raster-map.component';
-import { ServiceModule } from '../service-selector/service-selector/service.module';
+import { MenuModule } from '../selection-menu/menu.module';
 import {FilterModule} from '../filter-selector/filter.module';
-import { HelgolandMapSelectorModule } from '@helgoland/map/selector';
+import { HelgolandMapSelectorModule } from '@helgoland/map';
 import { HelgolandSelectorModule } from '@helgoland/selector';
-import { HelgolandLabelMapperModule } from '@helgoland/depiction/label-mapper';
-import { AppRoutingModule } from '../app-routing.module';
+import { HelgolandLabelMapperModule } from '@helgoland/depiction';
+import { SelectedUrlService } from '../services/selected-url.service';
+import { HttpClientModule } from '@angular/common/http';
+
+
 
 
 @NgModule({
@@ -18,14 +21,14 @@ import { AppRoutingModule } from '../app-routing.module';
     CommonModule,
     HelgolandMapModule,
     HelgolandMapViewModule,
-    ServiceModule,
+    MenuModule,
     HelgolandMapSelectorModule,
     HelgolandSelectorModule,
     HelgolandLabelMapperModule,
     FilterModule,
-    AppRoutingModule,
+    HttpClientModule
   ],
   declarations: [MapViewComponent, TimespanMapComponent, RasterMapComponent],
-  exports: [MapViewComponent, TimespanMapComponent, RasterMapComponent]
+  exports: [MapViewComponent, TimespanMapComponent, RasterMapComponent],
 })
 export class MapModule { }

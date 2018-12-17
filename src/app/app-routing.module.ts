@@ -11,12 +11,26 @@ import { ProfileViewComponent } from './data-depiction/profile-view/profile-view
 import { CategorySelectorComponent } from './filter-selector/category-selector/category-selector.component';
 import { PhenomenonListSelectorComponent } from './filter-selector/phenomenon-list-selector/phenomenon-list-selector.component';
 import { StationListSelectorComponent } from './filter-selector/station-list-selector/station-list-selector.component';
+import { SelectionMenuComponent } from './selection-menu/options-view/selection-menu.component';
 
 
 
 const routes: Routes = [
   { path: '', redirectTo: 'start', pathMatch: 'full' },
-  { path: 'selection-map', component: MapViewComponent, data: { title: 'WaCoDiS Web Client' } },
+  { path: '', component: SelectionMenuComponent, 
+  children: [{
+    path: 'select-category',
+    component: CategorySelectorComponent
+  }, {
+    path:'selection-map',
+    component: MapViewComponent
+  }, {
+    path: 'select-station',
+    component: StationListSelectorComponent,
+  },{
+    path: 'select-phenomenon',
+    component: PhenomenonListSelectorComponent
+  }], data: { title: 'WaCoDiS Web Client' } },
   { path: 'table', component: DataTableComponent, data: { title: 'Tabellenansicht' } },
   { path: 'timeseries', component: GraphViewComponent, data: { title: 'WaCoDiS Web Client' } },
   { path: 'start', component: SelectViewDashboardComponent, data: { title: 'WaCoDiS Web Client' } },
@@ -24,9 +38,7 @@ const routes: Routes = [
   { path: 'raster-map', component: RasterMapComponent, data: { title: 'WaCoDiS Web Client' } },
   { path: 'trajectory-view', component: TrajectoryViewComponent, data: { title: 'WaCoDiS Web Client' } },
   { path: 'profile-view', component: ProfileViewComponent, data: { title: 'WaCoDiS Web Client' } },
-  { path: 'select-category', component: CategorySelectorComponent, data: { title: 'WaCoDiS Web Client' } },
-  { path: 'select-station', component: StationListSelectorComponent, data: { title: 'WaCoDiS Web Client' } },
-  { path: 'select-phenomenon', component: PhenomenonListSelectorComponent, data: { title: 'WaCoDiS Web Client' } },
+
 ];
 
 @NgModule({

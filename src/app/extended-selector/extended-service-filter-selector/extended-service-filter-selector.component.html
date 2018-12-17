@@ -1,0 +1,12 @@
+<!-- <div *ngIf="loading">
+    loading...
+</div> -->
+<div *ngIf="!loading && items?.length === 0">
+    no results found
+</div>
+<div class="mid entry" (click)="removeFilter()" [ngClass]="{'selected': selectionID === null}">
+        <span> Alle Phänomene</span>
+      </div>
+<div class="mid entry" *ngFor="let item of items" (click)="onSelectItem(item)"  [ngClass]="{'selected': selectionID === item.id }">
+    <n52-label-mapper label="{{item.label}}"></n52-label-mapper>
+</div>

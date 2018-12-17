@@ -1,0 +1,28 @@
+<div style="padding-top: 5px; padding-left: 15px;">
+  <div class="navbar navbar-expand-lg navbar-light" style="padding-left: 0px;">
+    <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#menuToggler">
+      <span class="navbar-toggler-icon graphView"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="menuToggler">
+      <ul class="navbar-nav mr-auto">
+        <li>
+          <wv-extended-timeshift-selector [timespan]="timespan" (onTimespanChange)="timespanChanged($event)"></wv-extended-timeshift-selector>
+          <!-- <n52-refresh-button (refreshing)="diagram.reloadData()"></n52-refresh-button> -->
+        </li>
+
+        <li>
+          <button class="btn btn-default" [ngClass]="{'active': checkSelection('/timeseries')}" routerLink='/timeseries'>
+            <i class="fas fa-chart-bar"></i>
+          </button>
+          <button class="btn btn-default" [ngClass]="{'active': checkSelection('/table')}" routerLink='/table'>
+            <i class="far fa-list-alt"></i>
+          </button>
+          <!-- <button class="btn btn-default" [ngClass]="{'active': checkSelection('/trajectory-view')}" routerLink='/trajectory-view'>Trajectories</button>
+        <button class="btn btn-default" [ngClass]="{'active': checkSelection('/profile-view')}" routerLink='/profile-view'>Profile</button> -->
+          <button class="btn btn-default" (click)="setTimespan('day')"> 1 Tag</button>
+          <button class="btn btn-default" (click)="setTimespan('week')">1 Woche</button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

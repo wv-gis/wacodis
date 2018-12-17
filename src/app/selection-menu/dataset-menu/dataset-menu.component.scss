@@ -1,0 +1,57 @@
+.datasetMenu .expand-button.active {
+    right: 250px;
+    background-color: #2c4869;
+}
+.datasetMenu .expand-button {
+    top: 123px;
+}
+.datasetMenu .expand-button {
+    position: absolute;
+    top: 10px;
+    right: 0;
+    width: 49px;
+    height: 54px;
+    border-radius: 3px 0 0 3px;
+    box-shadow: inset -3px 0 0 rgba(0,0,0,.2);
+    text-align: center;
+    background-color: #718296;
+    z-index: 800;
+    cursor: pointer;
+}
+.datasetMenu .expand-button .icon {
+    color: #fff;
+    font-size: 20px;
+    line-height: 52px;
+} 
+
+
+.datasetMenu .selectedDataset.active {
+    top: 5px;
+    width: 250px;
+    height: auto;
+}
+.datasetMenu .selectedDataset.active {
+    display: inline;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    background-color: #718296;
+}
+.datasetMenu .selectedDataset {
+    overflow: auto;
+    display: none;
+}
+.legendEntry {
+    display: flex;
+    flex-direction: row;
+    
+    .left,
+    .right {
+        width: 50%;
+    }
+
+}
+
+// [aria-expanded="true"] .datasetMenu .expand-button{
+//     top: 155px;
+// }
