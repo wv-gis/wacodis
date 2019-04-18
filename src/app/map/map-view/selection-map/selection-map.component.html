@@ -1,0 +1,45 @@
+  <!-- <div class="navbar navbar-expand-lg navbar-light" id="mapMenu" style="z-index: 801;padding: 0px;">
+    <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#mapMenuToggler" aria-controls="mapMenuToggler">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="mapMenuToggler">
+      <ul class="navbar-nav mr-auto">
+        <li>
+          <wv-menu-bar (onProviderSwitched)="changeProvider($event)"></wv-menu-bar>
+        </li>
+        <li>
+          <div class="extentControl">
+            <wv-extended-extent-control mapId="map" [extent]="fitBounds"></wv-extended-extent-control>
+          </div>
+        </li>
+        <li>
+          <div class="geosearchControl">
+            <n52-geosearch-control mapId="map" [options]="searchOptions"></n52-geosearch-control>
+          </div>
+        </li>
+        <li>
+          <div class="locateControl">
+            <n52-locate-control mapId="map"></n52-locate-control>
+          </div>
+        </li>
+        <li>
+          <div class="zoomControl">
+            <n52-zoom-control mapId="map"></n52-zoom-control>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+<div class="mapContent" id="mainMap">
+  <div id="main">
+    <n52-station-map-selector [mapId]="'map'" [serviceUrl]="providerUrl" [filter]="stationFilter" [zoomControlOptions]="zoomControlOptions" [layerControlOptions]="layerControlOptions"
+      [mapOptions]="mapOptions" [fitBounds]="fitBounds" [avoidZoomToSelection]="avoidZoomToSelection" [baseMaps]="baseMaps"
+      [overlayMaps]="overlayMaps" (onSelected)="onStationSelected($event)" [cluster]="cluster" [statusIntervals]="statusIntervals"
+      (onContentLoading)="loadingStations = $event"></n52-station-map-selector>
+  </div>
+</div>
+<div>
+  <wv-layer-tree></wv-layer-tree>
+</div> -->
+<img src="assets/images/Kartenauswahl.png" id="prototypePic">
+<button type="button" class="btn btn-default" (click)="changePic()" style="vertical-align: bottom;">weiter</button>

@@ -1,0 +1,34 @@
+<div class="container-fluid" style="padding-right: 0px; padding-left: 0px;">
+  <wv-timeshift-data-selector-menu [timespan]="timespan" (onTimespanChanged)="timespanChanged($event)"></wv-timeshift-data-selector-menu>
+  <div class="diagram">
+    <div class="diagramEntry" style="height: 650px; padding: 5px;" id="#diagram" [ngClass]="{'active': isActive}">
+        <div class="loading-overlay">
+            <div *ngIf="overviewLoading">
+                <div class="spinner-border text-dark" role="status">
+                    <i class="fa fa-spinner fa-spin" style="font-size:24px"></i>
+                </div>
+            </div>
+        </div>
+      <n52-d3-timeseries-graph [datasetIds]="datasetIdsMultiple" [selectedDatasetIds]="selectedIds" [datasetOptions]="datasetOptionsMultiple"
+        [timeInterval]="timespan" [reloadForDatasets]="reloadForDatasets" (onTimespanChanged)="timespanChanged($event)" [presenterOptions]="diagramOptionsD3"
+        (onHighlightChanged)="highlightChanged($event)" #diagram></n52-d3-timeseries-graph>
+    </div>
+    <!-- <div *ngIf="datasetOptionsMultiple"> -->
+       
+      <div class="overview" [ngClass]="{'active': isActive}">
+        <n52-d3-overview-timeseries-graph [datasetIds]="datasetIdsMultiple" [rangefactor]="1" [datasetOptions]="datasetOptionsMultiple"
+          [presenterOptions]="overviewOptions" [timeInterval]="timespan" [reloadForDatasets]="reloadForDatasets" (onTimespanChanged)="timespanChanged($event)"
+          (onContentLoading)="onOverviewLoading($event)">
+        </n52-d3-overview-timeseries-graph>
+      </div>
+    <!-- </div> -->
+  </div>
+
+  <div>
+    <div class="menu" [ngClass]="{'active': isActive}">
+      <wv-timeseries-legend (clicked)="change()" [timespan]="timespan" [datasetOptionsMultiple]="datasetOptionsMultiple" (changeSelectedIdList)="select($event)"
+        (changeSelectedDataset)="removeDataset($event)" (changeTimespan)="timespanChanged($event)" (updatedOptions)="updateOptions($event)"
+        [diagramOptions]="diagramOptionsD3"></wv-timeseries-legend>
+    </div>
+  </div>
+</div>

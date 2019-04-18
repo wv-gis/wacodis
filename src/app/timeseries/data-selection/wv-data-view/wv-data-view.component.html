@@ -1,0 +1,93 @@
+<div class="navbar navbar-expand-lg navbar-light" id="selectionBar">
+  <wv-menu-bar (onProviderSwitched)="changeProvider($event)"></wv-menu-bar>
+  <div class="center">
+    <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#selectionToggler" aria-controls="selectionToggler"
+      aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="selectionToggler">
+
+      <ul class="navbar-nav mr-auto">
+        <div class="entry" *ngIf="!diagramEntry && badgeNumber > 0">
+          <li [ngClass]="{'active': checkSelection('/timeseries-diagram')}" routerLink='/timeseries-diagram'>
+            <i class="fas fa-chart-bar"></i>
+            <span class="mid badge badge-danger">  {{ badgeNumber}}</span>
+          </li>
+        </div>
+        <li class="entry" [ngClass]="{'active': checkSelection('/selection-category')}" routerLink='/selection-category'>
+          <i class="fas fa-tint"></i>
+          <span class="mid" data-toggle="collapse" data-target=".navbar-collapse.show"> Kategorie</span>
+        </li>
+
+        <li class="entry" [ngClass]="{'active': checkSelection('/selection-station')}" routerLink='/selection-station'>
+          <i class="fas fa-home"></i>
+          <span class="mid" data-toggle="collapse" data-target=".navbar-collapse.show"> Station</span>
+        </li>
+
+        <li class="entry" [ngClass]="{'active': checkSelection('/selection-phenomenon')}" routerLink='/selection-phenomenon'>
+          <i class="fas fa-ruler-vertical"></i>
+          <span class="mid" data-toggle="collapse" data-target=".navbar-collapse.show"> Phänomen</span>
+        </li>
+        <li class="entry" [ngClass]="{'active': checkSelection('/selection-map')}" routerLink='/selection-map'>
+          <i class="fas fa-map"></i>
+          <span class="mid" data-toggle="collapse" data-target=".navbar-collapse.show"> Karte</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+<div class="backgroundImage">
+  <div *ngIf="checkSelection('/selection-category')" class="selectContent" routerLink='/selection-category'>
+    <wv-extended-list-selector [parameters]="categoryParams" [selectorId]="'category'" [providerList]="selectedProviderList"
+      (onDatasetSelection)="onDatasetSelected($event)"></wv-extended-list-selector>
+  </div>
+  <div *ngIf="checkSelection('/selection-phenomenon')" class="selectContent" routerLink='/selection-phenomenon'>
+    <wv-extended-list-selector [parameters]="phenomenonParams" [selectorId]="'phenomenon'" [providerList]="selectedProviderList"
+      (onDatasetSelection)="onDatasetSelected($event)"></wv-extended-list-selector>
+  </div>
+  <div *ngIf="checkSelection('/selection-station')" class="selectContent" routerLink='/selection-station'>
+    <wv-extended-list-selector [parameters]="stationParams" [selectorId]="'station'" [providerList]="selectedProviderList" (onDatasetSelection)="onDatasetSelected($event)"></wv-extended-list-selector>
+  </div>
+</div>
+<div *ngIf="checkSelection('/selection-map')" class="selectContent" routerLink='/selection-map'>
+
+  <div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':display}">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{{stationLabel}}</h5>
+          <button type="button" class="close" aria-label="Close" (click)="onCloseHandled()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <button class="btn btn-default label" *ngFor="let selLabel of entryLabel" (click)="addDataset(selLabel)" type="button">{{selLabel}}</button>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" (click)="onCloseHandled()">Close</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="mapContent" id="timeseriesMap">
+    <div id="main">
+      <n52-station-map-selector [mapId]="'timeMap'" [serviceUrl]="selectedProviderUrl" [filter]="stationFilter" [zoomControlOptions]="zoomControlOptions"
+        [mapOptions]="mapOptions" [fitBounds]="fitBounds" [avoidZoomToSelection]="avoidZoomToSelection" [baseMaps]="baseMaps"
+        [overlayMaps]="overlayMaps" (onSelected)="onStationSelected($event)" [cluster]="cluster" [statusIntervals]="statusIntervals"
+        (onContentLoading)="loadingStations = $event"></n52-station-map-selector>
+    </div>
+  </div>
+  <div style="width: 200px;" class="phenomena">
+    <div class="expand-button" [ngClass]="{'active': isActive}" (click)="change()">
+      <span class="icon">
+        <i class="fas fa-angle-right" [ngClass]="{'fa-angle-right': isActive, 'fa-angle-left': !isActive}"></i>
+      </span>
+    </div>
+    <div class="phenomenonSelector" [ngClass]="{'active': isActive}">
+      <wv-extended-phenomenon-service-filter-selector [serviceUrl]="selectedProviderUrl" endpoint="phenomenon" (onItemSelected)="onSelectPhenomenon($event)"
+        (stationFilter)="removeStationFilter()"></wv-extended-phenomenon-service-filter-selector>
+    </div>
+  </div>
+</div>

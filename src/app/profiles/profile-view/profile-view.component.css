@@ -1,0 +1,20 @@
+#d3Graph
+{
+    border: 1px solid lightgray;
+    width: 90%;
+}
+
+.svg-container {
+    display: inline-block;
+    position: relative;
+    width: 90%;
+    padding-bottom: 90%; /* aspect ratio */
+    vertical-align: top;
+    overflow: hidden;
+}
+.svg-content-responsive {
+    display: inline-block;
+    position: absolute;
+    top: 10px;
+    left: 0;
+}

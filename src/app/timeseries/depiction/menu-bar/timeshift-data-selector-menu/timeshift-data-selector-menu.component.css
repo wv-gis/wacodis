@@ -1,0 +1,16 @@
+button {
+    margin-right: 1.0rem;
+}
+.btn.btn-default{
+    background-color: #718296;
+    color: white;
+}
+
+.btn.btn-default.active{
+    background-color: #2c4869;
+}
+
+li {
+    list-style: none;
+    padding: 5px;
+}

@@ -1,0 +1,51 @@
+<h1>WaCoDiS Client</h1>
+<div class="header">
+  <nav class="navbar navbar-expand-lg fixed-top navbar-light ">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarToggler">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      </div>
+      <a href="http://wacodis.fbg-hsbo.de/">
+        <img src="assets/images/WaCoDiS_LogoTransp.png" alt="WaCoDiS" width="78" height="43">
+      </a>
+      <div *ngIf="checkSelection('/start')" class="collapse navbar-collapse" id="navbarToggler">
+        <ul class="navbar-nav mr-auto">
+          <li routerLinkActive="active" class="nav-item"  data-toggle="collapse" data-target=".navbar-collapse.show">
+            <a routerLink='/start' class="nav-link">Home</a>
+          </li>
+          <li routerLinkActive="active" class="nav-item"  data-toggle="collapse" data-target=".navbar-collapse.show">
+              <!-- [routerLinkActiveOptions]="{exact: true}" -->
+            <a routerLink='/selection-category' class="nav-link">Zeitreihen</a>
+            <a routerLink='/selection-phenomenon'></a>
+            <a routerLink='/selection-station'></a>
+            <a routerLink='/selection-map'></a>
+            <a routerLink='/timeseries-diagram'></a>
+          </li>
+          <li routerLinkActive="active" class="nav-item"  data-toggle="collapse" data-target=".navbar-collapse.show">
+            <a routerLink='/map-view' class="nav-link">Kartenansicht</a>
+          </li>
+          <li routerLinkActive="active" class="nav-item"  data-toggle="collapse" data-target=".navbar-collapse.show">
+            <!-- <a routerLink='/comparison-selection' class="nav-link">ChangeDetection</a> -->
+            <a routerLink='/change-detection' class="nav-link">Change Detection</a>
+          </li>
+          <li routerLinkActive="active" class="nav-item"  data-toggle="collapse" data-target=".navbar-collapse.show">
+            <a routerLink='/reports' class="nav-link">Berichte</a>
+          </li>
+          <li routerLinkActive="active" class="nav-item"  data-toggle="collapse" data-target=".navbar-collapse.show">
+            <a routerLink='/profiles' class="nav-link">Profile</a>
+          </li>
+          <li routerLinkActive="active" class="nav-item"  data-toggle="collapse" data-target=".navbar-collapse.show">
+            <a routerLink='/weather-forecast' class="nav-link">Wettervorschau</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+</div>
+<br>
+<div class="content">
+  <router-outlet></router-outlet>
+</div>

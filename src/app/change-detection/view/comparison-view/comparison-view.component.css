@@ -1,0 +1,92 @@
+#main {
+    height: 100%;
+    width: 100%;
+    float: left;
+    position: relative;
+}
+.mapContent {
+    position: absolute;
+    right: 0px;
+    top: 45px;
+    bottom: 48px;
+    left: 0px;
+}
+.table{
+    margin-bottom: 0;
+}
+.view-legend{
+    bottom: 0px;
+    position: absolute;
+    width: 100%;
+}
+.viewMenu{
+    margin-left: 10px;
+}
+/* #viewMenu{
+    background-color: #718296;
+} */
+li {
+    list-style: none;
+    padding: 5px;
+}
+.textCss{
+    color: gray;
+   margin: 10px 0px 10px 10px;
+}
+.btn.btn-default{
+    background-color: #718296;
+    color: white
+}
+.navbar-light{
+    background-color: lightgray;
+}
+.btn.btn-default{
+    background-color:  #718296;
+    color: white;
+    display: inline-block;
+    padding: 5px;
+    margin: 5px;
+}
+.layerSelect{
+    color: black;
+}
+
+.layerRow{
+width: 50%;
+}
+
+.viewSelect{
+    color: black;
+}
+
+.footer{
+    margin: auto;
+}
+
+.table{
+    border-right: 1px solid #dee2e6;
+    border-left: 1px solid #dee2e6;
+    border-bottom: 1px solid #dee2e6;
+}
+thead{
+    background-color: lightgrey;
+}
+.modal{
+    display: block;
+    background-color: rgba(0,0,0,0.6)
+}
+.modal-dialog{
+    max-width: 550px;
+}
+.dropdown-menu{
+    overflow: auto;
+    max-height: 250px;
+}
+input[type=range]::-ms-tooltip { 
+    display: none; 
+    visibility: hidden;
+}
+
+input[type=range]::-ms-thumb {
+    transform: scale(1) !important;
+  }

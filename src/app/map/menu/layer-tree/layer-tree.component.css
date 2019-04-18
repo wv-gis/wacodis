@@ -1,0 +1,42 @@
+.phenomena .expand-button.active {
+    right: 400px;
+    background-color: #2c4869;
+}
+.phenomena .expand-button {
+    top: 123px;
+}
+.phenomena .expand-button {
+    position: absolute;
+    top: 75px;
+    right: 0;
+    width: 49px;
+    height: 54px;
+    border-radius: 3px 0 0 3px;
+    box-shadow: inset -3px 0 0 rgba(0,0,0,.2);
+    text-align: center;
+    background-color: #718296;
+    z-index: 800;
+    cursor: pointer;
+}
+.phenomena .expand-button .icon {
+    color: #fff;
+    font-size: 20px;
+    line-height: 52px;
+} 
+
+.phenomena .phenomenonSelector.active {
+    top: 111px;
+    width: 400px;
+}
+.phenomena .phenomenonSelector.active {
+    display: inline;
+    position: absolute;
+    top: 48px;
+    right: 0;
+    bottom: 0;
+    background-color: #718296;
+}
+.phenomena .phenomenonSelector {
+    overflow: auto;
+    display: none;
+}

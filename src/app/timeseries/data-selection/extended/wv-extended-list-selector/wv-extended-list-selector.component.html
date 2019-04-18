@@ -1,0 +1,57 @@
+<div class="row">
+    <div *ngFor="let param of parameters; let i = index">
+      <div class="col-3">
+        <table class="table" [ngClass]="{'disabled': param.isDisabled }">
+          <thead>
+            <tr>
+              <th scope="col">
+                <div class="card-header">
+                  <span *ngIf="param.header === 'Kategorie'">
+                    <i class="fas fa-tint"> </i>
+                  </span>
+                  <span *ngIf="param.header === 'Station'">
+                    <i class="fas fa-home"> </i>
+                  </span>
+                  <span *ngIf="param.header === 'Phänomen'">
+                    <i class="fas fa-ruler-vertical"> </i>
+                  </span>
+                  <span> {{param.header }}</span>
+                  <span *ngIf="param.headerAddition else default">  </span>
+                  <span> <br> {{ param.headerAddition }}</span>
+                  <ng-template #default>
+                    <span ><br> - bitte wählen -</span>
+                  </ng-template>
+                 
+                </div>
+              </th>
+            </tr>
+          </thead>
+  
+          <tbody>
+            <tr>
+              <td>
+                <div class="auto">
+                  <div *ngIf="!param.isDisabled">
+                    <wv-extended-multiservice-filter-selector [endpoint]="param.type" [filterList]="param.filterList" (onItemSelected)="newItemSelected($event, i)" ></wv-extended-multiservice-filter-selector>
+                    <div *ngIf="i==3">
+                      <i class="fas fa-chart-bar" style="float: right;"></i>
+                      <div *ngIf="datasetSelected">
+                        <span class="badge badge-success">Zeitreihe hinzugefügt</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <!-- <div *ngIf="i==3">
+              <button type="button" id="timeseriesRoute" (click)="moveToDiagram('/timeseries-diagram')">
+                <span>Zur Zeitreihenansicht </span>
+                <i class="far fa-chart-bar"></i>
+              </button>
+            </div> -->
+          </tbody>
+  
+        </table>
+      </div>
+    </div>
+  </div>

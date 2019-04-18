@@ -1,0 +1,17 @@
+.windyMap{
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 50px;
+    /* margin-top: 40px; */
+}
+.selectLegend{
+    padding:5px; 
+    margin-left: 45px; 
+}
+.btn.btn-default{
+    margin: 5px;
+
+}
+.btn.btn-default.active{
+    background-color:  #2c4869;
+}

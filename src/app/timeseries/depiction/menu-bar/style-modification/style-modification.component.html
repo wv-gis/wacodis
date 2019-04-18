@@ -1,0 +1,12 @@
+<div *ngIf="visible=='visible'">
+  <n52-color-selector [color]="option.color" [colorList]="colorList" (onColorChange)="setColor($event)"></n52-color-selector>
+</div>
+<div>
+  <n52-min-max-range [range]="range" (onRangeChange)="updateRange($event)"></n52-min-max-range>
+</div>
+<div class="btn btn-default groupButton"> Gruppierte y-Achse
+    <label class="switch" for="toggle_2">
+        <input id="toggle_2" type="checkbox" (click)="updateYAxis()" name="group" value="option.seperateYAxis" checked>
+        <span class="slider round"></span>
+    </label>
+</div>

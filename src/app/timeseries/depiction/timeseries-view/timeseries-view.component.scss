@@ -1,0 +1,71 @@
+:host {
+    .container-fluid {
+        background-color: lightgray;
+    }
+    .diagram{
+        width: 100%;
+        background-color: white;
+    }
+    .diagram.active{
+        width: 100%;
+        background-color: white;
+    }
+    .diagramEntry {
+        height: 500px;
+        flex: 1;
+        padding: 5px;
+        width: 80%;
+        stroke: none;
+    }
+    .diagramEntry.active{
+        width: 100%;
+        height: 500px;
+        flex: 1;
+        padding: 5px;
+    }
+    .legendEntry {
+        display: flex;
+        flex-direction: row;
+        
+        .left,
+        .right {
+            width: 50%;
+        }
+    }
+    .btn-light {
+        background-color: pink;
+    }
+    .row {
+        background-color: white;
+    }
+    .menu{
+        position: inherit;
+        width: 250px;
+    }
+    .overview{
+        height: 100px; 
+        width: 80%;
+    }
+    .overview.active{
+        width: 100%;
+    }
+    // .loading-overlay {
+    //     width: 100%;
+    //     height: 100%;
+    //     position: absolute;
+    //     top: 48px;
+    //     left: 0;
+    //     opacity: 0.5;
+    //     z-index: 1;
+    //     display: flex;
+    //     justify-content: center;
+    //     align-items: center;
+    //     .fa-spin {
+    //         $icon-size: 25px;
+    //         color: white;
+    //         font-size: $icon-size;
+    //         width: $icon-size;
+    //         height: $icon-size;
+    //     }
+    // }
+}

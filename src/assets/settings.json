@@ -1,0 +1,106 @@
+{
+    "solveLabels": true,
+    "proxyUrl": "https://cors-anywhere.herokuapp.com/",
+    "refreshDataInterval": "10",
+    "datasetApis": [
+        {
+            "name": "Wupperverband Timeseries GIS intern",
+            "url": "https://www.fluggs.de/sos2-intern-gis/api/v1/"
+        },
+        {
+            "name": "Wupperverband Timeseries",
+            "url": "http://www.fluggs.de/sos2/api/v1/"
+        },
+        {
+            "name": "52north - Sensorwebtestbed",
+            "url": "http://sensorweb.demo.52north.org/sensorwebtestbed/api/v1/"
+        },
+        {
+            "name":"Wupperverband Timeseries intern",
+            "url": "http://www.fluggs.de/sos2-intern/api/v1/"
+        }
+    ],
+    "reservoirs": [
+        {
+            "id": "BE",
+            "label": "Bever-Talsperre",
+            "graph": {
+                "seriesId": "37",
+                "compSeriesId": "743",
+                "referenceValues": [
+                    {
+                        "referenceId": "600",
+                        "label": "Hochwasserschutzraum"
+                    },
+                    {
+                        "referenceId": "355",
+                        "label": "Vollstau"
+                    },
+                    {
+                        "referenceId": "601",
+                        "label": "Orientierungslinie"
+                    }
+                ],
+                "rainSeriesID":"427",
+                "compYearsFrom": [1995, 1996, 2003]
+            }
+        },
+        {
+            "id": "GDT",
+            "label": "Große Dhünn-Talsperre",
+            "graph": {
+                "seriesId": "42",
+                "compSeriesId": "745",
+                "referenceValues": [
+                    {
+                        "referenceId": "736",
+                        "label": "Hochwasserschutzraum"
+                    },
+                    {
+                        "referenceId": "376",
+                        "label": "Vollstau"
+                    }
+                ],
+                "rainSeriesID":"432",
+                "compYearsFrom": [1995, 1996, 2014, 2015]
+            }
+        },
+        {
+            "id": "WU",
+            "label": "Wupper-Talsperre",
+            "graph": {
+                "seriesId": "48",
+                "compSeriesId": "744",
+                "referenceValues": [
+                    {
+                        "referenceId": "737",
+                        "label": "Hochwasserschutzraum"
+                    },
+                    {
+                        "referenceId": "360",
+                        "label": "Vollstau"
+                    }
+                ],
+                "rainSeriesID":"425",
+                "compYearsFrom": [1995, 1996, 2003, 2010]
+            }
+        },
+
+        {
+            "id": "KT",
+            "label": "Kerspe-Talsperre",
+            "graph": {
+                "seriesId": "741",
+                "compYearsFrom": [2006, 2008, 2014]
+            }
+        },
+        {
+            "id": "HT",
+            "label": "Herbringhauser Talsperre",
+            "graph": {
+                "seriesId": "742",
+                "compYearsFrom": [2008, 2014, 2015]
+            }
+        }
+    ]
+}

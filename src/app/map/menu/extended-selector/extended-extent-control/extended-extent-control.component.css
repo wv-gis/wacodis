@@ -1,0 +1,7 @@
+#extentButton {
+    background-color: #718296;
+    border-color: white;
+}
+#extentButton:hover{
+    background-color: #8b9cae;
+}

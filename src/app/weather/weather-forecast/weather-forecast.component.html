@@ -1,0 +1,16 @@
+<div class="selectLegend">
+  <button type="button" class="btn btn-default" (click)="setView('windy')" [ngClass]="{ 'active': checkView('windy')}">Wind</button>
+  <button type="button" class="btn btn-default" (click)="setView('rainy')" [ngClass]="{ 'active': checkView('rainy')}">Regen</button>
+  <button type="button" class="btn btn-default" (click)="setView('cloudy')" [ngClass]="{ 'active': checkView('cloudy')}">Wolken</button>
+</div>
+<div *ngIf="selected === 'windy'" class="windyMap">
+    <iframe width="1700" height="825" src="https://embed.windy.com/embed2.html?lat=51.230&lon=7.244&zoom=10&level=surface&overlay=wind&menu=&message=&marker=true&calendar=24&pressure=&type=map&location=coordinates&detail=true&detailLat=51.304&detailLon=7.244&metricWind=km%2Fh&metricTemp=default&radarRange=-1" frameborder="0"></iframe>
+</div>
+<div *ngIf="selected === 'rainy'" class="windyMap">
+    <!-- <iframe width="1700" height="825" src="https://embed.windy.com/embed2.html?lat=51.230&lon=7.244&zoom=10&level=surface&overlay=rain&menu=&message=&marker=true&calendar=24&pressure=&type=map&location=coordinates&detail=true&detailLat=51.304&detailLon=7.244&metricWind=km%2Fh&metricTemp=default&radarRange=-1" frameborder="0"></iframe> -->
+    <iframe width="1700" height="825" src="https://embed.windy.com/embed2.html?lat=51.196&lon=7.233&zoom=11&level=surface&overlay=rainAccu&menu=&message=&marker=true&calendar=&pressure=&type=map&location=coordinates&detail=&detailLat=51.196&detailLon=7.233&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1" frameborder="0"></iframe>
+</div>
+<div *ngIf="selected === 'cloudy'" class="windyMap">
+    <iframe width="1700" height="825" src="https://embed.windy.com/embed2.html?lat=51.230&lon=7.244&zoom=10&level=surface&overlay=clouds&menu=&message=&marker=true&calendar=24&pressure=&type=map&location=coordinates&detail=true&detailLat=51.304&detailLon=7.244&metricWind=km%2Fh&metricTemp=default&radarRange=-1" frameborder="0"></iframe>
+</div>
+<!-- <div id="windy" style="width: 100%; height:300px"></div> -->

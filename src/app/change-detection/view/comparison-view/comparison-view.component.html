@@ -1,0 +1,175 @@
+<div class="navbar navbar-expand-lg navbar-light" id="viewMenu" style="z-index: 801;padding: 0px;">
+  <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#viewMenuToggler" aria-controls="viewMenuToggler">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="viewMenuToggler">
+    <div class="viewMenu">
+      <ul class="navbar-nav mr-auto">
+        <li>
+          <button class="btn btn-default" (click)="changeView()">Ansicht wechseln</button>
+        </li>
+        <div class="textCss">Adresssuche</div>
+        <li>
+          <n52-geosearch-control mapId="comparisonMap" [options]="searchOptions"></n52-geosearch-control>
+        </li>
+        <li *ngIf="view === 'split'">
+          <n52-locate-control mapId="comparisonMap"></n52-locate-control>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+<div class="mapContent" id="mainMap">
+  <div id="main">
+    <n52-station-map-selector [mapId]="'comparisonMap'" [zoomControlOptions]="zoomControlOptions" [mapOptions]="mapOptions" [fitBounds]="fitBounds"
+      [avoidZoomToSelection]="avoidZoomToSelection" [baseMaps]="defaultBaseMap"></n52-station-map-selector>
+  </div>
+</div>
+<div class="view-legend">
+  <table class="table">
+    <tbody>
+      <tr>
+        <div>
+        <td id="leftName">
+            <button id="leftLayer" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">{{selectLeftLayer}}</button>
+            <div class="dropdown-menu" aria-labelledby="leftLayer">
+              <button class="dropdown-item" *ngFor="let layers of comparisonOptions; let i = index" (click)="changeLeftLayer(layers, i)">{{layers}}</button>
+              <div *ngFor="let item of unresolvableServices">
+                <div style="color: red;">{{item}} is currently not reachable</div>
+            </div>
+            </div>
+           
+        
+          <!-- <label>{{leftLayer?.options.alt}} {{defaultLDate | date: 'mediumDate'}}</label> -->
+        </td>
+        <td id="leftTime">
+            <button id="leftTime" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">{{defaultLDate| date: 'mediumDate' }}</button>
+            <div class="dropdown-menu" aria-labelledby="leftTime">
+              <button class="dropdown-item" *ngFor="let lDate of selLeftDate; let i = index" (click)="changeLeftDate(lDate, i)">{{lDate| date: 'mediumDate' }}</button>
+            </div>
+        </td>
+      </div>
+        <td id="rightName">
+            <button id="rightLayer" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">{{selectRightLayer}}</button>
+            <div class="dropdown-menu" aria-labelledby="rightLayer">
+              <button class="dropdown-item" *ngFor="let rightLayers of comparisonOptions; let i = index" (click)="changeRightLayer(rightLayers, i)">{{rightLayers}}</button>
+              <div *ngFor="let item of unresolvableServices">
+                <div style="color: red;">{{item}} is currently not reachable</div>
+            </div>
+            </div>
+            
+          <!-- <label>{{rightLayer?.options.alt}} {{defaultRDate | date: 'mediumDate'}}</label> -->
+        </td>
+        <td>
+            <button id="rightTime" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">{{defaultRDate| date: 'mediumDate'}}</button>
+            <div class="dropdown-menu" aria-labelledby="rightTime">
+              <button class="dropdown-item" *ngFor="let rDate of selRightDate; let i = index" (click)="changeRightDate(rDate, i)">{{rDate| date: 'mediumDate' }}</button>
+            </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="container-fluid">
+  <div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'visibility':display}" id="compSelModal">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <!-- <h5 class="modal-title">{{id}}</h5> -->
+          <button type="button" class="close" aria-label="Close" (click)="onCloseHandled()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="selection-view ">
+
+            <div class=" viewSelect">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th class='layerRow'>Wählen Sie den linken Layer</th>
+                    <th class='layerRow'>Wählen Sie den rechten Layer</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <button id="leftLayer" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">{{selectLeftLayer}}</button>
+                      <div class="dropdown-menu" aria-labelledby="leftLayer">
+                        <button class="dropdown-item" *ngFor="let layers of comparisonOptions; let i = index" (click)="checkLeftLayer(layers, i)">{{layers}}</button>
+                      </div>
+                      <div *ngFor="let item of unresolvableServices">
+                        <div style="color: red;">{{item}} is currently not reachable</div>
+                    </div>
+                    </td>
+                    <td>
+                      <button id="rightLayer" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">{{selectRightLayer}}</button>
+                      <div class="dropdown-menu" aria-labelledby="rightLayer">
+                        <button class="dropdown-item" *ngFor="let rightLayers of comparisonOptions; let i = index" (click)="checkRightLayer(rightLayers, i)">{{rightLayers}}</button>
+                      </div>
+                      <div *ngFor="let item of unresolvableServices">
+                        <div style="color: red;">{{item}} is currently not reachable</div>
+                    </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <button id="leftTime" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">{{defaultLDate| date: 'mediumDate' }}</button>
+                      <div class="dropdown-menu" aria-labelledby="leftTime">
+                        <button class="dropdown-item" *ngFor="let lDate of selLeftDate; let i = index" (click)="checkLeftDate(lDate, i)">{{lDate| date: 'mediumDate' }}</button>
+
+                      </div>
+                    </td>
+                    <td>
+                      <button id="rightTime" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">{{defaultRDate| date: 'mediumDate'}}</button>
+                      <div class="dropdown-menu" aria-labelledby="rightTime">
+                        <button class="dropdown-item" *ngFor="let rDate of selRightDate; let i = index" (click)="checkRightDate(rDate, i)">{{rDate| date: 'mediumDate' }}</button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+
+                <thead>
+                  <tr>
+                    <th>Geteilte Ansicht</th>
+                    <th>Synchronisierte Ansicht</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <tr>
+                    <td>
+                      <img src='assets/images/SliderPic.JPG'>
+                    </td>
+                    <td>
+                      <img src='assets/images/SyncedPic.JPG'>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <form name="viewForm" id="selectForm">
+                        <select id="selectedForm">
+                          <option id="split" value="split">Geteilte Ansicht
+                          </option>
+                          <option id="synced" value="synced">Synchronisierte Ansicht
+                          </option>
+                        </select>
+                      </form>
+                    </td>
+                    <td>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default"  (click)="resetSelection()">Reset</button>
+          <a class="btn btn-default" role="button" (click)="submitSelection()">Auswahl bestätigen</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
