@@ -82,20 +82,22 @@ export class ReportsViewComponent implements OnInit {
     this.loading = true;
 
     const svgWidth = 1550, svgHeight = 620;
-    const margin = { top: 40, right: 220, bottom: 30, left: 50 };
+    const margin = { top: 30, right: 150, bottom: 30, left: 50 };
     let graphData = [];
     let width = svgWidth - margin.left - margin.right;
     let height = svgHeight - margin.top - margin.bottom;
     let xaxisHeight = svgHeight - margin.bottom;
-    let svg = d3.select('#reports').append("div")
-    .classed("svg-container", true)
-    .append("svg")
-    .attr("viewBox", '0 0 ' + svgWidth + ' ' + svgHeight)
-    .attr("version", "1.1")
-    .attr("xmlns", "http://www.w3.org/2000/svg")
-    .attr("xmlns:xlink", "http://www.w3.org/1999/xlink")
-    .classed("svg-content-responsive", true);
-        
+    let svgCont = d3.select('#reports').append("div")
+      .classed("svg-container", true);
+      let svg = svgCont.append("svg")
+      .attr("viewBox", '0 0 ' + svgWidth + ' ' + svgHeight)
+      .attr("version", "1.1")
+      .attr("xmlns", "http://www.w3.org/2000/svg")
+      .attr("xmlns:xlink", "http://www.w3.org/1999/xlink")
+      .attr('width', svgWidth)
+      .attr('height',svgHeight)
+      .classed("svg-content-responsive", true);
+
 
     //set the boundings of the graph
     let g = svg.append("g")
@@ -115,14 +117,14 @@ export class ReportsViewComponent implements OnInit {
       .attr("x", (width / 2))
       .attr("y", (margin.top / 2))
       .attr("text-anchor", "middle")
-      .style("font-size", "14px")
+      .style("font-size", "12px")
       .style("text-decoration", "underline")
       .text('Speicherinhalt ' + this.damLabel);
 
     // set the definition of the drawing line for series
     let line = d3.line()
       .curve(d3.curveBasis)
-      .x((d)=> { return x(d.date) })
+      .x((d) => { return x(d.date) })
       .y((d) => { return y(d.value) });
 
     // add the tooltip element to the graph
@@ -235,26 +237,28 @@ export class ReportsViewComponent implements OnInit {
           .attr("dy", "1.5em")
           .attr("text-anchor", "middle")
           .text("Mio m³");
-          redraw(d3Data);
+        redraw(d3Data);
       }
       // add x axis to the bottom of the graph
       svg.append("g")
         .attr("class", "x axis")
         .attr("transform", "translate(" + margin.left + ', ' + xaxisHeight + ")")
         .call(xAxis);
- 
-      // gridlines in y axis function
-      // function make_y_gridlines() {
-      //   return d3.axisLeft(y)
-      //     .ticks(5)
-      // }
-      // add the Y gridlines
-      // svg.append("g")
-      //   .attr("class", "grid")
-      //   .call(make_y_gridlines()
-      //     .tickSize(-width - margin.right)
-      //     .tickFormat("")
-      //   )
+
+   // gridlines in y axis function
+   function make_y_gridlines() {
+    return d3.axisLeft(y)
+      .ticks(4)
+  }
+  // add the Y gridlines
+  g.append("g")
+    .attr("class", "grid")
+    .attr('opacity',0.5)
+    .attr('stroke-width',0.25)
+    .call(make_y_gridlines()
+      .tickSize(-width)
+      .tickFormat("")
+    );
 
       // add line for timeseries to graph
       let actualLine = g.append("path")
@@ -268,19 +272,23 @@ export class ReportsViewComponent implements OnInit {
         .attr("d", line);
 
       svg.append("text")
-        .attr("x", width + margin.left + 10)
-        .attr("y", height - margin.bottom - 20 * 5)
+        .attr("x", width + margin.left + 25)
+        .attr("y", height - margin.bottom - 20 * (this.timespan.length))
         .attr("class", "legend")
+        .attr("id", "legend")
+        .attr("cursor","pointer")
+        .style("font-size", "11px")
         .style("fill", "red")
         .style("padding", "5px")
         .on("click", function () {
           let active = actualLine.active ? false : true,
             newOpacity = active ? 0 : 1;
+            let legendCol = active ? 'grey':'red' ;
           d3.select("#line").style("opacity", newOpacity);
+          d3.select("#legend").style("fill", legendCol);
           actualLine.active = active;
         })
-        .text('Inhalt: ' + new Date(this.timespan[0].from).getFullYear() + '-' + new Date(this.timespan[0].to).getFullYear());
-
+        .text('Inhalt: ' + new Date(this.timespan[0].from).getFullYear() + '-' + (new Date(this.timespan[0].to).getFullYear()-1));
 
       // let datasets = [];
       // for (let k = 0; k < this.intervals.length; k++)
@@ -293,7 +301,7 @@ export class ReportsViewComponent implements OnInit {
       //   type: 'line'
       // });
 
-
+      this.loading = false;
     }, (err) => { this.errorOnLoading() });
     // }
     //collect and add timeseries of comparison years to the diagram
@@ -302,7 +310,6 @@ export class ReportsViewComponent implements OnInit {
         this.datasetApi.getTsData(this.compSeriesId, this.serviceUrl, this.timespan[j], this.filter).subscribe((data) => {
           let compIntervals = [];
           let compValues = [];
-          console.log(new Date().getFullYear());
           for (let i = 0; i < data.values.length; i++) {
             if (new Date(data.values[i]['timestamp']).getFullYear() === new Date(this.timespan[j].from).getFullYear()) {
               compIntervals.push(new Date(new Date().getFullYear() - 2, new Date(data.values[i]['timestamp']).getMonth(), new Date(data.values[i]['timestamp']).getDate()));
@@ -321,7 +328,7 @@ export class ReportsViewComponent implements OnInit {
           }
           let datasets = [];
           for (let k = 0; k < compIntervals.length; k++)
-            datasets.push({ date: (compIntervals[k]), value: compValues[k], year: new Date(this.timespan[j].from).getFullYear() + '-' + new Date(this.timespan[j].to).getFullYear() });
+            datasets.push({ date: (compIntervals[k]), value: compValues[k], year: new Date(this.timespan[j].from).getFullYear() + '/' + new Date(this.timespan[j].to).getFullYear() });
 
           x.domain(d3.extent(datasets, function (d) { return d.date }));
           graphData.push(datasets);
@@ -371,7 +378,9 @@ export class ReportsViewComponent implements OnInit {
             .data(datasets)
             .enter().append("circle")
             .attr("opacity", 0.1)
-            .attr("stroke", color)
+            .attr("stroke", 'white')
+            .attr("cursor","pointer")
+            .attr("fill", "white")
             .attr("id", 'dots' + datasets[0].year.slice(5))
             .attr("r", 1.5)
             .attr("cx", function (d) { return x(d.date); })
@@ -380,7 +389,8 @@ export class ReportsViewComponent implements OnInit {
               div.transition()
                 .duration(200)
                 .style("opacity", .9);
-              div.html(formatTime(d.date) + " <svg width='30' height='30'><circle cx='15' cy='15' r='6' fill=" + color + " ></circle><svg>" + "<br/>" + d.year + ": " + d.value)
+              div.html(formatTime(d.date) + "<span style='color:"+ color +"; stroke=black;'><i class='fas fa-circle' style='padding: 5px;font-size: 80%;'> </i></span>"
+               + "<br/>" + d.year + ": " + d.value)
                 .style("left", (d3.event.pageX) + "px")
                 .style("top", (d3.event.pageY - 28) + "px")
                 .style("border", "0px")
@@ -395,22 +405,27 @@ export class ReportsViewComponent implements OnInit {
             });
 
 
-          svg.append("text")
-            .attr("x", width + margin.left + 10)
+         let legend= svg.append("text")
+            .attr("x", width + margin.left + 25)
             .attr("y", height - margin.bottom - 20 * j)
             .attr("class", "legend")
+            .attr("font-size", "11px")
+            .attr("id","legend"+datasets[0].year.slice(5))
+            .attr("cursor","pointer")
             .style("fill", color)
             .style("padding", "5px")
             .on("click", function () {
               let active = compLine.active ? false : true,
                 newOpacity = active ? 0 : 1;
               let dotOpacity = active ? 0 : 0.2;
+              let legendCol = active ? 'grey':color ;
               d3.select("#line" + datasets[0].year.slice(5)).style("opacity", newOpacity);
               d3.select("#dots" + datasets[0].year.slice(5)).style("opacity", newOpacity);
+              d3.select("#legend" + datasets[0].year.slice(5)).style("fill", legendCol);
               compLine.active = active;
-            })
-            .text('Vergleichsjahr: ' + datasets[0].year);
-
+            }).text('Vergleichsjahr: ' + datasets[0].year);
+            
+           
           // let datasets = [];
           // for (let k = 0; k < this.intervals.length; k++)
           //   datasets.push([this.intervals[k], this.values[k]]);
@@ -459,22 +474,24 @@ export class ReportsViewComponent implements OnInit {
         //add y axis for rainseries
         g.append("g")
           .attr("transform", "translate(" + width + ',' + "0 )")
-          .call(d3.axisLeft(yr))
+          .call(d3.axisRight(yr))
           .append("text")
           .attr("fill", "#000")
           .attr("transform", "rotate(-90)")
-          .attr("y", 6)
-          .attr("dy", "0.71em")
-          .attr("text-anchor", "end")
-          .text("rain (mm)");
+          .attr("y", 0 + margin.left)
+          .attr("x", 0 - (height / 3))
+          .attr("dy", "1.0em")
+          .attr("text-anchor", "middle")
+          .text("Tagessumme (mm)");
         //add bars
         g.selectAll("rect")
           .data(secDataset)
           .enter()
           .append("svg:rect")
           .style("fill", "steelblue")
+          .attr('opacity', 0.5)
           .attr("x", function (d, i) { return x(d.date); })
-          .attr("width", 2)
+          .attr("width", 1.5)
           .attr("y", function (d) { return yr(d.value); })
           .attr("height", function (d) { return height - yr(d.value); });
 
@@ -534,6 +551,7 @@ export class ReportsViewComponent implements OnInit {
           let refColor = "rgb(" + Math.floor(Math.random() * 255) + "," + Math.floor(Math.random() * 255) + "," + Math.floor(Math.random() * 255) + ")";
           graphData.push(refDataset);
           // add line for referenceSeries
+          redraw(refDataset)
           let refLine = g.append("path")
             .datum(refDataset)
             .attr("fill", "none")
@@ -544,22 +562,27 @@ export class ReportsViewComponent implements OnInit {
             .attr("id", refDataset[0].label)
             .attr("d", line);
 
-          redraw(refDataset)
+        
 
           svg.append("text")
-            .attr("x", width + margin.left + 10)
+            .attr("x", width + margin.left + 25)
             .attr("y", height - margin.bottom - 20 * b + 40)
             .attr("class", "legend")
+            .attr("cursor","pointer")
+            .attr("id","legend"+refDataset[0].label.slice(5))
+            .style("font-size", "11px")
             .style("fill", refColor)
             .style("padding", "5px")
             .on("click", function () {
               let active = refLine.active ? false : true,
                 newOpacity = active ? 0 : 1;
+                let legendCol = active ? 'grey':refColor ;
               d3.select("#" + refDataset[0].label).style("opacity", newOpacity);
+              d3.select("#legend" + refDataset[0].label.slice(5)).style("fill", legendCol);
               refLine.active = active;
             })
             .text(this.refValues[b].label);
-          this.loading = false;
+        
 
 
           // for (let p = 0; p < refInterval.length; p++) {
@@ -608,14 +631,16 @@ export class ReportsViewComponent implements OnInit {
    */
   public checkSelection(label: string, id: number) {
 
+
     if (this.diagram) {
-      console.log('New Diagram')
       this.diagram = !this.diagram;
+      this.compSeriesMax = 0;
       document.getElementById('reports').removeChild(document.getElementsByClassName("svg-container").item(0));
+
     }
     this.diagram = !this.diagram;
-    this.timespan[0].from = new Date().getTime() - 63072000000;
-    this.timespan[0].to = new Date().getTime();
+    this.timespan[0].from = new Date(new Date().getFullYear(),0).getTime() - 63072000000;
+    this.timespan[0].to = new Date(new Date().getFullYear(),0).getTime();
     this.timespan.splice(1);
 
     this.damLabel = label;
@@ -685,6 +710,8 @@ export class ReportsViewComponent implements OnInit {
     };
 
     image.src = url;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
   }
 
 

@@ -4,6 +4,7 @@
     }
 #reports{
       border: 1px solid lightgray;
+      width: 100%;
     }
 #reports rect {
       stroke: white;
