@@ -367,6 +367,7 @@ export class ReportsViewComponent implements OnInit {
             .attr("stroke", color)
             .attr("stroke-linejoin", "round")
             .attr("stroke-linecap", "round")
+            .attr("stroke-dasharray",("10,3"))
             .attr("stroke-width", 1.5)
             .attr("id", 'line' + datasets[0].year.slice(5))
             .attr("d", line);
