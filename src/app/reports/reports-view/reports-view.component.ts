@@ -1,12 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { PlatformTypes, Timespan, DatasetApiInterface, ColorService, DataParameterFilter, SettingsService } from '@helgoland/core';
-// import * as Highcharts from 'highcharts';
-// import { seriesType } from 'highcharts';
 import { ExtendedSettings, ReportReferenceValues } from 'src/app/settings/settings.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as d3 from 'd3';
 declare var require: any;
-// require('highcharts/modules/exporting')(Highcharts);
 
 @Component({
   selector: 'wv-reports-view',
@@ -28,7 +25,7 @@ export class ReportsViewComponent implements OnInit {
     phenomenon: '4',// id=4 Niederschlag
     platformTypes: PlatformTypes.stationary,
     service: this.serviceUrl,
-    generalize: true,
+    generalize: false,
   };
 
   public diagram: boolean = false;
@@ -39,14 +36,13 @@ export class ReportsViewComponent implements OnInit {
   public seriesId: string = '';
   public compSeriesId: string = '';
   public rainSeriesId: string = '';
-  // public chartOptions = {};
   public intervals: Date[] = [];
-  // public Highcharts = Highcharts;
   public values: number[] = [];
   public loading: boolean;
   public reservoirs;
   public g;
   public compSeriesMax: number = 0;
+  public width: number;
 
   constructor(private datasetApi: DatasetApiInterface, private colSrvc: ColorService,
     private settingsService: SettingsService<ExtendedSettings>, private route: ActivatedRoute, private router: Router) {
@@ -81,12 +77,12 @@ export class ReportsViewComponent implements OnInit {
   public generateReport() {
     this.loading = true;
 
-    const svgWidth = 1550, svgHeight = 620;
+    const svgWidth = 1650, svgHeight = 620;
     const margin = { top: 30, right: 150, bottom: 30, left: 50 };
     let graphData = [];
-    let width = svgWidth - margin.left - margin.right;
-    let height = svgHeight - margin.top - margin.bottom ;
-    let xaxisHeight = svgHeight - margin.bottom ;
+    this.width = svgWidth - margin.left - margin.right;
+    let height = svgHeight - margin.top - margin.bottom;
+    let xaxisHeight = svgHeight - margin.bottom;
     let svgCont = d3.select('#reports').append("div")
       .classed("svg-container", true);
     let svg = svgCont.append("svg")
@@ -95,7 +91,7 @@ export class ReportsViewComponent implements OnInit {
       .attr("xmlns", "http://www.w3.org/2000/svg")
       .attr("xmlns:xlink", "http://www.w3.org/1999/xlink")
       .attr("xmlns:html", "http://www.w3.org/1999/xhtml")
-      .attr('width', svgWidth)
+      .attr('width', svgWidth + 100)
       .attr('height', svgHeight)
       .classed("svg-content-responsive", true);
 
@@ -106,7 +102,7 @@ export class ReportsViewComponent implements OnInit {
       "translate(" + margin.left + "," + margin.top + ")"
       );
     //set scale of x and y axis
-    let x = d3.scaleTime().rangeRound([0, width]);
+    let x = d3.scaleTime().rangeRound([0, this.width]);
     let y = d3.scaleLinear().rangeRound([height, 0]);
     let formatTime = d3.timeFormat("%e %B");
 
@@ -115,7 +111,7 @@ export class ReportsViewComponent implements OnInit {
     let xAxis = d3.axisBottom(x).ticks(d3.timeMonth.every(2));
     //set the title of the graph
     svg.append("text")
-      .attr("x", (width / 2))
+      .attr("x", (this.width / 2))
       .attr("y", (margin.top / 2))
       .attr("text-anchor", "middle")
       .style("font-size", "12px")
@@ -133,71 +129,18 @@ export class ReportsViewComponent implements OnInit {
       .attr("class", "tooltip")
       .style("opacity", 0);
 
-
-    // this.chartOptions = Highcharts.setOptions({
-    //   chart: { zoomType: 'xy' },
-    //   title: { text: 'Speicherinhalt ' + this.damLabel },
-    //   legend: {
-    //     align: 'right',
-    //     verticalAlign: 'middle',
-    //     layout: 'vertical'
-    //   },
-    //   xAxis: {
-    //     type: 'datetime',
-    //     crosshair: true,
-    //     dateTimeLabelFormats: { day: { main: '%e. %b' }, month: { main: '%b' } },
-    //     plotLines: [{
-    //       value: new Date(2002, new Date().getMonth(), new Date().getDate()).getTime(),
-    //       color: 'red',
-    //       width: 2,
-    //       label: { text: 'today' },
-    //       dashStyle: 'Dot'
-    //     },
-    //     {
-    //       value: new Date(2001, 0, 0).getTime(),
-    //       color: 'black',
-    //       width: 2,
-    //       label: { text: (new Date(this.timespan[0].to).getFullYear() - 1).toString() },
-    //       dashStyle: 'Dot'
-    //     },
-    //     ]
-    //   },
-    //   yAxis: [{
-    //     title: {
-    //       text: 'Mio m³',
-    //     }
-    //   }, {
-    //     title: {
-    //       text: 'Tagessumme mm',
-
-    //     }, opposite: true,
+    // document.getElementById('htmlLegend').setAttribute('style','left:'+(this.width+margin.left+margin.right )+'px; bottom: '+(height-margin.bottom-20*(this.timespan.length))+'px;');
+    // document.getElementById('htmlLegend'+(this.timespan.length-1)).firstElementChild.setAttribute('style', "stroke: black;color: red");
+    // for(let i = 0; i<this.timespan.length;i++){
+    //   if(this.timespan.length>4){
+    //     document.getElementById('htmlLegend'+i)
+    //     .setAttribute('style','left:'+(this.width+margin.left+margin.right )+'px; bottom: '+(height-margin.top-margin.bottom-25*(this.timespan.length-i-(this.timespan.length-4))-45)+'px; position: absolute');
+    //   }else{
+    //     document.getElementById('htmlLegend'+i)
+    //     .setAttribute('style','left:'+(this.width+margin.left+margin.right )+'px; bottom: '+(height-margin.top-margin.bottom-25*(this.timespan.length-i)-45)+'px; position: absolute');
     //   }
 
-    //   ], tooltip: {
-    //     shared: true,
-    //     xDateFormat: '%e. %b',
-    //   }, exporting: {
-    //     sourceWidth: 1100, scale: 2, sourceHeight: 700,
-    //     buttons: {
-    //       contextButton: {
-    //         enabled: false,
-    //       },
-    //       exportButton: {
-    //         text: 'Export',
-    //         // Use only the download related menu items from the default
-    //         // context button
-    //         menuItems: [
-    //           'downloadPNG',
-    //           'downloadJPEG',
-    //           'downloadPDF',
-    //           'downloadSVG'
-    //         ]
-    //       },
-    //     }
-    //   },
-    // });
-
-    // let chart = Highcharts.chart('reports', this.chartOptions);
+    // }
 
 
     //collect and add timeseries of last two years from today back to the diagram
@@ -206,14 +149,14 @@ export class ReportsViewComponent implements OnInit {
       this.values = [];
       for (let i = 0; i < data.values.length; i++) {
         if (new Date(data.values[i]['timestamp']).getFullYear() === new Date(this.timespan[0].from).getFullYear()) {
-          this.intervals.push(new Date(new Date().getFullYear() - 2, new Date(data.values[i]['timestamp']).getMonth(), new Date(data.values[i]['timestamp']).getDate()));
+          this.intervals.push(new Date(new Date().getFullYear() - 1, new Date(data.values[i]['timestamp']).getMonth(), new Date(data.values[i]['timestamp']).getDate()));
         }
         else if (new Date(data.values[i]['timestamp']).getFullYear() === new Date(this.timespan[0].to).getFullYear()
           && new Date(data.values[i]['timestamp']).getMonth() <= new Date(this.timespan[0].to).getMonth()) {
-          this.intervals.push(new Date(new Date().getFullYear(), new Date(data.values[i]['timestamp']).getMonth(), new Date(data.values[i]['timestamp']).getDate()));
+          this.intervals.push(new Date(new Date().getFullYear() + 1, new Date(data.values[i]['timestamp']).getMonth(), new Date(data.values[i]['timestamp']).getDate()));
         }
         else {
-          this.intervals.push(new Date(new Date().getFullYear() - 1, new Date(data.values[i]['timestamp']).getMonth(), new Date(data.values[i]['timestamp']).getDate()));
+          this.intervals.push(new Date(new Date().getFullYear(), new Date(data.values[i]['timestamp']).getMonth(), new Date(data.values[i]['timestamp']).getDate()));
         }
         this.values.push(data.values[i]['value']);
       }
@@ -223,7 +166,7 @@ export class ReportsViewComponent implements OnInit {
 
 
 
-      graphData.push(d3Data);
+      // graphData.push(d3Data);
 
       if (this.compSeriesId == '') {
         x.domain(d3.extent(d3Data, function (d) { return d.date }));
@@ -257,7 +200,7 @@ export class ReportsViewComponent implements OnInit {
         .attr('opacity', 0.5)
         .attr('stroke-width', 0.25)
         .call(make_y_gridlines()
-          .tickSize(-width)
+          .tickSize(-this.width)
           .tickFormat("")
         );
 
@@ -269,12 +212,12 @@ export class ReportsViewComponent implements OnInit {
         .attr("id", "line")
         .attr("stroke-linejoin", "round")
         .attr("stroke-linecap", "round")
-        .attr("stroke-width", 1.5)
+        .attr("stroke-width", 2.5)
         .attr("d", line);
 
       svg.append("text")
-        .attr("x", width + margin.left + 25)
-        .attr("y", height - margin.bottom - 20 * (this.timespan.length))
+        .attr("x", this.width + margin.left + 25)
+        .attr("y", height - margin.bottom - 25 * (this.timespan.length))
         .attr("class", "legend")
         .attr("id", "legend")
         .attr("cursor", "pointer")
@@ -291,16 +234,14 @@ export class ReportsViewComponent implements OnInit {
         })
         .text('Inhalt: ' + new Date(this.timespan[0].from).getFullYear() + '-' + (new Date(this.timespan[0].to).getFullYear() - 1));
 
-      // let datasets = [];
-      // for (let k = 0; k < this.intervals.length; k++)
-      //   datasets.push([this.intervals[k], this.values[k]]);
+      svg.append('text')
+        .attr("x", this.width + margin.left + 155)
+        .attr("y", height - margin.bottom - 25 * (this.timespan.length)+5)
+        .attr("fill", "red")
+        .attr('font-size', 'xx-large')
+        .text('-');
 
-      //add timeseries of last two years from today back for the diagram
-      // chart.addSeries({
-      //   name: new Date(this.timespan[0].from).getFullYear() + '-' + new Date(this.timespan[0].to).getFullYear(),
-      //   data: datasets,
-      //   type: 'line'
-      // });
+
 
       this.loading = false;
     }, (err) => { this.errorOnLoading() });
@@ -313,17 +254,17 @@ export class ReportsViewComponent implements OnInit {
           let compValues = [];
           for (let i = 0; i < data.values.length; i++) {
             if (new Date(data.values[i]['timestamp']).getFullYear() === new Date(this.timespan[j].from).getFullYear()) {
-              compIntervals.push(new Date(new Date().getFullYear() - 2, new Date(data.values[i]['timestamp']).getMonth(), new Date(data.values[i]['timestamp']).getDate()));
+              compIntervals.push(new Date(new Date().getFullYear() - 1, new Date(data.values[i]['timestamp']).getMonth(), new Date(data.values[i]['timestamp']).getDate()));
             }
             else if (new Date(data.values[i]['timestamp']).getFullYear() === new Date(this.timespan[j].to).getFullYear()
               && new Date(data.values[i]['timestamp']).getMonth() <= new Date(this.timespan[0].to).getMonth()) {
-              compIntervals.push(new Date(new Date().getFullYear(), new Date(data.values[i]['timestamp']).getMonth(), new Date(data.values[i]['timestamp']).getDate()));
+              compIntervals.push(new Date(new Date().getFullYear() + 1, new Date(data.values[i]['timestamp']).getMonth(), new Date(data.values[i]['timestamp']).getDate()));
             }
             else if (new Date(data.values[i]['timestamp']).getFullYear() === new Date(this.timespan[j].to).getFullYear()
               && new Date(data.values[i]['timestamp']).getMonth() > new Date(this.timespan[0].to).getMonth()) {
             }
             else {
-              compIntervals.push(new Date(new Date().getFullYear() - 1, new Date(data.values[i]['timestamp']).getMonth(), new Date(data.values[i]['timestamp']).getDate()));
+              compIntervals.push(new Date(new Date().getFullYear(), new Date(data.values[i]['timestamp']).getMonth(), new Date(data.values[i]['timestamp']).getDate()));
             }
             compValues.push(data.values[i]['value']);
           }
@@ -408,8 +349,8 @@ export class ReportsViewComponent implements OnInit {
 
 
           let legend = svg.append("text")
-            .attr("x", width + margin.left + 25)
-            .attr("y", height - margin.bottom - 20 * j)
+            .attr("x", this.width + margin.left + 25)
+            .attr("y", height - margin.bottom - 25 * (j))
             .attr("class", "legend")
             .attr("font-size", "11px")
             .attr("id", "legend" + datasets[0].year.slice(5))
@@ -427,18 +368,14 @@ export class ReportsViewComponent implements OnInit {
               compLine.active = active;
             }).text('Vergleichsjahr: ' + datasets[0].year);
 
+          svg.append('text')
+            .attr("x", this.width + margin.left + 155)
+            .attr("y", height - margin.bottom - 25 * (j)+5)
+            .attr("fill", color)
+            .attr('font-size', 'xx-large')
+            .text('--');
 
-          // let datasets = [];
-          // for (let k = 0; k < this.intervals.length; k++)
-          //   datasets.push([this.intervals[k], this.values[k]]);
-
-          //add timeseries of last two years from today back and of the comparison years for the diagram
-          // chart.addSeries({
-          //   name: 'Vergleichsjahre ' + new Date(this.timespan[j].from).getFullYear() + '-' + new Date(this.timespan[j].to).getFullYear(),
-          //   data: datasets,
-          //   type: 'line'
-          // });
-
+          // document.getElementById('htmlLegend'+(j-1)).firstElementChild.setAttribute('style', "stroke: black;color: "+color);
 
         }, (err) => { this.errorOnLoading() })
 
@@ -453,13 +390,13 @@ export class ReportsViewComponent implements OnInit {
         for (let k = 0; k < res.values.length; k++) {
           if (new Date(res.values[k]['timestamp']).getFullYear() === new Date(this.timespan[0].from).getFullYear()) {
 
-            rainInterval.push(new Date(new Date().getFullYear() - 2, new Date(res.values[k]['timestamp']).getMonth(), new Date(res.values[k]['timestamp']).getDate()));
+            rainInterval.push(new Date(new Date().getFullYear() - 1, new Date(res.values[k]['timestamp']).getMonth(), new Date(res.values[k]['timestamp']).getDate()));
           }
           else if (new Date(res.values[k]['timestamp']).getFullYear() === new Date(this.timespan[0].to).getFullYear()) {
-            rainInterval.push(new Date(new Date().getFullYear(), new Date(res.values[k]['timestamp']).getMonth(), new Date(res.values[k]['timestamp']).getDate()));
+            rainInterval.push(new Date(new Date().getFullYear() + 1, new Date(res.values[k]['timestamp']).getMonth(), new Date(res.values[k]['timestamp']).getDate()));
           }
           else {
-            rainInterval.push(new Date(new Date().getFullYear() - 1, new Date(res.values[k]['timestamp']).getMonth(), new Date(res.values[k]['timestamp']).getDate()));
+            rainInterval.push(new Date(new Date().getFullYear(), new Date(res.values[k]['timestamp']).getMonth(), new Date(res.values[k]['timestamp']).getDate()));
           }
           rainValues.push(res.values[k]['value']);
 
@@ -467,7 +404,9 @@ export class ReportsViewComponent implements OnInit {
 
         for (let p = 0; p < rainInterval.length; p++) {
           secDataset.push({ date: (rainInterval[p]), value: rainValues[p] });
+
         }
+
 
         //define new scale for y axis
         let yr = d3.scaleLinear().rangeRound([height, 0]);
@@ -475,7 +414,7 @@ export class ReportsViewComponent implements OnInit {
 
         //add y axis for rainseries
         g.append("g")
-          .attr("transform", "translate(" + width + ',' + "0 )")
+          .attr("transform", "translate(" + this.width + ',' + "0 )")
           .call(d3.axisRight(yr))
           .append("text")
           .attr("fill", "#000")
@@ -497,19 +436,8 @@ export class ReportsViewComponent implements OnInit {
           .attr("y", function (d) { return yr(d.value); })
           .attr("height", function (d) { return height - yr(d.value); });
 
-        // for (let p = 0; p < rainInterval.length; p++) {
-        //   secDataset.push([rainInterval[p], rainValues[p]]);
-        // }
 
-        // add timeseries of rainfall at the reservoir to the diagram
-        // chart.addSeries({
-        //   name: 'Niederschlag ', //+ new Date(this.timespan[0].from).getFullYear() + '/' + new Date(this.timespan[0].to).getFullYear(),
-        //   data: secDataset,
-        //   type: 'column',
-        //   yAxis: 1,
-        //   color: 'lightblue'
-        // });
-
+        console.log('Niederschlagssumme: ' + rainValues.reduce((sum, current) => sum + current));
 
       }, (error) => { this.errorOnLoading() });
 
@@ -522,31 +450,30 @@ export class ReportsViewComponent implements OnInit {
           let refDataset = [];
           for (let k = 0; k < refVal.values.length; k++) {
             if (this.refValues[b].label === 'Vollstau') {
-              refInterval.push(new Date(new Date().getFullYear() - 2, new Date(refVal.values[k]['timestamp']).getMonth(), new Date(refVal.values[k]['timestamp']).getDate()));
               refInterval.push(new Date(new Date().getFullYear() - 1, new Date(refVal.values[k]['timestamp']).getMonth(), new Date(refVal.values[k]['timestamp']).getDate()));
+              refInterval.push(new Date(new Date().getFullYear(), new Date(refVal.values[k]['timestamp']).getMonth(), new Date(refVal.values[k]['timestamp']).getDate()));
 
-              if (new Date(refVal.values[k]['timestamp']).getMonth() <= new Date(11).getMonth()){
-                refInterval.push(new Date(new Date().getFullYear(), new Date(refVal.values[k]['timestamp']).getMonth(), new Date(refVal.values[k]['timestamp']).getDate()));
+              if (new Date(refVal.values[k]['timestamp']).getMonth() <= new Date().getMonth()) {
+                refInterval.push(new Date(new Date().getFullYear() + 1, new Date(refVal.values[k]['timestamp']).getMonth(), new Date(refVal.values[k]['timestamp']).getDate()));
               }
-        
-            //   
-              refInterval.push(new Date(new Date().getFullYear(), 11, new Date(refVal.values[k]['timestamp']).getDate()));
+
+              refInterval.push(new Date(new Date().getFullYear() + 1, 0, new Date().getDate()));
             }
             else {
 
               if (new Date(refVal.values[k]['timestamp']).getFullYear() === new Date(this.timespan[0].from).getFullYear()) {
-                refInterval.push(new Date(new Date().getFullYear() - 2, new Date(refVal.values[k]['timestamp']).getMonth(), new Date(refVal.values[k]['timestamp']).getDate()));
+                refInterval.push(new Date(new Date().getFullYear() - 1, new Date(refVal.values[k]['timestamp']).getMonth(), new Date(refVal.values[k]['timestamp']).getDate()));
               }
               else if (new Date(refVal.values[k]['timestamp']).getFullYear() === new Date(this.timespan[0].to).getFullYear()
                 && new Date(refVal.values[k]['timestamp']).getMonth() <= new Date(this.timespan[0].to).getMonth()) {
-                refInterval.push(new Date(new Date().getFullYear(), new Date(refVal.values[k]['timestamp']).getMonth(), new Date(refVal.values[k]['timestamp']).getDate()));
+                refInterval.push(new Date(new Date().getFullYear() + 1, new Date(refVal.values[k]['timestamp']).getMonth(), new Date(refVal.values[k]['timestamp']).getDate()));
               }
               else if (new Date(refVal.values[k]['timestamp']).getFullYear() === new Date(this.timespan[0].to).getFullYear()
                 && new Date(refVal.values[k]['timestamp']).getMonth() > new Date(this.timespan[0].to).getMonth()) {
                 // do nothing
               }
               else {
-                refInterval.push(new Date(new Date().getFullYear() - 1, new Date(refVal.values[k]['timestamp']).getMonth(), new Date(refVal.values[k]['timestamp']).getDate()));
+                refInterval.push(new Date(new Date().getFullYear(), new Date(refVal.values[k]['timestamp']).getMonth(), new Date(refVal.values[k]['timestamp']).getDate()));
               }
             }
             currentRefValues.push(refVal.values[k]['value']);
@@ -571,7 +498,7 @@ export class ReportsViewComponent implements OnInit {
 
 
           svg.append("text")
-            .attr("x", width + margin.left + 25)
+            .attr("x", this.width + margin.left + 25)
             .attr("y", height - margin.bottom - 20 * b + 40)
             .attr("class", "legend")
             .attr("cursor", "pointer")
@@ -589,18 +516,12 @@ export class ReportsViewComponent implements OnInit {
             })
             .text(this.refValues[b].label);
 
-
-
-          // for (let p = 0; p < refInterval.length; p++) {
-          //   refDataset.push([refInterval[p], currentRefValues[p]]);
-          // }
-          // refDataset.sort();
-          // chart.addSeries({
-          //   name: this.refValues[b].label,
-          //   data: refDataset,
-          //   type: 'line',
-          // });
-
+            svg.append('text')
+            .attr("x", this.width + margin.left + 155)
+            .attr("y", height - margin.bottom - 20 * b+45)
+            .attr("fill", refColor)
+            .attr('font-size', 'xx-large')
+            .text('-');
 
         }, (err) => {
           this.errorOnLoading();
@@ -657,11 +578,13 @@ export class ReportsViewComponent implements OnInit {
       this.diagram = !this.diagram;
       this.compSeriesMax = 0;
       document.getElementById('reports').removeChild(document.getElementsByClassName("svg-container").item(0));
+      // for(let i =0; i<this.timespan.length;i++)
+      // document.getElementById('htmlLegend'+i).setAttribute('style', 'display: none');
 
     }
     this.diagram = !this.diagram;
-    this.timespan[0].from = new Date(new Date().getFullYear(), 0).getTime() - 63072000000;
-    this.timespan[0].to = new Date(new Date().getFullYear(), 0).getTime();
+    this.timespan[0].from = new Date(new Date().getFullYear(), new Date().getMonth()).getTime() - 31556926000;//63072000000;
+    this.timespan[0].to = new Date(new Date().getFullYear(), 1).getTime() + 31556926000;
     this.timespan.splice(1);
 
     this.damLabel = label;
