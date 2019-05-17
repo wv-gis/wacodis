@@ -25,23 +25,23 @@
             "id": "BE",
             "label": "Bever-Talsperre",
             "graph": {
-                "seriesId": "37",
-                "compSeriesId": "743",
+                "seriesId": "sos2-intern-gis/api/v1/__37",
+                "compSeriesId": "sos2-intern-gis/api/v1/__743",
                 "referenceValues": [
                     {
-                        "referenceId": "600",
+                        "referenceId": "sos2-intern-gis/api/v1/__600",
                         "label": "Hochwasserschutzraum"
                     },
                     {
-                        "referenceId": "355",
+                        "referenceId": "sos2-intern-gis/api/v1/__355",
                         "label": "Vollstau"
                     },
                     {
-                        "referenceId": "601",
+                        "referenceId": "sos2-intern-gis/api/v1/__601",
                         "label": "Orientierungslinie"
                     }
                 ],
-                "rainSeriesID":"427",
+                "rainSeriesID":"sos2-intern-gis/api/v1/__427",
                 "compYearsFrom": [1995, 1996, 2003]
             }
         },
@@ -49,19 +49,19 @@
             "id": "GDT",
             "label": "Große Dhünn-Talsperre",
             "graph": {
-                "seriesId": "42",
-                "compSeriesId": "745",
+                "seriesId": "sos2-intern-gis/api/v1/__42",
+                "compSeriesId": "sos2-intern-gis/api/v1/__745",
                 "referenceValues": [
                     {
-                        "referenceId": "736",
+                        "referenceId": "sos2-intern-gis/api/v1/__736",
                         "label": "Hochwasserschutzraum"
                     },
                     {
-                        "referenceId": "376",
+                        "referenceId": "sos2-intern-gis/api/v1/__376",
                         "label": "Vollstau"
                     }
                 ],
-                "rainSeriesID":"432",
+                "rainSeriesID":"sos2-intern-gis/api/v1/__432",
                 "compYearsFrom": [1995, 1996, 2014, 2015]
             }
         },
@@ -69,19 +69,19 @@
             "id": "WU",
             "label": "Wupper-Talsperre",
             "graph": {
-                "seriesId": "48",
-                "compSeriesId": "744",
+                "seriesId": "sos2-intern-gis/api/v1/__48",
+                "compSeriesId": "sos2-intern-gis/api/v1/__744",
                 "referenceValues": [
                     {
-                        "referenceId": "737",
+                        "referenceId": "sos2-intern-gis/api/v1/__737",
                         "label": "Hochwasserschutzraum"
                     },
                     {
-                        "referenceId": "360",
+                        "referenceId": "sos2-intern-gis/api/v1/__360",
                         "label": "Vollstau"
                     }
                 ],
-                "rainSeriesID":"425",
+                "rainSeriesID":"sos2-intern-gis/api/v1/__425",
                 "compYearsFrom": [1995, 1996, 2003, 2010]
             }
         },
@@ -90,7 +90,7 @@
             "id": "KT",
             "label": "Kerspe-Talsperre",
             "graph": {
-                "seriesId": "741",
+                "seriesId": "sos2-intern-gis/api/v1/__741",
                 "compYearsFrom": [2006, 2008, 2014]
             }
         },
@@ -98,7 +98,7 @@
             "id": "HT",
             "label": "Herbringhauser Talsperre",
             "graph": {
-                "seriesId": "742",
+                "seriesId": "sos2-intern-gis/api/v1/__742",
                 "compYearsFrom": [2008, 2014, 2015]
             }
         }

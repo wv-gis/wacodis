@@ -158,9 +158,8 @@ export class ReportsViewComponent implements OnInit {
       .attr("class", "tooltip")
       .style("opacity", 0);
 
-
     //collect and add timeseries of last two years from today back to the diagram
-    this.datasetApi.getTsData(this.seriesId, this.serviceUrl, this.timespan[0], this.filter).subscribe((data) => {
+    this.datasetApi.getTsData(this.seriesId.split('__')[1], this.serviceUrl, this.timespan[0], this.filter).subscribe((data) => {
       this.intervals = [];
       this.values = [];
       for (let i = 0; i < data.values.length; i++) {
@@ -302,7 +301,7 @@ export class ReportsViewComponent implements OnInit {
     //collect and add timeseries of comparison years to the diagram
     if (this.compSeriesId != '') {
       for (let j = 1; j < this.timespan.length; j++) {
-        this.datasetApi.getTsData(this.compSeriesId, this.serviceUrl, this.timespan[j], this.filter).subscribe((data) => {
+        this.datasetApi.getTsData(this.compSeriesId.split('__')[1], this.serviceUrl, this.timespan[j], this.filter).subscribe((data) => {
           let compIntervals = [];
           let compValues = [];
           for (let i = 0; i < data.values.length; i++) {
@@ -439,7 +438,7 @@ export class ReportsViewComponent implements OnInit {
     }
     // // collect timeseries of rainfall at the reservoir 
     if (this.rainSeriesId != '')
-      this.datasetApi.getTsData(this.rainSeriesId, this.serviceUrl, this.timespan[0], this.rainFilter).subscribe((res) => {
+      this.datasetApi.getTsData(this.rainSeriesId.split('__')[1], this.serviceUrl, this.timespan[0], this.rainFilter).subscribe((res) => {
         let rainInterval = [];
         let rainValues = [];
         let secDataset = [];
@@ -523,7 +522,7 @@ export class ReportsViewComponent implements OnInit {
     //collect and add referenceVaues for the selected reservoir to the diagram
     if (this.refValues != undefined) {
       for (let b = 0; b < this.refValues.length; b++) {
-        this.datasetApi.getTsData(this.refValues[b].referenceId, this.serviceUrl, this.timespan[0]).subscribe((refVal) => {
+        this.datasetApi.getTsData(this.refValues[b].referenceId.split('__')[1], this.serviceUrl, this.timespan[0]).subscribe((refVal) => {
           let refInterval = [];
           let currentRefValues = [];
           let refDataset = [];
@@ -724,7 +723,7 @@ export class ReportsViewComponent implements OnInit {
 
     this.damLabel = label;
     this.seriesId = this.reservoirs[id].graph.seriesId;
-
+    console.log(this.seriesId.split('__')[1]) ;
 
     if (this.reservoirs[id].graph.compYearsFrom) {
       for (let y = 0; y < this.reservoirs[id].graph.compYearsFrom.length; y++) {
@@ -734,6 +733,7 @@ export class ReportsViewComponent implements OnInit {
     }
     if (this.reservoirs[id].graph.rainSeriesID) {
       this.rainSeriesId = this.reservoirs[id].graph.rainSeriesID;
+    
     }
     else {
       this.rainSeriesId = '';
