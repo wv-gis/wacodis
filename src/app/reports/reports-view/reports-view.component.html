@@ -3,88 +3,27 @@
         <div>
             <b> Stauinhalte im Vergleich (niederschlagsarme Jahre)</b>
         </div>
-        Bitte wählen Sie zur Berichterstellung die gewünschte Talsperre aus.
-        <br> Der Bericht wird für die letzten zwei ganzen Jahre im Verhältnis zum aktuellen Datum erstellt.
-        <!-- <form name='reference' id='checkForm'> -->
+       Der Bericht für die gewünschte Talsperre wird für einen Zeitraum von zwei Jahren <br>im Verhältnis zum aktuellen Datum mit Vorraus- und Rücksicht erstellt.
         <table class="table">
             <thead>
-                <!-- <th>Talsperre</th> -->
-                <!-- <th> Zeitraum von </th>
-                <th> Zeitraum bis</th> -->
             </thead>
             <tbody>
                 <tr>
                     <td>
                         <button id="damLabel" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">{{damLabel}}</button>
                         <div class="dropdown-menu" aria-labelledby="damLabel">
-                            <button class="dropdown-item" *ngFor="let label of dams;let i = index" (click)="onSelection(i)">{{label}}</button>
+                            <button class="dropdown-item" *ngFor="let label of dams;let i = index" (click)="onSelection(i)">                       
+                                        <div [ngStyle]="{ 'color': !reservoirs[i].graph.compSeriesId ? 'red': 'black'}" data-toggle="tooltip" data-placement="top" title="{{!reservoirs[i].graph.compSeriesId ? 'Keine Referenzdaten vorhanden': ''}}">{{label}}</div>                                    
+                            </button>
                         </div>
-                    </td>
-                    <!-- <td>
-                        <button id="fromTime" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">{{fromDate}}</button>
-                        <div class="dropdown-menu" aria-labelledby="fromTime">
-                            <button class="dropdown-item" *ngFor="let from of dates; let i = index" (click)="checkFromDate(from)">{{from | date: 'mediumDate'}}</button>
-                        </div>
+                        <button class="btn btn-default" style="padding: 5px; margin-left: 5px;"  (click)="exportImage()" id="saveButton">Export</button>
                     </td>
                     <td>
-                        <button id="toTime" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">{{toDate}}</button>
-                        <div class="dropdown-menu" aria-labelledby="toTime">
-                            <button class="dropdown-item" *ngFor="let to of dates; let i = index" (click)="checkToDate(to)">{{to | date: 'mediumDate'}}</button>
-                        </div>
-                    </td> -->
-                </tr>
-
-                <!-- <tr> 
-                    <td>
-                            Referenzzeitraum
+                   
                     </td>
-                    
-                    <td>
-                        <input type="checkbox" id="95" (click)="onClickHandler($event)">1995/1996</td>
-              
                 </tr>
-            
-                <tr>
-                    <td></td>
-                    <td>
-                        <input type="checkbox" id="96" (click)="onClickHandler($event)">1996/1997</td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>
-                        <input type="checkbox" id="03" (click)="onClickHandler($event)">2003/2004</td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>
-                        <input type="checkbox" id="06" (click)="onClickHandler($event)">2006/2007</td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>
-                        <input type="checkbox" id="08" (click)="onClickHandler($event)">2008/2009</td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>
-                        <input type="checkbox" id="10" (click)="onClickHandler($event)">2010/2011</td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>
-                        <input type="checkbox" id="14" (click)="onClickHandler($event)" name="test">2014/2015</td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>
-                        <input type="checkbox" id="15" (click)="onClickHandler($event)">2015/2016</td>
-         
-                </tr> -->
-
             </tbody>
         </table>
-        <!-- </form> -->
-        <!-- <button class="btn btn-default" (click)="generateReport()" style="margin-left: 10px;">Bericht generieren</button> -->
     </div>
 </div>
 <div class="d-flex justify-content-center">
@@ -95,40 +34,7 @@
     </div>
 </div>
 <figure id="reports"></figure>
-<!-- <div id='htmlLegend0' style='display: none'>
-    <span>
-        <i class='fas fa-circle' style='padding: 5px;font-size: 80%;'> </i>
-    </span>
-</div>
-<div id="htmlLegend1" style='display: none'>
-    <span style="color:pink">
-        <i class='fas fa-circle' style='padding: 5px;font-size: 80%;'> </i>
-    </span>
-</div>
-<div id="htmlLegend2" style='display: none'>
-    <span style="color:pink">
-        <i class='fas fa-circle' style='padding: 5px;font-size: 80%;'> </i>
-    </span>
-</div>
-<div id="htmlLegend3" style='display: none'>
-    <span style="color:pink">
-        <i class='fas fa-circle' style='padding: 5px;font-size: 80%;'> </i>
-    </span>
-</div>
-<div id="htmlLegend4" style='display: none'>
-    <span style="color:pink">
-        <i class='fas fa-circle' style='padding: 5px;font-size: 80%;'> </i>
-    </span>
-</div> -->
-<button (click)="exportImage()" id="saveButton">Export</button>
-<canvas id="canvas" width="1750" height="620" style="display: none;"></canvas>
-<div id="pngContainer"></div>
 
-<!-- <svg class="line-chart"></svg> -->
-<!-- <div *ngIf='diagram' style="height: 450px; padding: 5px; width: 800px;">
-    <highcharts-chart id='chartDiagram' [Highcharts]='Highcharts' [options]='chartOptions' style="width: 800px; height: 400px; display: block;"></highcharts-chart>
-</div> -->
-<!-- <div *ngIf='diagram' style="height: 250px; padding: 5px; width: 1400px;">
-    <n52-d3-timeseries-graph [datasetIds]="datasetIdsMultiple" [timeInterval]="timespan[0]" [presenterOptions]="diagramOptionsD3" [datasetOptions]="datasetOptionsMultiple"
-        #diagram></n52-d3-timeseries-graph>
-</div> -->
+
+<canvas id="canvas" width="1630" height="620" style="display: none;"></canvas>
+<div id="pngContainer"></div>
