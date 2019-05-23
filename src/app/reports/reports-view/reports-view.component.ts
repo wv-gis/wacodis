@@ -268,18 +268,19 @@ export class ReportsViewComponent implements OnInit {
 
 
       svg.append("text")
-        .attr("x", this.width + 25)
+        .attr("x", this.width + 55)
         .attr("y", height - margin.bottom - 25 * (this.timespan.length))
         .attr("class", "legend")
         .attr("id", "legend")
         .attr("cursor", "pointer")
-        .style("font-size", "11px")
-        .style("fill", "red")
+        .style("font-size", "12px")
+        .style("font-weight", "bold")
+        .style("fill", "black")
         .style("padding", "5px")
         .on("click", function () {
           let active = actualLine.active ? false : true,
             newOpacity = active ? 0 : 1;
-          let legendCol = active ? 'grey' : 'red';
+          let legendCol = active ? 'grey' : 'black';
           d3.select("#line").style("opacity", newOpacity);
           d3.select("#legend").style("fill", legendCol);
           actualLine.active = active;
@@ -287,11 +288,12 @@ export class ReportsViewComponent implements OnInit {
         .text('Inhalt: ' + new Date(this.timespan[0].from).getFullYear() + ' - heute');
 
       svg.append('text')
-        .attr("x", this.width + 155)
-        .attr("y", height - margin.bottom - 25 * (this.timespan.length) + 5)
+        .attr("y", this.width + 45)
+        .attr("x", -(height - margin.bottom - 25 * (this.timespan.length) ))
         .attr("fill", "red")
-        .attr('font-size', 'xx-large')
-        .text('-');
+        .attr('font-size', 'x-large')
+        .attr("transform", "rotate(-90)")
+        .text('|');
 
 
 
@@ -404,19 +406,20 @@ export class ReportsViewComponent implements OnInit {
 
 
           let legend = svg.append("text")
-            .attr("x", this.width + 25)
+            .attr("x", this.width + 55)
             .attr("y", height - margin.bottom - 25 * (j))
             .attr("class", "legend")
-            .attr("font-size", "11px")
+            .attr("font-size", "12px")
+            .attr("font-weight", "bold")
             .attr("id", "legend" + datasets[0].year.slice(5))
             .attr("cursor", "pointer")
-            .style("fill", this.compSerColors[j - 1])
+            .style("fill", 'black')
             .style("padding", "5px")
             .on("click", function () {
               let active = compLine.active ? false : true,
                 newOpacity = active ? 0 : 1;
               let dotOpacity = active ? 0 : 0.2;
-              let legendCol = active ? 'grey' : color;
+              let legendCol = active ? 'grey' : 'black';
               d3.select("#line" + datasets[0].year.slice(5)).style("opacity", newOpacity);
               d3.select("#dots" + datasets[0].year.slice(5)).style("opacity", newOpacity);
               d3.select("#legend" + datasets[0].year.slice(5)).style("fill", legendCol);
@@ -424,7 +427,7 @@ export class ReportsViewComponent implements OnInit {
             }).text('Vergleichsjahr: ' + datasets[0].year);
 
           svg.append('text')
-            .attr("x", this.width + 155)
+            .attr("x", this.width + 25)
             .attr("y", height - margin.bottom - 25 * (j) + 5)
             .attr("fill", this.compSerColors[j - 1])
             .attr('font-size', 'xx-large')
@@ -495,25 +498,31 @@ export class ReportsViewComponent implements OnInit {
           .attr("height", function (d) { return height - yr(d.value); });
 
         svg.append("text")
-          .attr("x", this.width + 25)
+          .attr("x", this.width + 55)
           .attr("y", height + margin.top)
           .attr("class", "legend")
           .attr("id", "legendRain")
           .attr("cursor", "pointer")
-          .style("font-size", "11px")
-          .style("fill", "steelblue")
+          .style("font-size", "12px")
+          .style("font-weight", "bold")
+          .style("fill", "black")
           .style("padding", "5px")
           .on("click", function () {
             let active = rect.active ? false : true,
               newOpacity = active ? 0 : 0.5;
-            let legendCol = active ? 'grey' : 'steelblue';
+            let legendCol = active ? 'grey' : 'black';
             for (let k = 0; k < secDataset.length; k++)
               d3.select("#rain" + k).style("opacity", newOpacity);
             d3.select("#legendRain").style("fill", legendCol);
             rect.active = active;
           })
           .text('Niederschlag: ' + new Date(this.timespan[0].from).getFullYear() + ' - heute');
-
+          svg.append('text')
+          .attr("x", this.width + 37)
+          .attr("y", height + margin.top)
+          .attr("fill", "steelblue")
+          .attr('font-size', 'large')
+          .text('|');
 
         // console.log('Niederschlagssumme: ' + rainValues.reduce((sum, current) => sum + current));
 
@@ -527,15 +536,15 @@ export class ReportsViewComponent implements OnInit {
           let currentRefValues = [];
           let refDataset = [];
           for (let k = 0; k < refVal.values.length; k++) {
+           
             if (this.refValues[b].label === 'Vollstau') {
-              refInterval.push(new Date(new Date().getFullYear() - 1, new Date(refVal.values[k]['timestamp']).getMonth(), new Date(refVal.values[k]['timestamp']).getDate()));
+            if(k===0){
+              refInterval.push(new Date(new Date().getFullYear()-1, new Date(refVal.values[k]['timestamp']).getMonth(), new Date(refVal.values[k]['timestamp']).getDate()));
               refInterval.push(new Date(new Date().getFullYear(), new Date(refVal.values[k]['timestamp']).getMonth(), new Date(refVal.values[k]['timestamp']).getDate()));
-
-              if (new Date(refVal.values[k]['timestamp']).getMonth() <= new Date().getMonth()) {
-                refInterval.push(new Date(new Date().getFullYear() + 1, new Date(refVal.values[k]['timestamp']).getMonth(), new Date(refVal.values[k]['timestamp']).getDate()));
-              }
-
-              refInterval.push(new Date(new Date().getFullYear() + 1, 0, new Date().getDate()));
+              refInterval.push(new Date(new Date().getFullYear()+1, new Date(this.timespan[0].to).getMonth()+1, new Date(this.timespan[0].to).getDate()));
+         
+            }
+    
             }
             else {
 
@@ -560,6 +569,7 @@ export class ReportsViewComponent implements OnInit {
             refDataset.push({ date: refInterval[p], value: currentRefValues[p], label: this.refValues[b].label });
           }
 
+          console.log(refDataset.filter((val)=> { return val.label == 'Vollstau'}));
           graphData.push(refDataset);
           // add line for referenceSeries
           redraw(refDataset);
@@ -612,18 +622,19 @@ export class ReportsViewComponent implements OnInit {
 
 
           svg.append("text")
-            .attr("x", this.width + 25)
+            .attr("x", this.width + 55)
             .attr("y", height - margin.bottom - 20 * b + 40)
             .attr("class", "legend")
             .attr("cursor", "pointer")
             .attr("id", "legend" + refDataset[0].label.slice(5))
-            .style("font-size", "11px")
-            .style("fill", this.refColors[b])
+            .style("font-size", "12px")
+            .style("font-weight", 'bold')
+            .style("fill", 'black')
             .style("padding", "5px")
             .on("click", function () {
               let active = refLine.active ? false : true,
                 newOpacity = active ? 0 : 1;
-              let legendCol = active ? 'grey' : refColor;
+              let legendCol = active ? 'grey' : 'black';
               d3.select("#" + refDataset[0].label).style("opacity", newOpacity);
               d3.select("#legend" + refDataset[0].label.slice(5)).style("fill", legendCol);
               refLine.active = active;
@@ -631,11 +642,12 @@ export class ReportsViewComponent implements OnInit {
             .text(this.refValues[b].label);
 
           svg.append('text')
-            .attr("x", this.width + 155)
-            .attr("y", height - margin.bottom - 20 * b + 45)
+            .attr("y", this.width + 45)
+            .attr("x", -(height - margin.bottom - 20 * b + 40))
             .attr("fill", this.refColors[b])
-            .attr('font-size', 'xx-large')
-            .text('-');
+            .attr('font-size', 'x-large')
+            .attr("transform", "rotate(-90)")
+            .text('|');
 
         }, (err) => {
           this.errorOnLoading();
