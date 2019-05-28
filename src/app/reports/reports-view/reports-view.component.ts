@@ -1,16 +1,29 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { PlatformTypes, Timespan, DatasetApiInterface, ColorService, DataParameterFilter, SettingsService } from '@helgoland/core';
 import { ExtendedSettings, ReportReferenceValues } from 'src/app/settings/settings.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as d3 from 'd3';
+import { AfterViewInit } from '@angular/core/src/metadata/lifecycle_hooks';
 declare var require: any;
+
+
+const svgWidth = 1450, svgHeight = 520;
+const margin = { top: 30, right: 150, bottom: 30, left: 30 };
 
 @Component({
   selector: 'wv-reports-view',
   templateUrl: './reports-view.component.html',
   styleUrls: ['./reports-view.component.css']
 })
-export class ReportsViewComponent implements OnInit {
+export class ReportsViewComponent implements OnInit, AfterViewInit {
+
+  // @HostListener('window:resize', ['$event'])
+  // public onWindowResize(event: Event) {
+  //   this.onResize();
+  // }
+
+  @ViewChild('reportComponent')
+  public d3Elem: ElementRef;
 
   public serviceUrl: string = '';
   public dams: string[] = [];
@@ -38,15 +51,17 @@ export class ReportsViewComponent implements OnInit {
   public rainSeriesId: string = '';
   public intervals: Date[] = [];
   public values: number[] = [];
-  public loading: boolean;
+  public loading: boolean = false;
   public reservoirs;
-  public g;
+  public g: any;
   public compSeriesMax: number = 0;
-  public width: number;
+  public xaxisHeight: number;
+  public svg: any;
+  public svgCont: any;
   public unresolvableTimeseries: string[] = [];
   public refColors: string[] = ['rgb(199,21,133)', 'rgb(255,0,255)', 'rgb(131,111,255)'];
   public compSerColors: string[] = ['rgb(0,100,0)', 'rgb(102,205,0)', 'rgb(205,205,0)', 'rgb(255,130,71)'];
-  // public graphData = [];
+
 
   constructor(private datasetApi: DatasetApiInterface, private colSrvc: ColorService,
     private settingsService: SettingsService<ExtendedSettings>, private route: ActivatedRoute, private router: Router) {
@@ -71,47 +86,90 @@ export class ReportsViewComponent implements OnInit {
         for (let k = 0; k < this.reservoirs.length; k++) {
           if (params["id"] === this.reservoirs[k].id) {
             this.checkSelection(this.reservoirs[k].label, k);
+            this.loading = !this.loading;
           }
         }
 
       }
     });
   }
+  ngAfterViewInit(): void {
 
+  //   this.svg = d3.select('#reports').append("div")
+  //     .style('width', '100%')
+  //     .style('height', '100%')
+  //     .classed("svg-container", true)
+  //     .append("svg")
+  //     .attr('width', '100%')
+  //     .attr('height', '100%');
+
+  //   this.g = this.svg.append("g")
+  //     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+  //   if (this.diagram && !this.loading) {
+  //     this.loading = !this.loading;
+  //     this.generateReport();
+  //   }
+
+  }
+
+  // protected onResize(): void {
+  //   if (this.diagram) {
+  //     this.generateReport();
+  //   }
+  // }
+  public calculateWidth(): number {
+    return this.svg.node().width.baseVal.value - margin.left - margin.right;
+  }
+  public calculateHeight(): number {
+    return (this.d3Elem.nativeElement as HTMLElement).clientHeight - margin.top - margin.bottom;
+  }
   /**
    * generate the diagram for the report of the selected reservoir
    */
   public generateReport() {
-    this.loading = true;
 
-    const svgWidth = 1550, svgHeight = 620;
-    const margin = { top: 30, right: 150, bottom: 30, left: 30 };
     let graphData = [];
     let compLine, actualLine, refLine, dots, compDots, refdots;
-    this.width = svgWidth - margin.left - margin.right;
     let height = svgHeight - margin.top - margin.bottom;
-    let xaxisHeight = svgHeight - margin.bottom;
+
     let svgCont = d3.select('#reports').append("div")
+      .style("width", "100%").style("height", "100%")
       .classed("svg-container", true);
-    let svg = svgCont.append("svg")
+
+    this.svg = svgCont.append("svg")
       .attr("viewBox", '0 0 ' + svgWidth + ' ' + svgHeight)
       .attr("version", "1.1")
       .attr("xmlns", "http://www.w3.org/2000/svg")
       .attr("xmlns:xlink", "http://www.w3.org/1999/xlink")
       .attr("xmlns:html", "http://www.w3.org/1999/xhtml")
-      .attr('width', svgWidth + 80)
-      .attr('height', svgHeight)
+      .attr("width", "100%")
+      .attr("height", svgHeight)
       .classed("svg-content-responsive", true);
 
+    let width = this.calculateWidth();
 
+    // let height = this.calculateHeight();
+    this.xaxisHeight = height + margin.bottom;
+
+    if (width < 0) {
+      width = 1350;
+    }
+
+    // this.g.selectAll('*').remove();
+    // this.svg.selectAll('text').remove();
+    // this.svg.selectAll('.axis').remove();
+    // this.svg.selectAll('path').remove();
+
+    let graphWidth = width - margin.right;
     //set the boundings of the graph
-    let g = svg.append("g")
+    this.g = this.svg.append("g")
       .attr("transform",
-      "translate(" + '0' + "," + margin.top + ")"
+      "translate(" + margin.left + "," + margin.top + ")"
       );
 
     //set scale of x and y axis
-    let x = d3.scaleTime().rangeRound([0, this.width]);
+    let x = d3.scaleTime().rangeRound([0, graphWidth]);
     let y = d3.scaleLinear().rangeRound([height, 0]);
     let formatTime = d3.timeFormat("%e %B");
 
@@ -122,14 +180,17 @@ export class ReportsViewComponent implements OnInit {
     //   .attr("height", height)
     //   .attr("x", 0)
     //   .attr("y", 0);
+
     //define the axis
     let yAxis = d3.axisLeft(y);
     let xAxis = d3.axisBottom(x).ticks(d3.timeMonth.every(2));
+
     //set the title of the graph
-    svg.append("text")
-      .attr("x", (this.width / 2))
+    this.svg.append("text")
+      .attr("x", (width / 2))
       .attr("y", (margin.top / 2))
       .attr("text-anchor", "middle")
+      .attr("class", "title")
       .style("font-size", "12px")
       .style("text-decoration", "underline")
       .text('Speicherinhalt ' + this.damLabel);
@@ -147,6 +208,7 @@ export class ReportsViewComponent implements OnInit {
     //   .attr("class", "focus")
     //   .attr("transform", "translate(" + '0' + "," + '0' + ")")
     //   .attr("clip_path", "url(#clip)");
+
     // set the definition of the drawing line for series
     let line = d3.line()
       .curve(d3.curveBasis)
@@ -179,20 +241,18 @@ export class ReportsViewComponent implements OnInit {
       for (let p = 0; p < this.intervals.length; p++)
         d3Data.push({ date: (this.intervals[p]), value: this.values[p], year: new Date(this.timespan[0].from).getFullYear() + '/' + new Date(this.timespan[0].to).getFullYear() });
 
-
-
       graphData.push(d3Data);
 
       if (this.compSeriesId == '') {
         x.domain(d3.extent(d3Data, function (d) { return (d.date) }));
         //scatter
-        g.append("g")
-          .attr("class", "y axis")
+        this.svg.append("g")
+          .attr("class", "axis y")
           .call(yAxis)
           .append("text")
           .attr("fill", "#000")
           .attr("transform", "rotate(-90)")
-          .attr("y", 0 - (margin.left - 20))
+          .attr("y", 0 - (margin.left*2))
           .attr("x", 0 - (height / 2))
           .attr("dy", "3.5em")
           .attr("text-anchor", "middle")
@@ -200,9 +260,9 @@ export class ReportsViewComponent implements OnInit {
         redraw(d3Data);
       }
       // add x axis to the bottom of the graph
-      svg.append("g")
-        .attr("class", "x axis")
-        .attr("transform", "translate(" + '0' + ', ' + xaxisHeight + ")")
+      this.svg.append("g")
+        .attr("class", "axis x")
+        .attr("transform", "translate(" + margin.left + ', ' + this.xaxisHeight + ")")
         .call(xAxis);
 
       // gridlines in y axis function
@@ -212,18 +272,18 @@ export class ReportsViewComponent implements OnInit {
       }
       // add the Y gridlines
       //scatter
-      g.append("g")
+      this.g.append("g")
         .attr("class", "grid")
         .attr('opacity', 0.5)
         .attr('stroke-width', 0.25)
         .call(make_y_gridlines()
-          .tickSize(-this.width)
+          .tickSize(-graphWidth)
           .tickFormat("")
         );
 
       // add line for timeseries to graph
       //focus
-       actualLine = g.append("path")
+      actualLine = this.g.append("path")
         .datum(d3Data)
         .attr('class', 'line')
         .attr("fill", "none")
@@ -236,7 +296,7 @@ export class ReportsViewComponent implements OnInit {
 
       //add Datapoints
       //focus
-      compDots = g.selectAll("dot")
+      compDots = this.g.selectAll("dot")
         .data(d3Data)
         .enter().append("circle")
         .attr("opacity", 0.1)
@@ -266,9 +326,9 @@ export class ReportsViewComponent implements OnInit {
             .style("opacity", 0);
         });
 
-
-      svg.append("text")
-        .attr("x", this.width + 55)
+        //add legend description
+      this.svg.append("text")
+        .attr("x", width - margin.left - 20)
         .attr("y", height - margin.bottom - 25 * (this.timespan.length))
         .attr("class", "legend")
         .attr("id", "legend")
@@ -287,17 +347,15 @@ export class ReportsViewComponent implements OnInit {
         })
         .text('Inhalt: ' + new Date(this.timespan[0].from).getFullYear() + ' - heute');
 
-      svg.append('text')
-        .attr("y", this.width + 45)
-        .attr("x", -(height - margin.bottom - 25 * (this.timespan.length) ))
+      this.svg.append('text')
+        .attr("y", width - 65)
+        .attr("x", -(height - margin.bottom - 25 * (this.timespan.length)))
         .attr("fill", "red")
         .attr('font-size', 'x-large')
         .attr("transform", "rotate(-90)")
         .text('|');
 
-
-
-      this.loading = false;
+      this.loading = !this.loading;
     }, (err) => { this.errorOnLoading() });
     // }
     //collect and add timeseries of comparison years to the diagram
@@ -339,25 +397,22 @@ export class ReportsViewComponent implements OnInit {
             y.domain([0, d3.max(datasets, function (d) { return d.value })]);
             // add y axis to the graph
             //scatter
-            g.append("g")
-              .attr("class", "y axis")
+            this.svg.append("g")
+              .attr("class", "axis y")
+              .attr("transform", "translate(" + margin.left + ',' + margin.top + ")")
               .call(yAxis)
               .append("text")
               .attr("fill", "#000")
               .attr("transform", "rotate(-90)")
-              .attr("y", 0 - margin.left - 20)
+              .attr("y", 0 - (margin.left*2))
               .attr("x", 0 - (height / 2))
-              .attr("dy", "2.5em")
+              .attr("dy", "3.5em")
               .attr("text-anchor", "middle")
               .text("Mio m³");
           }
-
-
-
-
           //add line to the graph
           //focus
-          compLine = g.append("path")
+          compLine = this.g.append("path")
             .datum(datasets)
             .attr("fill", "none")
             .attr('class', 'line')
@@ -374,7 +429,7 @@ export class ReportsViewComponent implements OnInit {
            *  dots and tooltip for scatterplot
            * focus
            */
-           dots = g.selectAll("dot")
+          dots = this.g.selectAll("dot")
             .data(datasets)
             .enter().append("circle")
             .attr("opacity", 0.1)
@@ -405,8 +460,8 @@ export class ReportsViewComponent implements OnInit {
             });
 
 
-          let legend = svg.append("text")
-            .attr("x", this.width + 55)
+          let legend = this.svg.append("text")
+            .attr("x", width - margin.left -20)
             .attr("y", height - margin.bottom - 25 * (j))
             .attr("class", "legend")
             .attr("font-size", "12px")
@@ -426,8 +481,8 @@ export class ReportsViewComponent implements OnInit {
               compLine.active = active;
             }).text('Vergleichsjahr: ' + datasets[0].year);
 
-          svg.append('text')
-            .attr("x", this.width + 25)
+          this.svg.append('text')
+            .attr("x", width - 85)
             .attr("y", height - margin.bottom - 25 * (j) + 5)
             .attr("fill", this.compSerColors[j - 1])
             .attr('font-size', 'xx-large')
@@ -472,8 +527,9 @@ export class ReportsViewComponent implements OnInit {
 
         //add y axis for rainseries
         //scatter
-        g.append("g")
-          .attr("transform", "translate(" + this.width + ',' + "0 )")
+        this.svg.append("g")
+          .attr("class", "axis yr")
+          .attr("transform", "translate(" + (graphWidth + 30) + ',' + margin.top + " )")
           .call(d3.axisRight(yr))
           .append("text")
           .attr("fill", "#000")
@@ -484,8 +540,9 @@ export class ReportsViewComponent implements OnInit {
           .attr("text-anchor", "middle")
           .text("Tagessumme (mm)");
         //add bars
+        let barheight = height;
         //focus
-        let rect = g.selectAll("rect")
+        let rect = this.g.selectAll("rect")
           .data(secDataset)
           .enter()
           .append("svg:rect")
@@ -495,10 +552,11 @@ export class ReportsViewComponent implements OnInit {
           .attr("x", function (d, i) { return (x(d.date)); })
           .attr("width", 1.5)
           .attr("y", function (d) { return yr(d.value); })
-          .attr("height", function (d) { return height - yr(d.value); });
+          .attr("height", function (d) { return barheight - yr(d.value); });
 
-        svg.append("text")
-          .attr("x", this.width + 55)
+          //add legend description
+        this.svg.append("text")
+          .attr("x", width - margin.left -20)
           .attr("y", height + margin.top)
           .attr("class", "legend")
           .attr("id", "legendRain")
@@ -517,14 +575,12 @@ export class ReportsViewComponent implements OnInit {
             rect.active = active;
           })
           .text('Niederschlag: ' + new Date(this.timespan[0].from).getFullYear() + ' - heute');
-          svg.append('text')
-          .attr("x", this.width + 37)
+        this.svg.append('text')
+          .attr("x", width - 75)
           .attr("y", height + margin.top)
           .attr("fill", "steelblue")
           .attr('font-size', 'large')
           .text('|');
-
-        // console.log('Niederschlagssumme: ' + rainValues.reduce((sum, current) => sum + current));
 
       }, (error) => { this.errorOnLoading() });
 
@@ -536,15 +592,13 @@ export class ReportsViewComponent implements OnInit {
           let currentRefValues = [];
           let refDataset = [];
           for (let k = 0; k < refVal.values.length; k++) {
-           
+
             if (this.refValues[b].label === 'Vollstau') {
-            if(k===0){
-              refInterval.push(new Date(new Date().getFullYear()-1, new Date(refVal.values[k]['timestamp']).getMonth(), new Date(refVal.values[k]['timestamp']).getDate()));
-              refInterval.push(new Date(new Date().getFullYear(), new Date(refVal.values[k]['timestamp']).getMonth(), new Date(refVal.values[k]['timestamp']).getDate()));
-              refInterval.push(new Date(new Date().getFullYear()+1, new Date(this.timespan[0].to).getMonth()+1, new Date(this.timespan[0].to).getDate()));
-         
-            }
-    
+              if (k === 0) {
+                refInterval.push(new Date(new Date().getFullYear() - 1, new Date(refVal.values[k]['timestamp']).getMonth(), new Date(refVal.values[k]['timestamp']).getDate()));
+                refInterval.push(new Date(new Date().getFullYear(), new Date(refVal.values[k]['timestamp']).getMonth(), new Date(refVal.values[k]['timestamp']).getDate()));
+                refInterval.push(new Date(new Date().getFullYear() + 1, new Date(this.timespan[0].to).getMonth() + 1, new Date(this.timespan[0].to).getDate()));
+              }
             }
             else {
 
@@ -569,12 +623,11 @@ export class ReportsViewComponent implements OnInit {
             refDataset.push({ date: refInterval[p], value: currentRefValues[p], label: this.refValues[b].label });
           }
 
-          console.log(refDataset.filter((val)=> { return val.label == 'Vollstau'}));
           graphData.push(refDataset);
           // add line for referenceSeries
           redraw(refDataset);
           //focus
-           refLine = g.append("path")
+          refLine = this.g.append("path")
             .datum(refDataset)
             .attr("fill", "none")
             .attr('class', 'line')
@@ -589,7 +642,7 @@ export class ReportsViewComponent implements OnInit {
           // add dots for data query
           if (this.refValues[b].label != 'Vollstau') {
             //focus
-             refdots = g.selectAll("dot")
+            refdots = this.g.selectAll("dot")
               .data(refDataset)
               .enter().append("circle")
               .attr("opacity", 0.1)
@@ -620,9 +673,9 @@ export class ReportsViewComponent implements OnInit {
               });
           }
 
-
-          svg.append("text")
-            .attr("x", this.width + 55)
+          // add legend description
+          this.svg.append("text")
+            .attr("x", width - margin.left -20)
             .attr("y", height - margin.bottom - 20 * b + 40)
             .attr("class", "legend")
             .attr("cursor", "pointer")
@@ -641,8 +694,8 @@ export class ReportsViewComponent implements OnInit {
             })
             .text(this.refValues[b].label);
 
-          svg.append('text')
-            .attr("y", this.width + 45)
+          this.svg.append('text')
+            .attr("y", width - 65)
             .attr("x", -(height - margin.bottom - 20 * b + 40))
             .attr("fill", this.refColors[b])
             .attr('font-size', 'x-large')
@@ -656,7 +709,7 @@ export class ReportsViewComponent implements OnInit {
 
     }
     else {
-      this.loading = false;
+      this.loading = !this.loading;
     }
     // let rect = svg.append('rect')
     //   .attr('x', 10)
@@ -703,13 +756,13 @@ export class ReportsViewComponent implements OnInit {
     //   d3.select('.x').transition().duration(1000).call(d3.axisBottom(x));
     //   focus.selectAll("path").attr('d',line);
     //   console.log(focus.selectAll('path'));
- 
+
     //   }
 
 
   }
   public errorOnLoading() {
-    this.loading = false;
+    this.loading = !this.loading;
   }
 
   /**
@@ -724,18 +777,15 @@ export class ReportsViewComponent implements OnInit {
       this.diagram = !this.diagram;
       this.compSeriesMax = 0;
       document.getElementById('reports').removeChild(document.getElementsByClassName("svg-container").item(0));
-      // for(let i =0; i<this.timespan.length;i++)
-      // document.getElementById('htmlLegend'+i).setAttribute('style', 'display: none');
 
     }
     this.diagram = !this.diagram;
-    this.timespan[0].from = new Date(new Date().getFullYear(), new Date().getMonth()).getTime() - 31556926000;//63072000000;
+    this.timespan[0].from = new Date(new Date().getFullYear(), new Date().getMonth()).getTime() - 31556926000;
     this.timespan[0].to = new Date(new Date().getFullYear(), 1).getTime() + 31556926000;
     this.timespan.splice(1);
 
     this.damLabel = label;
     this.seriesId = this.reservoirs[id].graph.seriesId;
-    console.log(this.seriesId.split('__')[1]) ;
 
     if (this.reservoirs[id].graph.compYearsFrom) {
       for (let y = 0; y < this.reservoirs[id].graph.compYearsFrom.length; y++) {
@@ -745,7 +795,7 @@ export class ReportsViewComponent implements OnInit {
     }
     if (this.reservoirs[id].graph.rainSeriesID) {
       this.rainSeriesId = this.reservoirs[id].graph.rainSeriesID;
-    
+
     }
     else {
       this.rainSeriesId = '';
@@ -767,11 +817,20 @@ export class ReportsViewComponent implements OnInit {
     this.generateReport();
   }
   onSelection(id: number) {
-    this.router.navigate(['reports', this.reservoirs[id].id]);
+    console.log(this.router.url.substr(0,9));
+   
+      this.router.navigate(['reports', this.reservoirs[id].id]);
+     
+     
   }
 
 
   exportImage() {
+
+    if (navigator.userAgent.indexOf("Firefox") != -1) {
+      //set defined width of svg to export as png
+       document.querySelector('svg').setAttribute('width',this.calculateWidth().toString());   
+       }
     let svgString = new XMLSerializer().serializeToString(document.querySelector('svg'));
     let canvas = document.querySelector('canvas');
     let ctx = canvas.getContext("2d");
@@ -779,7 +838,6 @@ export class ReportsViewComponent implements OnInit {
     let svg = new Blob([svgString], { type: "image/svg+xml;base64;" });
     let url = window.URL.createObjectURL(svg);
     let svgBlob = new Blob([document.getElementById('reports').innerHTML], { type: "image/svg+xml;base64;" });
-    // let svgUrl = window.URL.createObjectURL(svgBlob);
 
     image.onload = function () {
       ctx.drawImage(image, 0, 0);
@@ -801,9 +859,13 @@ export class ReportsViewComponent implements OnInit {
 
     };
 
-    image.src = url;
+    image.src = url; 
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (navigator.userAgent.indexOf("Firefox") != -1) {
+      //set width back to viewport percentage
+       document.querySelector('svg').setAttribute('width','100%');   
+       }
   }
 
 

@@ -5,6 +5,7 @@
 #reports{
       border: 1px solid lightgray;
       width: 100%;
+      /* height: 100%; */
     }
 #reports rect {
       stroke: white;
@@ -34,7 +35,7 @@
 .svg-container {
     display: inline-block;
     position: relative;
-    width: 100%;
+    width: 80%;
     height: 0;
     padding: 0;
     padding-bottom: 40%;
@@ -47,4 +48,7 @@
     top: 0;
     left: 0;
 
+}
+body{
+    overflow: hidden;
 }

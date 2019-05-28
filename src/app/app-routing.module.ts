@@ -9,6 +9,7 @@ import { WvDataViewComponent } from 'src/app/timeseries/data-selection/wv-data-v
 import { TimeseriesViewComponent } from 'src/app/timeseries/depiction/timeseries-view/timeseries-view.component';
 import { ComparisonSelectionViewComponent } from 'src/app/change-detection/view/comparison-selection-view/comparison-selection-view.component';
 import { WeatherForecastComponent } from 'src/app/weather/weather-forecast/weather-forecast.component';
+import { AppComponent } from 'src/app/app.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'start', pathMatch: 'full' },
@@ -23,6 +24,8 @@ const routes: Routes = [
   { path: 'timeseries-diagram', component: TimeseriesViewComponent, data: { title: 'WaCoDiS Web Client' } },
   { path: 'reports/:id', component: ReportsViewComponent, data: { title: 'WaCoDiS Web Client' } },
   { path: 'reports', component: ReportsViewComponent, data: { title: 'WaCoDiS Web Client' } },
+  // { path: 'reports/TS/:id', component: ReportsViewComponent, data: { title: 'WaCoDiS Web Client' } },
+  // { path: 'reports/TS', component: ReportsViewComponent, data: { title: 'WaCoDiS Web Client' } },
   { path: 'profiles', component: ProfileViewComponent, data: { title: 'WaCoDiS Web Client' } },
   { path: 'weather-forecast', component: WeatherForecastComponent, data: { title: 'WaCoDiS Web Client' } },
 ];

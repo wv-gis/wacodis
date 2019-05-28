@@ -1,3 +1,4 @@
+
 <div>
     <div style="margin-left: 10px;">
         <div>
@@ -13,7 +14,7 @@
                         <button id="damLabel" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">{{damLabel}}</button>
                         <div class="dropdown-menu" aria-labelledby="damLabel">
                             <button class="dropdown-item" *ngFor="let label of dams;let i = index" (click)="onSelection(i)">                       
-                                        <div [ngStyle]="{ 'color': !reservoirs[i].graph.compSeriesId ? 'red': 'black'}" data-toggle="tooltip" data-placement="top" title="{{!reservoirs[i].graph.compSeriesId ? 'Keine Referenzdaten vorhanden': ''}}">{{label}}</div>                                    
+                                        <span [ngStyle]="{ 'color': !reservoirs[i].graph.compSeriesId ? 'red': 'black'}" data-toggle="tooltip" data-placement="top" title="{{!reservoirs[i].graph.compSeriesId ? 'Keine Referenzdaten vorhanden': ''}}">{{label}}</span>                                    
                             </button>
                         </div>
                         <button class="btn btn-default" style="padding: 5px; margin-left: 5px;"  (click)="exportImage()" id="saveButton">Export</button>
@@ -33,8 +34,9 @@
         </div>
     </div>
 </div>
-<figure id="reports"></figure>
+
+<figure id="reports" #reportComponent></figure>
 
 
-<canvas id="canvas" width="1630" height="620" style="display: none;"></canvas>
+<canvas id="canvas" width="1450" height="520" style="display: none;"></canvas>
 <div id="pngContainer"></div>
