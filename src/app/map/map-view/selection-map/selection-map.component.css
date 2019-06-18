@@ -53,3 +53,6 @@ li {
     list-style: none;
     padding: 5px;
 }
+.btn{
+    background-color: lightgray;
+}

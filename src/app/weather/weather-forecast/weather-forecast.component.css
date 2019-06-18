@@ -10,8 +10,10 @@
 }
 .btn.btn-default{
     margin: 5px;
+    background-color: lightgray;
 
 }
 .btn.btn-default.active{
     background-color:  #2c4869;
+    color: white;
 }
