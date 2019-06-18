@@ -24,8 +24,8 @@ const routes: Routes = [
   { path: 'timeseries-diagram', component: TimeseriesViewComponent, data: { title: 'WaCoDiS Web Client' } },
   { path: 'reports/:id', component: ReportsViewComponent, data: { title: 'WaCoDiS Web Client' } },
   { path: 'reports', component: ReportsViewComponent, data: { title: 'WaCoDiS Web Client' } },
-  // { path: 'reports/TS/:id', component: ReportsViewComponent, data: { title: 'WaCoDiS Web Client' } },
-  // { path: 'reports/TS', component: ReportsViewComponent, data: { title: 'WaCoDiS Web Client' } },
+  { path: 'reports/TS/:id', component: ReportsViewComponent, data: { title: 'WaCoDiS Web Client' } },
+  { path: 'reports/TS', component: ReportsViewComponent, data: { title: 'WaCoDiS Web Client' } },
   { path: 'profiles', component: ProfileViewComponent, data: { title: 'WaCoDiS Web Client' } },
   { path: 'weather-forecast', component: WeatherForecastComponent, data: { title: 'WaCoDiS Web Client' } },
 ];

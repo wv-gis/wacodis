@@ -59,14 +59,22 @@ export class AppComponent implements OnInit {
     this.router.events.subscribe((val) => {
       
             if (val instanceof NavigationEnd) {
-      
               const urlParts: string[] = val.urlAfterRedirects.split("/");
               const reservoirIdCandidate = this.reservoirs.find(x => x.id == urlParts[urlParts.length - 1]);
-              const iframeCandidate = urlParts[urlParts.length-2];
-          console.log(iframeCandidate);
-              if(reservoirIdCandidate  && this.showNavBar && iframeCandidate.endsWith('reports') ) {
+
+              if(reservoirIdCandidate){
+                const iframeCandidate = urlParts[urlParts.length-2];
+                if(reservoirIdCandidate  && this.showNavBar && !iframeCandidate.endsWith('reports') ) {
+                  this.showNavBar = !this.showNavBar;
+                 }
+                 else if(reservoirIdCandidate && !this.showNavBar && iframeCandidate.endsWith('reports')){
+                   this.showNavBar = !this.showNavBar;
+                 }
+              }else if(!reservoirIdCandidate && val.url.endsWith('TS')){
                 this.showNavBar = !this.showNavBar;
-               }
+              }
+             
+             
                    
       }  });
   }

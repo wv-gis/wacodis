@@ -1,9 +1,8 @@
-import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, HostListener, AfterViewInit } from '@angular/core';
 import { PlatformTypes, Timespan, DatasetApiInterface, ColorService, DataParameterFilter, SettingsService } from '@helgoland/core';
 import { ExtendedSettings, ReportReferenceValues } from 'src/app/settings/settings.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as d3 from 'd3';
-import { AfterViewInit } from '@angular/core/src/metadata/lifecycle_hooks';
 declare var require: any;
 
 
@@ -95,21 +94,21 @@ export class ReportsViewComponent implements OnInit, AfterViewInit {
   }
   ngAfterViewInit(): void {
 
-  //   this.svg = d3.select('#reports').append("div")
-  //     .style('width', '100%')
-  //     .style('height', '100%')
-  //     .classed("svg-container", true)
-  //     .append("svg")
-  //     .attr('width', '100%')
-  //     .attr('height', '100%');
+    //   this.svg = d3.select('#reports').append("div")
+    //     .style('width', '100%')
+    //     .style('height', '100%')
+    //     .classed("svg-container", true)
+    //     .append("svg")
+    //     .attr('width', '100%')
+    //     .attr('height', '100%');
 
-  //   this.g = this.svg.append("g")
-  //     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    //   this.g = this.svg.append("g")
+    //     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-  //   if (this.diagram && !this.loading) {
-  //     this.loading = !this.loading;
-  //     this.generateReport();
-  //   }
+    //   if (this.diagram && !this.loading) {
+    //     this.loading = !this.loading;
+    //     this.generateReport();
+    //   }
 
   }
 
@@ -252,7 +251,7 @@ export class ReportsViewComponent implements OnInit, AfterViewInit {
           .append("text")
           .attr("fill", "#000")
           .attr("transform", "rotate(-90)")
-          .attr("y", 0 - (margin.left*2))
+          .attr("y", 0 - (margin.left * 2))
           .attr("x", 0 - (height / 2))
           .attr("dy", "3.5em")
           .attr("text-anchor", "middle")
@@ -326,7 +325,7 @@ export class ReportsViewComponent implements OnInit, AfterViewInit {
             .style("opacity", 0);
         });
 
-        //add legend description
+      //add legend description
       this.svg.append("text")
         .attr("x", width - margin.left - 20)
         .attr("y", height - margin.bottom - 25 * (this.timespan.length))
@@ -404,7 +403,7 @@ export class ReportsViewComponent implements OnInit, AfterViewInit {
               .append("text")
               .attr("fill", "#000")
               .attr("transform", "rotate(-90)")
-              .attr("y", 0 - (margin.left*2))
+              .attr("y", 0 - (margin.left * 2))
               .attr("x", 0 - (height / 2))
               .attr("dy", "3.5em")
               .attr("text-anchor", "middle")
@@ -461,7 +460,7 @@ export class ReportsViewComponent implements OnInit, AfterViewInit {
 
 
           let legend = this.svg.append("text")
-            .attr("x", width - margin.left -20)
+            .attr("x", width - margin.left - 20)
             .attr("y", height - margin.bottom - 25 * (j))
             .attr("class", "legend")
             .attr("font-size", "12px")
@@ -554,9 +553,9 @@ export class ReportsViewComponent implements OnInit, AfterViewInit {
           .attr("y", function (d) { return yr(d.value); })
           .attr("height", function (d) { return barheight - yr(d.value); });
 
-          //add legend description
+        //add legend description
         this.svg.append("text")
-          .attr("x", width - margin.left -20)
+          .attr("x", width - margin.left - 20)
           .attr("y", height + margin.top)
           .attr("class", "legend")
           .attr("id", "legendRain")
@@ -675,7 +674,7 @@ export class ReportsViewComponent implements OnInit, AfterViewInit {
 
           // add legend description
           this.svg.append("text")
-            .attr("x", width - margin.left -20)
+            .attr("x", width - margin.left - 20)
             .attr("y", height - margin.bottom - 20 * b + 40)
             .attr("class", "legend")
             .attr("cursor", "pointer")
@@ -817,11 +816,22 @@ export class ReportsViewComponent implements OnInit, AfterViewInit {
     this.generateReport();
   }
   onSelection(id: number) {
-    console.log(this.router.url.substr(0,9));
-   
+
+    if(this.router.url.length> 10){
+      console.log(this.router.url.substr(9,2))
+      if (this.router.url.substr(9,2) === 'TS') {
+        this.router.navigate(['reports/TS', this.reservoirs[id].id]);
+      }
+      else{
+        this.router.navigate(['reports', this.reservoirs[id].id]);
+      }
+    }
+   else {
       this.router.navigate(['reports', this.reservoirs[id].id]);
-     
-     
+    }
+
+
+
   }
 
 
@@ -829,8 +839,8 @@ export class ReportsViewComponent implements OnInit, AfterViewInit {
 
     if (navigator.userAgent.indexOf("Firefox") != -1) {
       //set defined width of svg to export as png
-       document.querySelector('svg').setAttribute('width',this.calculateWidth().toString());   
-       }
+      document.querySelector('svg').setAttribute('width', this.calculateWidth().toString());
+    }
     let svgString = new XMLSerializer().serializeToString(document.querySelector('svg'));
     let canvas = document.querySelector('canvas');
     let ctx = canvas.getContext("2d");
@@ -859,13 +869,13 @@ export class ReportsViewComponent implements OnInit, AfterViewInit {
 
     };
 
-    image.src = url; 
+    image.src = url;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     if (navigator.userAgent.indexOf("Firefox") != -1) {
       //set width back to viewport percentage
-       document.querySelector('svg').setAttribute('width','100%');   
-       }
+      document.querySelector('svg').setAttribute('width', '100%');
+    }
   }
 
 
