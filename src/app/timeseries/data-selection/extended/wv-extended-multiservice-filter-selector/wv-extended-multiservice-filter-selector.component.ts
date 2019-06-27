@@ -24,7 +24,7 @@ export class WvExtendedMultiserviceFilterSelectorComponent extends MultiServiceF
 
 
   constructor(protected datasetApiInterface: DatasetApiInterface, protected translate: TranslateService,
-    private selProv: SelectedProviderService) {
+    private selProv: SelectedProviderService, private listSelService: ListSelectorService) {
     super(datasetApiInterface, translate);
     this.uoms = [];
     this.selProv.service$.subscribe((res) => {
@@ -33,12 +33,24 @@ export class WvExtendedMultiserviceFilterSelectorComponent extends MultiServiceF
   }
 
   ngOnInit() {
+    if (this.selectedItems) {
+      // console.log(this.listSelService.cache);
+   
+      // this.listSelService.cache.forEach((entry) => {
+      //   entry.forEach((selection)=>{
+      //     this.selectedItems.push(selection.headerAddition)
+      //   });
+        
+      // });
+      console.log(this.selectedItems);
+    }
   }
 
   onSelectItem(item: FilteredParameter) {
     super.onSelectItem(item);
     this.selectedItems = [];
     this.selectedItems.push(item.label);
+    console.log(this.items);
   }
   ngOnChanges() {
     super.ngOnChanges();
