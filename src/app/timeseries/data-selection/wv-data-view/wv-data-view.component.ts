@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { LayerOptions, MapCache } from '@helgoland/map';
 import * as L from 'leaflet';
 import { SelectedProviderService } from 'src/app/services/selected-provider.service';
-
+import * as esri from 'esri-leaflet';
 
 
 @Component({
@@ -88,6 +88,7 @@ export class WvDataViewComponent implements OnInit, OnDestroy {
   public selectedProviderUrl: string = '';
   public badgeNumber: number;
   public baseLayer: any;
+  public testLayer: any;
   public _map: any;
 
   constructor(private datasetService: DatasetService<DatasetOptions>, private settings: SettingsService<Settings>, private router: Router,
@@ -126,10 +127,19 @@ export class WvDataViewComponent implements OnInit, OnDestroy {
       layers: 'OSM-WMS', format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>', className: 'OSM'
     });
 
+    this.testLayer = esri.dynamicMapLayer({
+      url: 'https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/SampleWorldCities/MapServer',
+      layers: [0], opacity: 0.25
+     } );
     this.baseMaps.set('timeMap',
       {
         label: 'Open Street Map', visible: true, layer: this.baseLayer
   });
+  this.baseMaps.set('ServerTestMap',
+  {
+    label: 'ServerTest Map', visible: true, layer: this.testLayer
+});
+
 }
   public onDatasetSelected(datasets: IDataset[]) {
   

@@ -4,7 +4,7 @@
             <label style="cursor: pointer;">
                 <li class="list-group-item">
                     <div class="form-check" (click)="onSelectItem(item)">
-                        <div *ngIf="selectedItems[i] == item.label else unchecked">
+                        <div *ngIf="selectedItems[i] === item.label else unchecked">
                             <input *ngIf="endpoint !== 'procedure'" class="form-check-input" name="{{endpoint}}" type="radio" id="item.id" checked="checked">
                             <n52-label-mapper class="form-check-label" [attr.for]="item.id" label="{{item.label}}"></n52-label-mapper>
                             <n52-label-mapper *ngIf="endpoint == 'phenomenon'" class="form-check-label" [attr.for]="item.id" label=" [{{uoms[i]}}]"></n52-label-mapper>

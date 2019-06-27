@@ -117,24 +117,37 @@ export class TimeseriesLegendComponent {
     }
     public updateOptions(option: DatasetOptions, id: string) {
         console.log('Reference: ' + JSON.stringify(option.showReferenceValues));
-        if (option.yAxisRange != undefined) {
-            option.yAxisRange = undefined;
-            this.dataEmitService.updateDatasetOptions(option, id);
-            this.refreshData();
-        } else {
-            this.datasetapi.getSingleTimeseriesByInternalId(id).subscribe((res) => {
-                res.referenceValues.forEach((re) => {
-
-                    option.yAxisRange = { min: 0, max: re.lastValue.value + 10 };
+   
+        // if (option.yAxisRange != undefined) {
+        //     console.log('Reference: ' + JSON.stringify(option.yAxisRange));
+        //     option.yAxisRange = undefined;
+        //     this.dataEmitService.updateDatasetOptions(option, id);
+        //     this.refreshData();
+        // } else {
+            if(option.showReferenceValues.length>0){
+                this.datasetapi.getSingleTimeseriesByInternalId(id).subscribe((res) => {
+                    res.referenceValues.forEach((re) => {
+    
+                        option.yAxisRange = { min: 0, max: re.lastValue.value + 10 };
+                       
+                      console.log('visible '+  option.autoRangeSelection);
+                    });
                 });
-            });
-
-            this.datasetOptions.set(id, option);
-            this.datasetOptionsMultiple.set(id, option);
-            this.updatedOptions.emit([option, id]);
-            this.dataEmitService.updateDatasetOptions(option, id);
-            this.refreshData();
-        }
+    
+                this.datasetOptions.set(id, option);
+                this.datasetOptionsMultiple.set(id, option);
+                this.updatedOptions.emit([option, id]);
+                this.dataEmitService.updateDatasetOptions(option, id);
+                this.refreshData();
+            }
+            else{
+                option.autoRangeSelection = true;
+                option.yAxisRange= undefined;
+                this.dataEmitService.updateDatasetOptions(option, id);
+                this.refreshData();
+            }
+     
+        // }
 
 
     }
