@@ -843,6 +843,7 @@ export class ReportsViewComponent implements OnInit, AfterViewInit {
     }
     let svgString = new XMLSerializer().serializeToString(document.querySelector('svg'));
     let canvas = document.querySelector('canvas');
+    // canvas.setAttribute('width',this.calculateWidth().toString());
     let ctx = canvas.getContext("2d");
     let image = new Image();
     let svg = new Blob([svgString], { type: "image/svg+xml;base64;" });
@@ -850,6 +851,8 @@ export class ReportsViewComponent implements OnInit, AfterViewInit {
     let svgBlob = new Blob([document.getElementById('reports').innerHTML], { type: "image/svg+xml;base64;" });
 
     image.onload = function () {
+      canvas.width = image.naturalWidth;
+      canvas.height = image.naturalHeight;
       ctx.drawImage(image, 0, 0);
 
       if (window.navigator && window.navigator.msSaveOrOpenBlob) {

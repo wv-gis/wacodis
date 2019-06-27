@@ -58,3 +58,7 @@ body{
 #saveButton{
     background-color: lightgray;
 }
+canvas{
+    max-width: 100%;
+    height: auto;
+}
