@@ -838,12 +838,13 @@ export class ReportsViewComponent implements OnInit, AfterViewInit {
   exportImage() {
 
     if (navigator.userAgent.indexOf("Firefox") != -1) {
-      //set defined width of svg to export as png
+      //set defined width of svg to export as png in firefox
+      // if width of svg is set to percentage it does not work
       document.querySelector('svg').setAttribute('width', this.calculateWidth().toString());
     }
     let svgString = new XMLSerializer().serializeToString(document.querySelector('svg'));
     let canvas = document.querySelector('canvas');
-    // canvas.setAttribute('width',this.calculateWidth().toString());
+
     let ctx = canvas.getContext("2d");
     let image = new Image();
     let svg = new Blob([svgString], { type: "image/svg+xml;base64;" });
@@ -856,7 +857,7 @@ export class ReportsViewComponent implements OnInit, AfterViewInit {
       ctx.drawImage(image, 0, 0);
 
       if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-
+        // to open download window in IE
         window.navigator.msSaveOrOpenBlob(svgBlob, "report.png");
       } else {
         let png = canvas.toDataURL('image/png');
@@ -874,7 +875,9 @@ export class ReportsViewComponent implements OnInit, AfterViewInit {
 
     image.src = url;
 
+    // clear the canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
     if (navigator.userAgent.indexOf("Firefox") != -1) {
       //set width back to viewport percentage
       document.querySelector('svg').setAttribute('width', '100%');
