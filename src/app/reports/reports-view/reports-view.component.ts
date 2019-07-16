@@ -344,7 +344,7 @@ export class ReportsViewComponent implements OnInit, AfterViewInit {
           d3.select("#legend").style("fill", legendCol);
           actualLine.active = active;
         })
-        .text('Inhalt: ' + new Date(this.timespan[0].from).getFullYear() + ' - heute');
+        .text('Inhalt: ' + new Date(this.timespan[0].from).getFullYear() + ' - heute [' + d3Data[d3Data.length-1].value +' Mio m³]');
 
       this.svg.append('text')
         .attr("y", width - 65)
@@ -596,7 +596,7 @@ export class ReportsViewComponent implements OnInit, AfterViewInit {
               if (k === 0) {
                 refInterval.push(new Date(new Date().getFullYear() - 1, new Date(refVal.values[k]['timestamp']).getMonth(), new Date(refVal.values[k]['timestamp']).getDate()));
                 refInterval.push(new Date(new Date().getFullYear(), new Date(refVal.values[k]['timestamp']).getMonth(), new Date(refVal.values[k]['timestamp']).getDate()));
-                refInterval.push(new Date(new Date().getFullYear() + 1, new Date(this.timespan[0].to).getMonth() + 1, new Date(this.timespan[0].to).getDate()));
+                refInterval.push(new Date(new Date().getFullYear() + 1, new Date(this.timespan[0].to).getMonth() +1, new Date(this.timespan[0].to).getDate()));
               }
             }
             else {
@@ -842,6 +842,8 @@ export class ReportsViewComponent implements OnInit, AfterViewInit {
 
   exportImage() {
 
+
+  
     if (navigator.userAgent.indexOf("Firefox") != -1) {
       //set defined width of svg to export as png in firefox
       // if width of svg is set to percentage it does not work
