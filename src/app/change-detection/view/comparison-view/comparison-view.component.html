@@ -6,7 +6,7 @@
     <div class="viewMenu">
       <ul class="navbar-nav mr-auto">
         <li>
-          <button class="btn btn-default" (click)="changeView()">Ansicht wechseln</button>
+          <button id="viewChange" class="btn btn-default" (click)="changeView()" >Ansicht wechseln</button>
         </li>
         <div class="textCss">Adresssuche</div>
         <li>
@@ -42,7 +42,7 @@
         
           <!-- <label>{{leftLayer?.options.alt}} {{defaultLDate | date: 'mediumDate'}}</label> -->
         </td>
-        <td id="leftTime">
+        <td>
             <button id="leftTime" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">{{defaultLDate| date: 'mediumDate' }}</button>
             <div class="dropdown-menu" aria-labelledby="leftTime">
               <button class="dropdown-item" *ngFor="let lDate of selLeftDate; let i = index" (click)="changeLeftDate(lDate, i)">{{lDate| date: 'mediumDate' }}</button>
