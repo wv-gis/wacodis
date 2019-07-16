@@ -1,14 +1,16 @@
 #d3Graph
 {
     border: 1px solid lightgray;
-    width: 60%;
+    width: 100%;
+    height: 100%;
 }
 
 .svg-container {
     display: inline-block;
     position: relative;
-    width: 60%;
-    padding-bottom: 40%; /* aspect ratio */
+    width: 100%;
+    height: 100%;
+    /* padding-bottom: 40%; aspect ratio */
     vertical-align: top;
     overflow: hidden;
 }

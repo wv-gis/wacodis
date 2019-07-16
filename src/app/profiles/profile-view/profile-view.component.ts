@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { CsvDataService } from 'src/app/settings/csvData.service';
 import * as d3 from 'd3';
+import { AfterViewInit } from '@angular/core/src/metadata/lifecycle_hooks';
 const itemsPerPage = 10;
 
 export interface BwlDataset {
@@ -14,7 +15,8 @@ export interface BwlDataset {
   Wert: string,
   uom: string,
 }
-
+const svgWidth = 1100, svgHeight = 850;
+const margin = { top: 50, right: 20, bottom: 50, left: 40 };
 
 @Component({
   selector: 'wv-profile-view',
@@ -22,7 +24,18 @@ export interface BwlDataset {
   styleUrls: ['./profile-view.component.css']
 })
 
-export class ProfileViewComponent implements OnInit {
+export class ProfileViewComponent implements OnInit, AfterViewInit {
+
+  @HostListener('window:resize', ['$event'])
+  public onWindowResize(event: Event) {
+    this.onResize();
+  }
+
+  @ViewChild('depthGraph')
+  public d3Elem: ElementRef;
+
+  @ViewChild('profileGraph')
+  public profileElem: ElementRef;
 
   public headers: string[] = [];
   public entries = [];
@@ -31,6 +44,11 @@ export class ProfileViewComponent implements OnInit {
   public currentPage;
   public dataArr: string[];
   public bwlData: BwlDataset[] = [];
+  public svg: any;
+  public chart: any;
+  public pchart: any;
+  public profile: any;
+  public profileSvg: any;
 
   constructor(protected csvService: CsvDataService) {
     // this.headers = csvService.getHeaders();
@@ -86,21 +104,72 @@ export class ProfileViewComponent implements OnInit {
     }
     // console.log(this.bwlData);
 
-    const svgWidth = 550, svgHeight = 430;
-    const margin = { top: 20, right: 20, bottom: 30, left: 40 };
-    let width = svgWidth - margin.left - margin.right;
-    let height = svgHeight - margin.top - margin.bottom;
-    let xaxisHeight = svgHeight - margin.bottom;
-    let svg = d3.select("#d3Graph").append("div")
-      .classed("svg-container", true)
-      .append("svg")
-      .attr("preserveAspectRatio", "xMinYMin meet")
-      .attr("viewBox", '0 0 ' + svgWidth + ' ' + svgHeight)
-      .attr('width', svgWidth)
-      .attr('height', svgHeight)
-      .classed("svg-content-responsive", true);
-    // .attr('width', svgWidth).attr('height', svgHeight);
 
+  }
+
+  ngAfterViewInit(): void {
+    // this.svg = d3.select("#d3Graph").append("div")
+    //   .style('width', '100%')
+    //   .style('height', '100%')
+    //   .classed("svg-container", true)
+    //   .append("svg")
+    //   .attr('width', '100%')
+    //   .attr('height', '100%');
+
+    // this.chart = this.svg.append('g')
+    //   .attr('transform', 'translate(' + margin.left + "," + margin.top + ")");
+
+    this.profile = d3.select("#profileGraph").append("div")
+      .style('width', '100%')
+      .style('height', '100%')
+      .classed("svg-container", true)
+      
+      this.profileSvg = this.profile.append("svg")
+      .attr('width', svgWidth)
+      .attr('height', svgHeight );
+
+    this.pchart = this.profileSvg.append('g')
+      .attr('transform', 'translate(' + margin.left + "," + margin.top + ")");
+
+    this.createProfileViews();
+  }
+
+
+  public calculateWidth(): number {
+    return this.svg.node().width.baseVal.value - margin.left - margin.right;
+  }
+
+
+  public calculateHeight(): number {
+    return (this.d3Elem.nativeElement as HTMLElement).clientHeight - margin.top - margin.bottom;
+  }
+
+
+  protected onResize(): void {
+    this.createProfileViews();
+  }
+
+  public createProfileViews() {
+
+
+
+    // .classed("svg-content-responsive", true);
+    // .attr('width', svgWidth).attr('height', svgHeight);
+    // .attr("preserveAspectRatio", "xMinYMin meet")
+    // .attr("viewBox", '0 0 ' + svgWidth + ' ' + svgHeight)
+    // let width = this.calculateWidth();
+    // let height = this.calculateHeight();
+
+    let width = svgWidth -margin.left -margin.right;
+    let height = svgHeight - margin.top - margin.bottom;
+    if(width < 0){
+      width = 1200;
+    }
+    // this.chart.selectAll('*').remove();
+    this.pchart.selectAll('*').remove();
+    // this.svg.selectAll('.axis').remove();
+    this.profileSvg.selectAll('.axis').remove();
+    this.profileSvg.selectAll('.legend').remove();
     let data = [{
       depth: 10,
       value: 8.1
@@ -189,146 +258,147 @@ export class ProfileViewComponent implements OnInit {
       .x(function (d) { return x(d.value); })
       .y(function (d) { return y(d.depth); });
 
-    let div = d3.select("#d3Graph").append("div")
-      .attr("class", "tooltip")
-      .style("opacity", 0);
+    // let div = d3.select("#d3Graph").append("div")
+    //   .attr("class", "tooltip")
+    //   .style("opacity", 0);
 
-    y.domain(d3.extent(data, function (d) { return d.depth }));
+    // y.domain(d3.extent(data, function (d) { return d.depth }));
 
-    let chart = svg.append('g').attr('transform', 'translate(' + margin.left + "," + margin.top + ")");
+    // let chart = this.svg.append('g').attr('transform', 'translate(' + margin.left + "," + margin.top + ")");
 
-    let d3Max = d3.max(data, function (d) { return d.value }) as number;
-    let d3MaxSec = d3.max(secData, function (d) { return d.value }) as number;
+    // let d3Max = d3.max(data, function (d) { return d.value }) as number;
+    // let d3MaxSec = d3.max(secData, function (d) { return d.value }) as number;
 
-    console.log(Math.max(d3Max, d3MaxSec));
-    let max = Math.max(d3Max, d3MaxSec);
+    // let max = Math.max(d3Max, d3MaxSec);
 
-    x.domain([max, 0]);
-    svg.append("g")
-      .attr("class", "axis")
-      .attr('font-size', '10px')
-      .attr('stroke-width', 0.25)
-      .attr("transform", "translate(" + margin.left + ',' + margin.top + ")")
-      .call(d3.axisTop(x)).attr('font-size', '10px')
+    // x.domain([max, 0]);
+    // this.svg.append("g")
+    //   .attr("class", "axis")
+    //   .attr('font-size', '10px')
+    //   .attr('stroke-width', 0.25)
+    //   .attr("transform", "translate(" + margin.left + ',' + margin.top + ")")
+    //   .call(d3.axisTop(x)).attr('font-size', '10px')
 
-    // gridlines in y axis function
-    function make_y_gridlines() {
-      return d3.axisLeft(y)
-        .ticks(4)
-    }
-    // add the Y gridlines
-    chart.append("g")
-      .attr("class", "grid")
-      .attr('opacity', 0.5)
-      .attr('stroke-width', 0.25)
-      .call(make_y_gridlines()
-        .tickSize(-width)
-        .tickFormat("")
-      );
+    // // gridlines in y axis function
+    // function make_y_gridlines() {
+    //   return d3.axisLeft(y)
+    //     .ticks(4)
+    // }
+    // // add the Y gridlines
+    // this.chart.append("g")
+    //   .attr("class", "grid")
+    //   .attr('opacity', 0.5)
+    //   .attr('stroke-width', 0.25)
+    //   .call(make_y_gridlines()
+    //     .tickSize(-width)
+    //     .tickFormat("")
+    //   );
 
-    // gridlines in y axis function
-    function make_x_gridlines() {
-      return d3.axisLeft(x)
-        .ticks(1)
-    }
-    // add the Y gridlines
-    chart.append("g")
-      .attr("class", "xgrid")
-      .attr('opacity', 0.5)
-      .attr('stroke-width', 0.25)
-      .attr("transform", "translate(" + width + ',' + 0 + ")")
-      .call(make_x_gridlines()
-        .tickSize(height)
-        .tickFormat("")
-      );
+    // // gridlines in y axis function
+    // function make_x_gridlines() {
+    //   return d3.axisLeft(x)
+    //     .ticks(1)
+    // }
+    // // add the Y gridlines
+    // this.chart.append("g")
+    //   .attr("class", "xgrid")
+    //   .attr('opacity', 0.5)
+    //   .attr('stroke-width', 0.25)
+    //   .attr("transform", "translate(" + width + ',' + 0 + ")")
+    //   .call(make_x_gridlines()
+    //     .tickSize(height)
+    //     .tickFormat("")
+    //   );
 
-    chart.append('path')
-      .datum(data)
-      .attr("fill", "none")
-      .attr("stroke", "red")
-      .attr("stroke-linejoin", "round")
-      .attr("stroke-linecap", "round")
-      .attr("stroke-width", 0.5)
-      .attr('d', line);
+    // this.chart.append('path')
+    //   .datum(data)
+    //   .attr("fill", "none")
+    //   .attr("stroke", "red")
+    //   .attr("stroke-linejoin", "round")
+    //   .attr("stroke-linecap", "round")
+    //   .attr("stroke-width", 0.5)
+    //   .attr('d', line);
 
-    chart.append('path')
-      .datum(secData)
-      .attr("fill", "none")
-      .attr("stroke", "blue")
-      .attr("stroke-linejoin", "round")
-      .attr("stroke-linecap", "round")
-      .attr("stroke-width", 0.5)
-      .attr('d', secLine);
+    // this.chart.append('path')
+    //   .datum(secData)
+    //   .attr("fill", "none")
+    //   .attr("stroke", "blue")
+    //   .attr("stroke-linejoin", "round")
+    //   .attr("stroke-linecap", "round")
+    //   .attr("stroke-width", 0.5)
+    //   .attr('d', secLine);
 
-    chart.append("g")
-      .call(d3.axisLeft(y)).attr('font-size', '10px').attr('stroke-width', 0.25)
-      .append("text")
-      .attr("fill", "#000")
-      .attr('font-size', '10px')
-      .attr("transform", "rotate(-90)")
-      .attr("y", 0 - margin.left)
-      .attr("x", 0 - (height / 2))
-      .attr("dy", "1.71em")
-      .attr("text-anchor", "middle")
-      .text("Tiefe [m]");
+    // this.chart.append("g")
+    //   .call(d3.axisLeft(y)).attr('font-size', '10px').attr('stroke-width', 0.25)
+    //   .append("text")
+    //   .attr("fill", "#000")
+    //   .attr('font-size', '10px')
+    //   .attr("transform", "rotate(-90)")
+    //   .attr("y", 0 - margin.left)
+    //   .attr("x", 0 - (height / 2))
+    //   .attr("dy", "1.71em")
+    //   .attr("text-anchor", "middle")
+    //   .text("Tiefe [m]");
 
-    let dots = chart.selectAll("dot")
-      .data(secData)
-      .enter().append("circle")
-      .attr("opacity", 0.5)
-      .attr("stroke", 'blue')
-      .attr("cursor", "pointer")
-      .attr("fill", "blue")
-      .attr("id", 'dots')
-      .attr("r", 1.0)
-      .attr("cx", function (d) { return x(d.value); })
-      .attr("cy", function (d) { return y(d.depth); })
-      .on("mouseover", function (d) {
-        div.transition()
-          .duration(200)
-          .style("opacity", .9);
-        div.html('Chlorophyll: ' + d.value + ' [µg/l]')
-          .style("left", (d3.event.pageX) + "px")
-          .style("top", (d3.event.pageY - 28) + "px")
-          .style("border", "0px")
-          .style("border-radius", "8px")
-          .style("background", "lightsteelblue")
-          .style("text-align", "center");
-      })
-      .on("mouseout", function (d) {
-        div.transition()
-          .duration(500)
-          .style("opacity", 0);
-      });
+    // let dots = this.chart.selectAll("dot")
+    //   .data(secData)
+    //   .enter().append("circle")
+    //   .attr("opacity", 0.5)
+    //   .attr("stroke", 'blue')
+    //   .attr("cursor", "pointer")
+    //   .attr("fill", "blue")
+    //   .attr("id", 'dots')
+    //   .attr("r", 1.0)
+    //   .attr("cx", function (d) { return x(d.value); })
+    //   .attr("cy", function (d) { return y(d.depth); })
+    //   .on("mouseover", function (d) {
+    //     div.transition()
+    //       .duration(200)
+    //       .style("opacity", .9);
+    //     div.html('Chlorophyll: ' + d.value + ' [µg/l]')
+    //       .style("left", (d3.event.pageX) + "px")
+    //       .style("top", (d3.event.pageY - 28) + "px")
+    //       .style("border", "0px")
+    //       .style("border-radius", "8px")
+    //       .style("background", "lightsteelblue")
+    //       .style("text-align", "center");
+    //   })
+    //   .on("mouseout", function (d) {
+    //     div.transition()
+    //       .duration(500)
+    //       .style("opacity", 0);
+    //   });
 
-    let secdots = chart.selectAll("dot")
-      .data(data)
-      .enter().append("circle")
-      .attr("opacity", 0.5)
-      .attr("stroke", 'red')
-      .attr("cursor", "pointer")
-      .attr("fill", "red")
-      .attr("id", 'dots')
-      .attr("r", 1.0)
-      .attr("cx", function (d) { return x(d.value); })
-      .attr("cy", function (d) { return y(d.depth); })
-      .on("mouseover", function (d) {
-        div.transition()
-          .duration(200)
-          .style("opacity", .9);
-        div.html('Temperatur: ' + d.value + ' [C°]')
-          .style("left", (d3.event.pageX) + "px")
-          .style("top", (d3.event.pageY - 28) + "px")
-          .style("border", "0px")
-          .style("border-radius", "8px")
-          .style("background", "lightsteelblue")
-          .style("text-align", "center");
-      })
-      .on("mouseout", function (d) {
-        div.transition()
-          .duration(500)
-          .style("opacity", 0);
-      });
+    // let secdots = this.chart.selectAll("dot")
+    //   .data(data)
+    //   .enter().append("circle")
+    //   .attr("opacity", 0.5)
+    //   .attr("stroke", 'red')
+    //   .attr("cursor", "pointer")
+    //   .attr("fill", "red")
+    //   .attr("id", 'dots')
+    //   .attr("r", 1.0)
+    //   .attr("cx", function (d) { return x(d.value); })
+    //   .attr("cy", function (d) { return y(d.depth); })
+    //   .on("mouseover", function (d) {
+    //     div.transition()
+    //       .duration(200)
+    //       .style("opacity", .9);
+    //     div.html('Temperatur: ' + d.value + ' [C°]')
+    //       .style("left", (d3.event.pageX) + "px")
+    //       .style("top", (d3.event.pageY - 28) + "px")
+    //       .style("border", "0px")
+    //       .style("border-radius", "8px")
+    //       .style("background", "lightsteelblue")
+    //       .style("text-align", "center");
+    //   })
+    //   .on("mouseout", function (d) {
+    //     div.transition()
+    //       .duration(500)
+    //       .style("opacity", 0);
+    //   });
+
+
     // let xr = d3.scaleLinear().rangeRound([0, width]);
     // let yr = d3.scaleLinear().rangeRound([height,0]);
     // // xr.domain([0, secData.length]);
@@ -355,14 +425,14 @@ export class ProfileViewComponent implements OnInit {
     // console.log(new Date(2019,0,1));
 
 
-    let profile = d3.select("#profileGraph").append("div")
-      .classed("svg-container", true)
-      .append("svg")
-      .attr("preserveAspectRatio", "xMinYMin meet")
-      .attr("viewBox", '0 0 ' + svgWidth + ' ' + svgHeight)
-      .attr('width', svgWidth)
-      .attr('height', svgHeight)
-      .classed("svg-content-responsive", true);
+    // let profile = d3.select("#profileGraph").append("div")
+    //   .classed("svg-container", true)
+    //   .append("svg")
+    //   .attr("preserveAspectRatio", "xMinYMin meet")
+    //   .attr("viewBox", '0 0 ' + svgWidth + ' ' + svgHeight)
+    //   .attr('width', svgWidth)
+    //   .attr('height', svgHeight)
+    //   .classed("svg-content-responsive", true);
     // .attr('width', svgWidth).attr('height', svgHeight);
 
     let profData = [{
@@ -596,11 +666,473 @@ export class ProfileViewComponent implements OnInit {
       value: 5.23,
       color: 'orange'
     },
+    {
+      date: new Date(2019, 3, 10),
+      depth: 10,
+      value: 12.1,
+      color: 'lightblue'
+    },
+    {
+      date: new Date(2019, 3, 10),
+      depth: 12,
+      value: 10.92,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 3, 10),
+      depth: 14,
+      value: 8.35,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 3, 10),
+      depth: 16,
+      value: 7.04,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 3, 10),
+      depth: 18,
+      value: 6.10,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 3, 10),
+      depth: 20,
+      value: 5.90,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 3, 10),
+      depth: 22,
+      value: 4.63,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 3, 10),
+      depth: 24,
+      value: 3.23,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 3, 10),
+      depth: 26,
+      value: 3.24,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 3, 10),
+      depth: 28,
+      value: 3.13,
+      color: 'orange'
+    },
+    {
+      date: new Date(2019, 3, 10),
+      depth: 30,
+      value: 3.93,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 3, 24),
+      depth: 10,
+      value: 14.1,
+      color: 'lightblue'
+    },
+    {
+      date: new Date(2019, 3, 24),
+      depth: 12,
+      value: 13.92,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 3, 24),
+      depth: 14,
+      value: 12.35,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 3, 24),
+      depth: 16,
+      value: 12.04,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 3, 24),
+      depth: 18,
+      value: 11.10,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 3, 24),
+      depth: 20,
+      value: 10.50,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 3, 24),
+      depth: 22,
+      value: 10.63,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 3, 24),
+      depth: 24,
+      value: 9.23,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 3, 24),
+      depth: 26,
+      value: 8.24,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 3, 24),
+      depth: 28,
+      value: 7.13,
+      color: 'orange'
+    },
+    {
+      date: new Date(2019, 3, 24),
+      depth: 30,
+      value: 5.93,
+      color: 'orange'
+    },
+    {
+      date: new Date(2019, 4, 10),
+      depth: 10,
+      value: 13.1,
+      color: 'lightblue'
+    },
+    {
+      date: new Date(2019, 4, 10),
+      depth: 12,
+      value: 11.92,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 4, 10),
+      depth: 14,
+      value: 10.35,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 4, 10),
+      depth: 16,
+      value: 10.04,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 4, 10),
+      depth: 18,
+      value: 7.10,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 4, 10),
+      depth: 20,
+      value: 8.10,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 4, 10),
+      depth: 22,
+      value: 6.63,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 4, 10),
+      depth: 24,
+      value: 5.03,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 4, 10),
+      depth: 26,
+      value: 5.04,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 4, 10),
+      depth: 28,
+      value: 5.73,
+      color: 'orange'
+    },
+    {
+      date: new Date(2019, 4, 10),
+      depth: 30,
+      value: 4.93,
+      color: 'orange'
+    },
+    {
+      date: new Date(2019, 4, 24),
+      depth: 10,
+      value: 12.1,
+      color: 'green'
+    },
+    {
+      date: new Date(2019, 4, 24),
+      depth: 12,
+      value: 10.92,
+      color: 'green'
+    }, {
+      date: new Date(2019, 4, 24),
+      depth: 14,
+      value: 10.35,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 4, 24),
+      depth: 16,
+      value: 6.04,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 4, 24),
+      depth: 18,
+      value: 9.10,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 4, 24),
+      depth: 20,
+      value: 9.80,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 4, 24),
+      depth: 22,
+      value: 8.63,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 4, 24),
+      depth: 24,
+      value: 7.93,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 4, 24),
+      depth: 26,
+      value: 6.54,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 4, 24),
+      depth: 28,
+      value: 6.73,
+      color: 'lightblue'
+    },
+    {
+      date: new Date(2019, 4, 24),
+      depth: 30,
+      value: 5.23,
+      color: 'orange'
+    },
+    {
+      date: new Date(2019, 5, 10),
+      depth: 10,
+      value: 12.1,
+      color: 'lightblue'
+    },
+    {
+      date: new Date(2019, 5, 10),
+      depth: 12,
+      value: 10.92,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 5, 10),
+      depth: 14,
+      value: 8.35,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 5, 10),
+      depth: 16,
+      value: 7.04,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 5, 10),
+      depth: 18,
+      value: 6.10,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 5, 10),
+      depth: 20,
+      value: 5.90,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 5, 10),
+      depth: 22,
+      value: 4.63,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 5, 10),
+      depth: 24,
+      value: 3.23,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 5, 10),
+      depth: 26,
+      value: 3.24,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 5, 10),
+      depth: 28,
+      value: 3.13,
+      color: 'orange'
+    },
+    {
+      date: new Date(2019, 5, 10),
+      depth: 30,
+      value: 3.93,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 5, 24),
+      depth: 10,
+      value: 14.1,
+      color: 'lightblue'
+    },
+    {
+      date: new Date(2019, 5, 24),
+      depth: 12,
+      value: 13.92,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 5, 24),
+      depth: 14,
+      value: 12.35,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 5, 24),
+      depth: 16,
+      value: 12.04,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 5, 24),
+      depth: 18,
+      value: 11.10,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 5, 24),
+      depth: 20,
+      value: 10.50,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 5, 24),
+      depth: 22,
+      value: 10.63,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 5, 24),
+      depth: 24,
+      value: 9.23,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 5, 24),
+      depth: 26,
+      value: 8.24,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 5, 24),
+      depth: 28,
+      value: 7.13,
+      color: 'orange'
+    },
+    {
+      date: new Date(2019, 5, 24),
+      depth: 30,
+      value: 5.93,
+      color: 'orange'
+    },
+    {
+      date: new Date(2019, 6, 10),
+      depth: 10,
+      value: 13.1,
+      color: 'lightblue'
+    },
+    {
+      date: new Date(2019, 6, 10),
+      depth: 12,
+      value: 11.92,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 6, 10),
+      depth: 14,
+      value: 10.35,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 6, 10),
+      depth: 16,
+      value: 10.04,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 6, 10),
+      depth: 18,
+      value: 7.10,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 6, 10),
+      depth: 20,
+      value: 8.10,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 6, 10),
+      depth: 22,
+      value: 6.63,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 6, 10),
+      depth: 24,
+      value: 5.03,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 6, 10),
+      depth: 26,
+      value: 5.04,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 6, 10),
+      depth: 28,
+      value: 5.73,
+      color: 'orange'
+    },
+    {
+      date: new Date(2019, 6, 10),
+      depth: 30,
+      value: 4.93,
+      color: 'orange'
+    },
+    {
+      date: new Date(2019, 6, 24),
+      depth: 10,
+      value: 12.1,
+      color: 'green'
+    },
+    {
+      date: new Date(2019, 6, 24),
+      depth: 12,
+      value: 10.92,
+      color: 'green'
+    }, {
+      date: new Date(2019, 6, 24),
+      depth: 14,
+      value: 10.35,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 6, 24),
+      depth: 16,
+      value: 6.04,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 6, 24),
+      depth: 18,
+      value: 9.10,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 6, 24),
+      depth: 20,
+      value: 9.80,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 6, 24),
+      depth: 22,
+      value: 8.63,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 6, 24),
+      depth: 24,
+      value: 7.93,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 6, 24),
+      depth: 26,
+      value: 6.54,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 6, 24),
+      depth: 28,
+      value: 6.73,
+      color: 'lightblue'
+    },
+    {
+      date: new Date(2019, 6, 24),
+      depth: 30,
+      value: 5.23,
+      color: 'orange'
+    },
     ];
 
 
-    let colorNum = 13;
-    let pchart = profile.append('g').attr('transform', 'translate(' + margin.left + "," + margin.top + ")");
+    let colorNum = 14;
+    // let pchart = this.profile.append('g').attr('transform', 'translate(' + margin.left + "," + margin.top + ")");
     // let colors = ['#ebeffd','#c7d4fa','#91abf5','#5b82f0','#2559eb','#103bb1'];
     let colors = [
       '#fdfdff',
@@ -617,73 +1149,86 @@ export class ProfileViewComponent implements OnInit {
       '#3767ed',
       '#2559eb'
     ];
+    let format = d3.timeFormat("%Y%m%d");
 
-    let gridSize = Math.floor(width / 60);
-    let px = d3.scaleTime().rangeRound([0, width - gridSize]);
-    let py = d3.scaleLinear().rangeRound([0, height - gridSize]);
+    let gridSize = Math.floor(width / 13);
+    console.log(gridSize);
+    let px = d3.scaleTime().range([0, (width -margin.left - margin.right) ]);
+    let py = d3.scaleLinear().rangeRound([0, height -margin.top - margin.bottom  ]);
 
-    let cards = profile.selectAll(".prof").data(profData, function (d) { return d.date + ':' + d.depth; });
+    let cards = this.profileSvg.selectAll(".prof").data(profData);
     let colorScale = d3.scaleQuantile()
-      .domain([0, colorNum - 1, d3.max(profData, function (d) { return d.value; })])
+      .domain([0, colorNum - 1, d3.max(profData, function (d) { return d; })])
       .range(colors);
-    let legend = profile.selectAll(".legend")
-      .data([0].concat(colorScale.quantiles()), function (d) { return d.value; });
+
+    py.domain(d3.extent(profData, function (d) { return d.depth; }));
+    // px.domain(d3.extent(profData, function (d) { return (d.date.getTime()); }));
+    px.domain([d3.min(profData, function(d){return d.date.getTime()-2628000000;}),d3.max(profData, function(d){return d.date.getTime()+ 2628000000;})])
 
 
-
-    py.domain(d3.extent(profData, function (d) { return d.depth }));
-    px.domain(d3.extent(profData, function (d) { return d.date; }));
-
-
-    profile.append("g")
+    this.profileSvg.append("g")
       .attr("class", "axis")
       .attr('font-size', '10px')
       .attr('stroke-width', 0.25)
       .attr("transform", "translate(" + margin.left + ',' + margin.top + ")")
       .call(d3.axisTop(px)).attr('font-size', '10px')
 
-    pchart.append("g")
+    this.pchart.append("g")
       .call(d3.axisLeft(py)).attr('font-size', '10px').attr('stroke-width', 0.25)
       .append("text")
       .attr("fill", "#000")
       .attr('font-size', '10px')
       .attr("transform", "rotate(-90)")
       .attr("y", 0 - margin.left)
-      .attr("x", 0 - (height / 2))
+      .attr("x", 0 - (height / 2)-gridSize)
       .attr("dy", "1.71em")
       .attr("text-anchor", "middle")
       .text("Tiefe [m]");
 
     cards.enter().append("rect")
-      .attr("x", function (d) { return px(d.date) + margin.left; })
-      .attr("y", function (d) { return py(d.depth) + margin.top; })
+      .attr("x", function (d) { return px((d.date.getTime())); })
+      .attr("y", function (d) { return py(d.depth)  ; })
       .attr("rx", 4)
       .attr("ry", 4)
       .attr("class", "prof bordered")
-      .attr("width", gridSize * 28)
-      .attr("height", gridSize * 6)
+      .attr("width", gridSize)
+      .attr("height", gridSize)
+      .attr("transform", "translate("+ margin.left + ","+ margin.top +")")
       .style("fill", function (d) { return colorScale(d.value); });
 
-      legend.enter().append("g")
+      for(let i=0; i< profData.length; i ++){
+        console.log(profData[i].date.getTime());
+        console.log('Date: ' + profData[i].date);
+        console.log('Scale: ' + px(profData[i].date));
+      }
+
+      cards.enter().append("text")
+      .text(function (d) { return d.value;})
+      .attr("x", function (d) { return px((d.date)) + margin.left; })
+      .attr("y", function (d) { return py(d.depth) + margin.top + 15; });
+
+      let legend = this.profileSvg.selectAll(".legend")
+      .data([0].concat(colorScale.quantiles()), function (d) { return d.value; }).enter().append("g")
       .attr("class", "legend");
 
     legend.append("rect")
-      .attr("x", function (d, i) { return gridSize * 2 * i; })
-      .attr("y", height)
-      .attr("width", gridSize * 2)
-      .attr("height", gridSize / 2)
+      .attr("x", function (d, i) { return gridSize * i + margin.left; })
+      .attr("y", height + margin.top)
+      .attr("width", gridSize  )
+      .attr("height", gridSize / 3)
       .style("fill", function (d, i) { return colors[i]; });
 
     legend.append("text")
       .attr("class", "mono")
-      .text(function (d) { return "≥ " + Math.round(d.value); })
-      .attr("x", function (d, i) { return gridSize * 2 * i; })
-      .attr("y", height + gridSize);
+      .text(function (d) { return "≥" + Math.round(d); })
+      .attr("x", function (d, i) { return gridSize  * i + margin.left; })
+      .attr("y", height  + margin.top);
+
+      legend.exit().remove();
   }
 
-
   /**
-   * not suitable for dtae and value fields as strings
+   * not suitable for date and value fields as strings
    * @param n row which should invoke the sorting sequence
    */
   private sortTable(n) {
