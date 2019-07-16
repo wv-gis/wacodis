@@ -344,7 +344,31 @@ export class ReportsViewComponent implements OnInit, AfterViewInit {
           d3.select("#legend").style("fill", legendCol);
           actualLine.active = active;
         })
-        .text('Inhalt: ' + new Date(this.timespan[0].from).getFullYear() + ' - heute [' + d3Data[d3Data.length-1].value +' Mio m³]');
+        .text('Inhalt: ' + new Date(this.timespan[0].from).getFullYear() + ' - heute');
+
+        this.svg.append("text")
+        .attr("x", width - margin.left - 20)
+        .attr("y", margin.top)
+        .attr("class", "state")
+        .attr("id", "state")
+        .attr("opacity", 0)
+        .style("font-size", "12px")
+        .style("font-weight", "normal")
+        .style("fill", "black")
+        .style("padding", "5px").text('Stand vom: '+ new Date().toLocaleDateString());
+
+        this.svg.append('text')
+        .attr("x", width - margin.left - 20)
+        .attr("y", margin.top + 20)
+        .attr("class", "state")
+        .attr("id", "stateVal")
+        .attr("opacity", 0)
+        .style("font-size", "12px")
+        .style("font-weight", "normal")
+        .style("fill", "black")
+        .text('Letzter Wert: ' + d3Data[d3Data.length-1].value +' [Mio m³]'); 
+         
+
 
       this.svg.append('text')
         .attr("y", width - 65)
@@ -842,7 +866,9 @@ export class ReportsViewComponent implements OnInit, AfterViewInit {
 
   exportImage() {
 
-
+    document.querySelector('svg').getElementById('state').setAttribute('opacity','1');
+    document.querySelector('svg').getElementById('stateVal').setAttribute('opacity','1');
+    
   
     if (navigator.userAgent.indexOf("Firefox") != -1) {
       //set defined width of svg to export as png in firefox
@@ -889,6 +915,8 @@ export class ReportsViewComponent implements OnInit, AfterViewInit {
       //set width back to viewport percentage
       document.querySelector('svg').setAttribute('width', '100%');
     }
+    document.querySelector('svg').getElementById('state').setAttribute('opacity','0');
+    document.querySelector('svg').getElementById('stateVal').setAttribute('opacity','0');
   }
 
 
