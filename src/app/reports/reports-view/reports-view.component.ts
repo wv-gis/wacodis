@@ -783,6 +783,10 @@ export class ReportsViewComponent implements OnInit, AfterViewInit {
     this.timespan[0].to = new Date(new Date().getFullYear(), 1).getTime() + 31556926000;
     this.timespan.splice(1);
 
+    console.log("Timespan from: " +this.timespan[0].from);
+    console.log("Timespan to: " +this.timespan[0].to);
+
+
     this.damLabel = label;
     this.seriesId = this.reservoirs[id].graph.seriesId;
 
@@ -790,6 +794,7 @@ export class ReportsViewComponent implements OnInit, AfterViewInit {
       for (let y = 0; y < this.reservoirs[id].graph.compYearsFrom.length; y++) {
         this.timespan.push(new Timespan(new Date(this.reservoirs[id].graph.compYearsFrom[y], new Date(this.timespan[0].from).getMonth()).getTime(),
           new Date(this.reservoirs[id].graph.compYearsFrom[y] + 2, new Date(this.timespan[0].to).getMonth()).getTime()));
+          console.log("Timespans: " + JSON.stringify(this.timespan));
       }
     }
     if (this.reservoirs[id].graph.rainSeriesID) {

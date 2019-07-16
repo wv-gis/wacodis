@@ -46,7 +46,7 @@
             }
         },
         {
-            "id": "GDT",
+            "id": "DT",
             "label": "Große Dhünn-Talsperre",
             "graph": {
                 "seriesId": "sos2-intern-gis/api/v1/__42",
