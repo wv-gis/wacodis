@@ -6,7 +6,7 @@ import * as d3 from 'd3';
 declare var require: any;
 
 
-const svgWidth = 1450, svgHeight = 520;
+const svgWidth = 1480, svgHeight = 520;
 const margin = { top: 30, right: 150, bottom: 30, left: 30 };
 
 @Component({
