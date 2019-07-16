@@ -8,6 +8,7 @@ import { RequestTokenService } from 'src/app/services/request-token.service';
 import { ComparisonSelectionService } from 'src/app/services/comparison-selection.service';
 import { error } from '@angular/compiler/src/util';
 import { LatLngBounds } from '@helgoland/map/node_modules/@types/leaflet';
+import { Location } from '@angular/common';
 require('leaflet.sync');
 
 // const sentinelLayerOptions = ['Agriculture', 'Bathymetric', 'Color Infrared', 'Natural Color', 'Healthy Vegetation', 'None'];
@@ -15,7 +16,7 @@ require('leaflet.sync');
 // const rasterFunctionOpt = [{ "rasterFunction": "Agriculture with DRA" }, { "rasterFunction": "Bathymetric with DRA" }, { "rasterFunction": "Color Infrared with DRA" },
 // { "rasterFunction": "Natural Color" }, { "rasterFunction": "Agriculture" }, { "rasterFunction": "None" }]
 const sentinelLayerOptions = ['Natural Color', 'Color Infrared'];
-const externLayerOptions = ['Landcover'];
+const externLayerOptions = ['Landcover', 'IntraChange'];
 const bandIdOptions = ['4,3,2', '8,4,3'];
 const rasterFunctionOpt = [{ "rasterFunction": "Natural Color" }, { "rasterFunction": "Color Infrared with DRA" }];
 
@@ -74,7 +75,7 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
   public acquisitionDates = [];
   public refreshInterval = '';
 
-  constructor(private mapCache: MapCache, private comSelSrvc: ComparisonSelectionService, private tokenService: RequestTokenService) {
+  constructor(private mapCache: MapCache, private comSelSrvc: ComparisonSelectionService, private tokenService: RequestTokenService, private _location: Location) {
 
     this.selectionData = this.comSelSrvc.getSelection();
   }
@@ -85,6 +86,7 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
       this.comparisonOptions.push(sentinelLayerOptions[i]);
     }
     this.comparisonOptions.push(externLayerOptions[0]);
+    this.comparisonOptions.push(externLayerOptions[1]);
     this.setSentinelLayer('https://sentinel.arcgis.com/arcgis/rest/services/Sentinel2/ImageServer');
 
     let toDate = new Date().getTime();
@@ -143,11 +145,17 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
       this._map.createPane('imagePane' + this.selectedIdR + 1);
       console.log('Create Right Pane Sentinel');
     }
+    else if(this.rightLayer.options.pane === 'overlayPane' + 1){
+      this._map.createPane('overlayPane'+1);
+    }
     if (this.leftLayer.options.pane === 'imagePane' + this.selectedIdL) {
       this._map.createPane('imagePane' + this.selectedIdL);
     }
+    else if(this.leftLayer.options.pane === 'overlayPane' + 1){
+      this._map.createPane('overlayPane'+1);
+    }
     // }
-
+  
     this._map.addLayer(this.leftLayer);
     this._map.addLayer(this.rightLayer);
 
@@ -216,22 +224,27 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
       if (this.leftLayer.options.pane === 'imagePane' + this.selectedIdL) {
         document.getElementsByClassName('leaflet-pane leaflet-image' + this.selectedIdL + '-pane')[0].setAttribute('style', 'clip: ' + clipLeft);
       }
+      else if(this.leftLayer.options.pane === 'overlayPane' + 1){
+        document.getElementsByClassName('leaflet-pane leaflet-overlay' + 1 + '-pane')[0].setAttribute('style', 'clip: ' + clipLeft);
+      }
       else {
-        let tileLayerPane = document.getElementsByClassName('leaflet-pane leaflet-overlay-pane') as HTMLCollectionOf<HTMLElement>;
-        tileLayerPane[0].setAttribute('style', 'clip: ' + clipLeft);
+        let tileLayerPaneL = document.getElementsByClassName('leaflet-pane leaflet-overlay-pane') as HTMLCollectionOf<HTMLElement>;
+        tileLayerPaneL[0].setAttribute('style', 'clip: ' + clipLeft);
       }
     }
 
     if (this.rightLayer) {
-      this.rightLayer.bringToFront();
+      // this.rightLayer.bringToFront();
       if (this.rightLayer.options.pane === 'imagePane' + this.selectedIdR + 1) {
         document.getElementsByClassName('leaflet-pane leaflet-image' + this.selectedIdR + 1 + '-pane')[0].setAttribute('style', 'clip: ' + clipRight);
       }
-
+      else if(this.rightLayer.options.pane === 'overlayPane' + 1){
+        document.getElementsByClassName('leaflet-pane leaflet-overlay' + 1 + '-pane')[0].setAttribute('style', 'clip: ' + clipRight);
+      }
       else {
 
-        let tileLayerPane = document.getElementsByClassName('leaflet-pane leaflet-overlay-pane') as HTMLCollectionOf<HTMLElement>;
-        tileLayerPane[0].setAttribute('style', 'clip: ' + clipRight);
+        let tileLayerPaneR = document.getElementsByClassName('leaflet-pane leaflet-overlay-pane') as HTMLCollectionOf<HTMLElement>;
+        tileLayerPaneR[0].setAttribute('style', 'clip: ' + clipRight);
 
       }
       this.mapCache.getMap('comparisonMap').invalidateSize();
@@ -357,6 +370,9 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
       if (this.leftLayer.options.pane === 'imagePane' + this.selectedIdL) {
         this._map.getPane('imagePane' + this.selectedIdL).remove();
       }
+      else if(this.leftLayer.options.pane === 'overlayPane' + 1){
+        this._map.getPane('overlayPane' + 1).remove();
+      }
       else {
         let tileLayerPane = document.getElementsByClassName('leaflet-pane leaflet-overlay-pane') as HTMLCollectionOf<HTMLElement>;
         tileLayerPane[0].removeAttribute('style');
@@ -368,6 +384,9 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
 
       if (this.rightLayer.options.pane === 'imagePane' + this.selectedIdR + 1) {
         this._map.getPane('imagePane' + this.selectedIdR + 1).remove();
+      }
+      else if(this.rightLayer.options.pane === 'overlayPane' + 1){
+        this._map.getPane('overlayPane' + 1).remove();
       }
       else {
         let tileLayerPane = document.getElementsByClassName('leaflet-pane leaflet-overlay-pane') as HTMLCollectionOf<HTMLElement>;
@@ -404,10 +423,15 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
 
     if (this.rightLayer.options.pane === 'imagePane' + this.selectedIdR + 1) {
       this.syncedMap.createPane('imagePane' + this.selectedIdR + 1)
+    }else if(this.rightLayer.options.pane === 'overlayPane' + 1){
+      this.syncedMap.createPane('overlayPane'+1);
     }
     if (this.leftLayer.options.pane === 'imagePane' + this.selectedIdL) {
       this.mapCache.getMap('comparisonMap').createPane('imagePane' + this.selectedIdL);
+    }else if(this.leftLayer.options.pane === 'overlayPane' + 1){
+      this.mapCache.getMap('comparisonMap').createPane('overlayPane'+1);
     }
+   
     // this.mapCache.getMap('map2').addControl(this.controlLegend);
     this.syncedMap.addLayer(this.rightLayer);
     this.mapCache.getMap('comparisonMap').addLayer(this.leftLayer);
@@ -438,7 +462,14 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
     this.syncedMap = null;
   }
   public onCloseHandled() {
-    this.display = 'hidden';
+    this._location.back();
+    // this.display = 'hidden';
+
+    // document.getElementById('rightTime').setAttribute('disabled','');
+    // document.getElementById('leftTime').setAttribute('disabled','');
+    // document.getElementById('rightLayer').setAttribute('disabled','');
+    // document.getElementById('leftLayer').setAttribute('disabled','');
+    // document.getElementById('viewChange').setAttribute('disabled','');
   }
 
 
@@ -461,9 +492,15 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
           this.senLayers[k].authenticate(this.token);
           this.comparisonBaseLayers.push(this.senLayers[k]);
         }
+     
 
         this.comparisonBaseLayers.push(L.imageOverlay('https://wacodis.maps.arcgis.com/sharing/rest/content/items/846c30b6a1874841ac9d5f6954f19aad/data',
           [[51.299046, 6.949204], [51.046668, 7.615934]], { opacity: 0.6, pane: 'overlayPane', alt: 'Landcover' }));
+
+          this.comparisonBaseLayers.push(L.imageOverlay('https://wacodis.maps.arcgis.com/sharing/rest/content/items/b2fa6b41d64c4a649f4bd6f75e0f5d74/data', 
+          [[50.9854181,6.9313883],[51.3190536,7.6071338]],{
+            opacity: 0.8, pane: 'overlayPane'+ 1, alt: 'IntraChange'
+          }));
         this.tokenService.setToken(this.token);
       }, error => {
        
@@ -479,6 +516,11 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
       }
       this.comparisonBaseLayers.push(L.imageOverlay('https://wacodis.maps.arcgis.com/sharing/rest/content/items/846c30b6a1874841ac9d5f6954f19aad/data',
         [[51.299046, 6.949204], [51.046668, 7.615934]], { opacity: 0.6, pane: 'overlayPane', alt: 'Landcover' }));
+
+        this.comparisonBaseLayers.push(L.imageOverlay('https://wacodis.maps.arcgis.com/sharing/rest/content/items/b2fa6b41d64c4a649f4bd6f75e0f5d74/data', 
+        [[50.9854181,6.9313883],[51.3190536,7.6071338]],{
+          opacity: 0.8, pane: 'overlayPane'+1, alt: 'IntraChange'
+        }));
     }
   }
 
