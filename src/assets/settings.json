@@ -5,11 +5,11 @@
     "datasetApis": [
         {
             "name": "Wupperverband Timeseries GIS intern",
-            "url": "https://www.fluggs.de/sos2-intern-gis/api/v1/"
+            "url": "https://fluggs.wupperverband.de/sos2-intern-gis/api/v1/"
         },
         {
             "name": "Wupperverband Timeseries",
-            "url": "http://www.fluggs.de/sos2/api/v1/"
+            "url": "https://fluggs.wupperverband.de/sos2/api/v1/"
         },
         {
             "name": "52north - Sensorwebtestbed",
@@ -17,7 +17,7 @@
         },
         {
             "name":"Wupperverband Timeseries intern",
-            "url": "http://www.fluggs.de/sos2-intern/api/v1/"
+            "url": "https://fluggs.wupperverband.de/sos2-intern/api/v1/"
         }
     ],
     "reservoirs": [

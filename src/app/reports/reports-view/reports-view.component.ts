@@ -75,7 +75,15 @@ export class ReportsViewComponent implements OnInit, AfterViewInit {
       }
 
     }
-    this.serviceUrl = settingsService.getSettings().datasetApis[3].url;
+    for(let i =0; i< settingsService.getSettings().datasetApis.length; i++){
+      
+            if(settingsService.getSettings().datasetApis[i].url.includes(this.reservoirs[0].graph.seriesId.split("/")[0])){
+              this.serviceUrl = settingsService.getSettings().datasetApis[i].url;
+            }
+            else{
+              this.serviceUrl = settingsService.getSettings().datasetApis[0].url;
+            }
+          }
 
   }
 
