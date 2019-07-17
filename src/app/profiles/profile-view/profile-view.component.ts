@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { CsvDataService } from 'src/app/settings/csvData.service';
 import * as d3 from 'd3';
+import * as d3Contour from 'd3-contour';
 import { AfterViewInit } from '@angular/core/src/metadata/lifecycle_hooks';
 const itemsPerPage = 10;
 
@@ -108,25 +109,25 @@ export class ProfileViewComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    // this.svg = d3.select("#d3Graph").append("div")
-    //   .style('width', '100%')
-    //   .style('height', '100%')
-    //   .classed("svg-container", true)
-    //   .append("svg")
-    //   .attr('width', '100%')
-    //   .attr('height', '100%');
+    this.svg = d3.select("#d3Graph").append("div")
+      .style('width', '100%')
+      .style('height', '100%')
+      .classed("svg-container", true)
+      .append("svg")
+      .attr('width', '100%')
+      .attr('height', '100%');
 
-    // this.chart = this.svg.append('g')
-    //   .attr('transform', 'translate(' + margin.left + "," + margin.top + ")");
+    this.chart = this.svg.append('g')
+      .attr('transform', 'translate(' + margin.left + "," + margin.top + ")");
 
     this.profile = d3.select("#profileGraph").append("div")
       .style('width', '100%')
       .style('height', '100%')
       .classed("svg-container", true)
-      
-      this.profileSvg = this.profile.append("svg")
+
+    this.profileSvg = this.profile.append("svg")
       .attr('width', svgWidth)
-      .attr('height', svgHeight );
+      .attr('height', svgHeight);
 
     this.pchart = this.profileSvg.append('g')
       .attr('transform', 'translate(' + margin.left + "," + margin.top + ")");
@@ -160,14 +161,14 @@ export class ProfileViewComponent implements OnInit, AfterViewInit {
     // let width = this.calculateWidth();
     // let height = this.calculateHeight();
 
-    let width = svgWidth -margin.left -margin.right;
+    let width = svgWidth - margin.left - margin.right;
     let height = svgHeight - margin.top - margin.bottom;
-    if(width < 0){
+    if (width < 0) {
       width = 1200;
     }
-    // this.chart.selectAll('*').remove();
+    this.chart.selectAll('*').remove();
     this.pchart.selectAll('*').remove();
-    // this.svg.selectAll('.axis').remove();
+    this.svg.selectAll('.axis').remove();
     this.profileSvg.selectAll('.axis').remove();
     this.profileSvg.selectAll('.legend').remove();
     let data = [{
@@ -1152,9 +1153,10 @@ export class ProfileViewComponent implements OnInit, AfterViewInit {
     let format = d3.timeFormat("%Y%m%d");
 
     let gridSize = Math.floor(width / 13);
-    console.log(gridSize);
-    let px = d3.scaleTime().range([0, (width -margin.left - margin.right) ]);
-    let py = d3.scaleLinear().rangeRound([0, height -margin.top - margin.bottom  ]);
+
+
+    let px = d3.scaleTime().range([0, (width - margin.left - margin.right)]);
+    let py = d3.scaleLinear().rangeRound([0, height - margin.top - margin.bottom]);
 
     let cards = this.profileSvg.selectAll(".prof").data(profData);
     let colorScale = d3.scaleQuantile()
@@ -1163,7 +1165,7 @@ export class ProfileViewComponent implements OnInit, AfterViewInit {
 
     py.domain(d3.extent(profData, function (d) { return d.depth; }));
     // px.domain(d3.extent(profData, function (d) { return (d.date.getTime()); }));
-    px.domain([d3.min(profData, function(d){return d.date.getTime()-2628000000;}),d3.max(profData, function(d){return d.date.getTime()+ 2628000000;})])
+    px.domain([d3.min(profData, function (d) { return d.date.getTime() - 2628000000; }), d3.max(profData, function (d) { return d.date.getTime() + 2628000000; })])
 
 
     this.profileSvg.append("g")
@@ -1180,51 +1182,100 @@ export class ProfileViewComponent implements OnInit, AfterViewInit {
       .attr('font-size', '10px')
       .attr("transform", "rotate(-90)")
       .attr("y", 0 - margin.left)
-      .attr("x", 0 - (height / 2)-gridSize)
+      .attr("x", 0 - (height / 2) - gridSize)
       .attr("dy", "1.71em")
       .attr("text-anchor", "middle")
       .text("Tiefe [m]");
 
     cards.enter().append("rect")
       .attr("x", function (d) { return px((d.date.getTime())); })
-      .attr("y", function (d) { return py(d.depth)  ; })
+      .attr("y", function (d) { return py(d.depth); })
       .attr("rx", 4)
       .attr("ry", 4)
       .attr("class", "prof bordered")
       .attr("width", gridSize)
       .attr("height", gridSize)
-      .attr("transform", "translate("+ margin.left + ","+ margin.top +")")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
       .style("fill", function (d) { return colorScale(d.value); });
 
-      for(let i=0; i< profData.length; i ++){
-        console.log(profData[i].date.getTime());
-        console.log('Date: ' + profData[i].date);
-        console.log('Scale: ' + px(profData[i].date));
-      }
 
-      cards.enter().append("text")
-      .text(function (d) { return d.value;})
+
+    cards.enter().append("text")
+      .text(function (d) { return d.value; })
       .attr("x", function (d) { return px((d.date)) + margin.left; })
       .attr("y", function (d) { return py(d.depth) + margin.top + 15; });
 
-      let legend = this.profileSvg.selectAll(".legend")
+    let legend = this.profileSvg.selectAll(".legend")
       .data([0].concat(colorScale.quantiles()), function (d) { return d.value; }).enter().append("g")
       .attr("class", "legend");
 
     legend.append("rect")
       .attr("x", function (d, i) { return gridSize * i + margin.left; })
       .attr("y", height + margin.top)
-      .attr("width", gridSize  )
+      .attr("width", gridSize)
       .attr("height", gridSize / 3)
       .style("fill", function (d, i) { return colors[i]; });
 
     legend.append("text")
       .attr("class", "mono")
       .text(function (d) { return "≥" + Math.round(d); })
-      .attr("x", function (d, i) { return gridSize  * i + margin.left; })
-      .attr("y", height  + margin.top);
+      .attr("x", function (d, i) { return gridSize * i + margin.left; })
+      .attr("y", height + margin.top);
 
-      legend.exit().remove();
+    legend.exit().remove();
+
+
+
+
+    // density graph test
+    let dx = d3.scaleTime().range([0, (width - margin.left - margin.right)]);
+    let dy = d3.scaleLinear().rangeRound([0, height - margin.top - margin.bottom]);
+
+    dy.domain(d3.extent(profData, function (d) { return d.depth; }));
+    // px.domain(d3.extent(profData, function (d) { return (d.date.getTime()); }));
+    dx.domain([d3.min(profData, function (d) { return d.date.getTime() - 2628000000; }), d3.max(profData, function (d) { return d.date.getTime() + 2628000000; })])
+
+    let profline = d3.line()
+      .x(function (d) { return dx(d.date); })
+      .y(function (d) { return dy(d.depth); });
+
+    this.svg.append("g")
+      .attr("class", "axis")
+      .attr('font-size', '10px')
+      .attr('stroke-width', 0.25)
+      .attr("transform", "translate(" + margin.left + ',' + margin.top + ")")
+      .call(d3.axisTop(dx)).attr('font-size', '10px')
+
+    this.chart.append("g")
+      .call(d3.axisLeft(dy)).attr('font-size', '10px').attr('stroke-width', 0.25)
+      .append("text")
+      .attr("fill", "#000")
+      .attr('font-size', '10px')
+      .attr("transform", "rotate(-90)")
+      .attr("y", 0 - margin.left)
+      .attr("x", 0 - (height / 2))
+      .attr("dy", "1.71em")
+      .attr("text-anchor", "middle")
+      .text("Tiefe [m]");
+
+
+    // let densityData = d3Contour.contourDensity()
+    // .x(function(d) {return dx(d.date.getTime());})
+    // .y(function(d) {return dy(d.depth)+ margin.top;})
+    // .size([width, height- margin.top - margin.bottom])
+    // .bandwidth(5)
+    // (profData);
+
+
+    this.chart.append("path")
+      .datum(profData)
+      .attr("fill", function(d){return colorScale(d.value);})
+      .attr("stroke", "red")
+      .attr("stroke-linejoin", "round")
+      .attr("stroke-linecap", "round")
+      .attr("stroke-width", 1.5)
+      .attr("d", profline);
+console.log(colorScale(profData[0].value));
   }
 
   /**
