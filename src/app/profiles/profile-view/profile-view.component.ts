@@ -437,718 +437,886 @@ export class ProfileViewComponent implements OnInit, AfterViewInit {
     // .attr('width', svgWidth).attr('height', svgHeight);
 
     let profData = [{
-      date: new Date(2019, 1, 10),
+      date: new Date(2019, 0, 3),
+      depth: 0,
+      value: 10.7,
+      color: 'lightblue'
+    },
+    {
+      date: new Date(2019, 0, 3),
+      depth: 2,
+      value: 10.6,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 0, 3),
+      depth: 5,
+      value: 10.6,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 0, 3),
       depth: 10,
-      value: 12.1,
-      color: 'lightblue'
-    },
-    {
-      date: new Date(2019, 1, 10),
-      depth: 12,
-      value: 10.92,
+      value: 10.6,
       color: 'lightblue'
     }, {
-      date: new Date(2019, 1, 10),
-      depth: 14,
-      value: 8.35,
+      date: new Date(2019, 0, 3),
+      depth: 13,
+      value: 10.5,
       color: 'lightblue'
     }, {
-      date: new Date(2019, 1, 10),
+      date: new Date(2019, 0, 3),
       depth: 16,
-      value: 7.04,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 1, 10),
-      depth: 18,
-      value: 6.10,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 1, 10),
-      depth: 20,
-      value: 5.90,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 1, 10),
-      depth: 22,
-      value: 4.63,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 1, 10),
-      depth: 24,
-      value: 3.23,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 1, 10),
-      depth: 26,
-      value: 3.24,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 1, 10),
-      depth: 28,
-      value: 3.13,
-      color: 'orange'
-    },
-    {
-      date: new Date(2019, 1, 10),
-      depth: 30,
-      value: 3.93,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 1, 24),
-      depth: 10,
-      value: 14.1,
-      color: 'lightblue'
-    },
-    {
-      date: new Date(2019, 1, 24),
-      depth: 12,
-      value: 13.92,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 1, 24),
-      depth: 14,
-      value: 12.35,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 1, 24),
-      depth: 16,
-      value: 12.04,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 1, 24),
-      depth: 18,
-      value: 11.10,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 1, 24),
-      depth: 20,
       value: 10.50,
       color: 'lightblue'
     }, {
-      date: new Date(2019, 1, 24),
+      date: new Date(2019, 0, 3),
+      depth: 19,
+      value: 10.6,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 0, 3),
       depth: 22,
-      value: 10.63,
-      color: 'lightblue'
+      value: 10.6,
+      color: 'orange'
     }, {
-      date: new Date(2019, 1, 24),
+      date: new Date(2019, 0, 3),
       depth: 24,
-      value: 9.23,
+      value: 10.6,
       color: 'orange'
     }, {
-      date: new Date(2019, 1, 24),
+      date: new Date(2019, 0, 3),
       depth: 26,
-      value: 8.24,
+      value: 10.6,
       color: 'orange'
+    },
+    {
+      date: new Date(2019, 0, 3),
+      depth: 27,
+      value: 10.6,
+      color: 'orange'
+    }, 
+    {
+      date: new Date(2019, 0, 3),
+      depth: 31,
+      value: 10.5,
+      color: 'orange'
+    },
+    {
+      date: new Date(2019, 0, 3),
+      depth: 33,
+      value: 10.5,
+      color: 'orange'
+    },
+    {
+      date: new Date(2019, 0, 3),
+      depth: 40,
+      value: 10.4,
+      color: 'orange'
+    },
+    
+    {
+      date: new Date(2019, 0, 31),
+      depth: 0.1,
+      value: 12.6,
+      color: 'lightblue'
+    },
+    {
+      date: new Date(2019, 0, 31),
+      depth: 5,
+      value: 12.4,
+      color: 'lightblue'
     }, {
-      date: new Date(2019, 1, 24),
-      depth: 28,
-      value: 7.13,
-      color: 'orange'
-    },
-    {
-      date: new Date(2019, 1, 24),
-      depth: 30,
-      value: 5.93,
-      color: 'orange'
-    },
-    {
-      date: new Date(2019, 2, 10),
+      date: new Date(2019, 0, 31),
+      depth: 7,
+      value: 12.3,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 0, 31),
       depth: 10,
-      value: 13.1,
-      color: 'lightblue'
-    },
-    {
-      date: new Date(2019, 2, 10),
-      depth: 12,
-      value: 11.92,
+      value: 12.2,
       color: 'lightblue'
     }, {
-      date: new Date(2019, 2, 10),
-      depth: 14,
-      value: 10.35,
-      color: 'orange'
+      date: new Date(2019, 0, 31),
+      depth: 13,
+      value: 12.10,
+      color: 'lightblue'
     }, {
-      date: new Date(2019, 2, 10),
+      date: new Date(2019, 0, 31),
       depth: 16,
-      value: 10.04,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 2, 10),
-      depth: 18,
-      value: 7.10,
+      value: 12.10,
       color: 'lightblue'
     }, {
-      date: new Date(2019, 2, 10),
-      depth: 20,
-      value: 8.10,
+      date: new Date(2019, 0, 31),
+      depth: 19,
+      value: 12.0,
       color: 'lightblue'
     }, {
-      date: new Date(2019, 2, 10),
+      date: new Date(2019, 0, 31),
       depth: 22,
-      value: 6.63,
+      value: 11.9,
       color: 'orange'
     }, {
-      date: new Date(2019, 2, 10),
-      depth: 24,
-      value: 5.03,
+      date: new Date(2019, 0, 31),
+      depth: 25,
+      value: 11.9,
       color: 'orange'
     }, {
-      date: new Date(2019, 2, 10),
-      depth: 26,
-      value: 5.04,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 2, 10),
-      depth: 28,
-      value: 5.73,
+      date: new Date(2019, 0, 31),
+      depth: 27,
+      value: 11.8,
       color: 'orange'
     },
     {
-      date: new Date(2019, 2, 10),
+      date: new Date(2019, 0, 31),
       depth: 30,
-      value: 4.93,
+      value: 11.8,
       color: 'orange'
     },
     {
-      date: new Date(2019, 2, 24),
-      depth: 10,
-      value: 12.1,
-      color: 'green'
+      date: new Date(2019, 0, 31),
+      depth: 33,
+      value: 11.8,
+      color: 'orange'
     },
     {
-      date: new Date(2019, 2, 24),
-      depth: 12,
-      value: 10.92,
-      color: 'green'
-    }, {
-      date: new Date(2019, 2, 24),
-      depth: 14,
-      value: 10.35,
+      date: new Date(2019, 0, 31),
+      depth: 36,
+      value: 11.6,
+      color: 'orange'
+    },
+    {
+      date: new Date(2019, 0, 31),
+      depth: 39.5,
+      value: 11.6,
+      color: 'orange'
+    },
+
+    {
+      date: new Date(2019, 2, 3),
+      depth: 0,
+      value: 12.5,
+      color: 'lightblue'
+    },
+    {
+      date: new Date(2019, 2, 3),
+      depth: 3,
+      value: 12.5,
       color: 'lightblue'
     }, {
-      date: new Date(2019, 2, 24),
+      date: new Date(2019, 2, 3),
+      depth: 7,
+      value: 12.4,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 2, 3),
+      depth: 10,
+      value: 12.4,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 2, 3),
+      depth: 12,
+      value: 12.40,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 2, 3),
+      depth: 15,
+      value: 12.30,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 2, 3),
+      depth: 18.1,
+      value: 12.3,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 2, 3),
+      depth: 21,
+      value: 12.3,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 2, 3),
+      depth: 24,
+      value: 12.3,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 2, 3),
+      depth: 29,
+      value: 12.2,
+      color: 'orange'
+    },
+    {
+      date: new Date(2019, 2, 3),
+      depth: 32,
+      value: 12.2,
+      color: 'orange'
+    },
+    {
+      date: new Date(2019, 2, 3),
+      depth: 35,
+      value: 12.1,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 2, 3),
+      depth: 39,
+      value: 12.1,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 2, 3),
+      depth: 39.6,
+      value: 12.0,
+      color: 'orange'
+    },
+
+    {
+      date: new Date(2019, 2, 28),
+      depth: 0.1,
+      value: 13.0,
+      color: 'green'
+    },
+    {
+      date: new Date(2019, 2, 28),
+      depth: 3,
+      value: 13.0,
+      color: 'green'
+    }, {
+      date: new Date(2019, 2, 28),
+      depth: 6,
+      value: 12.9,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 2, 28),
+      depth: 9,
+      value: 12.7,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 2, 28),
+      depth: 11,
+      value: 12.70,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 2, 28),
+      depth: 14,
+      value: 12.50,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 2, 28),
+      depth: 17,
+      value: 12.4,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 2, 28),
+      depth: 20,
+      value: 12.3,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 2, 28),
+      depth: 23,
+      value: 12.2,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 2, 28),
+      depth: 26,
+      value: 12.1,
+      color: 'lightblue'
+    },
+    {
+      date: new Date(2019, 2, 28),
+      depth: 31,
+      value: 12.0,
+      color: 'orange'
+    },   {
+      date: new Date(2019, 2, 28),
+      depth: 37,
+      value: 11.9,
+      color: 'orange'
+    },
+    {
+      date: new Date(2019, 2, 28),
+      depth: 40,
+      value: 11.8,
+      color: 'orange'
+    },
+    {
+      date: new Date(2019, 2, 28),
+      depth: 44.5,
+      value: 11.4,
+      color: 'orange'
+    },
+
+    {
+      date: new Date(2019, 3, 25),
+      depth: 0,
+      value: 12.3,
+      color: 'lightblue'
+    },
+    {
+      date: new Date(2019, 3, 25),
+      depth: 3,
+      value: 12.3,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 3, 25),
+      depth: 6,
+      value: 12.3,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 3, 25),
+      depth: 9,
+      value: 12.2,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 3, 25),
+      depth: 11,
+      value: 12.20,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 3, 25),
+      depth: 12,
+      value: 12.20,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 3, 25),
+      depth: 14,
+      value: 11.9,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 3, 25),
+      depth: 17,
+      value: 11.4,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 3, 25),
+      depth: 20,
+      value: 11.3,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 3, 25),
+      depth: 23,
+      value: 11.1,
+      color: 'orange'
+    },
+    {
+      date: new Date(2019, 3, 25),
+      depth: 26,
+      value: 11.1,
+      color: 'orange'
+    },
+    {
+      date: new Date(2019, 3, 25),
+      depth: 28,
+      value: 11.0,
+      color: 'orange'
+    },
+    {
+      date: new Date(2019, 3, 25),
+      depth: 31,
+      value: 11.0,
+      color: 'orange'
+    },
+    {
+      date: new Date(2019, 3, 25),
+      depth: 34,
+      value: 10.9,
+      color: 'orange'
+    },
+    
+    {
+      date: new Date(2019, 4, 24),
+      depth: 0,
+      value: 10.9,
+      color: 'lightblue'
+    },
+    {
+      date: new Date(2019, 4, 24),
+      depth: 4,
+      value: 12.1,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 4, 24),
+      depth: 7,
+      value: 12.8,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 4, 24),
+      depth: 11,
+      value: 12.0,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 4, 24),
+      depth: 13,
+      value: 11.90,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 4, 24),
+      depth: 15,
+      value: 11.80,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 4, 24),
+      depth: 18,
+      value: 11.3,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 4, 24),
+      depth: 19,
+      value: 11.1,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 4, 24),
+      depth: 21,
+      value: 10.8,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 4, 24),
+      depth: 24,
+      value: 10.5,
+      color: 'orange'
+    },
+    {
+      date: new Date(2019, 4, 24),
+      depth: 25,
+      value: 10.5,
+      color: 'orange'
+    },
+    {
+      date: new Date(2019, 4, 24),
+      depth: 30,
+      value: 10.4,
+      color: 'orange'
+    },
+    {
+      date: new Date(2019, 4, 24),
+      depth: 36,
+      value: 10.3,
+      color: 'orange'
+    },
+    {
+      date: new Date(2019, 4, 24),
+      depth: 39.5,
+      value: 9.5,
+      color: 'orange'
+    },
+
+
+    {
+      date: new Date(2019, 5, 20),
+      depth: 0.1,
+      value: 9.4,
+      color: 'lightblue'
+    },
+    {
+      date: new Date(2019, 5, 20),
+      depth: 5,
+      value: 9.9,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 5, 20),
+      depth: 7,
+      value: 11.8,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 5, 20),
+      depth: 8,
+      value: 12.5,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 5, 20),
+      depth: 9,
+      value: 12.30,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 5, 20),
+      depth: 11,
+      value: 12.0,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 5, 20),
+      depth: 12,
+      value: 12.1,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 5, 20),
+      depth: 14,
+      value: 11.5,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 5, 20),
+      depth: 17,
+      value: 10.6,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 5, 20),
+      depth: 22,
+      value: 9.8,
+      color: 'orange'
+    },
+    {
+      date: new Date(2019, 5, 20),
+      depth: 24,
+      value: 9.6,
+      color: 'orange'
+    },
+    {
+      date: new Date(2019, 5, 20),
+      depth: 28.1,
+      value: 9.5,
+      color: 'orange'
+    },
+    {
+      date: new Date(2019, 5, 20),
+      depth: 34,
+      value: 9.3,
+      color: 'orange'
+    },
+    {
+      date: new Date(2019, 5, 20),
+      depth: 41,
+      value: 7.1,
+      color: 'orange'
+    },
+
+    {
+      date: new Date(2019, 6, 4),
+      depth: 0,
+      value: 9.9,
+      color: 'green'
+    }, {
+      date: new Date(2019, 6, 4),
+      depth: 5,
+      value: 9.9,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 6, 4),
+      depth: 8,
+      value: 11.5,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 6, 4),
+      depth: 14,
+      value: 11.10,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 6, 4),
+      depth: 18,
+      value: 10.20,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 6, 4),
+      depth: 19,
+      value: 10.2,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 6, 4),
+      depth: 21,
+      value: 9.6,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 6, 4),
+      depth: 24,
+      value: 9.2,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 6, 4),
+      depth: 37.5,
+      value: 7.3,
+      color: 'lightblue'
+    },
+    {
+      date: new Date(2019, 6, 4),
+      depth: 41,
+      value: 5.3,
+      color: 'orange'
+    },
+
+
+    {
+      date: new Date(2019, 6, 18),
+      depth: 0,
+      value: 9.7,
+      color: 'lightblue'
+    },
+    {
+      date: new Date(2019, 6, 18),
+      depth: 4,
+      value: 9.7,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 6, 18),
+      depth: 8,
+      value: 11.5,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 6, 18),
+      depth: 9,
+      value: 11.8,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 6, 18),
+      depth: 10,
+      value: 11.7,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 6, 18),
+      depth: 12,
+      value: 11.3,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 6, 18),
+      depth: 15,
+      value: 10.7,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 6, 18),
+      depth: 18,
+      value: 10.2,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 6, 18),
+      depth: 19,
+      value: 10.2,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 6, 18),
+      depth: 21,
+      value: 9.6,
+      color: 'orange'
+    },
+    {
+      date: new Date(2019, 6, 18),
+      depth: 24,
+      value: 9.1,
+      color: 'orange'
+    },
+    {
+      date: new Date(2019, 6, 18),
+      depth: 26,
+      value: 8.5,
+      color: 'orange'
+    },
+    {
+      date: new Date(2019, 6, 18),
+      depth: 32,
+      value: 8.2,
+      color: 'orange'
+    },
+    {
+      date: new Date(2019, 6, 18),
+      depth: 38,
+      value: 6.3,
+      color: 'orange'
+    },
+    
+    {
+      date: new Date(2019, 7, 15),
+      depth: 0,
+      value: 9.4,
+      color: 'lightblue'
+    },
+    {
+      date: new Date(2019, 7, 15),
+      depth: 3,
+      value: 9.4,
+      color: 'lightblue'
+    },
+    {
+      date: new Date(2019, 7, 15),
+      depth: 4,
+      value: 9.7,
+      color: 'lightblue'
+    },
+    {
+      date: new Date(2019, 7, 15),
+      depth: 9,
+      value: 9.6,
+      color: 'lightblue'
+    },
+    {
+      date: new Date(2019, 7, 15),
+      depth: 10,
+      value: 10.9,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 7, 15),
+      depth: 12,
+      value: 10.5,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 7, 15),
+      depth: 13,
+      value: 10.2,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 7, 15),
+      depth: 14,
+      value: 9.80,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 7, 15),
+      depth: 16,
+      value: 9.90,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 7, 15),
+      depth: 17,
+      value: 9.6,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 7, 15),
+      depth: 20,
+      value: 9.1,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 7, 15),
+      depth: 26,
+      value: 7.8,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 7, 15),
+      depth: 32,
+      value: 7.2,
+      color: 'orange'
+    },
+    {
+      date: new Date(2019, 7, 15),
+      depth: 37,
+      value: 5.0,
+      color: 'orange'
+    },
+
+    {
+      date: new Date(2019, 8, 10),
+      depth: 0,
+      value: 9.4,
+      color: 'lightblue'
+    },
+    {
+      date: new Date(2019, 8, 10),
+      depth: 3,
+      value: 9.5,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 8, 10),
+      depth: 7,
+      value: 9.4,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 8, 10),
+      depth: 8,
+      value: 9.04,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 8, 10),
+      depth: 10,
+      value: 9.20,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 8, 10),
+      depth: 11,
+      value: 8.90,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 8, 10),
+      depth: 12,
+      value: 9.5,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 8, 10),
+      depth: 13,
+      value: 10.2,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 8, 10),
+      depth: 14,
+      value: 9.4,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 8, 10),
+      depth: 20,
+      value: 8.3,
+      color: 'orange'
+    },
+    {
+      date: new Date(2019, 8, 10),
+      depth: 23,
+      value: 7.2,
+      color: 'orange'
+    },
+    {
+      date: new Date(2019, 8, 10),
+      depth: 26,
+      value: 6.4,
+      color: 'green'
+    },
+    {
+      date: new Date(2019, 8, 10),
+      depth: 30,
+      value: 5.8,
+      color: 'green'
+    }, {
+      date: new Date(2019, 8, 10),
+      depth: 36.5,
+      value: 4.0,
+      color: 'lightblue'
+    }, 
+    
+    {
+      date: new Date(2019, 8, 24),
       depth: 16,
       value: 6.04,
       color: 'orange'
     }, {
-      date: new Date(2019, 2, 24),
+      date: new Date(2019, 8, 24),
       depth: 18,
       value: 9.10,
       color: 'lightblue'
     }, {
-      date: new Date(2019, 2, 24),
+      date: new Date(2019, 8, 24),
       depth: 20,
       value: 9.80,
       color: 'lightblue'
     }, {
-      date: new Date(2019, 2, 24),
+      date: new Date(2019, 8, 24),
       depth: 22,
       value: 8.63,
       color: 'lightblue'
     }, {
-      date: new Date(2019, 2, 24),
+      date: new Date(2019, 8, 24),
       depth: 24,
       value: 7.93,
       color: 'orange'
     }, {
-      date: new Date(2019, 2, 24),
+      date: new Date(2019, 8, 24),
       depth: 26,
       value: 6.54,
       color: 'lightblue'
     }, {
-      date: new Date(2019, 2, 24),
+      date: new Date(2019, 8, 24),
       depth: 28,
       value: 6.73,
       color: 'lightblue'
     },
     {
-      date: new Date(2019, 2, 24),
-      depth: 30,
-      value: 5.23,
-      color: 'orange'
-    },
-    {
-      date: new Date(2019, 3, 10),
-      depth: 10,
-      value: 12.1,
-      color: 'lightblue'
-    },
-    {
-      date: new Date(2019, 3, 10),
-      depth: 12,
-      value: 10.92,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 3, 10),
-      depth: 14,
-      value: 8.35,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 3, 10),
-      depth: 16,
-      value: 7.04,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 3, 10),
-      depth: 18,
-      value: 6.10,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 3, 10),
-      depth: 20,
-      value: 5.90,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 3, 10),
-      depth: 22,
-      value: 4.63,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 3, 10),
-      depth: 24,
-      value: 3.23,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 3, 10),
-      depth: 26,
-      value: 3.24,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 3, 10),
-      depth: 28,
-      value: 3.13,
-      color: 'orange'
-    },
-    {
-      date: new Date(2019, 3, 10),
-      depth: 30,
-      value: 3.93,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 3, 24),
-      depth: 10,
-      value: 14.1,
-      color: 'lightblue'
-    },
-    {
-      date: new Date(2019, 3, 24),
-      depth: 12,
-      value: 13.92,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 3, 24),
-      depth: 14,
-      value: 12.35,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 3, 24),
-      depth: 16,
-      value: 12.04,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 3, 24),
-      depth: 18,
-      value: 11.10,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 3, 24),
-      depth: 20,
-      value: 10.50,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 3, 24),
-      depth: 22,
-      value: 10.63,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 3, 24),
-      depth: 24,
-      value: 9.23,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 3, 24),
-      depth: 26,
-      value: 8.24,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 3, 24),
-      depth: 28,
-      value: 7.13,
-      color: 'orange'
-    },
-    {
-      date: new Date(2019, 3, 24),
-      depth: 30,
-      value: 5.93,
-      color: 'orange'
-    },
-    {
-      date: new Date(2019, 4, 10),
-      depth: 10,
-      value: 13.1,
-      color: 'lightblue'
-    },
-    {
-      date: new Date(2019, 4, 10),
-      depth: 12,
-      value: 11.92,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 4, 10),
-      depth: 14,
-      value: 10.35,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 4, 10),
-      depth: 16,
-      value: 10.04,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 4, 10),
-      depth: 18,
-      value: 7.10,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 4, 10),
-      depth: 20,
-      value: 8.10,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 4, 10),
-      depth: 22,
-      value: 6.63,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 4, 10),
-      depth: 24,
-      value: 5.03,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 4, 10),
-      depth: 26,
-      value: 5.04,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 4, 10),
-      depth: 28,
-      value: 5.73,
-      color: 'orange'
-    },
-    {
-      date: new Date(2019, 4, 10),
-      depth: 30,
-      value: 4.93,
-      color: 'orange'
-    },
-    {
-      date: new Date(2019, 4, 24),
-      depth: 10,
-      value: 12.1,
-      color: 'green'
-    },
-    {
-      date: new Date(2019, 4, 24),
-      depth: 12,
-      value: 10.92,
-      color: 'green'
-    }, {
-      date: new Date(2019, 4, 24),
-      depth: 14,
-      value: 10.35,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 4, 24),
-      depth: 16,
-      value: 6.04,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 4, 24),
-      depth: 18,
-      value: 9.10,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 4, 24),
-      depth: 20,
-      value: 9.80,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 4, 24),
-      depth: 22,
-      value: 8.63,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 4, 24),
-      depth: 24,
-      value: 7.93,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 4, 24),
-      depth: 26,
-      value: 6.54,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 4, 24),
-      depth: 28,
-      value: 6.73,
-      color: 'lightblue'
-    },
-    {
-      date: new Date(2019, 4, 24),
-      depth: 30,
-      value: 5.23,
-      color: 'orange'
-    },
-    {
-      date: new Date(2019, 5, 10),
-      depth: 10,
-      value: 12.1,
-      color: 'lightblue'
-    },
-    {
-      date: new Date(2019, 5, 10),
-      depth: 12,
-      value: 10.92,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 5, 10),
-      depth: 14,
-      value: 8.35,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 5, 10),
-      depth: 16,
-      value: 7.04,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 5, 10),
-      depth: 18,
-      value: 6.10,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 5, 10),
-      depth: 20,
-      value: 5.90,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 5, 10),
-      depth: 22,
-      value: 4.63,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 5, 10),
-      depth: 24,
-      value: 3.23,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 5, 10),
-      depth: 26,
-      value: 3.24,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 5, 10),
-      depth: 28,
-      value: 3.13,
-      color: 'orange'
-    },
-    {
-      date: new Date(2019, 5, 10),
-      depth: 30,
-      value: 3.93,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 5, 24),
-      depth: 10,
-      value: 14.1,
-      color: 'lightblue'
-    },
-    {
-      date: new Date(2019, 5, 24),
-      depth: 12,
-      value: 13.92,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 5, 24),
-      depth: 14,
-      value: 12.35,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 5, 24),
-      depth: 16,
-      value: 12.04,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 5, 24),
-      depth: 18,
-      value: 11.10,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 5, 24),
-      depth: 20,
-      value: 10.50,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 5, 24),
-      depth: 22,
-      value: 10.63,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 5, 24),
-      depth: 24,
-      value: 9.23,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 5, 24),
-      depth: 26,
-      value: 8.24,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 5, 24),
-      depth: 28,
-      value: 7.13,
-      color: 'orange'
-    },
-    {
-      date: new Date(2019, 5, 24),
-      depth: 30,
-      value: 5.93,
-      color: 'orange'
-    },
-    {
-      date: new Date(2019, 6, 10),
-      depth: 10,
-      value: 13.1,
-      color: 'lightblue'
-    },
-    {
-      date: new Date(2019, 6, 10),
-      depth: 12,
-      value: 11.92,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 6, 10),
-      depth: 14,
-      value: 10.35,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 6, 10),
-      depth: 16,
-      value: 10.04,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 6, 10),
-      depth: 18,
-      value: 7.10,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 6, 10),
-      depth: 20,
-      value: 8.10,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 6, 10),
-      depth: 22,
-      value: 6.63,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 6, 10),
-      depth: 24,
-      value: 5.03,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 6, 10),
-      depth: 26,
-      value: 5.04,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 6, 10),
-      depth: 28,
-      value: 5.73,
-      color: 'orange'
-    },
-    {
-      date: new Date(2019, 6, 10),
-      depth: 30,
-      value: 4.93,
-      color: 'orange'
-    },
-    {
-      date: new Date(2019, 6, 24),
-      depth: 10,
-      value: 12.1,
-      color: 'green'
-    },
-    {
-      date: new Date(2019, 6, 24),
-      depth: 12,
-      value: 10.92,
-      color: 'green'
-    }, {
-      date: new Date(2019, 6, 24),
-      depth: 14,
-      value: 10.35,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 6, 24),
-      depth: 16,
-      value: 6.04,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 6, 24),
-      depth: 18,
-      value: 9.10,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 6, 24),
-      depth: 20,
-      value: 9.80,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 6, 24),
-      depth: 22,
-      value: 8.63,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 6, 24),
-      depth: 24,
-      value: 7.93,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 6, 24),
-      depth: 26,
-      value: 6.54,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 6, 24),
-      depth: 28,
-      value: 6.73,
-      color: 'lightblue'
-    },
-    {
-      date: new Date(2019, 6, 24),
+      date: new Date(2019, 8, 24),
       depth: 30,
       value: 5.23,
       color: 'orange'
     },
     ];
 
-
     let colorNum = 14;
-    // let pchart = this.profile.append('g').attr('transform', 'translate(' + margin.left + "," + margin.top + ")");
-    // let colors = ['#ebeffd','#c7d4fa','#91abf5','#5b82f0','#2559eb','#103bb1'];
     let colors = [
-      '#fdfdff',
-      '#ebeffd',
-      '#d9e2fb',
-      '#c7d4fa',
-      '#b5c6f8',
-      '#a3b9f7',
-      '#91abf5',
-      '#7f9df3',
-      '#6d90f2',
-      '#5b82f0',
-      '#4974ee',
-      '#3767ed',
-      '#2559eb'
+      '#e6194b',
+      '#f58231',
+      '#faaf0c',
+      '#ffe119',
+      '#bcf60c',
+      '#6dcc45',
+      '#44ad17',
+      '#35701c',  
+      '#10614f',    
+      '#008080',  
+      '#4363d8',
+      '#2559eb',
+      '#142f82',
+      
     ];
     let format = d3.timeFormat("%Y%m%d");
 
@@ -1163,7 +1331,7 @@ export class ProfileViewComponent implements OnInit, AfterViewInit {
       .domain([0, colorNum - 1, d3.max(profData, function (d) { return d; })])
       .range(colors);
 
-    py.domain(d3.extent(profData, function (d) { return d.depth; }));
+    py.domain([d3.min(profData, function (d) { return d.depth; }),d3.max(profData, function (d) { return d.depth + 10; })] );
     // px.domain(d3.extent(profData, function (d) { return (d.date.getTime()); }));
     px.domain([d3.min(profData, function (d) { return d.date.getTime() - 2628000000; }), d3.max(profData, function (d) { return d.date.getTime() + 2628000000; })])
 
@@ -1190,20 +1358,20 @@ export class ProfileViewComponent implements OnInit, AfterViewInit {
     cards.enter().append("rect")
       .attr("x", function (d) { return px((d.date.getTime())); })
       .attr("y", function (d) { return py(d.depth); })
-      .attr("rx", 4)
-      .attr("ry", 4)
+      .attr("rx", 2)
+      .attr("ry",2)
       .attr("class", "prof bordered")
-      .attr("width", gridSize)
+      .attr("width", gridSize*2)
       .attr("height", gridSize)
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
       .style("fill", function (d) { return colorScale(d.value); });
 
 
 
-    cards.enter().append("text")
-      .text(function (d) { return d.value; })
-      .attr("x", function (d) { return px((d.date)) + margin.left; })
-      .attr("y", function (d) { return py(d.depth) + margin.top + 15; });
+    // cards.enter().append("text")
+    //   .text(function (d) { return d.value; })
+    //   .attr("x", function (d) { return px((d.date)) + margin.left; })
+    //   .attr("y", function (d) { return py(d.depth) + margin.top + 15; });
 
     let legend = this.profileSvg.selectAll(".legend")
       .data([0].concat(colorScale.quantiles()), function (d) { return d.value; }).enter().append("g")
@@ -1227,17 +1395,199 @@ export class ProfileViewComponent implements OnInit, AfterViewInit {
 
 
 
+    let testDat_1 = [{
+      date: new Date(2019, 7, 15),
+      depth: 0,
+      value: 9.4,
+      color: 'lightblue'
+    },
+    {
+      date: new Date(2019, 7, 15),
+      depth: 3,
+      value: 9.4,
+      color: 'lightblue'
+    },
+    {
+      date: new Date(2019, 7, 15),
+      depth: 4,
+      value: 9.7,
+      color: 'lightblue'
+    },
+    {
+      date: new Date(2019, 7, 15),
+      depth: 9,
+      value: 9.6,
+      color: 'lightblue'
+    },
+    {
+      date: new Date(2019, 7, 15),
+      depth: 10,
+      value: 10.9,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 7, 15),
+      depth: 12,
+      value: 10.5,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 7, 15),
+      depth: 13,
+      value: 10.2,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 7, 15),
+      depth: 14,
+      value: 9.80,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 7, 15),
+      depth: 16,
+      value: 9.90,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 7, 15),
+      depth: 17,
+      value: 9.6,
+      color: 'lightblue'
+    }, {
+      date: new Date(2019, 7, 15),
+      depth: 20,
+      value: 9.1,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 7, 15),
+      depth: 26,
+      value: 7.8,
+      color: 'orange'
+    }, {
+      date: new Date(2019, 7, 15),
+      depth: 32,
+      value: 7.2,
+      color: 'orange'
+    },
+    {
+      date: new Date(2019, 7, 15),
+      depth: 37,
+      value: 5.0,
+      color: 'orange'
+    },];
+    
+    let testDat_2 =[
+      {
+        date: new Date(2019, 6, 18),
+        depth: 0,
+        value: 9.7,
+        color: 'lightblue'
+      },
+      {
+        date: new Date(2019, 6, 18),
+        depth: 4,
+        value: 9.7,
+        color: 'lightblue'
+      }, {
+        date: new Date(2019, 6, 18),
+        depth: 8,
+        value: 11.5,
+        color: 'lightblue'
+      }, {
+        date: new Date(2019, 6, 18),
+        depth: 9,
+        value: 11.8,
+        color: 'lightblue'
+      }, {
+        date: new Date(2019, 6, 18),
+        depth: 10,
+        value: 11.7,
+        color: 'lightblue'
+      }, {
+        date: new Date(2019, 6, 18),
+        depth: 12,
+        value: 11.3,
+        color: 'lightblue'
+      }, {
+        date: new Date(2019, 6, 18),
+        depth: 15,
+        value: 10.7,
+        color: 'lightblue'
+      }, {
+        date: new Date(2019, 6, 18),
+        depth: 18,
+        value: 10.2,
+        color: 'orange'
+      }, {
+        date: new Date(2019, 6, 18),
+        depth: 19,
+        value: 10.2,
+        color: 'orange'
+      }, {
+        date: new Date(2019, 6, 18),
+        depth: 21,
+        value: 9.6,
+        color: 'orange'
+      },
+      {
+        date: new Date(2019, 6, 18),
+        depth: 24,
+        value: 9.1,
+        color: 'orange'
+      },
+      {
+        date: new Date(2019, 6, 18),
+        depth: 26,
+        value: 8.5,
+        color: 'orange'
+      },
+      {
+        date: new Date(2019, 6, 18),
+        depth: 32,
+        value: 8.2,
+        color: 'orange'
+      },
+      {
+        date: new Date(2019, 6, 18),
+        depth: 38,
+        value: 6.3,
+        color: 'orange'
+      },
+    ];
+
+
+
     // density graph test
     let dx = d3.scaleTime().range([0, (width - margin.left - margin.right)]);
     let dy = d3.scaleLinear().rangeRound([0, height - margin.top - margin.bottom]);
 
-    dy.domain(d3.extent(profData, function (d) { return d.depth; }));
-    // px.domain(d3.extent(profData, function (d) { return (d.date.getTime()); }));
-    dx.domain([d3.min(profData, function (d) { return d.date.getTime() - 2628000000; }), d3.max(profData, function (d) { return d.date.getTime() + 2628000000; })])
+    let max1 = d3.max(testDat_1, function (d) { return d.depth; })
+    let max2 = d3.max(testDat_2, function (d) { return d.depth; })
 
-    let profline = d3.line()
-      .x(function (d) { return dx(d.date); })
-      .y(function (d) { return dy(d.depth); });
+    let min1 = d3.min(testDat_1, function (d) { return d.depth; })
+    let min2 = d3.min(testDat_2, function (d) { return d.depth; })
+
+    if(max1 < max2 && min1 < min2){
+      dy.domain([min1,max2]);
+    }
+    else if(max1< max2 && min1 > min2){
+      dy.domain([min2,max2]);
+    }
+    else if(max1> max2 && min1 < min2){
+      dy.domain([min1,max1]);
+    }
+    else{
+      dy.domain([min2,max1]);
+    }
+ 
+    if(testDat_1[0].date.getTime() < testDat_2[0].date.getTime()){
+      dx.domain([d3.min(testDat_1, function (d) { return d.date.getTime() - 2628000000; }), d3.max(testDat_2, function (d) { return d.date.getTime() + 2628000000; })])
+    }else{
+      dx.domain([d3.min(testDat_2, function (d) { return d.date.getTime() - 2628000000; }), d3.max(testDat_1, function (d) { return d.date.getTime() + 2628000000; })])
+    }
+ 
+
+    const area = d3.area()
+    .x((d, i) => dx(d.date.getTime()))
+    .y1(d => dy(d.depth))
+    .y0(dy(0))
+    .curve(d3.curveCatmullRom);
 
     this.svg.append("g")
       .attr("class", "axis")
@@ -1266,16 +1616,33 @@ export class ProfileViewComponent implements OnInit, AfterViewInit {
     // .bandwidth(5)
     // (profData);
 
+  // this.chart.append("path")
+  // .datum(profData)
+  // .attr("fill", 'blue')
+  // .attr("stroke", "red")
+  // .attr("stroke-linejoin", "round")
+  // .attr("stroke-linecap", "round")
+  // .attr("stroke-width", 1.5)
+  // .attr("d",  profline);
 
-    this.chart.append("path")
-      .datum(profData)
-      .attr("fill", function(d){return colorScale(d.value);})
-      .attr("stroke", "red")
-      .attr("stroke-linejoin", "round")
-      .attr("stroke-linecap", "round")
-      .attr("stroke-width", 1.5)
-      .attr("d", profline);
-console.log(colorScale(profData[0].value));
+  this.chart.append("path")
+  .datum(testDat_1)
+  .attr("fill", (d,i)=> colorScale(d.value))
+  .attr("stroke", 'red')
+  .attr("stroke-linejoin", "round")
+  .attr("stroke-linecap", "round")
+  .attr("stroke-width", 1.5)
+  .attr("d",  area);
+
+  this.chart.append("path")
+  .datum(testDat_2)
+  .attr("fill", (d,i)=> colorScale(d.value))
+  .attr("stroke",'red')
+  .attr("stroke-linejoin", "round")
+  .attr("stroke-linecap", "round")
+  .attr("stroke-width", 1.5)
+  .attr("d",  area);
+
   }
 
   /**
