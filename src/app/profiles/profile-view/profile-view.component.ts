@@ -1,9 +1,30 @@
-import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, HostListener, AfterViewInit } from '@angular/core';
 import { CsvDataService } from 'src/app/settings/csvData.service';
 import * as d3 from 'd3';
-import * as d3Contour from 'd3-contour';
-import { AfterViewInit } from '@angular/core/src/metadata/lifecycle_hooks';
+import Plotly from 'plotly.js-dist';
+import { interpolate } from '@angular/core/src/view/util';
+
 const itemsPerPage = 10;
+const colorRgb = [
+  'rgb(230,25,75)',
+  'rgb(245,130,49)',
+  'rgb(250,175,12)',
+  'rgb(255,255,0)',
+  'rgb(188,246,12)',
+  'rgb(109,204,69)',
+  'rgb(0,255,0)',
+  'rgb(53,112,28)',
+  'rgb(16,97,79)',
+  'rgb(0,255,216)',
+  'rgb(51,102,255)',
+  'rgb(37,89,235)',
+  'rgb(0,51,255)',
+];
+const svgWidth = 1100, svgHeight = 850;
+const margin = { top: 50, right: 20, bottom: 50, left: 40 };
+const width = svgWidth - margin.left - margin.right;
+const height = svgHeight - margin.top - margin.bottom;
+
 
 export interface BwlDataset {
   LIMSAuftrag: string,
@@ -16,8 +37,14 @@ export interface BwlDataset {
   Wert: string,
   uom: string,
 }
-const svgWidth = 1100, svgHeight = 850;
-const margin = { top: 50, right: 20, bottom: 50, left: 40 };
+
+export interface InterDataset {
+  date: Date,
+  depth: number,
+  value: number,
+
+}
+
 
 @Component({
   selector: 'wv-profile-view',
@@ -50,17 +77,43 @@ export class ProfileViewComponent implements OnInit, AfterViewInit {
   public pchart: any;
   public profile: any;
   public profileSvg: any;
+  public dataset: InterDataset[] = [];
+  public responseInterp: string;
+  public InterArr: string[];
+  public oxyEntries = [];
+  public maxDepth: number[] = [];
+  public measureDates: Date[] = [];
+  public plot;
+  public fixed: boolean = true;
+  public even: boolean = false;
+
+
+
+  //input parameters:
+  private num_iso = 15;
+  private size_iso = 1; // Abstand zwischen Isolinien
+  private start_iso = 1;
+  private end_iso = 15;
+  public selectMeasureParam: string = 'Sauerstoff [mg/l]';
+  private dam_label = 'Dhünn-Talsperre BojeA'
+  private reversedColor = false;
+  private year = 2004//new Date().getFullYear() - 1;
+  public measureParams = ['Sauerstoff [mg/l]', "Temperatur C°", "ph-Wert", "Chlorophyll [yg/l]", "Leitfähigkeit [yS/cm]", "Trübung [TEF]"];
+  public defaultDate: Date = new Date(new Date().getFullYear() - 1, 0, 1);
+  public selDate: Date[] = [new Date(this.year, 0, 1), new Date(this.year, 1, 1), new Date(this.year, 2, 1), new Date(this.year, 3, 1),
+  new Date(this.year, 4, 1), new Date(this.year, 5, 1), new Date(this.year, 6, 1), new Date(this.year, 7, 1),
+  new Date(this.year, 8, 1), new Date(this.year, 9, 1), new Date(this.year, 10, 1), new Date(this.year, 11, 1)];
+  public autocontourPara = false;
 
   constructor(protected csvService: CsvDataService) {
-    // this.headers = csvService.getHeaders();
-    // this.entries = csvService.getCsvDatasets();
     this.responseText = csvService.getCsvText();
+    this.responseInterp = csvService.getInterpText();
   }
 
   ngOnInit() {
     let csvRecordsArray = this.responseText.split(/\r\n|\n/);
+    let csvInterArray = this.responseInterp.split(/\r\n|\n/);
 
-    //  let header = csvRecordsArray[0].split(';');
     let header = ['LIMSAuftrag', 'Probe', 'Probenahme', 'coordX', 'coordY', 'entnahmeStelle', 'externeBez', 'Wert', 'uom'];
     for (let j = 0; j < header.length; j++) {
       this.headers.push(header[j]);
@@ -89,7 +142,6 @@ export class ProfileViewComponent implements OnInit, AfterViewInit {
 
     }
     this.entry = this.entries.slice(0, 10);
-    //  console.log(this.entry);
     for (let p = 0; p < this.entry.length; p++) {
       this.bwlData.push({
         LIMSAuftrag: this.entry[p][0],
@@ -103,9 +155,39 @@ export class ProfileViewComponent implements OnInit, AfterViewInit {
         uom: this.entry[p][9],
       });
     }
-    // console.log(this.bwlData);
 
+    for (let k = 1; k < csvInterArray.length; k++) {
+      this.InterArr = csvInterArray[k].split(';'); // Zeilen
+      let col = [];
+      for (let i = 0; i < this.InterArr.length; i++) {
+        col.push(this.InterArr[i]); //Spalten
+        /**
+          * 0 = Datum
+          * 1 = Tiefe
+          * 2 = Werte
+          * 3 = Werte
+          * 4 = ...
+          */
+      }
+      this.oxyEntries.push(col);
 
+    }
+    for (let p = 0; p < this.oxyEntries.length; p++) {
+
+      this.dataset.push({
+        date: new Date(this.oxyEntries[p][0].split('.')[2], this.oxyEntries[p][0].split('.')[1] - 1, this.oxyEntries[p][0].split('.')[0]),
+        depth: this.oxyEntries[p][1],
+        value: this.oxyEntries[p][2],
+      });
+      if (p > 0 && new Date(this.oxyEntries[p][0].split('.')[2], this.oxyEntries[p][0].split('.')[1] - 1, this.oxyEntries[p][0].split('.')[0]).getTime() >
+        new Date(this.oxyEntries[p - 1][0].split('.')[2], this.oxyEntries[p - 1][0].split('.')[1] - 1, this.oxyEntries[p - 1][0].split('.')[0]).getTime()) {
+        this.maxDepth.push(this.oxyEntries[p - 1][1]);
+        this.measureDates.push(new Date(this.oxyEntries[p - 1][0].split('.')[2], this.oxyEntries[p - 1][0].split('.')[1] - 1, this.oxyEntries[p - 1][0].split('.')[0]));
+      }
+    }
+    let length = this.oxyEntries.length - 1;
+    this.maxDepth.push(this.oxyEntries[length][1]);
+    this.measureDates.push(new Date(this.oxyEntries[length][0].split('.')[2], this.oxyEntries[length][0].split('.')[1] - 1, this.oxyEntries[length][0].split('.')[0]));
   }
 
   ngAfterViewInit(): void {
@@ -120,57 +202,60 @@ export class ProfileViewComponent implements OnInit, AfterViewInit {
     this.chart = this.svg.append('g')
       .attr('transform', 'translate(' + margin.left + "," + margin.top + ")");
 
-    this.profile = d3.select("#profileGraph").append("div")
-      .style('width', '100%')
-      .style('height', '100%')
-      .classed("svg-container", true)
 
-    this.profileSvg = this.profile.append("svg")
-      .attr('width', svgWidth)
-      .attr('height', svgHeight);
+    document.forms.item(0).addEventListener("click", listener => {
 
-    this.pchart = this.profileSvg.append('g')
-      .attr('transform', 'translate(' + margin.left + "," + margin.top + ")");
+      if (document.forms.item(0).elements["iso"].value == "fixed") {
 
-    this.createProfileViews();
+
+        this.fixed = this.fixed;
+        this.even = !this.fixed
+        document.getElementById("numIso").setAttribute("disabled", "disabled");
+        document.getElementById("distIso").removeAttribute("disabled");
+        this.autocontourPara = !this.autocontourPara;
+
+      }
+      else {
+        this.even = this.even;
+        this.fixed = !this.even;
+        document.getElementById("numIso").removeAttribute('disabled');
+        document.getElementById("distIso").setAttribute("disabled", "disabled");
+        this.autocontourPara = !this.autocontourPara;
+
+      }
+    });
+
+    this.createDepthView();
   }
-
+  public changeMeasureParam(param: string) {
+    this.selectMeasureParam = param;
+  }
+  public changeFromDate(fromDate: Date) {
+    this.defaultDate = fromDate;
+  }
 
   public calculateWidth(): number {
     return this.svg.node().width.baseVal.value - margin.left - margin.right;
   }
 
-
   public calculateHeight(): number {
     return (this.d3Elem.nativeElement as HTMLElement).clientHeight - margin.top - margin.bottom;
   }
-
-
   protected onResize(): void {
-    this.createProfileViews();
+    this.createDepthView();
   }
+  public createDepthView() {
 
-  public createProfileViews() {
-
-
-
-    // .classed("svg-content-responsive", true);
-    // .attr('width', svgWidth).attr('height', svgHeight);
-    // .attr("preserveAspectRatio", "xMinYMin meet")
-    // .attr("viewBox", '0 0 ' + svgWidth + ' ' + svgHeight)
-    // let width = this.calculateWidth();
-    // let height = this.calculateHeight();
-
-    let width = svgWidth - margin.left - margin.right;
-    let height = svgHeight - margin.top - margin.bottom;
-    if (width < 0) {
-      width = 1200;
+    let reWidth = this.calculateWidth();
+    let reHeight = this.calculateHeight();
+    if (reWidth < 0) {
+      reWidth = width;
     }
     this.chart.selectAll('*').remove();
-    this.pchart.selectAll('*').remove();
+    // this.pchart.selectAll('*').remove();
     this.svg.selectAll('.axis').remove();
-    this.profileSvg.selectAll('.axis').remove();
-    this.profileSvg.selectAll('.legend').remove();
+    // this.profileSvg.selectAll('.axis').remove();
+    // this.profileSvg.selectAll('.legend').remove();
     let data = [{
       depth: 10,
       value: 8.1
@@ -247,8 +332,8 @@ export class ProfileViewComponent implements OnInit, AfterViewInit {
     },
     ];
 
-    let x = d3.scaleLinear().rangeRound([width, 0]);
-    let y = d3.scaleLinear().rangeRound([0, height]);
+    let x = d3.scaleLinear().rangeRound([reWidth, 0]);
+    let y = d3.scaleLinear().rangeRound([0, reHeight]);
 
     let line = d3.line()
       .x(function (d) { return x(d.value); })
@@ -259,145 +344,173 @@ export class ProfileViewComponent implements OnInit, AfterViewInit {
       .x(function (d) { return x(d.value); })
       .y(function (d) { return y(d.depth); });
 
-    // let div = d3.select("#d3Graph").append("div")
-    //   .attr("class", "tooltip")
-    //   .style("opacity", 0);
+    let div = d3.select("#d3Graph").append("div")
+      .attr("class", "tooltip")
+      .style("opacity", 0);
 
-    // y.domain(d3.extent(data, function (d) { return d.depth }));
+    y.domain(d3.extent(data, function (d) { return d.depth }));
 
-    // let chart = this.svg.append('g').attr('transform', 'translate(' + margin.left + "," + margin.top + ")");
+    let chart = this.svg.append('g').attr('transform', 'translate(' + margin.left + "," + margin.top + ")");
 
-    // let d3Max = d3.max(data, function (d) { return d.value }) as number;
-    // let d3MaxSec = d3.max(secData, function (d) { return d.value }) as number;
+    let d3Max = d3.max(data, function (d) { return d.value }) as number;
+    let d3MaxSec = d3.max(secData, function (d) { return d.value }) as number;
 
-    // let max = Math.max(d3Max, d3MaxSec);
+    let max = Math.max(d3Max, d3MaxSec);
 
-    // x.domain([max, 0]);
-    // this.svg.append("g")
-    //   .attr("class", "axis")
-    //   .attr('font-size', '10px')
-    //   .attr('stroke-width', 0.25)
-    //   .attr("transform", "translate(" + margin.left + ',' + margin.top + ")")
-    //   .call(d3.axisTop(x)).attr('font-size', '10px')
+    x.domain([max, 0]);
+    this.svg.append("g")
+      .attr("class", "axis")
+      .attr('font-size', '10px')
+      .attr('stroke-width', 0.25)
+      .attr("transform", "translate(" + margin.left + ',' + margin.top + ")")
+      .call(d3.axisTop(x)).attr('font-size', '10px')
 
-    // // gridlines in y axis function
-    // function make_y_gridlines() {
-    //   return d3.axisLeft(y)
-    //     .ticks(4)
-    // }
-    // // add the Y gridlines
-    // this.chart.append("g")
-    //   .attr("class", "grid")
-    //   .attr('opacity', 0.5)
-    //   .attr('stroke-width', 0.25)
-    //   .call(make_y_gridlines()
-    //     .tickSize(-width)
-    //     .tickFormat("")
-    //   );
+    // gridlines in y axis function
+    function make_y_gridlines() {
+      return d3.axisLeft(y)
+        .ticks(4)
+    }
+    // add the Y gridlines
+    this.chart.append("g")
+      .attr("class", "grid")
+      .attr('opacity', 0.5)
+      .attr('stroke-width', 0.25)
+      .call(make_y_gridlines()
+        .tickSize(-reWidth)
+        .tickFormat("")
+      );
 
-    // // gridlines in y axis function
-    // function make_x_gridlines() {
-    //   return d3.axisLeft(x)
-    //     .ticks(1)
-    // }
-    // // add the Y gridlines
-    // this.chart.append("g")
-    //   .attr("class", "xgrid")
-    //   .attr('opacity', 0.5)
-    //   .attr('stroke-width', 0.25)
-    //   .attr("transform", "translate(" + width + ',' + 0 + ")")
-    //   .call(make_x_gridlines()
-    //     .tickSize(height)
-    //     .tickFormat("")
-    //   );
+    // gridlines in y axis function
+    function make_x_gridlines() {
+      return d3.axisLeft(x)
+        .ticks(1)
+    }
+    // add the Y gridlines
+    this.chart.append("g")
+      .attr("class", "xgrid")
+      .attr('opacity', 0.5)
+      .attr('stroke-width', 0.25)
+      .attr("transform", "translate(" + reWidth + ',' + 0 + ")")
+      .call(make_x_gridlines()
+        .tickSize(reHeight)
+        .tickFormat("")
+      );
 
-    // this.chart.append('path')
-    //   .datum(data)
-    //   .attr("fill", "none")
-    //   .attr("stroke", "red")
-    //   .attr("stroke-linejoin", "round")
-    //   .attr("stroke-linecap", "round")
-    //   .attr("stroke-width", 0.5)
-    //   .attr('d', line);
+    this.chart.append('path')
+      .datum(data)
+      .attr("fill", "none")
+      .attr("stroke", "red")
+      .attr("stroke-linejoin", "round")
+      .attr("stroke-linecap", "round")
+      .attr("stroke-width", 0.5)
+      .attr('d', line);
 
-    // this.chart.append('path')
-    //   .datum(secData)
-    //   .attr("fill", "none")
-    //   .attr("stroke", "blue")
-    //   .attr("stroke-linejoin", "round")
-    //   .attr("stroke-linecap", "round")
-    //   .attr("stroke-width", 0.5)
-    //   .attr('d', secLine);
+    this.chart.append('path')
+      .datum(secData)
+      .attr("fill", "none")
+      .attr("stroke", "blue")
+      .attr("stroke-linejoin", "round")
+      .attr("stroke-linecap", "round")
+      .attr("stroke-width", 0.5)
+      .attr('d', secLine);
 
-    // this.chart.append("g")
-    //   .call(d3.axisLeft(y)).attr('font-size', '10px').attr('stroke-width', 0.25)
-    //   .append("text")
-    //   .attr("fill", "#000")
-    //   .attr('font-size', '10px')
-    //   .attr("transform", "rotate(-90)")
-    //   .attr("y", 0 - margin.left)
-    //   .attr("x", 0 - (height / 2))
-    //   .attr("dy", "1.71em")
-    //   .attr("text-anchor", "middle")
-    //   .text("Tiefe [m]");
+    this.chart.append("g")
+      .call(d3.axisLeft(y)).attr('font-size', '10px').attr('stroke-width', 0.25)
+      .append("text")
+      .attr("fill", "#000")
+      .attr('font-size', '10px')
+      .attr("transform", "rotate(-90)")
+      .attr("y", 0 - margin.left)
+      .attr("x", 0 - (reHeight / 2))
+      .attr("dy", "1.71em")
+      .attr("text-anchor", "middle")
+      .text("Tiefe [m]");
 
-    // let dots = this.chart.selectAll("dot")
-    //   .data(secData)
-    //   .enter().append("circle")
-    //   .attr("opacity", 0.5)
-    //   .attr("stroke", 'blue')
-    //   .attr("cursor", "pointer")
-    //   .attr("fill", "blue")
-    //   .attr("id", 'dots')
-    //   .attr("r", 1.0)
-    //   .attr("cx", function (d) { return x(d.value); })
-    //   .attr("cy", function (d) { return y(d.depth); })
-    //   .on("mouseover", function (d) {
-    //     div.transition()
-    //       .duration(200)
-    //       .style("opacity", .9);
-    //     div.html('Chlorophyll: ' + d.value + ' [µg/l]')
-    //       .style("left", (d3.event.pageX) + "px")
-    //       .style("top", (d3.event.pageY - 28) + "px")
-    //       .style("border", "0px")
-    //       .style("border-radius", "8px")
-    //       .style("background", "lightsteelblue")
-    //       .style("text-align", "center");
-    //   })
-    //   .on("mouseout", function (d) {
-    //     div.transition()
-    //       .duration(500)
-    //       .style("opacity", 0);
-    //   });
+    let dots = this.chart.selectAll("dot")
+      .data(secData)
+      .enter().append("circle")
+      .attr("opacity", 0.5)
+      .attr("stroke", 'blue')
+      .attr("cursor", "pointer")
+      .attr("fill", "blue")
+      .attr("id", 'dots')
+      .attr("r", 1.0)
+      .attr("cx", function (d) { return x(d.value); })
+      .attr("cy", function (d) { return y(d.depth); })
+      .on("mouseover", function (d) {
+        div.transition()
+          .duration(200)
+          .style("opacity", .9);
+        div.html('Chlorophyll: ' + d.value + ' [µg/l]')
+          .style("left", (d3.event.pageX) + "px")
+          .style("top", (d3.event.pageY - 28) + "px")
+          .style("border", "0px")
+          .style("border-radius", "8px")
+          .style("background", "lightsteelblue")
+          .style("text-align", "center");
+      })
+      .on("mouseout", function (d) {
+        div.transition()
+          .duration(500)
+          .style("opacity", 0);
+      });
 
-    // let secdots = this.chart.selectAll("dot")
-    //   .data(data)
-    //   .enter().append("circle")
-    //   .attr("opacity", 0.5)
-    //   .attr("stroke", 'red')
-    //   .attr("cursor", "pointer")
-    //   .attr("fill", "red")
-    //   .attr("id", 'dots')
-    //   .attr("r", 1.0)
-    //   .attr("cx", function (d) { return x(d.value); })
-    //   .attr("cy", function (d) { return y(d.depth); })
-    //   .on("mouseover", function (d) {
-    //     div.transition()
-    //       .duration(200)
-    //       .style("opacity", .9);
-    //     div.html('Temperatur: ' + d.value + ' [C°]')
-    //       .style("left", (d3.event.pageX) + "px")
-    //       .style("top", (d3.event.pageY - 28) + "px")
-    //       .style("border", "0px")
-    //       .style("border-radius", "8px")
-    //       .style("background", "lightsteelblue")
-    //       .style("text-align", "center");
-    //   })
-    //   .on("mouseout", function (d) {
-    //     div.transition()
-    //       .duration(500)
-    //       .style("opacity", 0);
-    //   });
+    let secdots = this.chart.selectAll("dot")
+      .data(data)
+      .enter().append("circle")
+      .attr("opacity", 0.5)
+      .attr("stroke", 'red')
+      .attr("cursor", "pointer")
+      .attr("fill", "red")
+      .attr("id", 'dots')
+      .attr("r", 1.0)
+      .attr("cx", function (d) { return x(d.value); })
+      .attr("cy", function (d) { return y(d.depth); })
+      .on("mouseover", function (d) {
+        div.transition()
+          .duration(200)
+          .style("opacity", .9);
+        div.html('Temperatur: ' + d.value + ' [C°]')
+          .style("left", (d3.event.pageX) + "px")
+          .style("top", (d3.event.pageY - 28) + "px")
+          .style("border", "0px")
+          .style("border-radius", "8px")
+          .style("background", "lightsteelblue")
+          .style("text-align", "center");
+      })
+      .on("mouseout", function (d) {
+        div.transition()
+          .duration(500)
+          .style("opacity", 0);
+      });
+  }
+
+  // set Definitions for Isoplethen diagram and create Graph
+  public createIsoPlot() {
+
+    this.num_iso = document.forms.item(1).elements["numIso"].value; 
+    this.size_iso = document.forms.item(2).elements["distIso"].value;
+
+    this.createProfileViews();
+  }
+
+
+  /**
+   * set up Isoplethen diagram
+   */
+  public createProfileViews() {
+
+    if (this.plot != undefined) {
+      Plotly.purge("myDiv");
+    }
+
+    // .classed("svg-content-responsive", true);
+    // .attr('width', svgWidth).attr('height', svgHeight);
+    // .attr("preserveAspectRatio", "xMinYMin meet")
+    // .attr("viewBox", '0 0 ' + svgWidth + ' ' + svgHeight)
+    // let width = this.calculateWidth();
+    // let height = this.calculateHeight();
+
 
 
     // let xr = d3.scaleLinear().rangeRound([0, width]);
@@ -436,1212 +549,201 @@ export class ProfileViewComponent implements OnInit, AfterViewInit {
     //   .classed("svg-content-responsive", true);
     // .attr('width', svgWidth).attr('height', svgHeight);
 
-    let profData = [{
-      date: new Date(2019, 0, 3),
-      depth: 0,
-      value: 10.7,
-      color: 'lightblue'
-    },
-    {
-      date: new Date(2019, 0, 3),
-      depth: 2,
-      value: 10.6,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 0, 3),
-      depth: 5,
-      value: 10.6,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 0, 3),
-      depth: 10,
-      value: 10.6,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 0, 3),
-      depth: 13,
-      value: 10.5,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 0, 3),
-      depth: 16,
-      value: 10.50,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 0, 3),
-      depth: 19,
-      value: 10.6,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 0, 3),
-      depth: 22,
-      value: 10.6,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 0, 3),
-      depth: 24,
-      value: 10.6,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 0, 3),
-      depth: 26,
-      value: 10.6,
-      color: 'orange'
-    },
-    {
-      date: new Date(2019, 0, 3),
-      depth: 27,
-      value: 10.6,
-      color: 'orange'
-    }, 
-    {
-      date: new Date(2019, 0, 3),
-      depth: 31,
-      value: 10.5,
-      color: 'orange'
-    },
-    {
-      date: new Date(2019, 0, 3),
-      depth: 33,
-      value: 10.5,
-      color: 'orange'
-    },
-    {
-      date: new Date(2019, 0, 3),
-      depth: 40,
-      value: 10.4,
-      color: 'orange'
-    },
-    
-    {
-      date: new Date(2019, 0, 31),
-      depth: 0.1,
-      value: 12.6,
-      color: 'lightblue'
-    },
-    {
-      date: new Date(2019, 0, 31),
-      depth: 5,
-      value: 12.4,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 0, 31),
-      depth: 7,
-      value: 12.3,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 0, 31),
-      depth: 10,
-      value: 12.2,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 0, 31),
-      depth: 13,
-      value: 12.10,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 0, 31),
-      depth: 16,
-      value: 12.10,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 0, 31),
-      depth: 19,
-      value: 12.0,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 0, 31),
-      depth: 22,
-      value: 11.9,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 0, 31),
-      depth: 25,
-      value: 11.9,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 0, 31),
-      depth: 27,
-      value: 11.8,
-      color: 'orange'
-    },
-    {
-      date: new Date(2019, 0, 31),
-      depth: 30,
-      value: 11.8,
-      color: 'orange'
-    },
-    {
-      date: new Date(2019, 0, 31),
-      depth: 33,
-      value: 11.8,
-      color: 'orange'
-    },
-    {
-      date: new Date(2019, 0, 31),
-      depth: 36,
-      value: 11.6,
-      color: 'orange'
-    },
-    {
-      date: new Date(2019, 0, 31),
-      depth: 39.5,
-      value: 11.6,
-      color: 'orange'
-    },
-
-    {
-      date: new Date(2019, 2, 3),
-      depth: 0,
-      value: 12.5,
-      color: 'lightblue'
-    },
-    {
-      date: new Date(2019, 2, 3),
-      depth: 3,
-      value: 12.5,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 2, 3),
-      depth: 7,
-      value: 12.4,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 2, 3),
-      depth: 10,
-      value: 12.4,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 2, 3),
-      depth: 12,
-      value: 12.40,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 2, 3),
-      depth: 15,
-      value: 12.30,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 2, 3),
-      depth: 18.1,
-      value: 12.3,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 2, 3),
-      depth: 21,
-      value: 12.3,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 2, 3),
-      depth: 24,
-      value: 12.3,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 2, 3),
-      depth: 29,
-      value: 12.2,
-      color: 'orange'
-    },
-    {
-      date: new Date(2019, 2, 3),
-      depth: 32,
-      value: 12.2,
-      color: 'orange'
-    },
-    {
-      date: new Date(2019, 2, 3),
-      depth: 35,
-      value: 12.1,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 2, 3),
-      depth: 39,
-      value: 12.1,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 2, 3),
-      depth: 39.6,
-      value: 12.0,
-      color: 'orange'
-    },
-
-    {
-      date: new Date(2019, 2, 28),
-      depth: 0.1,
-      value: 13.0,
-      color: 'green'
-    },
-    {
-      date: new Date(2019, 2, 28),
-      depth: 3,
-      value: 13.0,
-      color: 'green'
-    }, {
-      date: new Date(2019, 2, 28),
-      depth: 6,
-      value: 12.9,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 2, 28),
-      depth: 9,
-      value: 12.7,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 2, 28),
-      depth: 11,
-      value: 12.70,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 2, 28),
-      depth: 14,
-      value: 12.50,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 2, 28),
-      depth: 17,
-      value: 12.4,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 2, 28),
-      depth: 20,
-      value: 12.3,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 2, 28),
-      depth: 23,
-      value: 12.2,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 2, 28),
-      depth: 26,
-      value: 12.1,
-      color: 'lightblue'
-    },
-    {
-      date: new Date(2019, 2, 28),
-      depth: 31,
-      value: 12.0,
-      color: 'orange'
-    },   {
-      date: new Date(2019, 2, 28),
-      depth: 37,
-      value: 11.9,
-      color: 'orange'
-    },
-    {
-      date: new Date(2019, 2, 28),
-      depth: 40,
-      value: 11.8,
-      color: 'orange'
-    },
-    {
-      date: new Date(2019, 2, 28),
-      depth: 44.5,
-      value: 11.4,
-      color: 'orange'
-    },
-
-    {
-      date: new Date(2019, 3, 25),
-      depth: 0,
-      value: 12.3,
-      color: 'lightblue'
-    },
-    {
-      date: new Date(2019, 3, 25),
-      depth: 3,
-      value: 12.3,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 3, 25),
-      depth: 6,
-      value: 12.3,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 3, 25),
-      depth: 9,
-      value: 12.2,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 3, 25),
-      depth: 11,
-      value: 12.20,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 3, 25),
-      depth: 12,
-      value: 12.20,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 3, 25),
-      depth: 14,
-      value: 11.9,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 3, 25),
-      depth: 17,
-      value: 11.4,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 3, 25),
-      depth: 20,
-      value: 11.3,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 3, 25),
-      depth: 23,
-      value: 11.1,
-      color: 'orange'
-    },
-    {
-      date: new Date(2019, 3, 25),
-      depth: 26,
-      value: 11.1,
-      color: 'orange'
-    },
-    {
-      date: new Date(2019, 3, 25),
-      depth: 28,
-      value: 11.0,
-      color: 'orange'
-    },
-    {
-      date: new Date(2019, 3, 25),
-      depth: 31,
-      value: 11.0,
-      color: 'orange'
-    },
-    {
-      date: new Date(2019, 3, 25),
-      depth: 34,
-      value: 10.9,
-      color: 'orange'
-    },
-    
-    {
-      date: new Date(2019, 4, 24),
-      depth: 0,
-      value: 10.9,
-      color: 'lightblue'
-    },
-    {
-      date: new Date(2019, 4, 24),
-      depth: 4,
-      value: 12.1,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 4, 24),
-      depth: 7,
-      value: 12.8,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 4, 24),
-      depth: 11,
-      value: 12.0,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 4, 24),
-      depth: 13,
-      value: 11.90,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 4, 24),
-      depth: 15,
-      value: 11.80,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 4, 24),
-      depth: 18,
-      value: 11.3,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 4, 24),
-      depth: 19,
-      value: 11.1,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 4, 24),
-      depth: 21,
-      value: 10.8,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 4, 24),
-      depth: 24,
-      value: 10.5,
-      color: 'orange'
-    },
-    {
-      date: new Date(2019, 4, 24),
-      depth: 25,
-      value: 10.5,
-      color: 'orange'
-    },
-    {
-      date: new Date(2019, 4, 24),
-      depth: 30,
-      value: 10.4,
-      color: 'orange'
-    },
-    {
-      date: new Date(2019, 4, 24),
-      depth: 36,
-      value: 10.3,
-      color: 'orange'
-    },
-    {
-      date: new Date(2019, 4, 24),
-      depth: 39.5,
-      value: 9.5,
-      color: 'orange'
-    },
 
 
-    {
-      date: new Date(2019, 5, 20),
-      depth: 0.1,
-      value: 9.4,
-      color: 'lightblue'
-    },
-    {
-      date: new Date(2019, 5, 20),
-      depth: 5,
-      value: 9.9,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 5, 20),
-      depth: 7,
-      value: 11.8,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 5, 20),
-      depth: 8,
-      value: 12.5,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 5, 20),
-      depth: 9,
-      value: 12.30,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 5, 20),
-      depth: 11,
-      value: 12.0,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 5, 20),
-      depth: 12,
-      value: 12.1,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 5, 20),
-      depth: 14,
-      value: 11.5,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 5, 20),
-      depth: 17,
-      value: 10.6,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 5, 20),
-      depth: 22,
-      value: 9.8,
-      color: 'orange'
-    },
-    {
-      date: new Date(2019, 5, 20),
-      depth: 24,
-      value: 9.6,
-      color: 'orange'
-    },
-    {
-      date: new Date(2019, 5, 20),
-      depth: 28.1,
-      value: 9.5,
-      color: 'orange'
-    },
-    {
-      date: new Date(2019, 5, 20),
-      depth: 34,
-      value: 9.3,
-      color: 'orange'
-    },
-    {
-      date: new Date(2019, 5, 20),
-      depth: 41,
-      value: 7.1,
-      color: 'orange'
-    },
+    // let legend = this.profileSvg.selectAll(".legend")
+    //   .data([0].concat(colorScale.quantiles()), function (d) { return d.value; }).enter().append("g")
+    //   .attr("class", "legend");
 
-    {
-      date: new Date(2019, 6, 4),
-      depth: 0,
-      value: 9.9,
-      color: 'green'
-    }, {
-      date: new Date(2019, 6, 4),
-      depth: 5,
-      value: 9.9,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 6, 4),
-      depth: 8,
-      value: 11.5,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 6, 4),
-      depth: 14,
-      value: 11.10,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 6, 4),
-      depth: 18,
-      value: 10.20,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 6, 4),
-      depth: 19,
-      value: 10.2,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 6, 4),
-      depth: 21,
-      value: 9.6,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 6, 4),
-      depth: 24,
-      value: 9.2,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 6, 4),
-      depth: 37.5,
-      value: 7.3,
-      color: 'lightblue'
-    },
-    {
-      date: new Date(2019, 6, 4),
-      depth: 41,
-      value: 5.3,
-      color: 'orange'
-    },
+    // legend.append("rect")
+    //   .attr("x", function (d, i) { return gridSize * i + margin.left; })
+    //   .attr("y", height + margin.top)
+    //   .attr("width", gridSize)
+    //   .attr("height", gridSize / 3)
+    //   .style("fill", function (d, i) { return colors[i]; });
 
+    // legend.append("text")
+    //   .attr("class", "mono")
+    //   .text(function (d) { return "≥" + Math.round(d); })
+    //   .attr("x", function (d, i) { return gridSize * i + margin.left; })
+    //   .attr("y", height + margin.top);
 
-    {
-      date: new Date(2019, 6, 18),
-      depth: 0,
-      value: 9.7,
-      color: 'lightblue'
-    },
-    {
-      date: new Date(2019, 6, 18),
-      depth: 4,
-      value: 9.7,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 6, 18),
-      depth: 8,
-      value: 11.5,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 6, 18),
-      depth: 9,
-      value: 11.8,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 6, 18),
-      depth: 10,
-      value: 11.7,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 6, 18),
-      depth: 12,
-      value: 11.3,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 6, 18),
-      depth: 15,
-      value: 10.7,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 6, 18),
-      depth: 18,
-      value: 10.2,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 6, 18),
-      depth: 19,
-      value: 10.2,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 6, 18),
-      depth: 21,
-      value: 9.6,
-      color: 'orange'
-    },
-    {
-      date: new Date(2019, 6, 18),
-      depth: 24,
-      value: 9.1,
-      color: 'orange'
-    },
-    {
-      date: new Date(2019, 6, 18),
-      depth: 26,
-      value: 8.5,
-      color: 'orange'
-    },
-    {
-      date: new Date(2019, 6, 18),
-      depth: 32,
-      value: 8.2,
-      color: 'orange'
-    },
-    {
-      date: new Date(2019, 6, 18),
-      depth: 38,
-      value: 6.3,
-      color: 'orange'
-    },
-    
-    {
-      date: new Date(2019, 7, 15),
-      depth: 0,
-      value: 9.4,
-      color: 'lightblue'
-    },
-    {
-      date: new Date(2019, 7, 15),
-      depth: 3,
-      value: 9.4,
-      color: 'lightblue'
-    },
-    {
-      date: new Date(2019, 7, 15),
-      depth: 4,
-      value: 9.7,
-      color: 'lightblue'
-    },
-    {
-      date: new Date(2019, 7, 15),
-      depth: 9,
-      value: 9.6,
-      color: 'lightblue'
-    },
-    {
-      date: new Date(2019, 7, 15),
-      depth: 10,
-      value: 10.9,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 7, 15),
-      depth: 12,
-      value: 10.5,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 7, 15),
-      depth: 13,
-      value: 10.2,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 7, 15),
-      depth: 14,
-      value: 9.80,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 7, 15),
-      depth: 16,
-      value: 9.90,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 7, 15),
-      depth: 17,
-      value: 9.6,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 7, 15),
-      depth: 20,
-      value: 9.1,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 7, 15),
-      depth: 26,
-      value: 7.8,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 7, 15),
-      depth: 32,
-      value: 7.2,
-      color: 'orange'
-    },
-    {
-      date: new Date(2019, 7, 15),
-      depth: 37,
-      value: 5.0,
-      color: 'orange'
-    },
-
-    {
-      date: new Date(2019, 8, 10),
-      depth: 0,
-      value: 9.4,
-      color: 'lightblue'
-    },
-    {
-      date: new Date(2019, 8, 10),
-      depth: 3,
-      value: 9.5,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 8, 10),
-      depth: 7,
-      value: 9.4,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 8, 10),
-      depth: 8,
-      value: 9.04,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 8, 10),
-      depth: 10,
-      value: 9.20,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 8, 10),
-      depth: 11,
-      value: 8.90,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 8, 10),
-      depth: 12,
-      value: 9.5,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 8, 10),
-      depth: 13,
-      value: 10.2,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 8, 10),
-      depth: 14,
-      value: 9.4,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 8, 10),
-      depth: 20,
-      value: 8.3,
-      color: 'orange'
-    },
-    {
-      date: new Date(2019, 8, 10),
-      depth: 23,
-      value: 7.2,
-      color: 'orange'
-    },
-    {
-      date: new Date(2019, 8, 10),
-      depth: 26,
-      value: 6.4,
-      color: 'green'
-    },
-    {
-      date: new Date(2019, 8, 10),
-      depth: 30,
-      value: 5.8,
-      color: 'green'
-    }, {
-      date: new Date(2019, 8, 10),
-      depth: 36.5,
-      value: 4.0,
-      color: 'lightblue'
-    }, 
-    
-    {
-      date: new Date(2019, 8, 24),
-      depth: 16,
-      value: 6.04,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 8, 24),
-      depth: 18,
-      value: 9.10,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 8, 24),
-      depth: 20,
-      value: 9.80,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 8, 24),
-      depth: 22,
-      value: 8.63,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 8, 24),
-      depth: 24,
-      value: 7.93,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 8, 24),
-      depth: 26,
-      value: 6.54,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 8, 24),
-      depth: 28,
-      value: 6.73,
-      color: 'lightblue'
-    },
-    {
-      date: new Date(2019, 8, 24),
-      depth: 30,
-      value: 5.23,
-      color: 'orange'
-    },
-    ];
-
-    let colorNum = 14;
-    let colors = [
-      '#e6194b',
-      '#f58231',
-      '#faaf0c',
-      '#ffe119',
-      '#bcf60c',
-      '#6dcc45',
-      '#44ad17',
-      '#35701c',  
-      '#10614f',    
-      '#008080',  
-      '#4363d8',
-      '#2559eb',
-      '#142f82',
-      
-    ];
-    let format = d3.timeFormat("%Y%m%d");
-
-    let gridSize = Math.floor(width / 13);
-
-
-    let px = d3.scaleTime().range([0, (width - margin.left - margin.right)]);
-    let py = d3.scaleLinear().rangeRound([0, height - margin.top - margin.bottom]);
-
-    let cards = this.profileSvg.selectAll(".prof").data(profData);
-    let colorScale = d3.scaleQuantile()
-      .domain([0, colorNum - 1, d3.max(profData, function (d) { return d; })])
-      .range(colors);
-
-    py.domain([d3.min(profData, function (d) { return d.depth; }),d3.max(profData, function (d) { return d.depth + 10; })] );
-    // px.domain(d3.extent(profData, function (d) { return (d.date.getTime()); }));
-    px.domain([d3.min(profData, function (d) { return d.date.getTime() - 2628000000; }), d3.max(profData, function (d) { return d.date.getTime() + 2628000000; })])
-
-
-    this.profileSvg.append("g")
-      .attr("class", "axis")
-      .attr('font-size', '10px')
-      .attr('stroke-width', 0.25)
-      .attr("transform", "translate(" + margin.left + ',' + margin.top + ")")
-      .call(d3.axisTop(px)).attr('font-size', '10px')
-
-    this.pchart.append("g")
-      .call(d3.axisLeft(py)).attr('font-size', '10px').attr('stroke-width', 0.25)
-      .append("text")
-      .attr("fill", "#000")
-      .attr('font-size', '10px')
-      .attr("transform", "rotate(-90)")
-      .attr("y", 0 - margin.left)
-      .attr("x", 0 - (height / 2) - gridSize)
-      .attr("dy", "1.71em")
-      .attr("text-anchor", "middle")
-      .text("Tiefe [m]");
-
-    cards.enter().append("rect")
-      .attr("x", function (d) { return px((d.date.getTime())); })
-      .attr("y", function (d) { return py(d.depth); })
-      .attr("rx", 2)
-      .attr("ry",2)
-      .attr("class", "prof bordered")
-      .attr("width", gridSize*2)
-      .attr("height", gridSize)
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-      .style("fill", function (d) { return colorScale(d.value); });
+    // legend.exit().remove();
 
 
 
-    // cards.enter().append("text")
-    //   .text(function (d) { return d.value; })
-    //   .attr("x", function (d) { return px((d.date)) + margin.left; })
-    //   .attr("y", function (d) { return py(d.depth) + margin.top + 15; });
-
-    let legend = this.profileSvg.selectAll(".legend")
-      .data([0].concat(colorScale.quantiles()), function (d) { return d.value; }).enter().append("g")
-      .attr("class", "legend");
-
-    legend.append("rect")
-      .attr("x", function (d, i) { return gridSize * i + margin.left; })
-      .attr("y", height + margin.top)
-      .attr("width", gridSize)
-      .attr("height", gridSize / 3)
-      .style("fill", function (d, i) { return colors[i]; });
-
-    legend.append("text")
-      .attr("class", "mono")
-      .text(function (d) { return "≥" + Math.round(d); })
-      .attr("x", function (d, i) { return gridSize * i + margin.left; })
-      .attr("y", height + margin.top);
-
-    legend.exit().remove();
-
-
-
-
-    let testDat_1 = [{
-      date: new Date(2019, 7, 15),
-      depth: 0,
-      value: 9.4,
-      color: 'lightblue'
-    },
-    {
-      date: new Date(2019, 7, 15),
-      depth: 3,
-      value: 9.4,
-      color: 'lightblue'
-    },
-    {
-      date: new Date(2019, 7, 15),
-      depth: 4,
-      value: 9.7,
-      color: 'lightblue'
-    },
-    {
-      date: new Date(2019, 7, 15),
-      depth: 9,
-      value: 9.6,
-      color: 'lightblue'
-    },
-    {
-      date: new Date(2019, 7, 15),
-      depth: 10,
-      value: 10.9,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 7, 15),
-      depth: 12,
-      value: 10.5,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 7, 15),
-      depth: 13,
-      value: 10.2,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 7, 15),
-      depth: 14,
-      value: 9.80,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 7, 15),
-      depth: 16,
-      value: 9.90,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 7, 15),
-      depth: 17,
-      value: 9.6,
-      color: 'lightblue'
-    }, {
-      date: new Date(2019, 7, 15),
-      depth: 20,
-      value: 9.1,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 7, 15),
-      depth: 26,
-      value: 7.8,
-      color: 'orange'
-    }, {
-      date: new Date(2019, 7, 15),
-      depth: 32,
-      value: 7.2,
-      color: 'orange'
-    },
-    {
-      date: new Date(2019, 7, 15),
-      depth: 37,
-      value: 5.0,
-      color: 'orange'
-    },];
-    
-    let testDat_2 =[
-      {
-        date: new Date(2019, 6, 18),
-        depth: 0,
-        value: 9.7,
-        color: 'lightblue'
-      },
-      {
-        date: new Date(2019, 6, 18),
-        depth: 4,
-        value: 9.7,
-        color: 'lightblue'
-      }, {
-        date: new Date(2019, 6, 18),
-        depth: 8,
-        value: 11.5,
-        color: 'lightblue'
-      }, {
-        date: new Date(2019, 6, 18),
-        depth: 9,
-        value: 11.8,
-        color: 'lightblue'
-      }, {
-        date: new Date(2019, 6, 18),
-        depth: 10,
-        value: 11.7,
-        color: 'lightblue'
-      }, {
-        date: new Date(2019, 6, 18),
-        depth: 12,
-        value: 11.3,
-        color: 'lightblue'
-      }, {
-        date: new Date(2019, 6, 18),
-        depth: 15,
-        value: 10.7,
-        color: 'lightblue'
-      }, {
-        date: new Date(2019, 6, 18),
-        depth: 18,
-        value: 10.2,
-        color: 'orange'
-      }, {
-        date: new Date(2019, 6, 18),
-        depth: 19,
-        value: 10.2,
-        color: 'orange'
-      }, {
-        date: new Date(2019, 6, 18),
-        depth: 21,
-        value: 9.6,
-        color: 'orange'
-      },
-      {
-        date: new Date(2019, 6, 18),
-        depth: 24,
-        value: 9.1,
-        color: 'orange'
-      },
-      {
-        date: new Date(2019, 6, 18),
-        depth: 26,
-        value: 8.5,
-        color: 'orange'
-      },
-      {
-        date: new Date(2019, 6, 18),
-        depth: 32,
-        value: 8.2,
-        color: 'orange'
-      },
-      {
-        date: new Date(2019, 6, 18),
-        depth: 38,
-        value: 6.3,
-        color: 'orange'
-      },
-    ];
-
-
-
-    // density graph test
-    let dx = d3.scaleTime().range([0, (width - margin.left - margin.right)]);
-    let dy = d3.scaleLinear().rangeRound([0, height - margin.top - margin.bottom]);
-
-    let max1 = d3.max(testDat_1, function (d) { return d.depth; })
-    let max2 = d3.max(testDat_2, function (d) { return d.depth; })
-
-    let min1 = d3.min(testDat_1, function (d) { return d.depth; })
-    let min2 = d3.min(testDat_2, function (d) { return d.depth; })
-
-    if(max1 < max2 && min1 < min2){
-      dy.domain([min1,max2]);
+    // split dataset in x, y and z values
+    let x_dates = [], y_depths = [], z_value = [];
+    let p_evaluate = []
+    for (let i = 0; i < this.dataset.length; i++) {
+      x_dates.push(this.dataset[i].date);
+      y_depths.push(this.dataset[i].depth);
+      z_value.push(this.dataset[i].value);
+      // p_evaluate.push([profData[i].date.getTime(), profData[i].depth])
     }
-    else if(max1< max2 && min1 > min2){
-      dy.domain([min2,max2]);
+
+    // interpolate values
+    let coord = [];
+    let dataArray = [x_dates, y_depths, z_value];
+
+    for (let i in x_dates) {
+      coord.push([x_dates[i], y_depths[i], z_value[i]]);
     }
-    else if(max1> max2 && min1 < min2){
-      dy.domain([min1,max1]);
+    let interpolatorArray = [];
+    for (let i = 0, k = 1; i < coord.length; i++ , k++) {
+
+      if (dataArray[1][k] >= 20)
+        interpolatorArray.push(d3.interpolateObject(coord[i], [dataArray[0][k], dataArray[1][k], dataArray[2][k]]));
     }
-    else{
-      dy.domain([min2,max1]);
+    for (let j = 0; j < interpolatorArray.length; j++) {
+      let interpH = interpolatorArray[j](0.5);
+
+      x_dates.push(interpH[0]);
+      y_depths.push(Math.round(interpH[1]));
+      z_value.push(interpH[2]);
     }
- 
-    if(testDat_1[0].date.getTime() < testDat_2[0].date.getTime()){
-      dx.domain([d3.min(testDat_1, function (d) { return d.date.getTime() - 2628000000; }), d3.max(testDat_2, function (d) { return d.date.getTime() + 2628000000; })])
-    }else{
-      dx.domain([d3.min(testDat_2, function (d) { return d.date.getTime() - 2628000000; }), d3.max(testDat_1, function (d) { return d.date.getTime() + 2628000000; })])
+
+    //second interpolation
+    let coord2 = [];
+    let dataArray2 = [x_dates, y_depths, z_value];
+    for (let i in x_dates) {
+      coord2.push([x_dates[i], y_depths[i], z_value[i]]);
     }
- 
+    let interpolatorArray2 = [];
+    for (let i = 0, k = 1; i < coord.length; i++ , k++) {
+      if (dataArray[1][k] >= 20)
+        interpolatorArray2.push(d3.interpolateObject(coord2[i], [dataArray2[0][k], dataArray2[1][k], dataArray2[2][k]]));
+    }
+    for (let j = 0; j < interpolatorArray2.length; j++) {
+      let interpH = interpolatorArray2[j](0.5);
 
-    const area = d3.area()
-    .x((d, i) => dx(d.date.getTime()))
-    .y1(d => dy(d.depth))
-    .y0(dy(0))
-    .curve(d3.curveCatmullRom);
+      x_dates.push(interpH[0]);
+      y_depths.push(Math.round(interpH[1]));
+      z_value.push(interpH[2]);
+    }
 
-    this.svg.append("g")
-      .attr("class", "axis")
-      .attr('font-size', '10px')
-      .attr('stroke-width', 0.25)
-      .attr("transform", "translate(" + margin.left + ',' + margin.top + ")")
-      .call(d3.axisTop(dx)).attr('font-size', '10px')
+    if (this.selectMeasureParam == "Sauerstoff [mg/l]") {
+      this.reversedColor = false;
+    }
+    else {
+      this.reversedColor = true;
+    }
+    console.log(this.autocontourPara);
 
-    this.chart.append("g")
-      .call(d3.axisLeft(dy)).attr('font-size', '10px').attr('stroke-width', 0.25)
-      .append("text")
-      .attr("fill", "#000")
-      .attr('font-size', '10px')
-      .attr("transform", "rotate(-90)")
-      .attr("y", 0 - margin.left)
-      .attr("x", 0 - (height / 2))
-      .attr("dy", "1.71em")
-      .attr("text-anchor", "middle")
-      .text("Tiefe [m]");
+    /**
+     * define dataset for isoplethen graph
+     * by defining z,x and y values and coloring and contour definitions
+     */
+    let contourData = {
+      z: z_value,
+      x: x_dates,
+      y: y_depths,
+      type: 'contour',
+      colorscale: [[0, colorRgb[0]], [0.25, colorRgb[3]], [0.45, colorRgb[6]]
+        , [0.65, colorRgb[9]], [0.85, colorRgb[10]], [1, colorRgb[12]]],
 
+      autocontour: this.autocontourPara,
+      ncontours: this.num_iso,
+      contours: {
+        start: this.start_iso,
+        end: this.end_iso,
+        size: this.size_iso,
+        showlines: false,
+      },
+      colorbar: {
+        title: this.selectMeasureParam,
+        titleside: 'right',
+        titlefont: {
+          size: 14,
+          family: 'Arial, sans-serif'
+        },
+      },
+      reversescale: this.reversedColor,
+    };
 
-    // let densityData = d3Contour.contourDensity()
-    // .x(function(d) {return dx(d.date.getTime());})
-    // .y(function(d) {return dy(d.depth)+ margin.top;})
-    // .size([width, height- margin.top - margin.bottom])
-    // .bandwidth(5)
-    // (profData);
+    /**
+     * draw borderline for ground surface
+     */
+    let borderLine = {
+      x: this.measureDates,
+      y: this.maxDepth,
+      type: 'scatter',
+      marker: {
+        size: 1
+      },
+      line: {
+        width: 10,
+        color: 'grey'
+      },
+      hoverinfo: 'none',
+      showlegend: false,
+    };
 
-  // this.chart.append("path")
-  // .datum(profData)
-  // .attr("fill", 'blue')
-  // .attr("stroke", "red")
-  // .attr("stroke-linejoin", "round")
-  // .attr("stroke-linecap", "round")
-  // .attr("stroke-width", 1.5)
-  // .attr("d",  profline);
+    /**
+     *  fill space between graph and borderline of ground
+     */
+    let groundTruth_Values = [];
+    for (let k in this.measureDates) {
+      groundTruth_Values.push(d3.max(this.maxDepth))
+    }
+    let groundTruth = {
+      x: this.measureDates,
+      y: groundTruth_Values,
+      type: 'scatter',
+      fill: 'tonexty',
+      marker: {
+        size: 0.1
+      },
+      fillcolor: 'white',
+      line: {
+        width: 0,
+        color: 'white'
+      },
+      showlegend: false,
+      hoverinfo: 'none',
+    };
 
-  this.chart.append("path")
-  .datum(testDat_1)
-  .attr("fill", (d,i)=> colorScale(d.value))
-  .attr("stroke", 'red')
-  .attr("stroke-linejoin", "round")
-  .attr("stroke-linecap", "round")
-  .attr("stroke-width", 1.5)
-  .attr("d",  area);
+    /**
+     * set layout of isoplethen graph
+     */
+    var layout = {
+      title: this.dam_label + " " + this.year,
+      xaxis: {
+        side: 'top',
+        tickmode: 'auto',
+        nticks: 12,
+        range: [new Date(this.year, 0, 1), new Date(this.year, 11, 31)],
+        type: 'date'
+      },
+      yaxis: {
+        title: 'Tiefe [m]',
+        autorange: 'reversed',
+      },
+      font: {
+        size: 14
+      }
+    };
 
-  this.chart.append("path")
-  .datum(testDat_2)
-  .attr("fill", (d,i)=> colorScale(d.value))
-  .attr("stroke",'red')
-  .attr("stroke-linejoin", "round")
-  .attr("stroke-linecap", "round")
-  .attr("stroke-width", 1.5)
-  .attr("d",  area);
+    /**
+     * set config parameters for plotly modeBar
+     */
+    var config = {
+      toImageButtonOptions: {
+        format: 'png',
+        height: height,
+        width: width,
+      },
+      displayModeBar: true,
+      responsive: true,
+      modeBarButtonsToRemove: ['select2d', 'lasso2d', 'hoverClosestCartesian', 'hoverCompareCartesian', 'toggleSpikelines']
+    };
+
+    /**
+     * define dataset and draw isoplethen graph
+     */
+    let plotlyData = [contourData, borderLine, groundTruth];
+    this.plot = Plotly.newPlot('myDiv', plotlyData, layout, config);
+
 
   }
 

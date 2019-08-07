@@ -48,3 +48,20 @@ export const dataPromise = new Promise((resolve, reject)=>{
   };
   input.send();
 });
+export let oxyData: string = '';
+export const OxyDataPromise = new Promise((resolve, reject)=>{
+ const input_ = new XMLHttpRequest();
+ input_.open('GET', './assets/Dh_BojeA_Sauerst_2004.csv');
+  input_.onload = (e)=>{
+    if(input_.status === 200){
+        oxyData = input_.responseText;
+
+      resolve(oxyData);
+      
+    }
+    else{
+      reject('Cannot load csv file');
+    }
+  };
+  input_.send();
+});
