@@ -127,18 +127,18 @@ export class WvDataViewComponent implements OnInit, OnDestroy {
       layers: 'OSM-WMS', format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>', className: 'OSM'
     });
 
-    this.testLayer = esri.dynamicMapLayer({
-      url: 'https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/SampleWorldCities/MapServer',
-      layers: [0], opacity: 0.25
-     } );
+    // this.testLayer = esri.dynamicMapLayer({
+    //   url: 'https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/SampleWorldCities/MapServer',
+    //   layers: [0], opacity: 0.25
+    //  } );
     this.baseMaps.set('timeMap',
       {
         label: 'Open Street Map', visible: true, layer: this.baseLayer
   });
-  this.baseMaps.set('ServerTestMap',
-  {
-    label: 'ServerTest Map', visible: true, layer: this.testLayer
-});
+//   this.baseMaps.set('ServerTestMap',
+//   {
+//     label: 'ServerTest Map', visible: true, layer: this.testLayer
+// });
 
 }
   public onDatasetSelected(datasets: IDataset[]) {
