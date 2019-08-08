@@ -2,12 +2,14 @@
   <table class="table" id="bwlTable">
     <thead>
       <tr>
-          <th *ngFor="let header of headers; let i = index" (click)="sortTable(i)">{{header}}</th>
+        <th *ngFor="let header of headers; let i = index" (click)="sortTable(i)">{{header}}</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let e of bwlData">
-        <td *ngFor="let value of headers"><label>{{e[value]}}</label></td>
+        <td *ngFor="let value of headers">
+          <label>{{e[value]}}</label>
+        </td>
       </tr>
     </tbody>
   </table>
@@ -16,20 +18,70 @@
       <li class="page-item disabled">
         <a class="page-link" href="#" tabindex="-1">Previous</a>
       </li>
-      <li class="page-item active"><a class="page-link" href="#">1<span class="sr-only">(current)</span></a></li>
+      <li class="page-item active">
+        <a class="page-link" href="#">1
+          <span class="sr-only">(current)</span>
+        </a>
+      </li>
       <li class="page-item">
         <a class="page-link" href="#">2 </a>
       </li>
-      <li class="page-item"><a class="page-link" href="#">3</a></li>
+      <li class="page-item">
+        <a class="page-link" href="#">3</a>
+      </li>
       <li class="page-item">
         <a class="page-link" href="#">Next</a>
       </li>
     </ul>
   </nav>
   <!-- <img src="assets/images/profil.jpg"> -->
-  <div style="height: 800px;">
-<figure id="d3Graph">
+  <div style="height: 800px;" #d3Graph>
+    <figure id="d3Graph" #depthGraph>
+
+    </figure>
+    <!-- <figure id="profileGraph" #profileGraph>
   
-</figure>
+</figure> -->
+    <div id="selectionMenu" style="width: 500px; height: 500px; position: relative;">
+      Parameter:
+      <br>
+      <div class="btn-group">
+        <button id="parameter" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true"
+          aria-expanded="false">{{selectMeasureParam}}</button>
+        <div class="dropdown-menu" aria-labelledby="parameter">
+          <button class="dropdown-item" *ngFor="let param of measureParams; let i = index" (click)="changeMeasureParam(param)">{{param}}</button>
+        </div>
+      </div>  <br>
+      Startdatum:
+      <br>
+      <div class="btn-group">
+      <button id="from" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{defaultDate| date: 'mediumDate' }}</button>
+      <div class="dropdown-menu" aria-labelledby="from">
+        <button class="dropdown-item" *ngFor="let fromDate of selDate; let i = index" (click)="changeFromDate(fromDate)">{{fromDate| date: 'mediumDate' }}</button>
+      </div>
+    </div>
+      <br> Isolinien:
+      <form id="isoline">
+        <input type="radio" name="iso" value="fixed" checked> fester Abstand
+        <br>
+        <input type="radio" name="iso" value="even"> gleichm. verteilt
+        <br>
+      </form>
+      <br> Anzahl Isolinien:
+      <br>
+      <form>
+        <input type="number" id="numIso" disabled>
+      </form>
+      <br> Abstand Isolinien:
+      <br>
+      <form>
+        <input type="number" id="distIso">
+      </form>
+      <br>
+      <button type="button" (click)="createIsoPlot()">Erstellen</button>
+    </div>
+    <div style="height: 800px; width: 70%;" #d3Graph>
+      <div id="myDiv" style="width: 100%; height: 100%"></div>
+    </div>
   </div>
 </div>

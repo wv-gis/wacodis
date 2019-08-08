@@ -31,7 +31,6 @@ import { WvChangeDetectionModule } from 'src/app/change-detection/change-detecti
 import { DatasetEmitServiceService } from 'src/app/services/dataset-emit-service.service';
 import { WeatherForecastComponent } from './weather/weather-forecast/weather-forecast.component';
 import { CsvDataService } from 'src/app/settings/csvData.service';
-import {HighchartsChartModule} from 'highcharts-angular';
 import { ComparisonSelectionService } from 'src/app/services/comparison-selection.service';
 import { RequestTokenService } from 'src/app/services/request-token.service';
 
@@ -69,7 +68,6 @@ import { RequestTokenService } from 'src/app/services/request-token.service';
     WvProfilesModule,
     WvReportsModule,
     WvChangeDetectionModule,
-    HighchartsChartModule,  
     AppRoutingModule,
   ],
   providers: [

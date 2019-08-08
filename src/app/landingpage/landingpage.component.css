@@ -25,10 +25,10 @@
     font-size: 20px;
 }
 .backgroundImage .view {
-    width: 300px;
-    height: 150px;
-    top: 250px;
-    margin: auto;
+    width: 350px;
+    height: 250px;
+    top: 150px;
+    margin: 10px;
     padding: 10px;
     background-color: #384c92;   
 }
@@ -49,14 +49,18 @@ h1 {
     word-wrap: break-word;
     background-clip: border-box;
     border: 1px solid rgba(0, 0, 0, 0.125);
-    border-radius: 0.25rem
+    border-radius: 0.25rem;
+    color: white;
 }
+/* .view h5{
+    text-align: center;
+} */
 .btn-primary.round{
     border-radius: 50%;
     background-color: #384c92;   
 }
 .backgroundImage p {
-    margin-top: 250px;
+    margin-top: 125px;
     margin-left: 185px;
 }
 .backgroundImage .card-body{
@@ -69,6 +73,7 @@ h1 {
 .btn.btn-success{
     background-color: #718296;
     border-color: #718296;
+    font-size: 14px;
 }
 li{
     list-style: none;

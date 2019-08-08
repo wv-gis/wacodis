@@ -1,5 +1,5 @@
 .content {
-    top: 60px;
+    top: 65px;
     right: 0;
     bottom: 0;
 }
@@ -30,13 +30,26 @@ nav {
     min-width: 150px; 
     font-size: 13px;      
 }
-.navbar-collapse{
-    padding-left: 20px;
-}
 .nav-item.active{
-background-color: #2c4869;
+    background-color: #2c4869;
+    
+    }
+    .nav-item.active .nav-link{
+        color: white
+    }
 
+
+
+    .navbar-collapse{
+        padding-left: 20px;
+    }
+
+ 
+
+.navbar-brand{
+    padding: 0;
 }
-.nav-item.active .nav-link{
-    color: white
+.navbar-brand >img{
+    padding: 5px;
+    height: 100%;
 }
