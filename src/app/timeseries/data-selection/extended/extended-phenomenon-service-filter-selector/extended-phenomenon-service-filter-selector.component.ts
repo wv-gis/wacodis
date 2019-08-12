@@ -1,8 +1,7 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter,SimpleChanges } from '@angular/core';
 import { MultiServiceFilterSelectorComponent, FilteredParameter, ServiceFilterSelectorComponent } from '@helgoland/selector';
 import { TranslateService } from '@ngx-translate/core';
 import { DatasetApiInterface } from '@helgoland/core';
-import { SimpleChanges } from '@angular/core/src/metadata/lifecycle_hooks';
 import { SelectedProviderService } from 'src/app/services/selected-provider.service';
 
 @Component({

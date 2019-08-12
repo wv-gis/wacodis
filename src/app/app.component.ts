@@ -1,11 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { registerLocaleData } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
 import { Language, SettingsService } from '@helgoland/core';
 import localeDe from '@angular/common/locales/de';
 import { D3TimeFormatLocaleService } from '@helgoland/d3';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
-import { OnInit } from '@angular/core/src/metadata/lifecycle_hooks';
 import { ExtendedSettings } from 'src/app/settings/settings.service';
 
 @Component({
