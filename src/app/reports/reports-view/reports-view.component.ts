@@ -21,7 +21,7 @@ export class ReportsViewComponent implements OnInit, AfterViewInit {
   //   this.onResize();
   // }
 
-  @ViewChild('reportComponent')
+  @ViewChild('reportComponent', {static: false})
   public d3Elem: ElementRef;
 
   public serviceUrl: string = '';
