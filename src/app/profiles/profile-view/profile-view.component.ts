@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef, HostListener, AfterViewInit }
 import { CsvDataService } from 'src/app/settings/csvData.service';
 import * as d3 from 'd3';
 import Plotly from 'plotly.js-dist';
-import { interpolate } from '@angular/core/src/view/util';
+
 
 const itemsPerPage = 10;
 const colorRgb = [
@@ -59,10 +59,10 @@ export class ProfileViewComponent implements OnInit, AfterViewInit {
     this.onResize();
   }
 
-  @ViewChild('depthGraph')
+  @ViewChild('depthGraph', {static: false})
   public d3Elem: ElementRef;
 
-  @ViewChild('profileGraph')
+  @ViewChild('profileGraph', {static: false})
   public profileElem: ElementRef;
 
   public headers: string[] = [];
