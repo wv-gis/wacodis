@@ -43,8 +43,8 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
   public _map: any;
   public divider;
   public dividerSym;
-  public leftLayer;
-  public rightLayer;
+  public leftLayer: (L.TileLayer | esri.ImageMapLayer);
+  public rightLayer: (L.TileLayer | esri.ImageMapLayer);
   public selectionData: Object[];
   public view: string;
   public controlLegend: any;
@@ -52,6 +52,7 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
   public legend: HTMLElement;
   public wmsLayer: any;
   public compMap: any;
+  public abkLayer: any;
 
   public comparisonOptions = [];
   public comparisonBaseLayers = [];
@@ -93,13 +94,23 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
 
     this.wmsLayer = L.tileLayer.wms('http://ows.terrestris.de/osm/service?',
       {
-        layers: 'OSM-WMS', format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>', className: 'OSM'
+        layers: 'OSM-WMS', format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>', 
+        className: 'OSM'
       });
+
+      // this.abkLayer= L.tileLayer.wms('https://www.wms.nrw.de/geobasis/wms_nw_dgk5?', {
+      //   layers: 'WMS_NW_DGK5', format: 'image/png', transparent: true, maxZoom: 16, 
+      //   attribution: '&copy; <a href="https://www.bezreg-koeln.nrw.de/brk_internet/geobasis/webdienste/geodatendienste/index.html">Bezreg-Koeln</a>', className: 'abk'
+      // });
 
     this.defaultBaseMap.set('comparisonMap',
       {
         label: 'OSM', visible: true, layer: this.wmsLayer
       });
+      // this.defaultBaseMap.set('comparisonMap',
+      // {
+      //   label: 'abk', visible: true, layer: this.abkLayer
+      // });
   }
   /**
    * Method which decides which View is depicted depending on the selected parameters
@@ -143,16 +154,20 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
     // if(!this._map.getPane('imagePane')){
     if (this.rightLayer.options.pane === 'imagePane' + this.selectedIdR + 1) {
       this._map.createPane('imagePane' + this.selectedIdR + 1);
+
       console.log('Create Right Pane Sentinel');
     }
     else if(this.rightLayer.options.pane === 'overlayPane' + 1){
       this._map.createPane('overlayPane'+1);
+
     }
     if (this.leftLayer.options.pane === 'imagePane' + this.selectedIdL) {
       this._map.createPane('imagePane' + this.selectedIdL);
+   
     }
     else if(this.leftLayer.options.pane === 'overlayPane' + 1){
       this._map.createPane('overlayPane'+1);
+   
     }
     // }
   
@@ -220,9 +235,10 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
     // document.getElementById('leftTime').setAttribute('style', 'width: ' + clipX + 'px;');
 
     if (this.leftLayer) {
-
+      
       if (this.leftLayer.options.pane === 'imagePane' + this.selectedIdL) {
         document.getElementsByClassName('leaflet-pane leaflet-image' + this.selectedIdL + '-pane')[0].setAttribute('style', 'clip: ' + clipLeft);
+    
       }
       else if(this.leftLayer.options.pane === 'overlayPane' + 1){
         document.getElementsByClassName('leaflet-pane leaflet-overlay' + 1 + '-pane')[0].setAttribute('style', 'clip: ' + clipLeft);
@@ -237,6 +253,7 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
       // this.rightLayer.bringToFront();
       if (this.rightLayer.options.pane === 'imagePane' + this.selectedIdR + 1) {
         document.getElementsByClassName('leaflet-pane leaflet-image' + this.selectedIdR + 1 + '-pane')[0].setAttribute('style', 'clip: ' + clipRight);
+      
       }
       else if(this.rightLayer.options.pane === 'overlayPane' + 1){
         document.getElementsByClassName('leaflet-pane leaflet-overlay' + 1 + '-pane')[0].setAttribute('style', 'clip: ' + clipRight);
@@ -345,6 +362,7 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
     }
     let prevLeft = this.leftLayer;
     let prevRight = this.rightLayer;
+   
 
     if (prevLeft !== this.leftLayer) {
       prevLeft && this._map.fire('leftlayerremove', { layer: prevLeft })
@@ -417,7 +435,8 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
     this.mapCache.getMap('comparisonMap').setView([51.161, 7.482], 13);
     L.tileLayer.wms('http://ows.terrestris.de/osm/service?',
       {
-        layers: 'OSM-WMS', format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>', className: 'OSM'
+        layers: 'OSM-WMS', format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+         className: 'OSM'
       }).addTo(this.syncedMap);
     this.mapCache.setMap('map2', this.syncedMap);
 
@@ -490,6 +509,7 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
         console.log(this.refreshInterval);
         for (let k = 0; k < this.senLayers.length; k++) {
           this.senLayers[k].authenticate(this.token);
+          this.senLayers[k].setOpacity(0.8);
           this.comparisonBaseLayers.push(this.senLayers[k]);
         }
      
@@ -534,8 +554,9 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
     else{
       this.token = this.tokenService.getToken();
     }
+    
     esri.imageService({ url: 'https://sentinel.arcgis.com/arcgis/rest/services/Sentinel2/ImageServer' }).query().between(new Date(2018, 3), new Date())
-      .bboxIntersects(this.mapCache.getMap('comparisonMap').getBounds()).where(" cloudcover<=0.4 AND category=1")
+      .bboxIntersects(L.latLngBounds([50.9952,6.931481],[51.309139,7.607089])).where(" cloudcover<=0.4 AND category=1")
       .fields(['acquisitiondate', 'cloudcover', 'q', 'best']).orderBy('acquisitiondate', 'ASC')
       .token(this.token).limit(1500).returnGeometry(false)
       .run((error, featureCollection, feature) => {
@@ -587,7 +608,7 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
     // this._leftLayer = this.senLayers[id];
     this._leftLayer = this.comparisonBaseLayers[id];
     console.log('Name: ' + layerName + ' Layer: ' + this._leftLayer + ' index:' + id);
-    if (this._leftLayer.options.pane == 'imagePane' + id) {
+     if (this._leftLayer.options.pane == 'imagePane' + id) {
       this.queryLayer('le');
     }
   }
@@ -606,6 +627,7 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
     this.defaultLDate = date;
     let to = new Date(date.getFullYear(), date.getMonth() + 1);
     if (this._leftLayer instanceof esri.ImageMapLayer) {
+      this._leftLayer.setOpacity(0.8);
       this._leftLayer.setTimeRange(date, to);
     }
   }
@@ -615,9 +637,11 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
     let to = new Date(date.getFullYear(), date.getMonth() + 1);
     if (this._rightLayer instanceof esri.ImageMapLayer) {
       this._rightLayer = esri.imageMapLayer({
-        url: 'https://sentinel.arcgis.com/arcgis/rest/services/Sentinel2/ImageServer', maxZoom: 16, alt: sentinelLayerOptions[this.selectedIdR].toString(), renderingRule: rasterFunctionOpt[this.selectedIdR], position: 'pane', pane: 'imagePane' + this.selectedIdR + 1, opacity: 0.8
+        url: 'https://sentinel.arcgis.com/arcgis/rest/services/Sentinel2/ImageServer', maxZoom: 16, alt: sentinelLayerOptions[this.selectedIdR].toString(), 
+        renderingRule: rasterFunctionOpt[this.selectedIdR],  pane: 'imagePane' + this.selectedIdR + 1, opacity: 0.8
       });
       this._rightLayer.authenticate(this.tokenService.getToken());
+      this._rightLayer.setOpacity(0.8);
       this._rightLayer.setTimeRange(date, to);
     }
   }
@@ -657,9 +681,11 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
       this.rightLayer = this._rightLayer;
       if (this.rightLayer instanceof esri.ImageMapLayer) {
         this.rightLayer = esri.imageMapLayer({
-          url: 'https://sentinel.arcgis.com/arcgis/rest/services/Sentinel2/ImageServer', maxZoom: 16, alt: sentinelLayerOptions[id].toString(), renderingRule: rasterFunctionOpt[id], position: 'pane', pane: 'imagePane' + id + 1, opacity: 0.8
+          url: 'https://sentinel.arcgis.com/arcgis/rest/services/Sentinel2/ImageServer', maxZoom: 16, alt: sentinelLayerOptions[id].toString(), 
+          renderingRule: rasterFunctionOpt[id], position: 'pane', pane: 'imagePane' + id + 1, opacity: 0.8
         });
         this.rightLayer.authenticate(this.tokenService.getToken());
+        this.rightLayer.setOpacity(0.8);
         this.rightLayer.setTimeRange(this.defaultRDate, new Date(this.defaultRDate.getFullYear(), this.defaultRDate.getMonth(), this.defaultRDate.getDate() + 5));
       }
       this.setSplittedMap();
@@ -670,7 +696,8 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
       this.rightLayer = this._rightLayer;
       if (this.rightLayer instanceof esri.ImageMapLayer) {
         this.rightLayer = esri.imageMapLayer({
-          url: 'https://sentinel.arcgis.com/arcgis/rest/services/Sentinel2/ImageServer', maxZoom: 16, alt: sentinelLayerOptions[id].toString(), renderingRule: rasterFunctionOpt[id], position: 'pane', pane: 'imagePane' + id + 1, opacity: 0.8
+          url: 'https://sentinel.arcgis.com/arcgis/rest/services/Sentinel2/ImageServer', maxZoom: 16, alt: sentinelLayerOptions[id].toString(), 
+          renderingRule: rasterFunctionOpt[id], position: 'pane', pane: 'imagePane' + id + 1, opacity: 0.8
         });
         this.rightLayer.authenticate(this.tokenService.getToken());
         this.rightLayer.setTimeRange(this.defaultRDate, new Date(this.defaultRDate.getFullYear(), this.defaultRDate.getMonth(), this.defaultRDate.getDate() + 5));

@@ -4,13 +4,9 @@ interface NodeModule {
   id: string;
 }
 
-import * as L from 'leaflet';
-import { Map } from 'leaflet';
+import * as L from 'leaflet'
 import { RasterLayerOptions } from 'esri-leaflet';
-// import { ControlPosition } from 'leaflet';
-// import { ControlOptions } from 'leaflet';
-// import { LayerGroup } from 'leaflet';
-// import { Layer } from 'leaflet';
+
 
 declare module 'leaflet' {
   namespace Control {
@@ -116,10 +112,10 @@ declare module 'leaflet' {
     position?: ControlPosition
 
   }
-  interface Map {
-    sync(map: L.Map, options?: SyncOptions): Map;
-    unsync(map: L.Map): Map;
-    isSynced(otherMap: L.Map): boolean;
+  namespace Map {
+    export function sync(map: L.Map, options?: SyncOptions): L.Map;
+    export function unsync(map: L.Map): L.Map;
+    export function isSynced(otherMap: L.Map): boolean;
   }
   interface SyncOptions extends MapOptions {
     noInitialSync?: boolean;
@@ -143,13 +139,13 @@ declare module 'leaflet' {
      */
     f?: string;
     /**
-     * @default overlayPane
-     */
-    pane?: string;
-    /**
      * @default 1
      */
     opacity?: number;
+    /**
+    * @default overlayPane
+    */
+    pane?: string;
     zIndex?: number;
     /**
      * @default 'front'
@@ -182,8 +178,8 @@ declare module 'leaflet' {
     class ImageMapLayer extends RasterLayer {
       constructor(options: ImageMapLayerOptions)
       /**
-               * Redraws this layer below all other overlay layers.
-               */
+      * Redraws this layer below all other overlay layers.
+      */
       bringToBack(): this;
       /**
        * 	Redraws this layer above all other overlay layers.
@@ -218,7 +214,8 @@ declare module 'leaflet' {
       query(): this;
       getRenderingRule(): object;
       setRenderingRule(renderingRule: object): this;
-      getMosaicRule(mosaicRule: object): this;
+      getMosaicRule(): object;
+      setMosaicRule(mosaicRule: object): this;
       redraw(): this;
     }
     export function imageMapLayer(options: ImageMapLayerOptions): ImageMapLayer;
