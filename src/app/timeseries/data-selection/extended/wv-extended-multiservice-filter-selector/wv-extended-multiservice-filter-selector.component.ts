@@ -42,7 +42,7 @@ export class WvExtendedMultiserviceFilterSelectorComponent extends MultiServiceF
       //   });
         
       // });
-      console.log(this.selectedItems);
+      // console.log(this.selectedItems);
     }
   }
 
@@ -50,7 +50,7 @@ export class WvExtendedMultiserviceFilterSelectorComponent extends MultiServiceF
     super.onSelectItem(item);
     this.selectedItems = [];
     this.selectedItems.push(item.label);
-    console.log(this.items);
+    // console.log(this.items);
   }
   ngOnChanges() {
     super.ngOnChanges();

@@ -37,8 +37,8 @@ import { DatasetService, DatasetOptions, LocalStorage, DatasetApiInterface, Line
             default:
                 break;
         }
-          console.log(option.color + ' ChartType: ' + timeseries.renderingHints.chartType);
-          console.log('InternalID ' + internalId);
+          // console.log(option.color + ' ChartType: ' + timeseries.renderingHints.chartType);
+          // console.log('InternalID ' + internalId);
         }
       //  this.colorPromise =Promise.resolve(true);
       // return option as T;

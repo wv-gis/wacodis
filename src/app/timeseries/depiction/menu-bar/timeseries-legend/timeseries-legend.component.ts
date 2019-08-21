@@ -112,11 +112,11 @@ export class TimeseriesLegendComponent {
     }
     public editOption(option: DatasetOptions) {
         this.editOptions = new DatasetOptions(option.internalId, option.color);
-        console.log(JSON.stringify(this.editOptions));
+        // console.log(JSON.stringify(this.editOptions));
         this.pick = 'visible';
     }
     public updateOptions(option: DatasetOptions, id: string) {
-        console.log('Reference: ' + JSON.stringify(option.showReferenceValues));
+        // console.log('Reference: ' + JSON.stringify(option.showReferenceValues));
    
         // if (option.yAxisRange != undefined) {
         //     console.log('Reference: ' + JSON.stringify(option.yAxisRange));
@@ -130,7 +130,7 @@ export class TimeseriesLegendComponent {
     
                         option.yAxisRange = { min: 0, max: re.lastValue.value + 10 };
                        
-                      console.log('visible '+  option.autoRangeSelection);
+                    //   console.log('visible '+  option.autoRangeSelection);
                     });
                 });
     

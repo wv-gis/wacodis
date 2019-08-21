@@ -90,14 +90,15 @@ export class ProfileViewComponent implements OnInit, AfterViewInit {
 
 
   //input parameters:
-  private num_iso = 15;
+  private num_iso = 14;
   private size_iso = 1; // Abstand zwischen Isolinien
   private start_iso = 1;
   private end_iso = 15;
   public selectMeasureParam: string = 'Sauerstoff [mg/l]';
-  private dam_label = 'Dhünn-Talsperre BojeA'
+  public dam_label = 'Dhünn-Talsperre BojeA'
   private reversedColor = false;
   private year = 2004//new Date().getFullYear() - 1;
+  public samplingStationLabels = ['Dhünn-Talsperre', "Bever-Talsperre", "Brucher-Talsperre", "Lingese-Talsperre","Panzer-Talsperre", "Wupper-Talsperre","Ronsdorfer-Talsperre"]
   public measureParams = ['Sauerstoff [mg/l]', "Temperatur C°", "ph-Wert", "Chlorophyll [yg/l]", "Leitfähigkeit [yS/cm]", "Trübung [TEF]"];
   public defaultDate: Date = new Date(new Date().getFullYear() - 1, 0, 1);
   public selDate: Date[] = [new Date(this.year, 0, 1), new Date(this.year, 1, 1), new Date(this.year, 2, 1), new Date(this.year, 3, 1),
@@ -188,6 +189,7 @@ export class ProfileViewComponent implements OnInit, AfterViewInit {
     let length = this.oxyEntries.length - 1;
     this.maxDepth.push(this.oxyEntries[length][1]);
     this.measureDates.push(new Date(this.oxyEntries[length][0].split('.')[2], this.oxyEntries[length][0].split('.')[1] - 1, this.oxyEntries[length][0].split('.')[0]));
+ 
   }
 
   ngAfterViewInit(): void {
@@ -232,6 +234,9 @@ export class ProfileViewComponent implements OnInit, AfterViewInit {
   }
   public changeFromDate(fromDate: Date) {
     this.defaultDate = fromDate;
+  }
+  public changeSamplingStation(stat: string, index: number){
+    this.dam_label = this.samplingStationLabels[index];
   }
 
   public calculateWidth(): number {
@@ -489,7 +494,7 @@ export class ProfileViewComponent implements OnInit, AfterViewInit {
   public createIsoPlot() {
 
     this.num_iso = document.forms.item(1).elements["numIso"].value; 
-    this.size_iso = document.forms.item(2).elements["distIso"].value;
+    this.size_iso = document.forms.item(3).elements["distIso"].value;
 
     this.createProfileViews();
   }
@@ -582,6 +587,8 @@ export class ProfileViewComponent implements OnInit, AfterViewInit {
       // p_evaluate.push([profData[i].date.getTime(), profData[i].depth])
     }
 
+
+
     // interpolate values
     let coord = [];
     let dataArray = [x_dates, y_depths, z_value];
@@ -592,7 +599,7 @@ export class ProfileViewComponent implements OnInit, AfterViewInit {
     let interpolatorArray = [];
     for (let i = 0, k = 1; i < coord.length; i++ , k++) {
 
-      if (dataArray[1][k] >= 20)
+      if (dataArray[1][k] >= 16)
         interpolatorArray.push(d3.interpolateObject(coord[i], [dataArray[0][k], dataArray[1][k], dataArray[2][k]]));
     }
     for (let j = 0; j < interpolatorArray.length; j++) {
@@ -610,8 +617,8 @@ export class ProfileViewComponent implements OnInit, AfterViewInit {
       coord2.push([x_dates[i], y_depths[i], z_value[i]]);
     }
     let interpolatorArray2 = [];
-    for (let i = 0, k = 1; i < coord.length; i++ , k++) {
-      if (dataArray[1][k] >= 20)
+    for (let i = 0, k = 1; i < coord2.length; i++ , k++) {
+      if (dataArray2[1][k] >= 18)
         interpolatorArray2.push(d3.interpolateObject(coord2[i], [dataArray2[0][k], dataArray2[1][k], dataArray2[2][k]]));
     }
     for (let j = 0; j < interpolatorArray2.length; j++) {
@@ -619,16 +626,18 @@ export class ProfileViewComponent implements OnInit, AfterViewInit {
 
       x_dates.push(interpH[0]);
       y_depths.push(Math.round(interpH[1]));
-      z_value.push(interpH[2]);
+      z_value.push((interpH[2]));
     }
 
+
+    //set reversed color pallete for parameter oxygen
     if (this.selectMeasureParam == "Sauerstoff [mg/l]") {
       this.reversedColor = false;
     }
     else {
       this.reversedColor = true;
     }
-    console.log(this.autocontourPara);
+  
 
     /**
      * define dataset for isoplethen graph
@@ -649,6 +658,7 @@ export class ProfileViewComponent implements OnInit, AfterViewInit {
         end: this.end_iso,
         size: this.size_iso,
         showlines: false,
+        // showlabels: true
       },
       colorbar: {
         title: this.selectMeasureParam,
@@ -657,7 +667,10 @@ export class ProfileViewComponent implements OnInit, AfterViewInit {
           size: 14,
           family: 'Arial, sans-serif'
         },
+        bordercolor: '#000'
       },
+      zmin: this.start_iso,
+      zmax: this.end_iso,
       reversescale: this.reversedColor,
     };
 
@@ -709,15 +722,31 @@ export class ProfileViewComponent implements OnInit, AfterViewInit {
     var layout = {
       title: this.dam_label + " " + this.year,
       xaxis: {
+        color: '#000',
         side: 'top',
         tickmode: 'auto',
         nticks: 12,
+        tickcolor: '#000',
         range: [new Date(this.year, 0, 1), new Date(this.year, 11, 31)],
-        type: 'date'
+        type: 'date', 
+        mirror: 'allticks',
+        showline: true,
+        showgrid: false
       },
       yaxis: {
+        color: '#000',
         title: 'Tiefe [m]',
         autorange: 'reversed',
+        // tickmode: 'linear',
+        // tick0: 0,
+        // dtick: 1,
+        side: 'left',
+        tickcolor: '#000',
+        mirror: 'allticks',
+        zeroline: true,
+        zerolinecolor:'#000',
+        showline: true,
+        showgrid: false
       },
       font: {
         size: 14
@@ -729,7 +758,7 @@ export class ProfileViewComponent implements OnInit, AfterViewInit {
      */
     var config = {
       toImageButtonOptions: {
-        format: 'png',
+        format: 'jpeg',
         height: height,
         width: width,
       },

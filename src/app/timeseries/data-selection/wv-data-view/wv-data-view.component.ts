@@ -153,7 +153,7 @@ export class WvDataViewComponent implements OnInit, OnDestroy {
     }
 
       this.diagramEntry = !this.diagramEntry;
-      console.log(this.diagramEntry);
+      // console.log(this.diagramEntry);
       // this.moveToDiagram('/timeseries-diagram');
       this.router.navigateByUrl('/timeseries-diagram');
   }
