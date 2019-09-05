@@ -42,7 +42,6 @@ export class SelectionMapComponent implements OnInit, AfterViewInit {
   public loadingStations: boolean;
   public stationFilter: ParameterFilter = {};
   public statusIntervals: boolean = true;
-  public panelControlOptions: L.PanelOptions = { title: 'LayerTree' };
   // public baselayers: L.PanelBaseLayer[] = [];
   // public overlays: L.PanelBaseLayer[] = [];
   public stationPopup: L.Popup;
