@@ -11,7 +11,7 @@ import { HelgolandLabelMapperModule, HelgolandDatasetlistModule } from '@helgola
 import { TranslateModule } from '@ngx-translate/core';
 import { DatasetEmitServiceService } from 'src/app/services/dataset-emit-service.service';
 import { WvMapModule } from 'src/app/map/map.module';
-import { MenuBarComponent } from 'src/app/change-detection/menu/menu-bar/menu-bar.component';
+// import { MenuBarComponent } from 'src/app/change-detection/menu/menu-bar/menu-bar.component';
 import { HelgolandD3Module } from '@helgoland/d3';
 import { HelgolandTimeModule } from '@helgoland/time';
 import { WvExtendedTimeseriesEntryComponent } from './depiction/extended/wv-extended-timeseries-entry/wv-extended-timeseries-entry.component';
