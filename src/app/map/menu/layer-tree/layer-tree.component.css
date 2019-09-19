@@ -3,11 +3,11 @@
     background-color: #2c4869;
 }
 .phenomena .expand-button {
-    top: 123px;
+    top: 162px;
 }
 .phenomena .expand-button {
     position: absolute;
-    top: 75px;
+    top: 150px;
     right: 0;
     width: 49px;
     height: 54px;
@@ -31,7 +31,7 @@
 .phenomena .phenomenonSelector.active {
     display: inline;
     position: absolute;
-    top: 48px;
+    top: 128px;
     right: 0;
     bottom: 0;
     background-color: #718296;
