@@ -61,8 +61,8 @@ body{
 .wv-navbar-light{
     background-color: #ffffff;
     color: gray;
-    border-bottom-style: groove;
-    border-bottom-color: #DFE4E6;  
+    border-bottom-style: inset;
+    border-bottom-color: rgb(246, 247, 248);  
 }
 
 p.small{

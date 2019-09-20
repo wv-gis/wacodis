@@ -583,7 +583,7 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
             opacity: 0.8, pane: 'overlayPane' + 1, alt: 'IntraChange'
           }));
           this.comparisonBaseLayers.push(esri.imageMapLayer({
-            url: "https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/UferrandNDVIService/ImageServer",
+            url: "https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/EO_WACODIS_DAT_LANDCOVERService/ImageServer",
           maxZoom: 16, opacity: 0.8, alt: 'UferrandService', renderingRule: rasterFunctionOpt[2]}));
 
         this.tokenService.setToken(this.token);
@@ -607,7 +607,7 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
           opacity: 0.8, pane: 'overlayPane' + 1, alt: 'IntraChange'
         }));
         this.comparisonBaseLayers.push(esri.imageMapLayer({
-          url: "https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/UferrandNDVIService/ImageServer",
+          url: "https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/EO_WACODIS_DAT_LANDCOVERService/ImageServer",
         maxZoom: 16, opacity: 0.8, alt: 'UferrandService', renderingRule: rasterFunctionOpt[2]}));
     }
   }
