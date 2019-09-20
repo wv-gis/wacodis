@@ -2,7 +2,6 @@
 @import '../node_modules/leaflet/dist/leaflet.css';
 @import '../node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css';
 @import '../node_modules/bootstrap/dist/css/bootstrap.css';
-@import '../node_modules/leaflet-panel-layers/dist/leaflet-panel-layers.src.css';
 /* @import '../node_modules/bootstrap-slider/dist/css/bootstrap-slider.min.css';
 @import '../node_modules/leaflet-side-by-side/layout.css';
 @import '../node_modules/leaflet-side-by-side/range.css';

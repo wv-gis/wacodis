@@ -1,51 +1,60 @@
 <div *ngIf="showNavBar" class="header">
-  <nav  class="navbar navbar-expand-lg fixed-top navbar-light ">
+  <nav class="navbar navbar-expand-lg fixed-top wv-navbar-light ">
     <div class="container-fluid">
       <div class="navbar-header">
         <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarToggler">
           <span class="navbar-toggler-icon"></span>
         </button>
-        <a href="http://wacodis.fbg-hsbo.de/" class="navbar-brand">
-          <img src="assets/images/WaCoDiS_LogoTransp.png" alt="WaCoDiS" width="78" height="43">
+        <a href="/start" class="navbar-brand">
+          <img src="assets/images/WaCoDiS_LogoTransp.png" alt="WaCoDiS" width="100" height="64">
         </a>
       </div>
 
-      <div *ngIf="checkSelection('/start')" class="collapse navbar-collapse" id="navbarToggler">
+      <!-- <div *ngIf="checkSelection('/start')" class="collapse navbar-collapse" id="navbarToggler"> -->
+        <div  class="collapse navbar-collapse" id="navbarToggler"> 
         <ul class="navbar-nav mr-auto">
-          <li routerLinkActive="active" class="nav-item"  data-toggle="collapse" data-target=".navbar-collapse.show">
+          <li routerLinkActive="active" class="nav-item wv" data-toggle="collapse" data-target=".navbar-collapse.show">
             <a routerLink='/start' class="nav-link">Home</a>
           </li>
-          <li routerLinkActive="active" class="nav-item"  data-toggle="collapse" data-target=".navbar-collapse.show">
-              <!-- [routerLinkActiveOptions]="{exact: true}" -->
+          <li routerLinkActive="active" class="nav-item wv" data-toggle="collapse" data-target=".navbar-collapse.show">
+            <!-- [routerLinkActiveOptions]="{exact: true}" -->
             <a routerLink='/selection-category' class="nav-link">Zeitreihen</a>
             <a routerLink='/selection-phenomenon'></a>
             <a routerLink='/selection-station'></a>
             <a routerLink='/selection-map'></a>
             <a routerLink='/timeseries-diagram'></a>
           </li>
-          <li routerLinkActive="active" class="nav-item"  data-toggle="collapse" data-target=".navbar-collapse.show">
+          <li routerLinkActive="active" class="nav-item wv" data-toggle="collapse" data-target=".navbar-collapse.show">
             <a routerLink='/map-view' class="nav-link">Kartenansicht</a>
           </li>
-          <li routerLinkActive="active" class="nav-item"  data-toggle="collapse" data-target=".navbar-collapse.show">
+          <li routerLinkActive="active" class="nav-item wv" data-toggle="collapse" data-target=".navbar-collapse.show">
             <!-- <a routerLink='/comparison-selection' class="nav-link">ChangeDetection</a> -->
             <a routerLink='/change-detection' class="nav-link">Change Detection</a>
           </li>
-          <li routerLinkActive="active" class="nav-item"  data-toggle="collapse" data-target=".navbar-collapse.show">
+          <li routerLinkActive="active" class="nav-item wv" data-toggle="collapse" data-target=".navbar-collapse.show">
             <a routerLink='/reports' class="nav-link">Berichte</a>
           </li>
-          <li routerLinkActive="active" class="nav-item"  data-toggle="collapse" data-target=".navbar-collapse.show">
+          <li routerLinkActive="active" class="nav-item wv" data-toggle="collapse" data-target=".navbar-collapse.show">
             <a routerLink='/profiles' class="nav-link">Profile</a>
           </li>
-          <li routerLinkActive="active" class="nav-item"  data-toggle="collapse" data-target=".navbar-collapse.show">
+          <li routerLinkActive="active" class="nav-item wv" data-toggle="collapse" data-target=".navbar-collapse.show">
             <a routerLink='/weather-forecast' class="nav-link">Wettervorschau</a>
           </li>
         </ul>
+        <!-- <form class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form> -->
       </div>
     </div>
   </nav>
-<h1>{{id}}</h1>
+  <h1>{{id}}</h1>
 </div>
 <br>
 <div class="content">
   <router-outlet></router-outlet>
 </div>
+<hr>
+<footer class="container" style="float: left;">
+    <p >© Wupperverband</p>
+</footer>
