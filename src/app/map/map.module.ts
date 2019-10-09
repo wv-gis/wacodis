@@ -14,6 +14,8 @@ import { HelgolandSelectorModule } from '@helgoland/selector';
 import { ExtendedExtentControlComponent } from './menu/extended-selector/extended-extent-control/extended-extent-control.component';
 import { SelectedProviderService } from 'src/app/services/selected-provider.service';
 import { RequestTokenService } from 'src/app/services/request-token.service';
+import { HelgolandOpenLayersModule, OlMapService } from '@helgoland/open-layers';
+
 
 @NgModule({
   imports: [
@@ -23,12 +25,13 @@ import { RequestTokenService } from 'src/app/services/request-token.service';
     HelgolandMapControlModule,
     HelgolandMapSelectorModule,
     HelgolandMapViewModule,
+    HelgolandOpenLayersModule,
     TranslateModule,
     HttpClientModule,
 
   ],
   declarations: [SelectionMapComponent, LayerTreeComponent, MenuBarComponent, WvExtendedServiceSelectorComponent, ExtendedExtentControlComponent],
   exports: [SelectionMapComponent, LayerTreeComponent, MenuBarComponent, WvExtendedServiceSelectorComponent],
-  providers: [ExtendedSettingsService, SelectedProviderService, RequestTokenService],
+  providers: [ExtendedSettingsService, SelectedProviderService, RequestTokenService, OlMapService],
 })
 export class WvMapModule { }

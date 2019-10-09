@@ -1,20 +1,18 @@
-import { Component, OnInit , AfterViewInit} from '@angular/core';
-// declare var require: any;
-// require('leaflet-panel-layers');
-import * as L from 'leaflet';
+import { Component, OnInit} from '@angular/core';
 import * as esri from 'esri-leaflet';
 import { LayerOptions, GeoSearchOptions, MapCache } from '@helgoland/map';
 import { ParameterFilter, Station, Phenomenon, SettingsService, Settings } from '@helgoland/core';
 import { settings } from 'src/environments/environment';
 import { settingsPromise } from 'src/environments/environment.prod';
 import { RequestTokenService } from 'src/app/services/request-token.service';
-// import { ImageMapLayer } from 'esri-leaflet';
+import BaseLayer from 'ol/layer/Base';
+import Layer from 'ol/layer';
+import TileLayer from 'ol/layer/Tile';
+import { OlMapService } from '@helgoland/open-layers';
+import {OSM, TileWMS} from 'ol/source';
 
-L.Marker.prototype.options.icon = L.icon({
-  iconUrl: 'assets/images/map-marker-alt-solid.svg',
-  iconAnchor: [12, 41],
-  iconSize: [25, 41],
-});
+
+
 
 const senLayer = 'https://sentinel.arcgis.com/arcgis/rest/services/Sentinel2/ImageServer';
 const WvG_URL = 'http://fluggs.wupperverband.de/secman_wss_v2/service/WMS_WV_Oberflaechengewaesser_EZG/guest?';
@@ -25,103 +23,56 @@ const WvG_URL = 'http://fluggs.wupperverband.de/secman_wss_v2/service/WMS_WV_Obe
   templateUrl: './selection-map.component.html',
   styleUrls: ['./selection-map.component.css']
 })
-export class SelectionMapComponent implements OnInit, AfterViewInit {
-  public baseMaps: Map<string, LayerOptions> = new Map<string, LayerOptions>();
-  public overlayMaps: Map<string, LayerOptions> = new Map<string, LayerOptions>();
-  public stationMarker: L.CircleMarker;
-  public zoomControlOptions: L.Control.ZoomOptions = { position: 'bottomleft' };
-  public layerControlOptions: L.Control.LayersOptions = { position: 'bottomleft' };
-  public mapOptions: L.MapOptions = { dragging: true, zoomControl: true, boxZoom: false };
-  public fitBounds: L.LatLngBoundsExpression = [[50.985, 6.924], [51.319, 7.607]];;
+export class SelectionMapComponent implements OnInit{
+ 
+ 
   public searchOptions: GeoSearchOptions = { countrycodes: [] };
 
-  public providerUrl: string = 'https://www.fluggs.de/sos2-intern-gis/api/v1/'//"http://www.fluggs.de/sos2/api/v1/";
+  public providerUrl: string = 'https://www.fluggs.de/sos2-intern-gis/api/v1/';//"http://www.fluggs.de/sos2/api/v1/";
   public label = 'Wupperverband Zeitreihen Dienst';
-  public avoidZoomToSelection = false;
-  public cluster = true;
-  public loadingStations: boolean;
-  public stationFilter: ParameterFilter = {};
-  public statusIntervals: boolean = true;
-  // public baselayers: L.PanelBaseLayer[] = [];
-  // public overlays: L.PanelBaseLayer[] = [];
-  public stationPopup: L.Popup;
-  public control: L.Control = new L.Control();
+  public showZoomControl = false;
+  public showAttributionControl = false;
+
+  public baselayers: BaseLayer[] = [];
+  public overviewMapLayers: Layer[] = [new TileLayer({source: new OSM()})];
+  public zoom = 6;
+  public lat = 51.2;
+  public lon = 9.12;
+
   public token: string = '';
   public sentinelLayer: esri.ImageMapLayer;
+  public mapId = 'test-map';
 
-  constructor(private mapCache: MapCache, private settingsService: SettingsService<Settings>, private requestTokenSrvc: RequestTokenService) {
+  constructor(private mapService: OlMapService, private settingsService: SettingsService<Settings>, private requestTokenSrvc: RequestTokenService) {
     if (this.settingsService.getSettings().datasetApis) {
       this.providerUrl = this.settingsService.getSettings().datasetApis[0].url;
-      // console.log(this.providerUrl);
     }
   }
-  ngAfterViewInit() {
-//  L.control.layers({ "Terrain": this.baseMaps.get('Ter').layer, "OSM": this.baseMaps.get('map').layer },
-//       { "DWD Warnungen/Radar": this.overlayMaps.get('DWD').layer, 'Wupperverbandsgebiet': this.overlayMaps.get('WvG').layer,
-//         'Landbedeckung2': this.overlayMaps.get('Landbedeckung2').layer, 'Feldbloecke': this.overlayMaps.get('Feldbloecke').layer },
-//       this.layerControlOptions);
 
 
-    // PanelBaseLayer
-    // this.baselayers.push( L.panelBaseLayer({ name: 'BaseMaps', layer: this.baseMaps.get('Ter').layer }));
-    // this.overlays.push(L.panelBaseLayer({ name: 'Overlays', layer: this.overlayMaps.get('DWD').layer }));
-
-    // L.control.panelLayers(this.baselayers, this.overlays, this.panelControlOptions).addTo(this.mapCache.getMap('map'));
-    //   var baseLayers = [
-    //     {
-    //       active: true,
-    //       name: "OpenStreetMap",
-    //       layer: this.overlayMaps.get('DWD').layer,
-
-    //     }
-    //   ];
-    //   var overLayers = [
-    //     {
-    //       name: "Drinking Water",
-    //       icon: '<i class="icon icon-water"></i>',
-    //       layer: this.overlayMaps.get('DWD').layer
-    //     },
-    //     {
-    //       active: true,
-    //       name: "Parking",
-    //       icon: '<i class="icon icon-parking"></i>',
-    //       layer: this.baseMaps.get('Ter').layer
-    //     }
-    //   ];
-    //   this.mapCache.getMap('map').addControl(new L.Control.PanelLayers(baseLayers, overLayers, this.panelControlOptions));
-    //   L.control.panelLayers(
-    //     [
-    //         {
-    //             name: "Open Street Map",
-    //             layer: L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
-    //         },
-    //         {
-    //             group: "Walking layers",
-    //             layers: [
-    //                 {
-    //                     name: "Open Cycle Map",
-    //                     layer: L.tileLayer('http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png')
-    //                 },
-    //                 {
-    //                     name: "Hiking",
-    //                     layer: L.tileLayer("http://toolserver.org/tiles/hikebike/{z}/{x}/{y}.png")
-    //                 }
-    //             ]
-    //         },
-    //         {
-    //             group: "Road layers",
-    //             layers: [
-    //                 {
-    //                     name: "Transports",
-    //                     layer: L.tileLayer("http://{s}.tile2.opencyclemap.org/transport/{z}/{x}/{y}.png")
-    //                 }
-    //             ]
-    //         }
-    //     ],null,
-    //     {collapsibleGroups: true}
-    // ).addTo(this.mapCache.getMap('map'));
-  }
   ngOnInit() {
+
+    this.baselayers.push(new TileLayer({
+      visible: true,
+      source: new TileWMS({
+        url: 'https://maps.dwd.de/geoserver/ows',
+        params: {
+          'LAYERS': 'dwd:RX-Produkt',
+        }
+      })
+    }));
+
+    this.baselayers.push(new TileLayer({
+      visible: false,
+      source: new TileWMS({
+        url: 'https://maps.dwd.de/geoserver/ows',
+        params: {
+          'LAYERS': 'dwd:FX-Produkt',
+        }
+      })
+    }));
+
+    
     // https://{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png
    
 //     this.baseMaps.set('map',
@@ -176,31 +127,34 @@ export class SelectionMapComponent implements OnInit, AfterViewInit {
     // this.overlayMaps.set('ArcGIS Test',{ label: 'ArcGIS Test', visible: true, layer: esri.featureLayer({url: 'https://services-tlstest.arcgisonline.com/arcgis/rest/services/World_Topo_Map/MapServer',useCors: true})});
   }
 
-  public onStationSelected(station: Station) {
-    const point = station.geometry as GeoJSON.Point;
-    // this.stationPopup = L.popup().setLatLng([point.coordinates[1], point.coordinates[0]])
-    //   .setContent(`<div> ID:  ${station.properties.id} </div><div> ${station.properties.label} </div>`)
-    //   .openOn(this.mapCache.getMap('map'));
+  public stationSelected(station: Station) {
+    alert(station.properties.label);
+    console.log(station);
 
   }
-public changePic(){
-document.getElementById('prototypePic').setAttribute('src','assets/images/Kartenansicht.png')
-}
-  public onSelectPhenomenon(phenomenon: Phenomenon) {
-    this.stationFilter = {
-      phenomenon: phenomenon.id
-    };
+  public toggleVisibility(layer: BaseLayer ) {
+  
+    layer.setVisible(!layer.getVisible());
   }
 
 
-  removeStationFilter() {
-    this.stationFilter = {};
+  public removeLayer(i: number) {
+    const layer = this.baselayers.splice(i,1);
+    this.mapService.getMap(this.mapId).subscribe(map => map.removeLayer(layer[0]));
   }
 
-  changeProvider(url: string) {
-    this.providerUrl = url;
-    // this.fitBounds = [[, ],[, ]];
+ public getLegendUrl(url: string) {
+   alert(url);
+    console.log(url);
 
-    console.log(this.fitBounds);
   }
+
+  public changePic(){
+    document.getElementById('prototypePic').setAttribute('src','assets/images/Kartenansicht.png')
+    }
+      public onSelectPhenomenon(phenomenon: Phenomenon) {
+        // this.stationFilter = {
+        //   phenomenon: phenomenon.id
+        // };
+      }
 }

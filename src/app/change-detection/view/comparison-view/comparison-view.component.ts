@@ -15,9 +15,9 @@ require('leaflet.sync');
 // const rasterFunctionOpt = [{ "rasterFunction": "Agriculture with DRA" }, { "rasterFunction": "Bathymetric with DRA" }, { "rasterFunction": "Color Infrared with DRA" },
 // { "rasterFunction": "Natural Color" }, { "rasterFunction": "Agriculture" }, { "rasterFunction": "None" }]
 const sentinelLayerOptions = ['Natural Color', 'Color Infrared'];
-const externLayerOptions = ['Landcover', 'IntraChange','UferrandService'];
+const externLayerOptions = [ 'IntraChange','LandcoverService'];
 const bandIdOptions = ['4,3,2', '8,4,3'];
-const rasterFunctionOpt = [{ "rasterFunction": "Natural Color" }, { "rasterFunction": "Color Infrared with DRA" },{"rasterFunction": "StatisticsHistogram"}];
+const rasterFunctionOpt = [{ "rasterFunction": "Natural Color" }, { "rasterFunction": "Color Infrared with DRA" },{"rasterFunction": "Landcover"}];
 
 @Component({
   selector: 'wv-comparison-view',
@@ -575,8 +575,8 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
         }
 
 
-        this.comparisonBaseLayers.push(L.imageOverlay('https://wacodis.maps.arcgis.com/sharing/rest/content/items/846c30b6a1874841ac9d5f6954f19aad/data',
-          [[51.299046, 6.949204], [51.046668, 7.615934]], { opacity: 0.6, pane: 'overlayPane', alt: 'Landcover' }));
+        // this.comparisonBaseLayers.push(L.imageOverlay('https://wacodis.maps.arcgis.com/sharing/rest/content/items/846c30b6a1874841ac9d5f6954f19aad/data',
+        //   [[51.299046, 6.949204], [51.046668, 7.615934]], { opacity: 0.6, pane: 'overlayPane', alt: 'Landcover' }));
 
         this.comparisonBaseLayers.push(L.imageOverlay('https://wacodis.maps.arcgis.com/sharing/rest/content/items/b2fa6b41d64c4a649f4bd6f75e0f5d74/data',
           [[50.9854181, 6.9313883], [51.3190536, 7.6071338]], {
@@ -584,7 +584,7 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
           }));
           this.comparisonBaseLayers.push(esri.imageMapLayer({
             url: "https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/EO_WACODIS_DAT_LANDCOVERService/ImageServer",
-          maxZoom: 16, opacity: 0.8, alt: 'UferrandService', renderingRule: rasterFunctionOpt[2]}));
+          maxZoom: 16, opacity: 0.8, alt: 'LandcoverService', renderingRule: rasterFunctionOpt[2]}));
 
         this.tokenService.setToken(this.token);
       }, error => {
@@ -599,8 +599,8 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
         this.senLayers[k].authenticate(this.tokenService.getToken());
         this.comparisonBaseLayers.push(this.senLayers[k]);
       }
-      this.comparisonBaseLayers.push(L.imageOverlay('https://wacodis.maps.arcgis.com/sharing/rest/content/items/846c30b6a1874841ac9d5f6954f19aad/data',
-        [[51.299046, 6.949204], [51.046668, 7.615934]], { opacity: 0.6, pane: 'overlayPane', alt: 'Landcover' }));
+      // this.comparisonBaseLayers.push(L.imageOverlay('https://wacodis.maps.arcgis.com/sharing/rest/content/items/846c30b6a1874841ac9d5f6954f19aad/data',
+      //   [[51.299046, 6.949204], [51.046668, 7.615934]], { opacity: 0.6, pane: 'overlayPane', alt: 'Landcover' }));
 
       this.comparisonBaseLayers.push(L.imageOverlay('https://wacodis.maps.arcgis.com/sharing/rest/content/items/b2fa6b41d64c4a649f4bd6f75e0f5d74/data',
         [[50.9854181, 6.9313883], [51.3190536, 7.6071338]], {
@@ -608,7 +608,7 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
         }));
         this.comparisonBaseLayers.push(esri.imageMapLayer({
           url: "https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/EO_WACODIS_DAT_LANDCOVERService/ImageServer",
-        maxZoom: 16, opacity: 0.8, alt: 'UferrandService', renderingRule: rasterFunctionOpt[2]}));
+        maxZoom: 16, opacity: 0.8, alt: 'LandcoverService', renderingRule: rasterFunctionOpt[2]}));
     }
   }
 
