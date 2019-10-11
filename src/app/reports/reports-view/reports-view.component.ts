@@ -526,7 +526,7 @@ export class ReportsViewComponent implements OnInit, AfterViewInit {
       }
     }
     // // collect timeseries of rainfall at the reservoir 
-    if (this.rainSeriesId != '')
+    if (this.rainSeriesId != ''){
       this.datasetApi.getTsData(this.rainSeriesId.split('__')[1], this.serviceUrl, this.timespan[0], this.rainFilter).subscribe((res) => {
         let rainInterval = [];
         let rainValues = [];
@@ -614,7 +614,7 @@ export class ReportsViewComponent implements OnInit, AfterViewInit {
           .text('|');
 
       }, (error) => { this.errorOnLoading() });
-
+    }
     //collect and add referenceVaues for the selected reservoir to the diagram
     if (this.refValues != undefined) {
       for (let b = 0; b < this.refValues.length; b++) {

@@ -1,4 +1,4 @@
-  <!-- <div class="navbar navbar-expand-lg navbar-light" id="mapMenu" style="z-index: 801;padding: 0px;">
+<!-- <div class="navbar navbar-expand-lg navbar-light" id="mapMenu" style="z-index: 801;padding: 0px;">
     <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#mapMenuToggler" aria-controls="mapMenuToggler">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -30,53 +30,32 @@
       </ul>
     </div>
   </div>-->
-<div style="height: 700px;">
+<div style="height: 900px">
     <div style="display: flex; flex-direction: row; height: 100%;">
-        <div style="width: 50%; padding: 5px;">
-            <n52-ol-map [mapId]="mapId" [zoom]="6" [lat]="lat" [lon]="lon" [showZoomControl]="showZoomControl"
-                [showAttributionControl]="showAttributionControl">
+        <div style="width: 80%; padding: 5px;">
+            <n52-ol-map [mapId]="mapId" [zoom]="zoom" [lat]="lat" [lon]="lon" [showZoomControl]="showZoomControl" [showAttributionControl]="showAttributionControl">
                 <n52-ol-layer *ngFor="let layer of baselayers" [layer]="layer"></n52-ol-layer>
-                <n52-ol-station-selector-layer [serviceUrl]="providerUrl"
-                    [zoomToResult]="false" (onSelected)="stationSelected($event)">
+                <n52-ol-station-selector-layer [serviceUrl]="providerUrl" [zoomToResult]="false" (onSelected)="stationSelected($event)">
                 </n52-ol-station-selector-layer>
                 <n52-ol-overview-map [collapsible]="true" [layers]="overviewMapLayers" position="bottomright"></n52-ol-overview-map>
+
             </n52-ol-map>
         </div>
-        <div style="width: 50%; padding: 5px;">
-            <div *ngFor="let layer of baselayers; let i = index">
-                <div style="margin: 5px; padding: 5px; border: 1px solid grey;">
-                    <div>
-                        <n52-ol-layer-title [layer]="layer"></n52-ol-layer-title>
-                        <span class="fa fa-times" (click)="removeLayer(i)"></span>
-                    </div>
-                    <div>
-                        <n52-ol-layer-abstract [layer]="layer"></n52-ol-layer-abstract>
-                    </div>
-                    <div>
-                        <span class="fa" [ngClass]="{'fa-eye-slash': !layer?.getVisible(), 'fa-eye': layer?.getVisible()}" (click)="toggleVisibility(layer)"></span>
-                    </div>
-                    <div>
-                        <span>Opacity:</span>
-                        <n52-ol-layer-opacitiy-slider [layer]="layer"></n52-ol-layer-opacitiy-slider>
-                    </div>
-                    <div>
-                        <n52-ol-layer-time-selector [layer]="layer"></n52-ol-layer-time-selector>
-                    </div>
-                    <div>
-                        <n52-ol-layer-animate-time [layer]="layer"></n52-ol-layer-animate-time>
-                    </div>
-                    <div>
-                        <n52-ol-layer-zoom-extent [layer]="layer" [mapId]="mapId"></n52-ol-layer-zoom-extent>
-                    </div>
-                    <div>
-                        <n52-ol-layer-legend-url [layer]="layer" (legendUrl)="getLegendUrl($event)">
-                        </n52-ol-layer-legend-url>
-                    </div>
-                </div>
-            </div>
+        <div style="width: 20%; padding: 5px;">
+            <wv-layer-tree [baselayers]="baselayers" [mapId]="mapId"></wv-layer-tree>
         </div>
     </div>
 </div>
-
+<div class="toast" role="alert" aria-live="assertive" aria-atomic="true" [ngStyle]="{'display':display}">
+    <div class="toast-header">
+        <strong class="mr-auto">Legende</strong>
+        <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close" (click)="onCloseHandled()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="toast-body">
+        <img id="legend" src="" />
+    </div>
+</div>
 <!-- <img src="assets/images/Kartenauswahl.png" id="prototypePic">
 <button type="button" class="btn btn-default" (click)="changePic()" style="vertical-align: bottom;">weiter</button> -->

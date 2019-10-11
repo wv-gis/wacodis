@@ -9,12 +9,16 @@ import BaseLayer from 'ol/layer/Base';
 import Layer from 'ol/layer';
 import TileLayer from 'ol/layer/Tile';
 import { OlMapService } from '@helgoland/open-layers';
-import {OSM, TileWMS} from 'ol/source';
+import {OSM, TileWMS, ImageWMS, ImageArcGISRest} from 'ol/source';
+import ImageLayer from 'ol/layer/Image';
+
+
 
 
 
 
 const senLayer = 'https://sentinel.arcgis.com/arcgis/rest/services/Sentinel2/ImageServer';
+const landService = "https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/EO_WACODIS_DAT_LANDCOVERService/ImageServer";
 const WvG_URL = 'http://fluggs.wupperverband.de/secman_wss_v2/service/WMS_WV_Oberflaechengewaesser_EZG/guest?';
 
 
@@ -30,18 +34,19 @@ export class SelectionMapComponent implements OnInit{
 
   public providerUrl: string = 'https://www.fluggs.de/sos2-intern-gis/api/v1/';//"http://www.fluggs.de/sos2/api/v1/";
   public label = 'Wupperverband Zeitreihen Dienst';
-  public showZoomControl = false;
-  public showAttributionControl = false;
+  public showZoomControl = true;
+  public showAttributionControl = true;
 
   public baselayers: BaseLayer[] = [];
   public overviewMapLayers: Layer[] = [new TileLayer({source: new OSM()})];
-  public zoom = 6;
-  public lat = 51.2;
-  public lon = 9.12;
+  public zoom = 10;
+  public lat = 51.21;
+  public lon = 7.17; 
 
   public token: string = '';
   public sentinelLayer: esri.ImageMapLayer;
   public mapId = 'test-map';
+  public display = 'none';
 
   constructor(private mapService: OlMapService, private settingsService: SettingsService<Settings>, private requestTokenSrvc: RequestTokenService) {
     if (this.settingsService.getSettings().datasetApis) {
@@ -71,6 +76,39 @@ export class SelectionMapComponent implements OnInit{
         }
       })
     }));
+    // this.baselayers.push(new TileLayer({
+    //   visible: false,
+    //   source: new TileWMS({
+    //     url: 'https://maps.dwd.de/geoserver/ows',
+    //     params: {
+    //       'LAYERS': 'dwd:SAT_EU_central_RGB_cloud',
+    //     }
+    //   })
+    // }));
+
+    this.baselayers.push(new ImageLayer({
+      visible: true,
+      opacity: 0.5,
+      source: new ImageWMS({
+        url: WvG_URL,
+        params: {
+          'LAYERS': '0',
+        },
+      })
+    }));
+
+    this.baselayers.push(
+      new ImageLayer({
+        visible: false,
+        source: new ImageArcGISRest({
+          ratio: 1,
+          params: {
+            'LAYERS': 'Wacodis/EO_WACODIS_DAT_LANDCOVERService',
+          },
+          url: landService
+        })
+      })
+    );
 
     
     // https://{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png
@@ -132,22 +170,12 @@ export class SelectionMapComponent implements OnInit{
     console.log(station);
 
   }
-  public toggleVisibility(layer: BaseLayer ) {
   
-    layer.setVisible(!layer.getVisible());
-  }
 
 
-  public removeLayer(i: number) {
-    const layer = this.baselayers.splice(i,1);
-    this.mapService.getMap(this.mapId).subscribe(map => map.removeLayer(layer[0]));
-  }
+  
 
- public getLegendUrl(url: string) {
-   alert(url);
-    console.log(url);
 
-  }
 
   public changePic(){
     document.getElementById('prototypePic').setAttribute('src','assets/images/Kartenansicht.png')
@@ -156,5 +184,9 @@ export class SelectionMapComponent implements OnInit{
         // this.stationFilter = {
         //   phenomenon: phenomenon.id
         // };
+      }
+
+     public onCloseHandled(){
+      this.display = 'none';
       }
 }

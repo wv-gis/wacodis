@@ -15,6 +15,7 @@ import { ExtendedExtentControlComponent } from './menu/extended-selector/extende
 import { SelectedProviderService } from 'src/app/services/selected-provider.service';
 import { RequestTokenService } from 'src/app/services/request-token.service';
 import { HelgolandOpenLayersModule, OlMapService } from '@helgoland/open-layers';
+import { ExtendedOlLayerTitleComponent } from './legend/extended/extended-ol-layer-title/extended-ol-layer-title.component';
 
 
 @NgModule({
@@ -30,7 +31,7 @@ import { HelgolandOpenLayersModule, OlMapService } from '@helgoland/open-layers'
     HttpClientModule,
 
   ],
-  declarations: [SelectionMapComponent, LayerTreeComponent, MenuBarComponent, WvExtendedServiceSelectorComponent, ExtendedExtentControlComponent],
+  declarations: [SelectionMapComponent, LayerTreeComponent, MenuBarComponent, WvExtendedServiceSelectorComponent, ExtendedExtentControlComponent, ExtendedOlLayerTitleComponent],
   exports: [SelectionMapComponent, LayerTreeComponent, MenuBarComponent, WvExtendedServiceSelectorComponent],
   providers: [ExtendedSettingsService, SelectedProviderService, RequestTokenService, OlMapService],
 })
