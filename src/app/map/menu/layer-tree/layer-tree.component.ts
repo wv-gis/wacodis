@@ -2,6 +2,8 @@ import { Component, OnInit, Input } from '@angular/core';
 import { MapCache } from '@helgoland/map';
 import BaseLayer from 'ol/layer/Base';
 import { OlMapService } from '@helgoland/open-layers';
+import View from 'ol/View';
+import { fromLonLat } from 'ol/proj';
 
 @Component({
   selector: 'wv-layer-tree',
@@ -21,27 +23,28 @@ export class LayerTreeComponent implements OnInit {
   }
   public change() {
 
-  //   if (document.getElementById('mainMap') !== undefined) {
-  //     if (this.isActive) {
-  //       document.getElementById('mainMap').setAttribute('style', ' right: 0px;');
-  //     }
-  //     else {
-  //       document.getElementById('mainMap').setAttribute('style', 'right: 400px;');
-  //     }
-  //   }
-  //   this.mapCache.getMap('map').invalidateSize();
-  //   this.mapCache.getMap('map').setView(this.mapCache.getMap('map').getCenter(), this.mapCache.getMap('map').getZoom());
-  //   return this.isActive = !this.isActive;
-  // }
+    if (document.getElementById('map') !== undefined) {
+      if (this.isActive) {
+        document.getElementById('map').setAttribute('style', ' width: 100%;height: 100%; padding: 5px; position:fixed;');
+      }
+      else {
+        document.getElementById('map').setAttribute('style', 'width: 82% ;height: 100%; padding: 5px; position:fixed;');
+      }
+    }
+    this.mapService.getMap(this.mapId).subscribe(map => map.updateSize());
+    this.mapService.getMap(this.mapId).subscribe(map => map.setView(new View({ center: fromLonLat([7.17,51.21]), zoom: 10})));
+    // return this.isActive = !this.isActive;
+  
     this.isActive = !this.isActive;
   }
 
   public getLegendUrl(url: string) {
-    //  alert(url);
-      console.log(url);
+
+    console.log(url);
       var img = document.getElementById('legend'); 
       img.setAttribute('src', url);
-      this.display = 'inline';
+      document.getElementById('legendToast').setAttribute('style', 'display:inline');
+      // this.display = 'inline';
     
     }
     public toggleVisibility(layer: BaseLayer ) {

@@ -16,7 +16,9 @@ import { SelectedProviderService } from 'src/app/services/selected-provider.serv
 import { RequestTokenService } from 'src/app/services/request-token.service';
 import { HelgolandOpenLayersModule, OlMapService } from '@helgoland/open-layers';
 import { ExtendedOlLayerTitleComponent } from './legend/extended/extended-ol-layer-title/extended-ol-layer-title.component';
-
+import { ExtendedOlLayerTimeSelectorComponent } from './legend/extended/extended-ol-layer-time-selector/extended-ol-layer-time-selector.component';
+import { ExtendedOlLayerZoomExtentComponent } from './legend/extended/extended-ol-layer-zoom-extent/extended-ol-layer-zoom-extent.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   imports: [
@@ -29,9 +31,10 @@ import { ExtendedOlLayerTitleComponent } from './legend/extended/extended-ol-lay
     HelgolandOpenLayersModule,
     TranslateModule,
     HttpClientModule,
+    FormsModule,
 
   ],
-  declarations: [SelectionMapComponent, LayerTreeComponent, MenuBarComponent, WvExtendedServiceSelectorComponent, ExtendedExtentControlComponent, ExtendedOlLayerTitleComponent],
+  declarations: [SelectionMapComponent, LayerTreeComponent, MenuBarComponent, WvExtendedServiceSelectorComponent, ExtendedExtentControlComponent, ExtendedOlLayerTitleComponent, ExtendedOlLayerTimeSelectorComponent, ExtendedOlLayerZoomExtentComponent],
   exports: [SelectionMapComponent, LayerTreeComponent, MenuBarComponent, WvExtendedServiceSelectorComponent],
   providers: [ExtendedSettingsService, SelectedProviderService, RequestTokenService, OlMapService],
 })

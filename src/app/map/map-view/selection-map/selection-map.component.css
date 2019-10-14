@@ -56,3 +56,9 @@ li {
 .btn{
     background-color: lightgray;
 }
+div #map{
+    height: 90% !important;
+}
+.toast-body{
+    float: right;
+}

@@ -6,7 +6,7 @@ import { settings } from 'src/environments/environment';
 import { settingsPromise } from 'src/environments/environment.prod';
 import { RequestTokenService } from 'src/app/services/request-token.service';
 import BaseLayer from 'ol/layer/Base';
-import Layer from 'ol/layer';
+import Layer from 'ol/layer/Layer';
 import TileLayer from 'ol/layer/Tile';
 import { OlMapService } from '@helgoland/open-layers';
 import {OSM, TileWMS, ImageWMS, ImageArcGISRest} from 'ol/source';
@@ -171,12 +171,6 @@ export class SelectionMapComponent implements OnInit{
 
   }
   
-
-
-  
-
-
-
   public changePic(){
     document.getElementById('prototypePic').setAttribute('src','assets/images/Kartenansicht.png')
     }
@@ -187,6 +181,7 @@ export class SelectionMapComponent implements OnInit{
       }
 
      public onCloseHandled(){
-      this.display = 'none';
+      
+      document.getElementById('legendToast').setAttribute('style', 'display: none;');
       }
 }
