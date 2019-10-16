@@ -1,8 +1,9 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { OlLayerTitleComponent, WmsCapabilitiesService } from '@helgoland/open-layers';
-import {ImageWMS, ImageArcGISRest} from 'ol/source'
+import {ImageWMS, ImageArcGISRest} from 'ol/source';
 import { Required } from '@helgoland/core';
-import Layer from "ol/layer/Layer"
+import Layer from "ol/layer/Layer";
+import * as esri from "esri-leaflet";
 
 @Component({
   selector: 'wv-extended-ol-layer-title',
@@ -30,9 +31,10 @@ export class ExtendedOlLayerTitleComponent extends OlLayerTitleComponent impleme
     }
     else if(imageSource instanceof ImageArcGISRest){
       const restUrl = imageSource.getUrl();
-      if(restUrl.includes('WaCoDiS'))
-      this.title = restUrl.split('WaCoDiS/')[1].split('/')[0];
+
+      esri.imageMapLayer({url: restUrl}).metadata((error, metadata)=>{
+        this.title = metadata["description"];
+      });
     }
   }
-
 }

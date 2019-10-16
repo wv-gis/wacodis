@@ -19,6 +19,7 @@ import { ExtendedOlLayerTitleComponent } from './legend/extended/extended-ol-lay
 import { ExtendedOlLayerTimeSelectorComponent } from './legend/extended/extended-ol-layer-time-selector/extended-ol-layer-time-selector.component';
 import { ExtendedOlLayerZoomExtentComponent } from './legend/extended/extended-ol-layer-zoom-extent/extended-ol-layer-zoom-extent.component';
 import { FormsModule } from '@angular/forms';
+import { ExtendedOlLayerLegendUrlComponent } from './legend/extended/extended-ol-layer-legend-url/extended-ol-layer-legend-url.component';
 
 @NgModule({
   imports: [
@@ -34,7 +35,7 @@ import { FormsModule } from '@angular/forms';
     FormsModule,
 
   ],
-  declarations: [SelectionMapComponent, LayerTreeComponent, MenuBarComponent, WvExtendedServiceSelectorComponent, ExtendedExtentControlComponent, ExtendedOlLayerTitleComponent, ExtendedOlLayerTimeSelectorComponent, ExtendedOlLayerZoomExtentComponent],
+  declarations: [SelectionMapComponent, LayerTreeComponent, MenuBarComponent, WvExtendedServiceSelectorComponent, ExtendedExtentControlComponent, ExtendedOlLayerTitleComponent, ExtendedOlLayerTimeSelectorComponent, ExtendedOlLayerZoomExtentComponent, ExtendedOlLayerLegendUrlComponent],
   exports: [SelectionMapComponent, LayerTreeComponent, MenuBarComponent, WvExtendedServiceSelectorComponent],
   providers: [ExtendedSettingsService, SelectedProviderService, RequestTokenService, OlMapService],
 })
