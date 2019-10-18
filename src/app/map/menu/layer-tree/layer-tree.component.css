@@ -5,7 +5,7 @@
 
 .phenomena .expand-button {
     position: absolute;
-    top: 90px;
+    top: 80px;
     right: 0;
     width: 49px;
     height: 54px;
@@ -25,7 +25,7 @@
 .phenomena .phenomenonSelector.active {
     display: inline;
     position: absolute;
-    top: 88px;
+    top: 68px;
     right: 0;
     bottom: 0;
     background-color: #718296;

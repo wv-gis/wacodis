@@ -32,7 +32,7 @@ export class LayerTreeComponent implements OnInit {
       }
     }
     this.mapService.getMap(this.mapId).subscribe(map => map.updateSize());
-    this.mapService.getMap(this.mapId).subscribe(map => map.setView(new View({ center: fromLonLat([7.17,51.21]), zoom: 10})));
+    this.mapService.getMap(this.mapId).subscribe(map => map.getView());
     // return this.isActive = !this.isActive;
   
     this.isActive = !this.isActive;
