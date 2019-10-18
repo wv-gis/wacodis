@@ -14,6 +14,12 @@ import { HelgolandSelectorModule } from '@helgoland/selector';
 import { ExtendedExtentControlComponent } from './menu/extended-selector/extended-extent-control/extended-extent-control.component';
 import { SelectedProviderService } from 'src/app/services/selected-provider.service';
 import { RequestTokenService } from 'src/app/services/request-token.service';
+import { HelgolandOpenLayersModule, OlMapService } from '@helgoland/open-layers';
+import { ExtendedOlLayerTitleComponent } from './legend/extended/extended-ol-layer-title/extended-ol-layer-title.component';
+import { ExtendedOlLayerTimeSelectorComponent } from './legend/extended/extended-ol-layer-time-selector/extended-ol-layer-time-selector.component';
+import { ExtendedOlLayerZoomExtentComponent } from './legend/extended/extended-ol-layer-zoom-extent/extended-ol-layer-zoom-extent.component';
+import { FormsModule } from '@angular/forms';
+import { ExtendedOlLayerLegendUrlComponent } from './legend/extended/extended-ol-layer-legend-url/extended-ol-layer-legend-url.component';
 
 @NgModule({
   imports: [
@@ -23,12 +29,14 @@ import { RequestTokenService } from 'src/app/services/request-token.service';
     HelgolandMapControlModule,
     HelgolandMapSelectorModule,
     HelgolandMapViewModule,
+    HelgolandOpenLayersModule,
     TranslateModule,
     HttpClientModule,
+    FormsModule,
 
   ],
-  declarations: [SelectionMapComponent, LayerTreeComponent, MenuBarComponent, WvExtendedServiceSelectorComponent, ExtendedExtentControlComponent],
+  declarations: [SelectionMapComponent, LayerTreeComponent, MenuBarComponent, WvExtendedServiceSelectorComponent, ExtendedExtentControlComponent, ExtendedOlLayerTitleComponent, ExtendedOlLayerTimeSelectorComponent, ExtendedOlLayerZoomExtentComponent, ExtendedOlLayerLegendUrlComponent],
   exports: [SelectionMapComponent, LayerTreeComponent, MenuBarComponent, WvExtendedServiceSelectorComponent],
-  providers: [ExtendedSettingsService, SelectedProviderService, RequestTokenService],
+  providers: [ExtendedSettingsService, SelectedProviderService, RequestTokenService, OlMapService],
 })
 export class WvMapModule { }

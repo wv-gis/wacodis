@@ -22,7 +22,7 @@
      width: 100%; 
 }
 
-#main {
+#mainMap {
     height: 100%;
     width: 100%;
     float: left;
@@ -55,4 +55,10 @@ li {
 }
 .btn{
     background-color: lightgray;
+}
+div #map{
+    height: 90% !important;
+}
+.toast-body{
+    float: right;
 }

@@ -157,7 +157,7 @@ p.big.bold{
     } 
  /* }  */
 .jumbotron{
-    height: 350px;
+    height: 450px;
     background:url('../../assets/images/010.jpeg'); 
     background-size: cover;
     border-radius: 0px

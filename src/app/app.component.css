@@ -1,10 +1,7 @@
+
 .content {
-padding-top: 3rem;
+    padding-top: 2rem;
 }
-/* .content {
-    left: 0;
-    position: absolute;
-} */
 /* .header{
     position: absolute;
     height: 60px;
@@ -42,7 +39,9 @@ padding-top: 3rem;
         padding-left: 20px;
     }
 
- 
+ .navbar{
+     padding: 0;
+ }
 
 .navbar-brand{
     padding: 0;
@@ -60,7 +59,7 @@ body{
 }
 .wv-navbar-light{
     background-color: #ffffff;
-    color: gray;
+    color: #718296;
     border-bottom-style: inset;
     border-bottom-color: rgb(246, 247, 248);  
 }
@@ -105,10 +104,15 @@ p.big.bold{
     font-style: normal;
     color: #2C333F; 
     font-size: 15px;
+    width:  auto;
+    padding: 8px 16px;
+    margin-right: 1rem;
+
 }
 .wv.active{
    background-color: #718296;
 }
+
 .active .nav-link{
     color: #fff;
 }
