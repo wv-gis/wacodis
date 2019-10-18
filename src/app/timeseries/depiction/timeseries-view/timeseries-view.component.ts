@@ -55,7 +55,7 @@ export class TimeseriesViewComponent {
                 
                 dataEmitService.datasetOptions.forEach((options) => {
                     this.colors.push(options.color);
-                    console.log('Color OPtion: ' + options.color);
+                    // console.log('Color OPtion: ' + options.color);
                     this.datasetIdsMultiple.forEach((entry, i) => {
                         const option = new DatasetOptions(entry, this.colors[i]);
                         option.generalize = true;

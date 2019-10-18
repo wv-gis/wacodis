@@ -4,123 +4,11 @@ interface NodeModule {
   id: string;
 }
 
-import * as L from 'leaflet';
-import { Map } from 'leaflet';
+import * as L from 'leaflet'
 import { RasterLayerOptions } from 'esri-leaflet';
-// import { ControlPosition } from 'leaflet';
-// import { ControlOptions } from 'leaflet';
-// import { LayerGroup } from 'leaflet';
-// import { Layer } from 'leaflet';
+
 
 declare module 'leaflet' {
-  namespace Control {
-    class SideBySide extends Control {
-      constructor(leftLayers: L.Layer | L.Layer[], rightLayers: L.Layer | L.Layer[], options: Object);
-    }
-    class PanelLayers extends L.Control {
-
-      constructor(baseLayers: L.PanelBaseLayer[], overlays: L.PanelBaseLayer[], options?: PanelOptions);
-      onAdd(map: L.Map): HTMLElement;
-
-      addBaseLayer(layer: L.Layer, name: string, group: L.LayerGroup): this;
-      addOverlay(layer: L.Layer, name: string, group: L.LayerGroup): this;
-      removeLayer(layerDef: Object): this;
-      clearLayers(): this;
-      layerFromDef(layerDef: LayersObject): L.Layer;
-      update(): void;
-      getLayer(id: string): L.Layer;
-      addLayer(layerDef: LayersObject, overlay: L.Layer, group: LayerGroup, isCollapsed: boolean): void;
-      createItem(obj: Object): HTMLElement;
-      createRadioElement(name: string, checked: boolean, obj: Object): Node;
-      addItem(obj: Object): HTMLElement;
-      createGroup(groupdata: Object, isCollapsed: boolean): HTMLElement;
-      onInputClick(): void;
-      initLayout(): void;
-      updateHeight(h: number): void;
-      expand(): this;
-      collapse(): this;
-      getPath(obj: Object[], prop: string): Object;
-    }
-  }
-
-  class PanelBaseLayer {
-    constructor(options: PanelBaseLayerOptions);
-  }
-  //  class PanelLayerGroup extends L.Layer {
-  //   constructor(options: PanelLayerGroupOptions);
-  // }
-  // export function panelBaseLayer(options: PanelBaseLayerOptions): L.PanelBaseLayer;
-  // export function panelLayerGroup(options: PanelLayerGroupOptions): L.PanelLayerGroup;
-
-  interface PanelBaseLayerOptions extends LayerOptions {
-    name: string;
-    icon?: string;
-    layer: {
-      type: string,
-      args: string
-    } | L.Layer | L.TileLayer;
-    active?: boolean
-  }
-
-  // interface PanelLayerGroupOptions extends LayerOptions {
-  //   group: string;
-  //   collapsed?: boolean;
-  //   layers: L.PanelBaseLayer[]
-  // }
-
-
-
-  namespace control {
-    export function sideBySide(leftLayers: L.Layer | L.Layer[], rightLayers: L.Layer | L.Layer[], options?: Object): L.Control.SideBySide;
-    export function panelLayers(baseLayers: L.PanelBaseLayer[], overlays: L.PanelBaseLayer[], options?: PanelOptions): L.Control.PanelLayers;
-  }
-  namespace Sync {
-    export function offSetHelper(ratioRef: number[], ratioTarget: number[]): L.LatLng;
-  }
-  interface PanelOptions extends ControlOptions {
-    /**
-     * @default 'false'
-     */
-    compact?: boolean;
-    /**
-    * @default 0
-    */
-    compactOffset?: number;
-    /**
-    * @default 'false'
-    */
-    collapsed?: boolean;
-    /**
-    * @default 'true'
-    */
-    autoZIndex?: boolean;
-    /**
-    * @default false
-    */
-    collapsibleGroups?: boolean;
-    /**
-    * @default null
-    */
-    buildItem?: () => HTMLElement | string;
-    /**
-     * @default ''
-     */
-    title?: string;
-    /**
-     * @default ''
-     */
-    className?: string;
-    /**
-  * @default 'topright'
-  */
-    position?: ControlPosition
-
-  }
-  interface Map {
-    sync(map: L.Map, options?: SyncOptions): Map;
-    unsync(map: L.Map): Map;
-    isSynced(otherMap: L.Map): boolean;
-  }
   interface SyncOptions extends MapOptions {
     noInitialSync?: boolean;
     syncCursor?: boolean;
@@ -132,6 +20,28 @@ declare module 'leaflet' {
     },
     offsetFn?: (center: LatLng, zoom: number, refMap: L.Map, targetMap: L.Map) => LatLng;
   }
+
+  interface Map{
+    sync(map: Map, options?: SyncOptions): Map;
+    unsync(map: Map): Map;
+    isSynced(otherMap: Map): boolean;
+  }
+    
+
+//  class SyncMap extends Map{
+//    constructor(element: string | HTMLElement, options?: MapOptions)
+//       sync(map: Map, options?: SyncOptions): Map;
+//       unsync(map: Map): Map;
+//       isSynced(otherMap: Map): boolean;
+//   }
+// export function map(element: string | HTMLElement, options?: MapOptions): SyncMap;
+
+ 
+  namespace Sync {
+    export function offSetHelper(ratioRef: number[], ratioTarget: number[]): L.LatLng;
+  }
+ 
+
   interface ImageMapLayerOptions extends RasterLayerOptions {
     url: string;
     /**
@@ -143,13 +53,13 @@ declare module 'leaflet' {
      */
     f?: string;
     /**
-     * @default overlayPane
-     */
-    pane?: string;
-    /**
      * @default 1
      */
     opacity?: number;
+    /**
+    * @default overlayPane
+    */
+    pane?: string;
     zIndex?: number;
     /**
      * @default 'front'
@@ -182,8 +92,8 @@ declare module 'leaflet' {
     class ImageMapLayer extends RasterLayer {
       constructor(options: ImageMapLayerOptions)
       /**
-               * Redraws this layer below all other overlay layers.
-               */
+      * Redraws this layer below all other overlay layers.
+      */
       bringToBack(): this;
       /**
        * 	Redraws this layer above all other overlay layers.
@@ -218,7 +128,8 @@ declare module 'leaflet' {
       query(): this;
       getRenderingRule(): object;
       setRenderingRule(renderingRule: object): this;
-      getMosaicRule(mosaicRule: object): this;
+      getMosaicRule(): object;
+      setMosaicRule(mosaicRule: object): this;
       redraw(): this;
     }
     export function imageMapLayer(options: ImageMapLayerOptions): ImageMapLayer;

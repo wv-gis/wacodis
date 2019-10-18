@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-
+import { FormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
@@ -33,6 +33,7 @@ import { WeatherForecastComponent } from './weather/weather-forecast/weather-for
 import { CsvDataService } from 'src/app/settings/csvData.service';
 import { ComparisonSelectionService } from 'src/app/services/comparison-selection.service';
 import { RequestTokenService } from 'src/app/services/request-token.service';
+import { HelgolandOpenLayersModule } from '@helgoland/open-layers';
 
 
 
@@ -40,7 +41,7 @@ import { RequestTokenService } from 'src/app/services/request-token.service';
   declarations: [
     AppComponent,
     LandingpageComponent,
-    WeatherForecastComponent
+    WeatherForecastComponent,
   ],
   imports: [
     BrowserModule,
@@ -63,6 +64,8 @@ import { RequestTokenService } from 'src/app/services/request-token.service';
     HelgolandMapViewModule,
     HelgolandModificationModule,
     HelgolandControlModule,
+    HelgolandOpenLayersModule,
+    FormsModule,
     WvMapModule,
     WvTimeseriesModule,
     WvProfilesModule,

@@ -89,7 +89,7 @@ export class WvDataViewComponent implements OnInit, OnDestroy {
   public badgeNumber: number;
   public baseLayer: any;
   public testLayer: any;
-  public _map: any;
+  public _map: L.Map;
 
   constructor(private datasetService: DatasetService<DatasetOptions>, private settings: SettingsService<Settings>, private router: Router,
     private mapCache: MapCache, private datasetApiInterface: DatasetApiInterface, private selProv: SelectedProviderService) {
@@ -124,7 +124,7 @@ export class WvDataViewComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.baseLayer = L.tileLayer.wms('http://ows.terrestris.de/osm/service?',
     {
-      layers: 'OSM-WMS', format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>', className: 'OSM'
+      layers: 'OSM-WMS', format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, <div>Icons made by <a href="https://www.flaticon.com/authors/simpleicon" title="SimpleIcon">SimpleIcon</a> from <a href="https://www.flaticon.com/"title="Flaticon">www.flaticon.com</a></div>', className: 'OSM'
     });
 
     // this.testLayer = esri.dynamicMapLayer({
@@ -153,7 +153,7 @@ export class WvDataViewComponent implements OnInit, OnDestroy {
     }
 
       this.diagramEntry = !this.diagramEntry;
-      console.log(this.diagramEntry);
+      // console.log(this.diagramEntry);
       // this.moveToDiagram('/timeseries-diagram');
       this.router.navigateByUrl('/timeseries-diagram');
   }
@@ -187,10 +187,11 @@ export class WvDataViewComponent implements OnInit, OnDestroy {
   public onStationSelected(station: Station) {
     this._map = this.mapCache.getMap('timeMap');
     const point = station.geometry as GeoJSON.Point;
+    console.log(point);
     this.stationPopup = L.popup().setLatLng([point.coordinates[1], point.coordinates[0]])
-      .setContent(`<div> ID:  ${station.properties.id} </div><div> ${station.properties.label} </div>`)
-      .openOn(this._map);
-  
+    .setContent(`<div> ID:  ${station.id} </div><div> ${station.properties.label} </div>`);
+      
+      console.log(this.stationPopup.getContent());
     this.display = 'block';
 
      this.datasetApiInterface.getTimeseries(this.selectedProviderList[0].url, this.stationFilter).subscribe((timeseries) => {

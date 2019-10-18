@@ -13,7 +13,7 @@
         },
         {
             "name": "52north - Sensorwebtestbed",
-            "url": "http://sensorweb.demo.52north.org/sensorwebtestbed/api/v1/"
+            "url": "https://sensorweb.demo.52north.org/sensorwebtestbed/api/v1/"
         },
         {
             "name":"Wupperverband Timeseries intern",

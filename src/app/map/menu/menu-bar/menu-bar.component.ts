@@ -39,7 +39,7 @@ export class MenuBarComponent implements OnInit {
           });
         }
         else {
-          this.datasetApiInt.getServices(this.settingsService.getSettings().datasetApis[0].url).subscribe((service) => {
+          this.datasetApiInt.getServices(this.settingsService.getSettings().datasetApis[1].url).subscribe((service) => {
             this.selectedService = service[0];
             this.selProv.setProvider({ id: this.selectedService.id, url: this.selectedService.apiUrl });
             this.label = this.selectedService.label;
