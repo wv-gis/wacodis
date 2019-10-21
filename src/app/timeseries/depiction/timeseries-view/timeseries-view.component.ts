@@ -48,7 +48,7 @@ export class TimeseriesViewComponent {
             }
             if (localStorage.load('time')!== null) {
                 let storeTimespan = localStorage.load('time') as Timespan;
-                this.timespan = new Timespan( Math.round(storeTimespan.from),Math.round(storeTimespan.to));
+                // this.timespan = new Timespan( Math.round(storeTimespan.from),Math.round(storeTimespan.to));
            
             }
             try {

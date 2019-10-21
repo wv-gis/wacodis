@@ -7,7 +7,7 @@ import { WvExtendedMultiserviceFilterSelectorComponent } from './data-selection/
 import { HelgolandSelectorModule } from '@helgoland/selector';
 import { AppRoutingModule } from 'src/app/app-routing.module';
 import { HelgolandCoreModule, SettingsService } from '@helgoland/core';
-import { HelgolandLabelMapperModule, HelgolandDatasetlistModule } from '@helgoland/depiction';
+import { HelgolandLabelMapperModule, HelgolandDatasetlistModule, HelgolandDatasetDownloadModule } from '@helgoland/depiction';
 import { TranslateModule } from '@ngx-translate/core';
 import { DatasetEmitServiceService } from 'src/app/services/dataset-emit-service.service';
 import { WvMapModule } from 'src/app/map/map.module';
@@ -24,6 +24,7 @@ import { ExtendedPhenomenonServiceFilterSelectorComponent } from './data-selecti
 import { SelectedProviderService } from 'src/app/services/selected-provider.service';
 import { HelgolandModificationModule } from '@helgoland/modification';
 import { StyleModificationComponent } from './depiction/menu-bar/style-modification/style-modification.component';
+import { WvExtendedExportImageButtonComponent } from './depiction/extended/wv-extended-export-image-button/wv-extended-export-image-button.component';
 
 
 @NgModule({
@@ -39,13 +40,14 @@ import { StyleModificationComponent } from './depiction/menu-bar/style-modificat
     HelgolandTimeModule,
     HelgolandDatasetlistModule,
     HelgolandMapSelectorModule,
-    HelgolandModificationModule
+    HelgolandModificationModule,
+    HelgolandDatasetDownloadModule
 
   ],
   declarations: [TimeseriesViewComponent, WvDataViewComponent, WvExtendedListSelectorComponent,
      WvExtendedMultiserviceFilterSelectorComponent, WvExtendedTimeseriesEntryComponent, 
      WvExtendedTimeshiftSelectorComponent, TimeseriesLegendComponent, 
-     TimeshiftDataSelectorMenuComponent, ExtendedPhenomenonServiceFilterSelectorComponent, StyleModificationComponent],
+     TimeshiftDataSelectorMenuComponent, ExtendedPhenomenonServiceFilterSelectorComponent, StyleModificationComponent, WvExtendedExportImageButtonComponent],
   providers:[DatasetEmitServiceService, ExtendedSettingsService, SelectedProviderService]
 
 })

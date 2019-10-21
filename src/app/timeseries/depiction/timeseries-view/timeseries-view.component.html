@@ -1,5 +1,7 @@
 <div class="container-fluid" style="padding-right: 0px; padding-left: 0px;">
-  <wv-timeshift-data-selector-menu [timespan]="timespan" (onTimespanChanged)="timespanChanged($event)"></wv-timeshift-data-selector-menu>
+  <wv-timeshift-data-selector-menu [timespan]="timespan" [datasetIds]="datasetIdsMultiple" [datasetOptions]="datasetOptionsMultiple" (onTimespanChanged)="timespanChanged($event)">
+  </wv-timeshift-data-selector-menu>
+ 
   <div class="diagram">
     <div class="diagramEntry" style="height: 650px; padding: 5px;" id="#diagram" [ngClass]="{'active': isActive}">
         <div class="loading-overlay">

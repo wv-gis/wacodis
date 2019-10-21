@@ -1,0 +1,15 @@
+.export-diagram-wrapper {
+    position: absolute; 
+    visibility: hidden;
+}
+.btn.btn-default{
+    background-color: #718296;
+    color: white;
+}
+.modal{
+    display: block;
+    background-color: rgba(0,0,0,0.6)
+}
+td{
+    padding: 5px;
+}

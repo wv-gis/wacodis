@@ -49,6 +49,8 @@
       <!-- <span class="fas fa-pencil-alt" (click)="editDatasetOptions(); $event.stopPropagation();" [ngStyle]="{color: datasetOptions?.color}"></span> -->
       <span class="fas fa-pencil-alt" (click)="editDatasetOptions(); $event.stopPropagation();" data-toggle="tooltip" data-placement="top"
         title="Darstellung editieren"></span>
+      <span class="fas fa-download" (click)="downloadDataset(); $event.stopPropagation();" data-toggle="tooltip" data-placement="top"
+        title="Daten exportieren"></span>
       <span class="fa fa-times" (click)="removeDataset(); $event.stopPropagation();" data-toggle="tooltip" data-placement="top"
         title="Zeitreihe entfernen"></span>
     </div>
@@ -82,6 +84,101 @@
               <swc-timeseries-raw-data-output timeseries='timeseries'></swc-timeseries-raw-data-output>
               <swc-sos-url timeseries='timeseries'></swc-sos-url>
           </div> -->
+    </div>
+  </div>
+</div>
+<div class="container-fluid">
+  <div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'visibility':display}" id="dataExportModal">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <!-- <h5 class="modal-title">{{id}}</h5> -->
+          <button type="button" class="close" aria-label="Close" (click)="onCloseHandled()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <table>
+            <tbody>
+              <tr>
+                <td>
+                  <b> Measure Parameter: </b>
+                </td>
+                <td>
+                  {{metadata.phenomenon}}
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <b>Unit: </b>
+                </td>
+                <td>
+                  {{metadata.uom}}
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <b>First Value: </b>
+                </td>
+                <td>
+                  {{metadata.firstvalue}}
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <b>Last Value: </b>
+                </td>
+                <td>
+                  {{metadata.lastvalue}}
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <b>Timezone: </b>
+                </td>
+                <td>
+                  UTCselection
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <b>From: </b>
+                </td>
+                <td>
+                  {{metadata.timeperiod.from}}
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <b>To: </b>
+                </td>
+                <td>
+                  {{metadata.timeperiod.to}}
+                </td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>
+                    <input matInput placeholder="Choose from" [value]="metadata.timeperiod.from" ng-model-options="{timezone: 'utc'}">
+                </td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>
+                  <input matInput placeholder="Choose to" [value]="metadata.timeperiod.to" ng-model-options="{timezone: 'utc'}">
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <n52-dataset-export [inputId]="datasetId" [exportOptions]="exportOptions" (onDownloadChange)="onDownloadReset($event)" (onMetadataChange)="onMetadata($event)"
+            (onLoadingChange)="onLoading($event)"></n52-dataset-export>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-default" (click)="onDownload('csv')">CSV</button>
+          <button class="btn btn-success" (click)="onDownload('xlsx')">Excel</button>
+          <button type="button" class="btn btn-danger" (click)="onCloseHandled()">Close</button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
