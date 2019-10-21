@@ -1,0 +1,58 @@
+<button class="btn btn-default" (click)="exportSettings()">
+    <span>Export</span>
+
+</button>
+<div class="export-diagram-wrapper">
+    <ng-template #diagram></ng-template>
+</div>
+<div class="container-fluid">
+    <div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'visibility':pick}" id="exportMod">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Diagramm Exportieren</h5>
+                    <button type="button" class="close" aria-label="Close" (click)="onCloseHandle()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <span>Titel: </span>
+                                </td>
+                                <td>
+                                    <input type="text" id="title" placeholder="Export Diagramm" value="{{title}}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span>Von: </span>
+                                </td>
+                                <td>
+                                    <input type="text" id="from" value="{{timespan.from | date: 'long'}}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span>Bis: </span>
+                                </td>
+                                <td>
+                                    <input type="text" id="to" value="{{timespan.to | date: 'long'}}" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-success" (click)="exportImage()">
+                        <span>Export</span>
+                        <span *ngIf="loading"> - loading...</span>
+                    </button>
+                    <button type="button" class="btn btn-default" (click)="onCloseHandle()">Abbrechen</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
