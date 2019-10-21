@@ -1,6 +1,5 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component} from '@angular/core';
 import { OlLayerLegendUrlComponent, WmsCapabilitiesService } from '@helgoland/open-layers';
-import Layer from 'ol/layer/Layer';
 import { ImageWMS } from 'ol/source';
 import ImageArcGISRest from 'ol/source/ImageArcGISRest';
 
@@ -10,9 +9,7 @@ import ImageArcGISRest from 'ol/source/ImageArcGISRest';
   styleUrls: ['./extended-ol-layer-legend-url.component.css']
 })
 export class ExtendedOlLayerLegendUrlComponent extends OlLayerLegendUrlComponent {
-  @Input() layer: Layer;
 
-  @Output() legendUrl: EventEmitter<string> = new EventEmitter();
 
   constructor(private wmsCap: WmsCapabilitiesService) {
     super(wmsCap);

@@ -6,7 +6,6 @@ import * as esri from "esri-leaflet";
 import { DatasetApiInterface, ParameterFilter } from '@helgoland/core';
 import { RequestTokenService } from 'src/app/services/request-token.service';
 import { error } from '@angular/compiler/src/util';
-import { LatLngBounds } from '@helgoland/map/node_modules/@types/leaflet';
 import { Location } from '@angular/common';
 require('leaflet.sync');
 

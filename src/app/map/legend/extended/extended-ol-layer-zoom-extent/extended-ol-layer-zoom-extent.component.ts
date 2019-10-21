@@ -1,6 +1,5 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { OlLayerZoomExtentComponent, OlMapService, WmsCapabilitiesService } from '@helgoland/open-layers';
-import { Required } from '@helgoland/core';
 import BaseLayer from 'ol/layer/Base';
 import { View } from 'ol';
 import Layer from 'ol/layer/Layer';
@@ -15,8 +14,7 @@ import { transformExtent } from 'ol/proj';
   styleUrls: ['./extended-ol-layer-zoom-extent.component.css']
 })
 export class ExtendedOlLayerZoomExtentComponent extends OlLayerZoomExtentComponent implements OnInit {
-  @Required @Input() layer: BaseLayer;
-  @Required @Input() mapId: string;
+
 
   private imageurl: string;
   private imageid: string;

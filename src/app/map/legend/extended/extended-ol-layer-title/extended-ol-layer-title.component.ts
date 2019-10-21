@@ -1,8 +1,6 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { OlLayerTitleComponent, WmsCapabilitiesService } from '@helgoland/open-layers';
 import {ImageWMS, ImageArcGISRest} from 'ol/source';
-import { Required } from '@helgoland/core';
-import Layer from "ol/layer/Layer";
 import * as esri from "esri-leaflet";
 
 @Component({
@@ -11,8 +9,7 @@ import * as esri from "esri-leaflet";
   styleUrls: ['./extended-ol-layer-title.component.css']
 })
 export class ExtendedOlLayerTitleComponent extends OlLayerTitleComponent implements OnInit {
-  @Required @Input() layer: Layer;
-  public title: string;
+
   
   constructor(private  wmsCap: WmsCapabilitiesService) {
     super(wmsCap);

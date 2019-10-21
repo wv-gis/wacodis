@@ -66,7 +66,15 @@ export class SelectionMapComponent implements OnInit {
 
 
   ngOnInit() {
-
+    this.mapService.getMap(this.mapId).subscribe((map) => {
+      map.getLayers().clear();
+      map.addLayer(new Tile({
+        source: new XYZ({
+          url: 'https://maps.omniscale.net/v2/' + "fluggs-d9227d46" + '/style.default/{z}/{x}/{y}.png',
+          attributions: '&copy; 2019 &middot; <a href="https://maps.omniscale.com/">Omniscale</a>'                 
+        })
+      }));
+    });
 
     this.baselayers.push(new TileLayer({
       visible: true,
@@ -121,15 +129,7 @@ export class SelectionMapComponent implements OnInit {
       })
     );
 
-    this.mapService.getMap(this.mapId).subscribe((map) => {
-      map.getLayers().clear();
-      map.addLayer(new Tile({
-        source: new XYZ({
-          url: 'https://maps.omniscale.net/v2/' + "fluggs-d9227d46" + '/style.default/{z}/{x}/{y}.png',
-          attributions: '&copy; 2019 &middot; <a href="https://maps.omniscale.com/">Omniscale</a>'                 
-        })
-      }));
-    });
+    
 
     // https://{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png
 
