@@ -122,9 +122,9 @@ export class WvDataViewComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.baseLayer = L.tileLayer.wms('http://ows.terrestris.de/osm/service?',
+    this.baseLayer = L.tileLayer.wms('https://maps.omniscale.net/v2/' + "fluggs-d9227d46" + '/style.default/{z}/{x}/{y}.png',
     {
-      layers: 'OSM-WMS', format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, <div>Icons made by <a href="https://www.flaticon.com/authors/simpleicon" title="SimpleIcon">SimpleIcon</a> from <a href="https://www.flaticon.com/"title="Flaticon">www.flaticon.com</a></div>', className: 'OSM'
+       format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; 2019 &middot; <a href="https://maps.omniscale.com/">Omniscale</a>', className: 'OSM'
     });
 
     // this.testLayer = esri.dynamicMapLayer({
@@ -133,7 +133,7 @@ export class WvDataViewComponent implements OnInit, OnDestroy {
     //  } );
     this.baseMaps.set('timeMap',
       {
-        label: 'Open Street Map', visible: true, layer: this.baseLayer
+        label: 'Omniscale Map', visible: true, layer: this.baseLayer
   });
 //   this.baseMaps.set('ServerTestMap',
 //   {

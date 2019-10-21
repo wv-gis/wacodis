@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
-import { Timespan, LocalStorage } from '@helgoland/core';
+import { Timespan, LocalStorage, DatasetOptions } from '@helgoland/core';
 import { Router } from '@angular/router';
 
 @Component({
@@ -11,6 +11,12 @@ export class TimeshiftDataSelectorMenuComponent {
 
     @Input()
     timespan: Timespan;
+
+    @Input()
+    datasetOptions: Map<string,DatasetOptions>;
+
+    @Input()
+    datasetIds: string[];
 
     @Output()
     onTimespanChanged: EventEmitter<Timespan> = new EventEmitter<Timespan>();

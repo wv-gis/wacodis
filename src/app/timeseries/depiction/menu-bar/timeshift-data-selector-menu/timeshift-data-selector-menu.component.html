@@ -19,6 +19,8 @@
           <button class="btn btn-default" (click)="setTimespan('week')" [ngClass]="{'active': checkSelected('week')}">1 Woche</button>
           <button class="btn btn-default" (click)="setTimespan('half')" [ngClass]="{'active': checkSelected('half')}">1/2 Jahr</button>
           <button class="btn btn-default" (click)="setTimespan('today')" [ngClass]="{'active': checkSelected('today')}">Heute</button>
+          <wv-wv-extended-export-image-button title="Exported Diagram" [datasetOptions]="datasetOptions" [datasetIds]="datasetIds"
+          [timespan]="timespan" showLegend="true" showFirstLastDate="true"></wv-wv-extended-export-image-button>
         </li>
       </ul>
     </div>
