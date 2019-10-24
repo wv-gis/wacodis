@@ -11,5 +11,7 @@ export class LandingpageComponent implements OnInit {
 
   ngOnInit() {
   }
-
+  onCloseHandled(){
+    document.getElementById('cookie-bar').setAttribute('style','display: none;');
+  }
 }

@@ -1,17 +1,17 @@
 <div *ngIf="showNavBar" class="header">
-  <nav class="navbar navbar-expand-lg fixed-top wv-navbar-light ">
+  <nav class="navbar navbar-expand-lg fixed-top navbar-light wv-navbar-light ">
     <div class="container-fluid">
       <div class="navbar-header">
-        <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarToggler">
-          <span class="navbar-toggler-icon"></span>
-        </button>
         <a href="/start" class="navbar-brand">
           <img src="assets/images/WaCoDiS_LogoTransp.png" alt="WaCoDiS" width="100" height="64">
         </a>
+        <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#WvnavbarToggler">
+          <span class="navbar-toggler-icon"></span>
+        </button>
       </div>
 
       <!-- <div *ngIf="checkSelection('/start')" class="collapse navbar-collapse" id="navbarToggler"> -->
-        <div  class="collapse navbar-collapse" id="navbarToggler"> 
+        <div  class="collapse navbar-collapse" id="WvnavbarToggler"> 
         <ul class="navbar-nav mr-auto ">
           <li routerLinkActive="active" class="nav-item wv" data-toggle="collapse" data-target=".navbar-collapse.show">
             <a routerLink='/start' class="nav-link">Home</a>
@@ -48,7 +48,7 @@
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
         </form> -->
       </div>
-      <img src="assets/images/logo_kpl_nebeneinander_schwarz.gif" alt="Wupperverband" width="232" height="41" >
+      <img src="https://fluggs.wupperverband.de/fluggs-theme/images/custom/background_images/logo_wupperverband_grau.png" alt="Wupperverband" width="200" height="25" >
     </div>
   </nav>
   <h1>{{id}}</h1>

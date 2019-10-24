@@ -315,7 +315,13 @@
         </div>
     </div>
     <!-- /container -->
-
+    <div id="cookie-bar" class="fixed bottom" style="z-index: 99999;">
+            <button type="button" class="close" aria-label="Close" (click)="onCloseHandled()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+        <iframe frameborder="no" width="500px" height="250px" src="https://piwik.wupperverband.de/index.php?module=CoreAdminHome&action=optOut&language=de"></iframe>
+    </div>
+    
 </main>
 <hr>
 <footer class="container" style="float: left;">
