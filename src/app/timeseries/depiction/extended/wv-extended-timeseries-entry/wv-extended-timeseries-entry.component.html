@@ -170,8 +170,7 @@
               </tr>
             </tbody>
           </table>
-          <n52-dataset-export [inputId]="datasetId" [exportOptions]="exportOptions" (onDownloadChange)="onDownloadReset($event)" (onMetadataChange)="onMetadata($event)"
-            (onLoadingChange)="onLoading($event)"></n52-dataset-export>
+          <n52-dataset-export [inputId]="datasetId" [exportOptions]="exportOptions" (onMetadataChange)="onMetadata($event)" (onLoadingChange)="onLoading($event)"></n52-dataset-export>
         </div>
         <div class="modal-footer">
           <button class="btn btn-default" (click)="onDownload('csv')">CSV</button>

@@ -57,7 +57,7 @@ export class WvExtendedTimeseriesEntryComponent extends TimeseriesEntryComponent
   downloadDataset() {
     this.display = 'visible';
   }
-  onLoading() {
+  public onLoading(t: boolean) {
     // this.loading = !this.loading;
   }
 }
