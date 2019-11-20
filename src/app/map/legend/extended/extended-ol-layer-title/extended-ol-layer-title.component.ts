@@ -30,7 +30,12 @@ export class ExtendedOlLayerTitleComponent extends OlLayerTitleComponent impleme
       const restUrl = imageSource.getUrl();
 
       esri.imageMapLayer({url: restUrl}).metadata((error, metadata)=>{
-        this.title = metadata["description"];
+        if(error){
+          console.log('Error on Image Service request')
+        }else{
+          this.title = metadata["description"];
+        }
+       
       });
     }
   }

@@ -122,23 +122,23 @@ export class WvDataViewComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.baseLayer = L.tileLayer.wms('https://maps.omniscale.net/v2/' + "fluggs-d9227d46" + '/style.default/{z}/{x}/{y}.png',
-    {
-       format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; 2019 &middot; <a href="https://maps.omniscale.com/">Omniscale</a>', className: 'OSM'
-    });
 
-    // this.testLayer = esri.dynamicMapLayer({
-    //   url: 'https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/SampleWorldCities/MapServer',
-    //   layers: [0], opacity: 0.25
-    //  } );
+    this.baseLayer = L.tileLayer.wms('http://ows.terrestris.de/osm/service?',
+    {
+       layers: 'OSM-WMS',format: 'image/png', transparent: true, maxZoom: 16, 
+       attribution: '&copy; 2019 &middot; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, <div>Icons made by <a href="https://www.flaticon.com/authors/simpleicon" title="SimpleIcon">SimpleIcon</a> from <a href="https://www.flaticon.com/"title="Flaticon">www.flaticon.com</a></div>'
+       , className: 'OSM'
+    });
+    // this.baseLayer = L.tileLayer.wms('https://maps.omniscale.net/v2/' + "fluggs-d9227d46" + '/style.default/{z}/{x}/{y}.png',
+    // {
+    //    format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; 2019 &middot; <a href="https://maps.omniscale.com/">Omniscale</a>', className: 'OSM'
+    // });
+
     this.baseMaps.set('timeMap',
       {
-        label: 'Omniscale Map', visible: true, layer: this.baseLayer
+        label: 'Open Street Map', visible: true, layer: this.baseLayer
   });
-//   this.baseMaps.set('ServerTestMap',
-//   {
-//     label: 'ServerTest Map', visible: true, layer: this.testLayer
-// });
+
 
 }
   public onDatasetSelected(datasets: IDataset[]) {

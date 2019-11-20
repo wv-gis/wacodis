@@ -103,10 +103,12 @@ p.big.bold{
 .wv .nav-link{
     font-style: normal;
     color: #2C333F; 
-    font-size: 15px;
+    font-size: 13px;
     width:  auto;
     padding: 8px 16px;
     margin-right: 1rem;
+    min-width: 100px;
+    text-align: center;
 
 }
 .wv.active{
