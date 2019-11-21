@@ -33,7 +33,7 @@ export class ExtendedOlLayerTimeSelectorComponent extends OlLayerTimeSelectorCom
           error => { this.timeAttribute = false },
           () => this.loading = false
         );
-        if(this.timeAttribute)
+        if(this.timeAttribute){}
         // this.determineCurrentTimeParameter();
     }
     else if(imageSource instanceof ImageArcGISRest){
