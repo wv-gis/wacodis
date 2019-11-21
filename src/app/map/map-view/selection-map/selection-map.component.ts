@@ -45,9 +45,7 @@ export class SelectionMapComponent implements OnInit {
 
   public baselayers: BaseLayer[] = [];
   public overviewMapLayers: Layer[] = [new Tile({
-    source: new XYZ({
-      url: 'https://maps.omniscale.net/v2/' + "fluggs-d9227d46" + '/style.default/{z}/{x}/{y}.png',
-    })
+    source: new OSM()
   })];
   public zoom = 11;
   public lat = 51.15;
@@ -56,7 +54,6 @@ export class SelectionMapComponent implements OnInit {
   public token: string = '';
   public sentinelLayer: esri.ImageMapLayer;
   public mapId = 'test-map';
-  public display = 'none';
 
   constructor(private mapService: OlMapService, private settingsService: SettingsService<Settings>, private requestTokenSrvc: RequestTokenService) {
     if (this.settingsService.getSettings().datasetApis) {
@@ -69,10 +66,7 @@ export class SelectionMapComponent implements OnInit {
     this.mapService.getMap(this.mapId).subscribe((map) => {
       map.getLayers().clear();
       map.addLayer(new Tile({
-        source: new XYZ({
-          url: 'https://maps.omniscale.net/v2/' + "fluggs-d9227d46" + '/style.default/{z}/{x}/{y}.png',
-          attributions: '&copy; 2019 &middot; <a href="https://maps.omniscale.com/">Omniscale</a>'                 
-        })
+        source: new OSM()
       }));
     });
 
@@ -95,15 +89,15 @@ export class SelectionMapComponent implements OnInit {
         }
       })
     }));
-    // this.baselayers.push(new TileLayer({
-    //   visible: false,
-    //   source: new TileWMS({
-    //     url: 'https://maps.dwd.de/geoserver/ows',
-    //     params: {
-    //       'LAYERS': 'dwd:SAT_EU_central_RGB_cloud',
-    //     }
-    //   })
-    // }));
+    this.baselayers.push(new ImageLayer({
+      visible: false,
+      source: new ImageWMS({
+        url: ' https://www.wms.nrw.de/umwelt/waldNRW',
+        params: {
+          'LAYERS': 'waldbedeckung_Sentinel2',
+        }
+      })
+    }));
 
     this.baselayers.push(new ImageLayer({
       visible: true,
@@ -129,54 +123,11 @@ export class SelectionMapComponent implements OnInit {
       })
     );
 
+    //Riparian Zones Land Cover Land USe WMS
+    // https://image.discomap.eea.europa.eu/arcgis/services/RiparianZones/LCLU/MapServer/WMSServer
     
 
-    // https://{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png
-
-    //     this.baseMaps.set('map',
-    //       {
-    //         label: 'Open Street Map', visible: true, layer: L.tileLayer.wms('http://ows.terrestris.de/osm/service?',
-    //           { layers: 'OSM-WMS',format: 'image/png',transparent: true, maxZoom: 16, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>', className: 'Open Street Map' })
-    //       });
-    //     this.baseMaps.set('Ter', {
-    //       label: 'Terrain', visible: false, layer: L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}.png', {
-    //         maxZoom: 16, attribution: '&copy; <a href="http://maps.stamen.com">Stamen Tiles Design</a>', className: 'Terrain'
-    //       })
-    //     });
-    //     this.control.setPosition('topright');
-
-    //     this.overlayMaps.set('DWD',
-    //       {
-    //         label: "DWD Daten", visible: false,
-    //         layer: L.tileLayer.wms('https://maps.dwd.de/geoserver/dwd/wms?', {
-    //           layers: 'dwd:Warnungen_Gemeinden_vereinigt, dwd:FX-Produkt', format: 'image/png', transparent: true,
-    //           attribution: '&copy; <a href="https://maps.dwd.de">DWD Geoserver</a>', pane: 'overlayPane', updateInterval: 300000, className: 'DWD'
-    //         })
-    //       });
-    //     this.overlayMaps.set('WvG',
-    //       {
-    //         label: "Wupperverbandsgebiet", visible: false,
-    //         layer: L.tileLayer.wms(WvG_URL, { layers: '0', format: 'image/png', transparent: true, attribution: '', pane: 'overlayPane', className: 'Verbandsgebiet' })
-    //       });
-    //         this.sentinelLayer = esri.imageMapLayer({ 
-    //           url: senLayer, from: new Date(new Date().getTime() - 360000000), to: new Date(), bandIds: ('4,3,2') });
-    //      console.log(this.sentinelLayer);
-    //        this.requestTokenSrvc.requestToken().subscribe((res)=>{
-    //          this.token = res['access_token'];
-    //          console.log(this.token);
-    //         this.sentinelLayer.authenticate(this.token);
-
-    //        });
-    //        this.overlayMaps.set('Esri', {
-    //         label: 'Sentinel', visible: false, layer: this.sentinelLayer
-    //       });
-
-    //     this.overlayMaps.set('Landbedeckung2', {
-    //       label: 'Landbedeckung2', visible: false,
-    //       layer: L.imageOverlay(
-    //         'https://wacodis.maps.arcgis.com/sharing/rest/content/items/846c30b6a1874841ac9d5f6954f19aad/data',[[51.299046, 6.949204],[51.046668,7.615934]] ,{opacity: 0.6})
-
-    //     });
+  
     //     this.overlayMaps.set('Feldbloecke', {
     //       label: 'Feldbloecke', visible: false,
     //       layer: esri.featureLayer({url:'http://www.gis.nrw.de/arcgis/rest/services/gd/erosion/MapServer/0/'})
@@ -200,8 +151,5 @@ export class SelectionMapComponent implements OnInit {
     // };
   }
 
-  public onCloseHandled() {
-
-    document.getElementById('legendToast').setAttribute('style', 'display: none;');
-  }
+ 
 }

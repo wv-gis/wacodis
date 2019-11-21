@@ -43,7 +43,8 @@ export class LayerTreeComponent implements OnInit {
     console.log(url);
       var img = document.getElementById('legend'); 
       img.setAttribute('src', url);
-      document.getElementById('legendToast').setAttribute('style', 'display:inline');
+      document.getElementById('legendToast').setAttribute('style', 'visibility:visible');
+      
       // this.display = 'inline';
     
     }
@@ -56,4 +57,9 @@ export class LayerTreeComponent implements OnInit {
         const layer = this.baselayers.splice(i,1);
         this.mapService.getMap(this.mapId).subscribe(map => map.removeLayer(layer[0]));
       }
+
+      public onCloseHandled() {
+        
+            document.getElementById('legendToast').setAttribute('style', 'visibility: hidden;');
+          }
 }
