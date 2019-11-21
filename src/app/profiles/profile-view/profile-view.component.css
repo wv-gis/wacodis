@@ -27,3 +27,6 @@
 #selectionMenu{
     margin-left: 20px
 }
+text{
+    text-anchor: start;
+}

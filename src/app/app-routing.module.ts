@@ -10,6 +10,7 @@ import { TimeseriesViewComponent } from 'src/app/timeseries/depiction/timeseries
 import { ComparisonSelectionViewComponent } from 'src/app/change-detection/view/comparison-selection-view/comparison-selection-view.component';
 import { WeatherForecastComponent } from 'src/app/weather/weather-forecast/weather-forecast.component';
 import { AppComponent } from 'src/app/app.component';
+import { SelectionViewComponent } from './reports/selection/selection-view/selection-view.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'start', pathMatch: 'full' },
@@ -22,8 +23,8 @@ const routes: Routes = [
   { path: 'selection-map', component: WvDataViewComponent, data: { title: 'WaCoDiS Web Client' } },
   { path: 'start', component: LandingpageComponent, data: { title: 'WaCoDiS Web Client' } },
   { path: 'timeseries-diagram', component: TimeseriesViewComponent, data: { title: 'WaCoDiS Web Client' } },
-  { path: 'reports/:id', component: ReportsViewComponent, data: { title: 'WaCoDiS Web Client' } },
-  { path: 'reports', component: ReportsViewComponent, data: { title: 'WaCoDiS Web Client' } },
+  { path: 'reports/:id', component: SelectionViewComponent, data: { title: 'WaCoDiS Web Client' } },
+  { path: 'reports', component: SelectionViewComponent, data: { title: 'WaCoDiS Web Client' } },
   { path: 'reports/TS/:id', component: ReportsViewComponent, data: { title: 'WaCoDiS Web Client' } },
   { path: 'reports/TS', component: ReportsViewComponent, data: { title: 'WaCoDiS Web Client' } },
   { path: 'profiles', component: ProfileViewComponent, data: { title: 'WaCoDiS Web Client' } },

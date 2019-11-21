@@ -20,7 +20,7 @@ const colorRgb = [
   'rgb(37,89,235)',
   'rgb(0,51,255)',
 ];
-const svgWidth = 1100, svgHeight = 850;
+const svgWidth = 1200, svgHeight = 850;
 const margin = { top: 50, right: 20, bottom: 50, left: 40 };
 const width = svgWidth - margin.left - margin.right;
 const height = svgHeight - margin.top - margin.bottom;
@@ -39,7 +39,7 @@ export interface BwlDataset {
 }
 
 export interface InterDataset {
-  date: Date,
+  date?: Date,
   depth: number,
   value: number,
 
@@ -95,9 +95,9 @@ export class ProfileViewComponent implements OnInit, AfterViewInit {
   private start_iso = 1;
   private end_iso = 15;
   public selectMeasureParam: string = 'Sauerstoff [mg/l]';
-  public dam_label = 'Dhünn-Talsperre BojeA'
+  public dam_label = 'Bever-Talsperre'
   private reversedColor = false;
-  private year = 2004//new Date().getFullYear() - 1;
+  private year = 2013//new Date().getFullYear() - 1;
   public samplingStationLabels = ['Dhünn-Talsperre', "Bever-Talsperre", "Brucher-Talsperre", "Lingese-Talsperre","Panzer-Talsperre", "Wupper-Talsperre","Ronsdorfer-Talsperre"]
   public measureParams = ['Sauerstoff [mg/l]', "Temperatur C°", "ph-Wert", "Chlorophyll [yg/l]", "Leitfähigkeit [yS/cm]", "Trübung [TEF]"];
   public defaultDate: Date = new Date(new Date().getFullYear() - 1, 0, 1);
@@ -227,7 +227,7 @@ export class ProfileViewComponent implements OnInit, AfterViewInit {
       }
     });
 
-    this.createDepthView();
+    // this.createDepthView();
   }
   public changeMeasureParam(param: string) {
     this.selectMeasureParam = param;
@@ -239,29 +239,29 @@ export class ProfileViewComponent implements OnInit, AfterViewInit {
     this.dam_label = this.samplingStationLabels[index];
   }
 
-  public calculateWidth(): number {
-    return this.svg.node().width.baseVal.value - margin.left - margin.right;
-  }
+  // public calculateWidth(): number {
+  //   return this.svg.node().width.baseVal.value - margin.left - margin.right;
+  // }
 
-  public calculateHeight(): number {
-    return (this.d3Elem.nativeElement as HTMLElement).clientHeight - margin.top - margin.bottom;
-  }
+  // public calculateHeight(): number {
+  //   return (this.d3Elem.nativeElement as HTMLElement).clientHeight - margin.top - margin.bottom;
+  // }
   protected onResize(): void {
-    this.createDepthView();
+    // this.createDepthView();
   }
   public createDepthView() {
 
-    let reWidth = this.calculateWidth();
-    let reHeight = this.calculateHeight();
-    if (reWidth < 0) {
-      reWidth = width;
-    }
-    this.chart.selectAll('*').remove();
+    // let reWidth = this.calculateWidth();
+    // let reHeight = this.calculateHeight();
+    // if (reWidth < 0) {
+    //   reWidth = width;
+    // }
+    // this.chart.selectAll('*').remove();
     // this.pchart.selectAll('*').remove();
-    this.svg.selectAll('.axis').remove();
+    // this.svg.selectAll('.axis').remove();
     // this.profileSvg.selectAll('.axis').remove();
     // this.profileSvg.selectAll('.legend').remove();
-    let data = [{
+    let data: InterDataset[] = [{
       depth: 10,
       value: 8.1
     },
@@ -300,7 +300,7 @@ export class ProfileViewComponent implements OnInit, AfterViewInit {
     ];
 
 
-    let secData = [{
+    let secData: InterDataset[] = [{
       depth: 10,
       value: 0.50
     },
@@ -337,157 +337,156 @@ export class ProfileViewComponent implements OnInit, AfterViewInit {
     },
     ];
 
-    let x = d3.scaleLinear().rangeRound([reWidth, 0]);
-    let y = d3.scaleLinear().rangeRound([0, reHeight]);
+    // let x = d3.scaleLinear().rangeRound([reWidth, 0]);
+    // let y = d3.scaleLinear().rangeRound([0, reHeight]);
 
-    let line = d3.line()
-      .x(function (d) { return x(d.value); })
-      .y(function (d) { return y(d.depth); });
+    // let line = d3.line<InterDataset>()
+    //   .x(function (d) { return x(d.value); })
+    //   .y(function (d) { return y(d.depth); });
 
 
-    let secLine = d3.line()
-      .x(function (d) { return x(d.value); })
-      .y(function (d) { return y(d.depth); });
+    // let secLine = d3.line<InterDataset>()
+    //   .x(function (d) { return x(d.value); })
+    //   .y(function (d) { return y(d.depth); });
 
-    let div = d3.select("#d3Graph").append("div")
-      .attr("class", "tooltip")
-      .style("opacity", 0);
+    // let div = d3.select("#d3Graph").append("div")
+    //   .attr("class", "tooltip")
+    //   .style("opacity", 0);
 
-    y.domain(d3.extent(data, function (d) { return d.depth }));
+    // y.domain(d3.extent(data, function (d) { return d.depth }));
 
-    let chart = this.svg.append('g').attr('transform', 'translate(' + margin.left + "," + margin.top + ")");
+    // let chart = this.svg.append('g').attr('transform', 'translate(' + margin.left + "," + margin.top + ")");
 
-    let d3Max = d3.max(data, function (d) { return d.value }) as number;
-    let d3MaxSec = d3.max(secData, function (d) { return d.value }) as number;
+    // let d3Max = d3.max(data, function (d) { return d.value }) as number;
+    // let d3MaxSec = d3.max(secData, function (d) { return d.value }) as number;
 
-    let max = Math.max(d3Max, d3MaxSec);
+    // let max = Math.max(d3Max, d3MaxSec);
 
-    x.domain([max, 0]);
-    this.svg.append("g")
-      .attr("class", "axis")
-      .attr('font-size', '10px')
-      .attr('stroke-width', 0.25)
-      .attr("transform", "translate(" + margin.left + ',' + margin.top + ")")
-      .call(d3.axisTop(x)).attr('font-size', '10px')
-
-    // gridlines in y axis function
-    function make_y_gridlines() {
-      return d3.axisLeft(y)
-        .ticks(4)
-    }
-    // add the Y gridlines
-    this.chart.append("g")
-      .attr("class", "grid")
-      .attr('opacity', 0.5)
-      .attr('stroke-width', 0.25)
-      .call(make_y_gridlines()
-        .tickSize(-reWidth)
-        .tickFormat("")
-      );
+    // x.domain([max, 0]);
+    // this.svg.append("g")
+    //   .attr("class", "axis")
+    //   .attr('font-size', '10px')
+    //   .attr('stroke-width', 0.25)
+    //   .attr("transform", "translate(" + margin.left + ',' + margin.top + ")")
+    //   .call(d3.axisTop(x)).attr('font-size', '10px')
 
     // gridlines in y axis function
-    function make_x_gridlines() {
-      return d3.axisLeft(x)
-        .ticks(1)
-    }
+    // function make_y_gridlines() {
+    //   return d3.axisLeft(y)
+    //     .ticks(4)
+    // }
     // add the Y gridlines
-    this.chart.append("g")
-      .attr("class", "xgrid")
-      .attr('opacity', 0.5)
-      .attr('stroke-width', 0.25)
-      .attr("transform", "translate(" + reWidth + ',' + 0 + ")")
-      .call(make_x_gridlines()
-        .tickSize(reHeight)
-        .tickFormat("")
-      );
+    // this.chart.append("g")
+    //   .attr("class", "grid")
+    //   .attr('opacity', 0.5)
+    //   .attr('stroke-width', 0.25)
+    //   .call(make_y_gridlines()
+    //     .tickSize(-reWidth)
+    //     .tickFormat()
+    //   );
 
-    this.chart.append('path')
-      .datum(data)
-      .attr("fill", "none")
-      .attr("stroke", "red")
-      .attr("stroke-linejoin", "round")
-      .attr("stroke-linecap", "round")
-      .attr("stroke-width", 0.5)
-      .attr('d', line);
+    // gridlines in y axis function
+    // function make_x_gridlines() {
+    //   return d3.axisLeft(x)
+    //     .ticks(1)
+    // }
+    // add the Y gridlines
+    // this.chart.append("g")
+    //   .attr("class", "xgrid")
+    //   .attr('opacity', 0.5)
+    //   .attr('stroke-width', 0.25)
+    //   .attr("transform", "translate(" + reWidth + ',' + 0 + ")")
+    //   .call(make_x_gridlines()
+    //     .tickSize(reHeight)
+    //     .tickFormat()
+    //   );
 
-    this.chart.append('path')
-      .datum(secData)
-      .attr("fill", "none")
-      .attr("stroke", "blue")
-      .attr("stroke-linejoin", "round")
-      .attr("stroke-linecap", "round")
-      .attr("stroke-width", 0.5)
-      .attr('d', secLine);
+    // this.chart.append('path')
+    //   .attr("fill", "none")
+    //   .attr("stroke", "red")
+    //   .attr("stroke-linejoin", "round")
+    //   .attr("stroke-linecap", "round")
+    //   .attr("stroke-width", 0.5)
+    //   .attr('d', line(data));
 
-    this.chart.append("g")
-      .call(d3.axisLeft(y)).attr('font-size', '10px').attr('stroke-width', 0.25)
-      .append("text")
-      .attr("fill", "#000")
-      .attr('font-size', '10px')
-      .attr("transform", "rotate(-90)")
-      .attr("y", 0 - margin.left)
-      .attr("x", 0 - (reHeight / 2))
-      .attr("dy", "1.71em")
-      .attr("text-anchor", "middle")
-      .text("Tiefe [m]");
+    // this.chart.append('path')
+    //   .datum(secData)
+    //   .attr("fill", "none")
+    //   .attr("stroke", "blue")
+    //   .attr("stroke-linejoin", "round")
+    //   .attr("stroke-linecap", "round")
+    //   .attr("stroke-width", 0.5)
+    //   .attr('d', secLine);
 
-    let dots = this.chart.selectAll("dot")
-      .data(secData)
-      .enter().append("circle")
-      .attr("opacity", 0.5)
-      .attr("stroke", 'blue')
-      .attr("cursor", "pointer")
-      .attr("fill", "blue")
-      .attr("id", 'dots')
-      .attr("r", 1.0)
-      .attr("cx", function (d) { return x(d.value); })
-      .attr("cy", function (d) { return y(d.depth); })
-      .on("mouseover", function (d) {
-        div.transition()
-          .duration(200)
-          .style("opacity", .9);
-        div.html('Chlorophyll: ' + d.value + ' [µg/l]')
-          .style("left", (d3.event.pageX) + "px")
-          .style("top", (d3.event.pageY - 28) + "px")
-          .style("border", "0px")
-          .style("border-radius", "8px")
-          .style("background", "lightsteelblue")
-          .style("text-align", "center");
-      })
-      .on("mouseout", function (d) {
-        div.transition()
-          .duration(500)
-          .style("opacity", 0);
-      });
+    // this.chart.append("g")
+    //   .call(d3.axisLeft(y)).attr('font-size', '10px').attr('stroke-width', 0.25)
+    //   .append("text")
+    //   .attr("fill", "#000")
+    //   .attr('font-size', '10px')
+    //   .attr("transform", "rotate(-90)")
+    //   .attr("y", 0 - margin.left)
+    //   .attr("x", 0 - (reHeight / 2))
+    //   .attr("dy", "1.71em")
+    //   .attr("text-anchor", "middle")
+    //   .text("Tiefe [m]");
 
-    let secdots = this.chart.selectAll("dot")
-      .data(data)
-      .enter().append("circle")
-      .attr("opacity", 0.5)
-      .attr("stroke", 'red')
-      .attr("cursor", "pointer")
-      .attr("fill", "red")
-      .attr("id", 'dots')
-      .attr("r", 1.0)
-      .attr("cx", function (d) { return x(d.value); })
-      .attr("cy", function (d) { return y(d.depth); })
-      .on("mouseover", function (d) {
-        div.transition()
-          .duration(200)
-          .style("opacity", .9);
-        div.html('Temperatur: ' + d.value + ' [C°]')
-          .style("left", (d3.event.pageX) + "px")
-          .style("top", (d3.event.pageY - 28) + "px")
-          .style("border", "0px")
-          .style("border-radius", "8px")
-          .style("background", "lightsteelblue")
-          .style("text-align", "center");
-      })
-      .on("mouseout", function (d) {
-        div.transition()
-          .duration(500)
-          .style("opacity", 0);
-      });
+    // let dots = this.chart.selectAll("dot")
+    //   .data(secData)
+    //   .enter().append("circle")
+    //   .attr("opacity", 0.5)
+    //   .attr("stroke", 'blue')
+    //   .attr("cursor", "pointer")
+    //   .attr("fill", "blue")
+    //   .attr("id", 'dots')
+    //   .attr("r", 1.0)
+    //   .attr("cx", function (d) { return x(d.value); })
+    //   .attr("cy", function (d) { return y(d.depth); })
+    //   .on("mouseover", function (d) {
+    //     div.transition()
+    //       .duration(200)
+    //       .style("opacity", .9);
+    //     div.html('Chlorophyll: ' + d.value + ' [µg/l]')
+    //       .style("left", (d3.event.pageX) + "px")
+    //       .style("top", (d3.event.pageY - 28) + "px")
+    //       .style("border", "0px")
+    //       .style("border-radius", "8px")
+    //       .style("background", "lightsteelblue")
+    //       .style("text-align", "center");
+    //   })
+    //   .on("mouseout", function (d) {
+    //     div.transition()
+    //       .duration(500)
+    //       .style("opacity", 0);
+    //   });
+
+    // let secdots = this.chart.selectAll("dot")
+    //   .data(data)
+    //   .enter().append("circle")
+    //   .attr("opacity", 0.5)
+    //   .attr("stroke", 'red')
+    //   .attr("cursor", "pointer")
+    //   .attr("fill", "red")
+    //   .attr("id", 'dots')
+    //   .attr("r", 1.0)
+    //   .attr("cx", function (d) { return x(d.value); })
+    //   .attr("cy", function (d) { return y(d.depth); })
+    //   .on("mouseover", function (d) {
+    //     div.transition()
+    //       .duration(200)
+    //       .style("opacity", .9);
+    //     div.html('Temperatur: ' + d.value + ' [C°]')
+    //       .style("left", (d3.event.pageX) + "px")
+    //       .style("top", (d3.event.pageY - 28) + "px")
+    //       .style("border", "0px")
+    //       .style("border-radius", "8px")
+    //       .style("background", "lightsteelblue")
+    //       .style("text-align", "center");
+    //   })
+    //   .on("mouseout", function (d) {
+    //     div.transition()
+    //       .duration(500)
+    //       .style("opacity", 0);
+    //   });
   }
 
   // set Definitions for Isoplethen diagram and create Graph
@@ -672,6 +671,7 @@ export class ProfileViewComponent implements OnInit, AfterViewInit {
       zmin: this.start_iso,
       zmax: this.end_iso,
       reversescale: this.reversedColor,
+      // yaxis: 'y2'
     };
 
     /**
@@ -730,23 +730,39 @@ export class ProfileViewComponent implements OnInit, AfterViewInit {
         range: [new Date(this.year, 0, 1), new Date(this.year, 11, 31)],
         type: 'date', 
         mirror: 'allticks',
+        // ticks: 'outside',
         showline: true,
-        showgrid: false
+        showgrid: true,
+        ticklen: 8,
+        
       },
-      yaxis: {
-        color: '#000',
-        title: 'Tiefe [m]',
+      yaxis2: {
         autorange: 'reversed',
-        // tickmode: 'linear',
-        // tick0: 0,
-        // dtick: 1,
+        tickmode: 'linear',
+        tick0: 0,
+        dtick: 1,
+        range: [0,d3.max(this.maxDepth)],
         side: 'left',
         tickcolor: '#000',
         mirror: 'allticks',
         zeroline: true,
         zerolinecolor:'#000',
         showline: true,
-        showgrid: false
+        showticklabels: false
+      },
+      yaxis: {
+        color: '#000',
+        title: 'Tiefe [m]',
+        autorange: 'reversed',
+        tickmode: 'auto',
+        tick0: 0,
+        side: 'left',
+        tickcolor: '#000',
+        mirror: 'allticks',
+        zeroline: true,
+        zerolinecolor:'#000',
+        showline: true,
+        showticklabels: true
       },
       font: {
         size: 14

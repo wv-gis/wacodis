@@ -7,6 +7,6 @@ import { CsvDataService } from 'src/app/settings/csvData.service';
   imports: [
     CommonModule
   ],
-  declarations: [ProfileViewComponent], providers: [CsvDataService]
+  declarations: [ProfileViewComponent], providers: [CsvDataService], exports: [ProfileViewComponent]
 })
 export class WvProfilesModule { }
