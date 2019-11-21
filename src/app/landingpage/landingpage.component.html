@@ -163,11 +163,14 @@
                 <div class="col-md-5">
                     <h1 class="wv-h1 jumbo">WaCoDiS</h1>
                 </div>
-                <div class="col-md-7">
-
+                <div class="col-md-7">                  
                 </div>
             </div>
-
+            <div  class="row">
+                <div class="col-md-5">
+                    <a class="btn btn-start" routerLink="/selection-category" role="button">Zeitreihe auswählen</a>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -315,11 +318,11 @@
         </div>
     </div>
     <!-- /container -->
-    <div id="cookie-bar" class="fixed bottom" style="z-index: 99999;">
+    <div id="cookie-bar" class="fixed bottom" style="z-index: 99999;width: 100%">
             <button type="button" class="close" aria-label="Close" (click)="onCloseHandled()">
                     <span aria-hidden="true">&times;</span>
                 </button>
-        <iframe frameborder="no" width="500px" height="250px" src="https://piwik.wupperverband.de/index.php?module=CoreAdminHome&action=optOut&language=de"></iframe>
+        <iframe frameborder="no" height="250px" src="https://piwik.wupperverband.de/index.php?module=CoreAdminHome&action=optOut&language=de"></iframe>
     </div>
     
 </main>

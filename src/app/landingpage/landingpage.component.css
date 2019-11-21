@@ -186,3 +186,17 @@ p.big.bold{
     color: #1a1a1a;
     box-shadow: rgba(0,0,0,0.5) 0px 0px 8px;
 }
+iframe{
+    width: 100%;
+}
+
+.btn-start{
+    height: 38px;
+    line-height: 30px;
+    text-align: center;
+    color: #718296;
+    background-color: #fff;
+    border-radius: 3px;
+    padding: 4px 8px;
+    width: 300px
+}
