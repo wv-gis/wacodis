@@ -51,10 +51,11 @@ export class ExtendedOlLayerTimeSelectorComponent extends OlLayerTimeSelectorCom
         }
         this.loading = false
       });
-      
+   
       // this.timeAttribute = false;
       // this.determineCurrentTimeParameter();
     }
+
   }
 
 }
