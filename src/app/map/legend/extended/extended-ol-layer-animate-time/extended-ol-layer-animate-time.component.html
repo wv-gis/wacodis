@@ -1,0 +1,7 @@
+<span *ngIf="loading">loading ...</span>
+<span *ngIf="!loading">
+    <span>{{currentTime}}</span>
+    <span style="margin: 5px;" class="fa fa-play" (click)="startAnimation()">  </span>
+    <span style="margin: 5px;" class="fa fa-stop" (click)="stopAnimation()">  </span>
+    <span style="margin: 5px;" class="fa fa-undo" (click)="resetAnimation()">  </span>
+</span>
