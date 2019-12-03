@@ -6,6 +6,7 @@ import localeDe from '@angular/common/locales/de';
 import { D3TimeFormatLocaleService } from '@helgoland/d3';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { ExtendedSettings } from 'src/app/settings/settings.service';
+import { InitializeService } from './services/initialize.service';
 
 @Component({
   selector: 'wv-root',
@@ -19,13 +20,13 @@ export class AppComponent implements OnInit {
   public showNavBar: boolean = true;
   public reservoirs: any[]= null;
   constructor(private router: Router, translate: TranslateService, d3translate: D3TimeFormatLocaleService, 
-    private route: ActivatedRoute, private settingsService: SettingsService<ExtendedSettings>) {
+    private route: ActivatedRoute, private settingsService: SettingsService<ExtendedSettings>, private init: InitializeService) {
     translate.setDefaultLang('de');
     translate.use('de');
 
     registerLocaleData(localeDe);
 
-
+      this.init.init();
     this.languageList = [
       {
         label: 'Deutsch',
@@ -76,6 +77,8 @@ export class AppComponent implements OnInit {
              
                    
       }  });
+
+
   }
 
   checkSelection(route: string) {

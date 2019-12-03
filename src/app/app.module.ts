@@ -13,6 +13,7 @@ import { HelgolandSelectorModule, ListSelectorService } from '@helgoland/selecto
 import { HelgolandModificationModule } from '@helgoland/modification';
 import { HelgolandControlModule } from '@helgoland/control';
 import { HelgolandTimeModule } from '@helgoland/time';
+import { HelgolandFacetSearchModule } from '@helgoland/facet-search';
 import {
   HelgolandMapModule,
   HelgolandMapSelectorModule,
@@ -65,6 +66,7 @@ import { HelgolandOpenLayersModule } from '@helgoland/open-layers';
     HelgolandModificationModule,
     HelgolandControlModule,
     HelgolandOpenLayersModule,
+    HelgolandFacetSearchModule,
     FormsModule,
     WvMapModule,
     WvTimeseriesModule,

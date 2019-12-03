@@ -25,6 +25,11 @@ import { SelectedProviderService } from 'src/app/services/selected-provider.serv
 import { HelgolandModificationModule } from '@helgoland/modification';
 import { StyleModificationComponent } from './depiction/menu-bar/style-modification/style-modification.component';
 import { WvExtendedExportImageButtonComponent } from './depiction/extended/wv-extended-export-image-button/wv-extended-export-image-button.component';
+import { FacetsComponent } from './facets/facets.component';
+import { WvParameterFacetComponent } from './facets/parameter-facet/parameter-facet.component';
+import { WvResultListComponent } from './facets/result-list/result-list.component';
+import { WvTimeSliderComponent } from './facets/time-slider/time-slider.component';
+import { HelgolandFacetSearchModule, FacetSearchService } from '@helgoland/facet-search';
 
 
 @NgModule({
@@ -41,14 +46,15 @@ import { WvExtendedExportImageButtonComponent } from './depiction/extended/wv-ex
     HelgolandDatasetlistModule,
     HelgolandMapSelectorModule,
     HelgolandModificationModule,
-    HelgolandDatasetDownloadModule
+    HelgolandDatasetDownloadModule,
+    HelgolandFacetSearchModule
 
   ],
   declarations: [TimeseriesViewComponent, WvDataViewComponent, WvExtendedListSelectorComponent,
      WvExtendedMultiserviceFilterSelectorComponent, WvExtendedTimeseriesEntryComponent, 
      WvExtendedTimeshiftSelectorComponent, TimeseriesLegendComponent, 
-     TimeshiftDataSelectorMenuComponent, ExtendedPhenomenonServiceFilterSelectorComponent, StyleModificationComponent, WvExtendedExportImageButtonComponent],
-  providers:[DatasetEmitServiceService, ExtendedSettingsService, SelectedProviderService]
+     TimeshiftDataSelectorMenuComponent, ExtendedPhenomenonServiceFilterSelectorComponent, StyleModificationComponent, WvExtendedExportImageButtonComponent, FacetsComponent, WvParameterFacetComponent, WvResultListComponent, WvTimeSliderComponent],
+  providers:[DatasetEmitServiceService, ExtendedSettingsService, SelectedProviderService, FacetSearchService]
 
 })
 export class WvTimeseriesModule { }

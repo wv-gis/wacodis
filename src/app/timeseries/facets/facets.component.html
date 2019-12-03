@@ -1,0 +1,42 @@
+<div class="facets col">
+    <div class="facet">
+      <div class="facet-header">
+        <div class="facet-header-label">{{'facets.category' | translate}}</div>
+        <div class="autocomplete mb-1 mr-1">
+          <input type="text" class="form-control" placeholder="Autocomplete"
+            (input)="categoryAutocomplete = $event.target.value">
+        </div>
+      </div>
+      <wv-parameter-facet [facetSearchService]="facetSearch" [type]="categoryType"
+        [textualFilter]="categoryAutocomplete"></wv-parameter-facet>
+    </div>
+    <div class="facet">
+      <div class="facet-header">
+        <div class="facet-header-label mr-1">{{'facets.phenomenon' | translate}}</div>
+        <div class="autocomplete mb-1">
+          <input type="text" class="form-control" placeholder="Autocomplete"
+            (input)="phenomenonAutocomplete = $event.target.value">
+        </div>
+      </div>
+      <wv-parameter-facet [facetSearchService]="facetSearch" [type]="phenomenonType"
+        [textualFilter]="phenomenonAutocomplete"></wv-parameter-facet>
+    </div>
+    <div class="facet">
+      <div class="facet-header">
+        <div class="facet-header-label mr-1">{{'facets.station' | translate}}</div>
+        <div class="autocomplete mb-1">
+          <input type="text" class="form-control" placeholder="Autocomplete"
+            (input)="featureAutocomplete = $event.target.value">
+        </div>
+      </div>
+      <wv-parameter-facet [facetSearchService]="facetSearch" [type]="featureType" [textualFilter]="featureAutocomplete"
+        [sort]="'ascAlphabet'"></wv-parameter-facet>
+    </div>
+    <div class="facet">
+      <div class="facet-header">
+        <div class="facet-header-label">{{'facets.timeframe' | translate}}</div>
+      </div>
+      <!-- <wv-time-slider [facetSearchService]="facetSearch"></wv-time-slider> -->
+    </div>
+  </div>
+  

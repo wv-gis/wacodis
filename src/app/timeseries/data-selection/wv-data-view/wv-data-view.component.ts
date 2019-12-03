@@ -6,6 +6,8 @@ import { LayerOptions, MapCache } from '@helgoland/map';
 import * as L from 'leaflet';
 import { SelectedProviderService } from 'src/app/services/selected-provider.service';
 import * as esri from 'esri-leaflet';
+import { FacetSearchService } from '@helgoland/facet-search';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -18,54 +20,54 @@ export class WvDataViewComponent implements OnInit, OnDestroy {
 
 
   public diagramEntry = false;
-  public phenomenonParams: ListSelectorParameter[] = [
-    {
-      type: 'phenomenon',
-      header: 'Phänomen'
-    },
-    {
-      type: 'category',
-      header: 'Kategorie'
-    }, {
-      type: 'feature',
-      header: 'Station'
-    }, {
-      type: 'procedure',
-      header: 'Sensor'
-    }];
+  // public phenomenonParams: ListSelectorParameter[] = [
+  //   {
+  //     type: 'phenomenon',
+  //     header: 'Phänomen'
+  //   },
+  //   {
+  //     type: 'category',
+  //     header: 'Kategorie'
+  //   }, {
+  //     type: 'feature',
+  //     header: 'Station'
+  //   }, {
+  //     type: 'procedure',
+  //     header: 'Sensor'
+  //   }];
 
-  public categoryParams: ListSelectorParameter[] = [{
-    type: 'category',
-    header: 'Kategorie',
+  // public categoryParams: ListSelectorParameter[] = [{
+  //   type: 'category',
+  //   header: 'Kategorie',
 
-  }, {
-    type: 'feature',
-    header: 'Station',
+  // }, {
+  //   type: 'feature',
+  //   header: 'Station',
 
-  }, {
-    type: 'phenomenon',
-    header: 'Phänomen',
+  // }, {
+  //   type: 'phenomenon',
+  //   header: 'Phänomen',
 
-  }, {
-    type: 'procedure',
-    header: 'Sensor',
+  // }, {
+  //   type: 'procedure',
+  //   header: 'Sensor',
 
-  }];
-  public stationParams: ListSelectorParameter[] = [
-    {
-      type: 'feature',
-      header: 'Station'
-    },
-    {
-      type: 'category',
-      header: 'Kategorie'
-    }, {
-      type: 'phenomenon',
-      header: 'Phänomen'
-    }, {
-      type: 'procedure',
-      header: 'Sensor'
-    }];
+  // }];
+  // public stationParams: ListSelectorParameter[] = [
+  //   {
+  //     type: 'feature',
+  //     header: 'Station'
+  //   },
+  //   {
+  //     type: 'category',
+  //     header: 'Kategorie'
+  //   }, {
+  //     type: 'phenomenon',
+  //     header: 'Phänomen'
+  //   }, {
+  //     type: 'procedure',
+  //     header: 'Sensor'
+  //   }];
 
   public isActive = true;
   public selectedProviderList: Provider[] = [];
@@ -75,9 +77,9 @@ export class WvDataViewComponent implements OnInit, OnDestroy {
   public zoomControlOptions: L.Control.ZoomOptions = { position: 'bottomleft' };
   public mapOptions: L.MapOptions = { dragging: true, zoomControl: true, boxZoom: false };
   public fitBounds: L.LatLngBoundsExpression = [[50.985, 6.924], [51.319, 7.607]];
-  public cluster = true;
-  public loadingStations: boolean;
-  public stationFilter: ParameterFilter = {};
+  // public cluster = true;
+  // public loadingStations: boolean;
+  // public stationFilter: ParameterFilter = {};
   public statusIntervals: boolean = true;
   public avoidZoomToSelection = false;
   public stationPopup: L.Popup;
@@ -88,11 +90,15 @@ export class WvDataViewComponent implements OnInit, OnDestroy {
   public selectedProviderUrl: string = '';
   public badgeNumber: number;
   public baseLayer: any;
-  public testLayer: any;
+  // public testLayer: any;
   public _map: L.Map;
+  public resultCount: number;
+  public resultSubs: Subscription;
+  public markerFeatureGroup: L.FeatureGroup;
+  
 
   constructor(private datasetService: DatasetService<DatasetOptions>, private settings: SettingsService<Settings>, private router: Router,
-    private mapCache: MapCache, private datasetApiInterface: DatasetApiInterface, private selProv: SelectedProviderService) {
+    private mapCache: MapCache, private datasetApiInterface: DatasetApiInterface, private selProv: SelectedProviderService, public facetSearch: FacetSearchService) {
 
 
     this.badgeNumber = this.datasetService.datasetIds.length;
@@ -109,8 +115,6 @@ export class WvDataViewComponent implements OnInit, OnDestroy {
             });
           }
           else {
-            // console.log('Not same as settings: ' + this.selectedProviderUrl);
-            // this.selectedProviderList = [];
             // this.selectedProviderList.push({
             //   id: settings.getSettings().datasetApis[0].name,
             //   url: settings.getSettings().datasetApis[0].url
@@ -122,6 +126,8 @@ export class WvDataViewComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+
+    this.resultSubs = this.facetSearch.getResults().subscribe(ts => this.resultCount = ts.length);
 
     this.baseLayer = L.tileLayer.wms('http://ows.terrestris.de/osm/service?',
     {
@@ -138,23 +144,26 @@ export class WvDataViewComponent implements OnInit, OnDestroy {
       {
         label: 'Open Street Map', visible: true, layer: this.baseLayer
   });
-
-
+    
+  this.overlayMaps.set('wv-area',
+  {
+    label: 'Wupperverbandsgebiet',
+    visible: true,
+    layer: L.tileLayer.wms('http://fluggs.wupperverband.de/WMS_WV_Oberflaechengewaesser_EZG?', {
+      layers: '0',
+      format: 'image/png',
+      transparent: true
+    })
+  }
+);
+// this.markerFeatureGroup =  L.markerClusterGroup();
 }
   public onDatasetSelected(datasets: IDataset[]) {
   
-    // datasets.forEach((dataset) => {
-   
-       
-     
-    // });
     for(let i = 0; i<datasets.length; i++){
       this.datasetService.addDataset(datasets[i].internalId);
     }
-
       this.diagramEntry = !this.diagramEntry;
-      // console.log(this.diagramEntry);
-      // this.moveToDiagram('/timeseries-diagram');
       this.router.navigateByUrl('/timeseries-diagram');
   }
 
@@ -163,10 +172,8 @@ export class WvDataViewComponent implements OnInit, OnDestroy {
     this.selectedProviderList.push({
       id: '1',
       url: providerUrl
-    });
-  
+    }); 
     this.selectedProviderUrl = providerUrl;
-    // this.selProv.setProvider(this.selectedProviderList[0]);
   }
 
  public moveToDiagram(url: string) {
@@ -184,21 +191,20 @@ export class WvDataViewComponent implements OnInit, OnDestroy {
     }
   }
 
-  public onStationSelected(station: Station) {
+  public onStationSelected(elem: { station: Station, url: string }) {
     this._map = this.mapCache.getMap('timeMap');
-    const point = station.geometry as GeoJSON.Point;
-    console.log(point);
+    const point = elem.station.geometry as GeoJSON.Point;
+
     this.stationPopup = L.popup().setLatLng([point.coordinates[1], point.coordinates[0]])
-    .setContent(`<div> ID:  ${station.id} </div><div> ${station.properties.label} </div>`);
-      
-      console.log(this.stationPopup.getContent());
+    .setContent(`<div> ID:  ${elem.station.id} </div><div> ${elem.station.properties.label} </div>`);
+
     this.display = 'block';
 
-     this.datasetApiInterface.getTimeseries(this.selectedProviderList[0].url, this.stationFilter).subscribe((timeseries) => {
+     this.datasetApiInterface.getTimeseries(this.selectedProviderList[0].url).subscribe((timeseries) => {
       timeseries.forEach((ts: Timeseries) => {
 
-        if (ts.station.id === station.id) {
-          this.stationLabel = station.properties.label;
+        if (ts.station.id === elem.station.id) {
+          this.stationLabel = elem.station.properties.label;
           this.entryLabel.push(ts.label + ' ' + '[' + ts.uom + ']');
           this.internalIDs.push(ts.internalId);
         }
@@ -222,24 +228,24 @@ export class WvDataViewComponent implements OnInit, OnDestroy {
     this.entryLabel = [];
     this.stationPopup.closePopup();
   }
-  public onSelectPhenomenon(phenomenon: Phenomenon) {
-    this.stationFilter = {
-      phenomenon: phenomenon.id
-    };
-  }
+  // public onSelectPhenomenon(phenomenon: Phenomenon) {
+  //   this.stationFilter = {
+  //     phenomenon: phenomenon.id
+  //   };
+  // }
 
-  removeStationFilter() {
-    this.stationFilter = {};
-  }
+  // removeStationFilter() {
+  //   this.stationFilter = {};
+  // }
 
   public change() {
 
     if (document.getElementById('timeseriesMap') !== undefined) {
       if (this.isActive) {
-        document.getElementById('timeseriesMap').setAttribute('style', ' right: 0px;');
+        document.getElementById('timeseriesMap').setAttribute('style', ' left: 0px;');
       }
       else {
-        document.getElementById('timeseriesMap').setAttribute('style', 'right: 400px;');
+        document.getElementById('timeseriesMap').setAttribute('style', 'left: 400px;');
       }
     }
     this.mapCache.getMap('timeMap').invalidateSize();
@@ -248,9 +254,7 @@ export class WvDataViewComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    // if (this.timeSubscription) {
-    //   this.timeSubscription.unsubscribe();
-    // }
+    this.resultSubs.unsubscribe();
 
   }
 

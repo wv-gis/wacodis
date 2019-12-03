@@ -25,4 +25,11 @@
       "stations": "Stations", 
        "timeseries": "Timeseries" 
      } 
+     ,
+     "facets": {
+       "category": "Category",
+       "phenomenon": "Phenomenon",
+       "station": "Station",
+       "timeframe": "Timeframe"
+     }
  }

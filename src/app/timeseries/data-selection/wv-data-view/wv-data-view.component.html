@@ -14,6 +14,10 @@
             <span class="mid badge badge-danger">  {{ badgeNumber}}</span>
           </li>
         </div>
+        <li class="entry" [ngClass]="{'active': checkSelection('/selection-map')}" routerLink='/selection-map'>
+          <i class="fas fa-map"></i>
+          <span class="mid" data-toggle="collapse" data-target=".navbar-collapse.show"> Karte</span>
+        </li>
         <li class="entry" [ngClass]="{'active': checkSelection('/selection-category')}" routerLink='/selection-category'>
           <i class="fas fa-tint"></i>
           <span class="mid" data-toggle="collapse" data-target=".navbar-collapse.show"> Kategorie</span>
@@ -28,15 +32,11 @@
           <i class="fas fa-ruler-vertical"></i>
           <span class="mid" data-toggle="collapse" data-target=".navbar-collapse.show"> Phänomen</span>
         </li>
-        <li class="entry" [ngClass]="{'active': checkSelection('/selection-map')}" routerLink='/selection-map'>
-          <i class="fas fa-map"></i>
-          <span class="mid" data-toggle="collapse" data-target=".navbar-collapse.show"> Karte</span>
-        </li>
       </ul>
     </div>
   </div>
 </div>
-<div class="backgroundImage">
+<!-- <div class="backgroundImage">
   <div *ngIf="checkSelection('/selection-category')" class="selectContent" routerLink='/selection-category'>
     <wv-extended-list-selector [parameters]="categoryParams" [selectorId]="'category'" [providerList]="selectedProviderList"
       (onDatasetSelection)="onDatasetSelected($event)"></wv-extended-list-selector>
@@ -48,7 +48,20 @@
   <div *ngIf="checkSelection('/selection-station')" class="selectContent" routerLink='/selection-station'>
     <wv-extended-list-selector [parameters]="stationParams" [selectorId]="'station'" [providerList]="selectedProviderList" (onDatasetSelection)="onDatasetSelected($event)"></wv-extended-list-selector>
   </div>
-</div>
+</div> -->
+
+  
+  <div style="width: 200px;" class="phenomena">
+    <div class="expand-button" [ngClass]="{'active': isActive}" (click)="change()">
+      <span class="icon">
+        <i class="fas fa-angle-left" [ngClass]="{'fa-angle-left': isActive, 'fa-angle-right': !isActive}"></i>
+      </span>
+    </div>
+    <div class="phenomenonSelector" [ngClass]="{'active': isActive}">
+      <wv-facets></wv-facets>
+    </div>
+  </div>
+
 <div *ngIf="checkSelection('/selection-map')" class="selectContent" routerLink='/selection-map'>
 
   <div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':display}">
@@ -68,17 +81,20 @@
         </div>
       </div>
     </div>
-
   </div>
 
   <div class="mapContent" id="timeseriesMap">
     <div id="main">
-      <n52-station-map-selector [mapId]="'timeMap'" [cluster]="true" [serviceUrl]="selectedProviderUrl" [filter]="stationFilter" [zoomControlOptions]="zoomControlOptions"
+      <!-- <n52-station-map-selector [mapId]="'timeMap'" [cluster]="true" [serviceUrl]="selectedProviderUrl" [filter]="stationFilter" [zoomControlOptions]="zoomControlOptions"
         [mapOptions]="mapOptions" [fitBounds]="fitBounds" [avoidZoomToSelection]="avoidZoomToSelection" [baseMaps]="baseMaps"
         [overlayMaps]="overlayMaps" (onSelected)="onStationSelected($event)" [cluster]="cluster" [statusIntervals]="statusIntervals"
-        (onContentLoading)="loadingStations = $event"></n52-station-map-selector>
+        (onContentLoading)="loadingStations = $event"></n52-station-map-selector> -->
+        <n52-result-map [facetSearchService]="facetSearch" [aggregateToStations]="false" [cluster]="true"  [zoomControlOptions]="zoomControlOptions"
+        [mapOptions]="mapOptions" [fitBounds]="fitBounds" mapId="'timeMap'" [baseMaps]="baseMaps" [overlayMaps]="overlayMaps" (selected)="onStationSelected($event)">
+      </n52-result-map>
     </div>
   </div>
+  <!-- 
   <div style="width: 200px;" class="phenomena">
     <div class="expand-button" [ngClass]="{'active': isActive}" (click)="change()">
       <span class="icon">
@@ -89,5 +105,5 @@
       <wv-extended-phenomenon-service-filter-selector [serviceUrl]="selectedProviderUrl" endpoint="phenomenon" (onItemSelected)="onSelectPhenomenon($event)"
         (stationFilter)="removeStationFilter()"></wv-extended-phenomenon-service-filter-selector>
     </div>
-  </div>
+  </div> -->
 </div>
