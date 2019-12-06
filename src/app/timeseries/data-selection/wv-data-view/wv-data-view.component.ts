@@ -1,3 +1,4 @@
+declare var require;
 import { Component, OnInit, SimpleChanges, OnDestroy, OnChanges } from '@angular/core';
 import { ListSelectorParameter } from '@helgoland/selector';
 import { Provider, DatasetService, DatasetOptions, IDataset, SettingsService, Settings, ParameterFilter, Station, Phenomenon, DatasetApiInterface, Timeseries } from '@helgoland/core';
@@ -8,6 +9,15 @@ import { SelectedProviderService } from 'src/app/services/selected-provider.serv
 import * as esri from 'esri-leaflet';
 import { FacetSearchService } from '@helgoland/facet-search';
 import { Subscription } from 'rxjs';
+
+require('leaflet.markercluster');
+
+delete L.Icon.Default.prototype['_getIconUrl'];
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: './assets/images/map-marker.png',
+  iconUrl: './assets/images/map-marker.png',
+  shadowUrl: './assets/images/map-marker.png',
+});
 
 
 @Component({
@@ -95,10 +105,11 @@ export class WvDataViewComponent implements OnInit, OnDestroy {
   public resultCount: number;
   public resultSubs: Subscription;
   public markerFeatureGroup: L.FeatureGroup;
+  public timeseries: Timeseries[];
   
 
   constructor(private datasetService: DatasetService<DatasetOptions>, private settings: SettingsService<Settings>, private router: Router,
-    private mapCache: MapCache, private datasetApiInterface: DatasetApiInterface, private selProv: SelectedProviderService, public facetSearch: FacetSearchService) {
+    private mapCache: MapCache,public datasetApi: DatasetApiInterface, private selProv: SelectedProviderService, public facetSearch: FacetSearchService) {
 
 
     this.badgeNumber = this.datasetService.datasetIds.length;
@@ -127,8 +138,8 @@ export class WvDataViewComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-    this.resultSubs = this.facetSearch.getResults().subscribe(ts => this.resultCount = ts.length);
-
+    this.resultSubs = this.facetSearch.getResults().subscribe(ts =>{ this.resultCount = ts.length;this.timeseries=ts});
+    
     this.baseLayer = L.tileLayer.wms('http://ows.terrestris.de/osm/service?',
     {
        layers: 'OSM-WMS',format: 'image/png', transparent: true, maxZoom: 16, 
@@ -156,7 +167,7 @@ export class WvDataViewComponent implements OnInit, OnDestroy {
     })
   }
 );
-// this.markerFeatureGroup =  L.markerClusterGroup();
+
 }
   public onDatasetSelected(datasets: IDataset[]) {
   
@@ -199,28 +210,46 @@ export class WvDataViewComponent implements OnInit, OnDestroy {
     .setContent(`<div> ID:  ${elem.station.id} </div><div> ${elem.station.properties.label} </div>`);
 
     this.display = 'block';
+    this.stationLabel = elem.station.properties.label;
 
-     this.datasetApiInterface.getTimeseries(this.selectedProviderList[0].url).subscribe((timeseries) => {
-      timeseries.forEach((ts: Timeseries) => {
-
-        if (ts.station.id === elem.station.id) {
-          this.stationLabel = elem.station.properties.label;
-          this.entryLabel.push(ts.label + ' ' + '[' + ts.uom + ']');
-          this.internalIDs.push(ts.internalId);
-        }
-      })
-    });
-  }
-  public addDataset(entry: string) {
-        for (let i = 0; i < this.entryLabel.length; i++) {
-          if (this.entryLabel[i] == entry) {
-
-            this.datasetService.addDataset(this.internalIDs[i]);
-            this.diagramEntry = !this.diagramEntry;
-            this.onCloseHandled();
-            this.moveToDiagram('/timeseries-diagram');
+      this.datasetApi.getStation(elem.station.id, this.selectedProviderList[0].url)
+        .subscribe(station => {
+          const additionalTsIDs = [];
+          for (const key in station.properties.timeseries) {
+            if (station.properties.timeseries.hasOwnProperty(key)) {
+              // const filtered = this.timeseries.find(e => e.id === key);
+              // if (!filtered) {
+                this.datasetApi.getSingleTimeseries(key, elem.url)
+                  .subscribe(
+                    result => this.entryLabel.push(result),
+                    error => console.error(error),
+                    () =>   this.display = 'block'
+                  );
+              // }
+            }
           }
+        });
+  
+    this.facetSearch.getFilteredResults().filter(e => e.url === elem.url && e.station.id === elem.station.id);
+  }
+  public addDataset(ts: Timeseries) {
+        // for (let i = 0; i < this.entryLabel.length; i++) {
+        //   if (this.entryLabel[i] == entry) {
+
+        //     this.datasetService.addDataset(this.internalIDs[i]);
+        //     this.diagramEntry = !this.diagramEntry;
+        //     this.onCloseHandled();
+        //     this.moveToDiagram('/timeseries-diagram');
+        //   }
+    // }
+    if (this.datasetService.hasDataset(ts.internalId)) {
+      this.datasetService.removeDataset(ts.internalId);
+    } else {
+      this.datasetService.addDataset(ts.internalId)
+        
     }
+    this.diagramEntry = !this.diagramEntry;
+    this.router.navigateByUrl('/timeseries-diagram');
 
   }
   public onCloseHandled() {
@@ -240,17 +269,28 @@ export class WvDataViewComponent implements OnInit, OnDestroy {
 
   public change() {
 
-    if (document.getElementById('timeseriesMap') !== undefined) {
-      if (this.isActive) {
-        document.getElementById('timeseriesMap').setAttribute('style', ' left: 0px;');
+    if(this.checkSelection('/selection-map')){
+      if (document.getElementById('timeseriesMap') !== undefined) {
+        if (this.isActive) {
+          document.getElementById('timeseriesMap').setAttribute('style', ' left: 0px;');
+        }
+        else {
+          document.getElementById('timeseriesMap').setAttribute('style', 'left: 400px;');
+        }
       }
-      else {
-        document.getElementById('timeseriesMap').setAttribute('style', 'left: 400px;');
-      }
+      this.mapCache.getMap('timeMap').invalidateSize();
+      this.mapCache.getMap('timeMap').setView(this.mapCache.getMap('timeMap').getCenter(), this.mapCache.getMap('timeMap').getZoom());
+      return this.isActive = !this.isActive;
     }
-    this.mapCache.getMap('timeMap').invalidateSize();
-    this.mapCache.getMap('timeMap').setView(this.mapCache.getMap('timeMap').getCenter(), this.mapCache.getMap('timeMap').getZoom());
-    return this.isActive = !this.isActive;
+    else{
+      if(this.isActive)
+      document.getElementById('result').setAttribute('style', 'padding-left: 50px');
+      else{
+        document.getElementById('result').setAttribute('style', 'padding-left: 400px');
+      }
+      return this.isActive = !this.isActive;
+    }
+
   }
 
   ngOnDestroy(): void {
