@@ -1,3 +1,8 @@
+<div class="loader" *ngIf="loading">
+    <div class="spinner-border text-dark" role="status">
+        <i class="fa fa-spinner fa-spin" style="font-size:24px"></i>
+    </div>
+</div>
 <div class="facets col">
     <div class="facet">
       <div class="facet-header">
@@ -36,7 +41,7 @@
       <div class="facet-header">
         <div class="facet-header-label">{{'facets.timeframe' | translate}}</div>
       </div>
-      <!-- <wv-time-slider [facetSearchService]="facetSearch"></wv-time-slider> -->
+      <wv-time-slider [facetSearchService]="facetSearch"></wv-time-slider>
     </div>
   </div>
   
