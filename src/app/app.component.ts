@@ -26,7 +26,7 @@ export class AppComponent implements OnInit {
 
     registerLocaleData(localeDe);
 
-      this.init.init();
+      // this.init.init();
     this.languageList = [
       {
         label: 'Deutsch',

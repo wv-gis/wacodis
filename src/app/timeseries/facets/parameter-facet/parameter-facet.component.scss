@@ -1,6 +1,6 @@
 
 :host {
-    overflow: auto;
+    // overflow: auto;
 
     .entry {
         // height: 52px;
@@ -9,8 +9,10 @@
         display: flex;
         flex-direction: row;
 
+
         +.entry {
-            border-top: solid 1px rgba(223, 228, 230, 1.0);;
+            border-top: solid 1px rgba(223, 228, 230, 1.0);
+            // overflow: auto;
         }
 
         &:hover {
