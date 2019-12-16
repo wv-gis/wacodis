@@ -10,9 +10,8 @@ import * as esri from 'esri-leaflet';
 import { FacetSearchService } from '@helgoland/facet-search';
 import { Subscription } from 'rxjs';
 
-require('leaflet.markercluster');
 
-delete L.Icon.Default.prototype['_getIconUrl'];
+ delete L.Icon.Default.prototype['_getIconUrl'];
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: './assets/images/map-marker.png',
   iconUrl: './assets/images/map-marker.png',
@@ -83,7 +82,7 @@ export class WvDataViewComponent implements OnInit, OnDestroy {
   public selectedProviderList: Provider[] = [];
   public baseMaps: Map<string, LayerOptions> = new Map<string, LayerOptions>();
   public overlayMaps: Map<string, LayerOptions> = new Map<string, LayerOptions>();
-  public stationMarker: L.CircleMarker;
+  public stationMarker: L.CircleMarker = L.circleMarker([50.985, 6.924]);
   public zoomControlOptions: L.Control.ZoomOptions = { position: 'bottomleft' };
   public mapOptions: L.MapOptions = { dragging: true, zoomControl: true, boxZoom: false };
   public fitBounds: L.LatLngBoundsExpression = [[50.985, 6.924], [51.319, 7.607]];
@@ -138,7 +137,7 @@ export class WvDataViewComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-    this.resultSubs = this.facetSearch.getResults().subscribe(ts =>{ this.resultCount = ts.length;this.timeseries=ts});
+    this.resultSubs = this.facetSearch.getResults().subscribe(ts => this.resultCount = ts.length);
     
     this.baseLayer = L.tileLayer.wms('http://ows.terrestris.de/osm/service?',
     {
@@ -168,15 +167,16 @@ export class WvDataViewComponent implements OnInit, OnDestroy {
   }
 );
 
+
 }
-  public onDatasetSelected(datasets: IDataset[]) {
+  // public onDatasetSelected(datasets: IDataset[]) {
   
-    for(let i = 0; i<datasets.length; i++){
-      this.datasetService.addDataset(datasets[i].internalId);
-    }
-      this.diagramEntry = !this.diagramEntry;
-      this.router.navigateByUrl('/timeseries-diagram');
-  }
+  //   for(let i = 0; i<datasets.length; i++){
+  //     this.datasetService.addDataset(datasets[i].internalId);
+  //   }
+  //     this.diagramEntry = !this.diagramEntry;
+  //     this.router.navigateByUrl('/timeseries-diagram');
+  // }
 
   public changeProvider(providerUrl: string) {
     this.selectedProviderList = [];
@@ -205,7 +205,7 @@ export class WvDataViewComponent implements OnInit, OnDestroy {
   public onStationSelected(elem: { station: Station, url: string }) {
     this._map = this.mapCache.getMap('timeMap');
     const point = elem.station.geometry as GeoJSON.Point;
-
+    
     this.stationPopup = L.popup().setLatLng([point.coordinates[1], point.coordinates[0]])
     .setContent(`<div> ID:  ${elem.station.id} </div><div> ${elem.station.properties.label} </div>`);
 
@@ -246,10 +246,10 @@ export class WvDataViewComponent implements OnInit, OnDestroy {
       this.datasetService.removeDataset(ts.internalId);
     } else {
       this.datasetService.addDataset(ts.internalId)
-        
+        // console.log('Selectedtimeseries: ' + JSON.stringify(ts));
     }
     this.diagramEntry = !this.diagramEntry;
-    this.router.navigateByUrl('/timeseries-diagram');
+    this.moveToDiagram('/timeseries-diagram');
 
   }
   public onCloseHandled() {

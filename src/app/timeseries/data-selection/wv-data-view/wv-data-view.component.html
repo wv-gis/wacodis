@@ -118,7 +118,7 @@
         [mapOptions]="mapOptions" [fitBounds]="fitBounds" [avoidZoomToSelection]="avoidZoomToSelection" [baseMaps]="baseMaps"
         [overlayMaps]="overlayMaps" (onSelected)="onStationSelected($event)" [cluster]="cluster" [statusIntervals]="statusIntervals"
         (onContentLoading)="loadingStations = $event"></n52-station-map-selector> -->
-        <n52-result-map [facetSearchService]="facetSearch" [aggregateToStations]="false" [cluster]="false"  [zoomControlOptions]="zoomControlOptions" 
+        <n52-result-map [facetSearchService]="facetSearch" [aggregateToStations]="true" [cluster]="true"  [zoomControlOptions]="zoomControlOptions" 
         [mapOptions]="mapOptions" [fitBounds]="fitBounds" mapId="timeMap" [baseMaps]="baseMaps" [overlayMaps]="overlayMaps" (selected)="onStationSelected($event)">
       </n52-result-map>
     </div>

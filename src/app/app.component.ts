@@ -7,6 +7,7 @@ import { D3TimeFormatLocaleService } from '@helgoland/d3';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { ExtendedSettings } from 'src/app/settings/settings.service';
 import { InitializeService } from './services/initialize.service';
+import { Icon } from 'leaflet';
 
 @Component({
   selector: 'wv-root',
@@ -52,6 +53,13 @@ export class AppComponent implements OnInit {
       }
     );
 
+    Icon.Default.mergeOptions({
+      iconRetinaUrl: './assets/images/map-marker.png',
+      iconUrl: './assets/images/map-marker.png',
+      shadowUrl: '',
+      iconSize: [32, 32],
+      iconAnchor: [16, 32]
+    });
   }
 
   ngOnInit(): void {

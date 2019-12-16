@@ -28,7 +28,7 @@ export class ExtendedOlLayerLegendUrlComponent extends OlLayerLegendUrlComponent
       const url = source.getUrl();
       const layerid = source.getParams()['layers'] || source.getParams()['LAYERS'];
      
-      this.legendUrl.emit(url + "/legend");
+      this.legendUrl.emit(url + "/legend?bandIds=&renderingRule=landcover&f=json");
     }
   }
 

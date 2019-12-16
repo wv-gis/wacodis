@@ -24,15 +24,15 @@ export class WvTimeSliderComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-
+    this.slider = <HTMLInputElement>document.getElementById("myRange");
     this.facetSearchService.getResults().subscribe(() => this.fetchTime());
-     this.slider = <HTMLInputElement>document.getElementById("myRange");
-    console.log(this.slider.value)
+ 
+ 
 
   }
   public updateTime() {
     const timespan = new Timespan(this.minVal, this.maxVal);
-    this.facetSearchService.setCurrentTimespan(timespan);
+    this.facetSearchService.setSelectedTimespan(timespan);
   }
 
   private fetchTime() {
@@ -42,7 +42,7 @@ export class WvTimeSliderComponent implements OnInit {
       // this.supportsTimefilter = true;
       const duration = this.findDuration(completeTs);
       const timestops = this.getTimeStops(completeTs, duration);
-      const currentTs = this.facetSearchService.getCurrentTimespan();
+      const currentTs = this.facetSearchService.getFilteredTimespan();
       if (currentTs) {
         this.minVal = currentTs.from;
         this.maxVal = currentTs.to;
