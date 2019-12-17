@@ -23,5 +23,11 @@
      "service-url": "Service-Url", 
      "stations": "Stationen", 
      "timeseries": "Zeitreihen" 
-   } 
+   } ,
+   "facets": {
+		"category": "Kategorie",
+		"phenomenon": "Messparameter",
+		"station": "Station",
+		"timeframe": "Zeitraum"
+	}
  }

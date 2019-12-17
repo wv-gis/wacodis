@@ -45,7 +45,7 @@ export class ExtendedOlLayerTimeSelectorComponent extends OlLayerTimeSelectorCom
           console.log('Error on Image Service request');
           this.timeAttribute = false ;
         }else{
-          console.log(metadata["timeInfo"].timeExtent);
+          // console.log(metadata["timeInfo"].timeExtent);
           this.timeDimensions =[new Date(metadata["timeInfo"].timeExtent[0]), new Date(metadata["timeInfo"].timeExtent[1])]
           this.currentTime =new Date (metadata["timeInfo"].timeExtent[0]);
         }

@@ -4,6 +4,8 @@
     top: 48px;
     bottom: 0;
     padding: 2.5%;
+    overflow: auto;
+    max-height: 950px;
 }
 .entry+.entry {
     border-left: solid 1px #dfe4e6;
@@ -100,9 +102,9 @@ button{
  } */
  .mapContent {
     position: absolute;
-    right: 400px;
-    left: 0;
-    top: 130px;
+    left: 400px;
+    right: 0;
+    top: 112px;
     bottom: 0;
 }
 
@@ -118,7 +120,7 @@ button{
 #main {
     height: 100%;
     width: 100%;
-    float: left;
+    float: right;
     position: relative;
 }
 n52-station-map-selector{
@@ -127,14 +129,14 @@ n52-station-map-selector{
     position: relative;
 }
 .phenomena .expand-button.active {
-    right: 400px;
+    left: 400px;
     background-color: #2c4869;
 }
 
 .phenomena .expand-button {
     position: absolute;
-    top: 88px;
-    right: 0;
+    top: 112px;
+    left: 0;
     width: 49px;
     height: 54px;
     border-radius: 3px 0 0 3px;
@@ -154,14 +156,14 @@ n52-station-map-selector{
 .phenomena .phenomenonSelector.active {
     display: inline;
     position: absolute;
-    top: 88px;
-    right: 0;
+    top: 112px;
+    left: 0;
     bottom: 0;
     background-color: #718296;
     width: 400px;
 }
 .phenomena .phenomenonSelector {
-    overflow: auto;
+    /* overflow: auto; */
     display: none;
 }
 
@@ -173,6 +175,11 @@ h5{
     background-color: rgba(0,0,0,0.6)
 }
 
+.modal-body{
+    overflow: auto;
+    max-height: 700px;
+}
+
 .btn.btn-default.label{
     margin-top: 10px;
 }
@@ -182,3 +189,49 @@ h5{
 .mid.badge.badge-danger{
     margin: 5px;
 }
+
+.ts-item {
+    padding: 8px 10px;
+    position: relative;
+    background-color: rgba(240, 241, 243, 1.0);
+   border: 2px solid rgba(223, 228, 230, 1.0);
+   margin: 5px;
+}
+ .add {
+        float: right;
+        margin: 8px 2px;
+    }
+
+    .ts-item .add    .mid {
+        color: rgba(144, 144, 144, 1.0);
+    }
+
+    .ts-item +.ts-item {
+        margin-top: 10px;
+     
+    }
+
+    .loader {
+        float: left;
+        margin-right: 10px;
+    }
+
+    .wv-button {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        margin-top: -19px;
+        cursor: pointer;
+        background-color: #718296;
+        border-radius: 3px;
+        padding: 4px 8px;
+        width: 150px
+    }
+    .ts-header {
+        text-transform: uppercase;
+        margin: 17px 0px 5px;
+    }
+
+    .container{
+        padding-left: 400px;
+    }

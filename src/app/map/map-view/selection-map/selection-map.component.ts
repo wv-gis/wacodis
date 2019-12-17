@@ -93,6 +93,7 @@ export class SelectionMapComponent implements OnInit {
       visible: false,
       source: new ImageWMS({
         url: ' https://www.wms.nrw.de/umwelt/waldNRW',
+        attributions: "Datenlizenz Deutschland – Namensnennung – Version 2.0",
         params: {
           'LAYERS': 'waldbedeckung_Sentinel2',
         }
@@ -123,6 +124,19 @@ export class SelectionMapComponent implements OnInit {
       })
     );
 
+    // this.baselayers.push(
+    //   new ImageLayer({
+    //     visible: false,
+    //     source: new ImageArcGISRest({
+    //       ratio: 1,
+    //       params: {
+    //         'LAYERS': '1',
+    //       },
+    //       url: "https://image.discomap.eea.europa.eu/arcgis/services/RiparianZones/LCLU/MapServer/WMSServer"
+    //     })
+    //   })
+    // );
+   
     //Riparian Zones Land Cover Land USe WMS
     // https://image.discomap.eea.europa.eu/arcgis/services/RiparianZones/LCLU/MapServer/WMSServer
     
