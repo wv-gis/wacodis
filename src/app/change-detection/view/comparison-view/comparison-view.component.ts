@@ -14,9 +14,9 @@ require('leaflet.sync');
 // const rasterFunctionOpt = [{ "rasterFunction": "Agriculture with DRA" }, { "rasterFunction": "Bathymetric with DRA" }, { "rasterFunction": "Color Infrared with DRA" },
 // { "rasterFunction": "Natural Color" }, { "rasterFunction": "Agriculture" }, { "rasterFunction": "None" }]
 const sentinelLayerOptions = ['Natural Color', 'Color Infrared'];
-const externLayerOptions = [ 'IntraChange','LandcoverService'];
+const externLayerOptions = ['IntraChange', 'LandcoverService'];
 const bandIdOptions = ['4,3,2', '8,4,3'];
-const rasterFunctionOpt = [{ "rasterFunction": "Natural Color" }, { "rasterFunction": "Color Infrared with DRA" },{"rasterFunction": "Landcover"}];
+const rasterFunctionOpt = [{ "rasterFunction": "Natural Color" }, { "rasterFunction": "Color Infrared with DRA" }, { "rasterFunction": "Landcover" }];
 
 @Component({
   selector: 'wv-comparison-view',
@@ -49,7 +49,7 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
   public legend: HTMLElement;
   public wmsLayer: L.TileLayer;
   public abkLayer: any;
-  public mainMap: any;
+  public mainMap: L.Map;
 
   public comparisonOptions = [];
   public comparisonBaseLayers = [];
@@ -72,6 +72,8 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
   public unresolvableServices: string[] = [];
   public acquisitionDates = [];
   public refreshInterval = '';
+  public isDisabledR = true;
+  public isDisabledL = true;
 
   constructor(private mapCache: MapCache, private tokenService: RequestTokenService, private _location: Location) {
 
@@ -99,7 +101,7 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
     //   layers: 'WMS_NW_DGK5', format: 'image/png', transparent: true, maxZoom: 16, 
     //   attribution: '&copy; <a href="https://www.bezreg-koeln.nrw.de/brk_internet/geobasis/webdienste/geodatendienste/index.html">Bezreg-Koeln</a>', className: 'abk'
     // });
-    this.mainMap = L.map('main',this.mapOptions).setView([51.161, 7.482], 10);
+    this.mainMap = L.map('main', this.mapOptions).setView([51.161, 7.482], 10);
     // this.defaultBaseMap.set('comparisonMap',
     //   {
     //     label: 'OSM', visible: true, layer: this.wmsLayer
@@ -140,6 +142,8 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
       this.setsyncedMap();
     }
     this.display = 'hidden';
+
+
   }
 
   changeVisibility(el: HTMLElement) {
@@ -150,6 +154,11 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
    */
   setSplittedMap() {
     // this._map = this.mapCache.getMap('comparisonMap');
+    if (!this.mainMap) {
+      this.mainMap = L.map('main', this.mapOptions).setView([51.161, 7.482], 10);
+      this.mainMap.addLayer(this.wmsLayer);
+    }
+
 
     // if(!this._map.getPane('imagePane')){
     if (this.rightLayer.options.pane === 'imagePane' + this.selectedIdR + 1) {
@@ -272,8 +281,9 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
 
       }
       // this.mapCache.getMap('comparisonMap').invalidateSize();
-      this.mainMap.invalidateSize();
+
     }
+    this.mainMap.invalidateSize();
   }
   /*
   change the view from splitted view to synced view or vice versa
@@ -281,6 +291,7 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
   public changeView() {
     if (this.view === 'split') {
       this.remove();
+      // this.mainMap.remove();
       this.setsyncedMap();
       this.view = 'synced';
     } else {
@@ -295,7 +306,7 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
   private addEvents() {
     let _range = this.range;
     // let map = this._map;
-      let map = this.mainMap;
+    let map = this.mainMap;
     if (!map || !_range) {
       console.error('No map or range');
       return this;
@@ -335,7 +346,6 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
    * @param e event
    */
   private uncancelMapDrag(e) {
-    console.log(e.type);
     // if (this.mapWasDragEnabled) {
     //   this._map.dragging.enable()
     // }
@@ -387,7 +397,7 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
     // if (!this._map) {
     //   return this;
     // }
-      if (!this.mainMap) {
+    if (!this.mainMap) {
       return this;
     }
     let prevLeft = this.leftLayer;
@@ -425,6 +435,10 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
       else if (this.leftLayer.options.pane === 'overlayPane' + 1) {
         // this._map.getPane('overlayPane' + 1).remove();
         this.mainMap.getPane('overlayPane' + 1).remove();
+        let tileLayerPane = document.getElementsByClassName('leaflet-pane leaflet-overlay1-pane') as HTMLCollectionOf<HTMLElement>;
+        for (let element in tileLayerPane => {
+          this.mainMap.getPane(element).remove();
+        });
       }
       else {
         let tileLayerPane = document.getElementsByClassName('leaflet-pane leaflet-overlay-pane') as HTMLCollectionOf<HTMLElement>;
@@ -443,6 +457,11 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
       else if (this.rightLayer.options.pane === 'overlayPane' + 1) {
         // this._map.getPane('overlayPane' + 1).remove();
         this.mainMap.getPane('overlayPane' + 1).remove();
+        let tileLayerPane = document.getElementsByClassName('leaflet-pane leaflet-overlay1-pane') as HTMLCollectionOf<HTMLElement>;
+        // this.mainMap.getPane(tileLayerPane[0]).remove();
+        for (let element in tileLayerPane => {
+          this.mainMap.getPane(element).remove();
+        });
       }
       else {
         let tileLayerPane = document.getElementsByClassName('leaflet-pane leaflet-overlay-pane') as HTMLCollectionOf<HTMLElement>;
@@ -456,12 +475,13 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
     L.DomUtil.remove(this.container);
 
     // this._map = null;
-    this.mainMap.remove();
+    // this.mainMap.remove();
+    // this.mainMap = null;
   }
 
 
   private setsyncedMap() {
- 
+
     let newMap = document.createElement('div');
     newMap.setAttribute('id', 'map2');
     newMap.style.width = '49.5%';
@@ -473,10 +493,13 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
 
     // this.compMap = this.mapCache.getMap('comparisonMap');
     // this.compMap = this.mainMap;
-    this.syncedMap =  L.map(newMap).setView([51.161, 7.482], 13);
-    this.mainMap = L.map('main').setView([51.161, 7.482], 13);
-    // this.mapCache.getMap('comparisonMap').setView([51.161, 7.482], 13);
-    this.mainMap.addLayer(this.wmsLayer);
+    this.syncedMap = L.map(newMap).setView([51.161, 7.482], 13);
+    if (!this.mainMap) {
+      this.mainMap = L.map('main').setView([51.161, 7.482], 13);
+      // this.mapCache.getMap('comparisonMap').setView([51.161, 7.482], 13);
+      this.mainMap.addLayer(this.wmsLayer);
+    }
+
 
 
     L.tileLayer.wms('http://ows.terrestris.de/osm/service?',
@@ -535,6 +558,8 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
     if (this.leftLayer.options.pane === 'imagePane' + this.selectedIdL) {
       // this.mapCache.getMap('comparisonMap').getPane('imagePane' + this.selectedIdL).remove();
       this.mainMap.getPane('imagePane' + this.selectedIdL).remove();
+    } else {
+      this.mainMap.getPane('overlayPane' + 1).remove();
     }
     // this.mapCache.getMap('comparisonMap').invalidateSize();
     this.mainMap.invalidateSize();
@@ -542,13 +567,6 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
   }
   public onCloseHandled() {
     this._location.back();
-    // this.display = 'hidden';
-
-    // document.getElementById('rightTime').setAttribute('disabled','');
-    // document.getElementById('leftTime').setAttribute('disabled','');
-    // document.getElementById('rightLayer').setAttribute('disabled','');
-    // document.getElementById('leftLayer').setAttribute('disabled','');
-    // document.getElementById('viewChange').setAttribute('disabled','');
   }
 
 
@@ -581,9 +599,10 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
           [[50.9854181, 6.9313883], [51.3190536, 7.6071338]], {
             opacity: 0.8, pane: 'overlayPane' + 1, alt: 'IntraChange'
           }));
-          this.comparisonBaseLayers.push(esri.imageMapLayer({
-            url: "https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/EO_WACODIS_DAT_LANDCOVERService/ImageServer",
-          maxZoom: 16, opacity: 0.8, alt: 'LandcoverService', renderingRule: rasterFunctionOpt[2]}));
+        this.comparisonBaseLayers.push(esri.imageMapLayer({
+          url: "https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/EO_WACODIS_DAT_LANDCOVERService/ImageServer",
+          maxZoom: 16, opacity: 0.8, alt: 'LandcoverService', renderingRule: rasterFunctionOpt[2]
+        }));
 
         this.tokenService.setToken(this.token);
       }, error => {
@@ -605,9 +624,10 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
         [[50.9854181, 6.9313883], [51.3190536, 7.6071338]], {
           opacity: 0.8, pane: 'overlayPane' + 1, alt: 'IntraChange'
         }));
-        this.comparisonBaseLayers.push(esri.imageMapLayer({
-          url: "https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/EO_WACODIS_DAT_LANDCOVERService/ImageServer",
-        maxZoom: 16, opacity: 0.8, alt: 'LandcoverService', renderingRule: rasterFunctionOpt[2]}));
+      this.comparisonBaseLayers.push(esri.imageMapLayer({
+        url: "https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/EO_WACODIS_DAT_LANDCOVERService/ImageServer",
+        maxZoom: 16, opacity: 0.8, alt: 'LandcoverService', renderingRule: rasterFunctionOpt[2]
+      }));
     }
   }
 
@@ -622,7 +642,7 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
       this.token = this.tokenService.getToken();
     }
 
-    esri.imageService({ url: 'https://sentinel.arcgis.com/arcgis/rest/services/Sentinel2/ImageServer' }).query().between(new Date(2018, new Date().getMonth()), new Date())
+    esri.imageService({ url: 'https://sentinel.arcgis.com/arcgis/rest/services/Sentinel2/ImageServer' }).query().between(new Date(new Date().getFullYear() - 1, new Date().getMonth()), new Date())
       .bboxIntersects(L.latLngBounds([50.9952, 6.931481], [51.309139, 7.607089])).where(" cloudcover<=0.4 AND category=1")
       .fields(['acquisitiondate', 'cloudcover', 'q', 'best']).orderBy('acquisitiondate', 'ASC')
       .token(this.token).limit(1500).returnGeometry(false)
@@ -657,10 +677,12 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
           }
           switch (side) {
             case 'le': {
+              this.defaultLDate = tempCurrentValue;
               this.selLeftDate = this.acquisitionDates.filter((value, p, self) => self.indexOf(value) === p);
               break;
             }
             case 'ri': {
+              this.defaultRDate = tempCurrentValue;
               this.selRightDate = this.acquisitionDates.filter((value, p, self) => self.indexOf(value) === p);
               break;
             }
@@ -676,6 +698,8 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
     this._leftLayer = this.comparisonBaseLayers[id];
     console.log('Name: ' + layerName + ' Layer: ' + this._leftLayer + ' index:' + id);
     if (this._leftLayer.options.pane == 'imagePane' + id) {
+      if (this.isDisabledL)
+        this.isDisabledL = !this.isDisabledL;
       this.queryLayer('le');
     }
   }
@@ -686,6 +710,8 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
     this._rightLayer = this.comparisonBaseLayers[id];
     console.log('Name: ' + layerName + ' Layer: ' + this._rightLayer + ' index:' + id);
     if (this._rightLayer.options.pane == 'imagePane' + id) {
+      if (this.isDisabledR)
+        this.isDisabledR = !this.isDisabledR;
       this.queryLayer('ri');
     }
   }
@@ -725,8 +751,9 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
       this.remove();
       this.checkLeftLayer(layerName, id);
       this.leftLayer = this._leftLayer;
-      if (this._leftLayer instanceof esri.ImageMapLayer) {
-        this._leftLayer.setTimeRange(this.defaultLDate, new Date(this.defaultLDate.getFullYear(), this.defaultLDate.getMonth(), this.defaultLDate.getDate() + 5));
+      if (this.leftLayer instanceof esri.ImageMapLayer) {
+        if (this.leftLayer.options.pane === 'imagePane' + id)
+          this.leftLayer.setTimeRange(this.defaultLDate, new Date(this.defaultLDate.getFullYear(), this.defaultLDate.getMonth(), this.defaultLDate.getDate() + 5));
       }
       this.setSplittedMap();
     }
@@ -734,8 +761,9 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
       this.removeSync();
       this.checkLeftLayer(layerName, id);
       this.leftLayer = this._leftLayer;
-      if (this._leftLayer instanceof esri.ImageMapLayer) {
-        this._leftLayer.setTimeRange(this.defaultLDate, new Date(this.defaultLDate.getFullYear(), this.defaultLDate.getMonth(), this.defaultLDate.getDate() + 5));
+      if (this.leftLayer instanceof esri.ImageMapLayer) {
+        if (this.leftLayer.options.pane === 'imagePane' + id)
+        this.leftLayer.setTimeRange(this.defaultLDate, new Date(this.defaultLDate.getFullYear(), this.defaultLDate.getMonth(), this.defaultLDate.getDate() + 5));
       }
       this.setsyncedMap();
     }
@@ -747,27 +775,32 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
       this.checkRightLayer(layerName, id);
       this.rightLayer = this._rightLayer;
       if (this.rightLayer instanceof esri.ImageMapLayer) {
-        this.rightLayer = esri.imageMapLayer({
-          url: 'https://sentinel.arcgis.com/arcgis/rest/services/Sentinel2/ImageServer', maxZoom: 16, alt: sentinelLayerOptions[id].toString(),
-          renderingRule: rasterFunctionOpt[id], position: 'pane', pane: 'imagePane' + id + 1, opacity: 0.8
-        });
-        this.rightLayer.authenticate(this.tokenService.getToken());
-        this.rightLayer.setOpacity(0.8);
-        this.rightLayer.setTimeRange(this.defaultRDate, new Date(this.defaultRDate.getFullYear(), this.defaultRDate.getMonth(), this.defaultRDate.getDate() + 5));
+        if (this.rightLayer.options.pane === 'imagePane' + id + 1) {
+          this.rightLayer = esri.imageMapLayer({
+            url: 'https://sentinel.arcgis.com/arcgis/rest/services/Sentinel2/ImageServer', maxZoom: 16, alt: sentinelLayerOptions[id].toString(),
+            renderingRule: rasterFunctionOpt[id], position: 'pane', pane: 'imagePane' + id + 1, opacity: 0.8
+          });
+          this.rightLayer.authenticate(this.tokenService.getToken());
+          this.rightLayer.setOpacity(0.8);
+          this.rightLayer.setTimeRange(this.defaultRDate, new Date(this.defaultRDate.getFullYear(), this.defaultRDate.getMonth(), this.defaultRDate.getDate() + 5));
+        }
       }
       this.setSplittedMap();
+
     }
     else {
       this.removeSync();
       this.checkRightLayer(layerName, id);
       this.rightLayer = this._rightLayer;
       if (this.rightLayer instanceof esri.ImageMapLayer) {
+        if (this.rightLayer.options.pane === 'imagePane' + id + 1) {
         this.rightLayer = esri.imageMapLayer({
           url: 'https://sentinel.arcgis.com/arcgis/rest/services/Sentinel2/ImageServer', maxZoom: 16, alt: sentinelLayerOptions[id].toString(),
           renderingRule: rasterFunctionOpt[id], position: 'pane', pane: 'imagePane' + id + 1, opacity: 0.8
         });
         this.rightLayer.authenticate(this.tokenService.getToken());
         this.rightLayer.setTimeRange(this.defaultRDate, new Date(this.defaultRDate.getFullYear(), this.defaultRDate.getMonth(), this.defaultRDate.getDate() + 5));
+      }
       }
       this.setsyncedMap();
     }
