@@ -71,7 +71,7 @@ export class WvExtendedListSelectorComponent extends ListSelectorComponent imple
 
   ngOnChanges(changes: SimpleChanges) {
     super.ngOnChanges(changes);
-    this.selProv.service$.subscribe((res) => {
+    this.selProv.getSelectedProvider().subscribe((res) => {
       this.selectedProviderUrl = res.url;
     });
     this.parameters[0].filterList = this.providerList.map((entry) => {

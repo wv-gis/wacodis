@@ -114,7 +114,7 @@ export class WvDataViewComponent implements OnInit, OnDestroy {
     this.badgeNumber = this.datasetService.datasetIds.length;
     if (settings.getSettings().datasetApis) {
 
-      this.selProv.service$.subscribe((res) => {
+      this.selProv.getSelectedProvider().subscribe((res) => {
         this.selectedProviderUrl = res.url;
         for (let i = 0; i < settings.getSettings().datasetApis.length; i++) {
           if (settings.getSettings().datasetApis[i].url === this.selectedProviderUrl){

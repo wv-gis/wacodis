@@ -17,7 +17,7 @@ export class InitializeService {
         private providerService: SelectedProviderService,
       ) { 
 
-    this.providerService.service$.subscribe((service)=>{
+    this.providerService.getSelectedProvider().subscribe((service)=>{
             if (service) {
                 this.api.getService(service.id, service.url).subscribe(s => this.init(s));
               } else {

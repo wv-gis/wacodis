@@ -27,7 +27,7 @@ export class WvExtendedMultiserviceFilterSelectorComponent extends MultiServiceF
     private selProv: SelectedProviderService, private listSelService: ListSelectorService) {
     super(datasetApiInterface, translate);
     this.uoms = [];
-    this.selProv.service$.subscribe((res) => {
+    this.selProv.getSelectedProvider().subscribe((res) => {
       this.selectedProviderUrl = res.url;
     });
   }

@@ -32,7 +32,7 @@ export class ExtendedPhenomenonServiceFilterSelectorComponent extends ServiceFil
   }
   ngOnChanges(changes: SimpleChanges) {
     super.ngOnChanges(changes);
-    this.selProv.service$.subscribe((res)=>{
+    this.selProv.getSelectedProvider().subscribe((res)=>{
       this.serviceUrl = res.url;
     });
     this.apiInterface.getPhenomena(this.serviceUrl, this.filter)

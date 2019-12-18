@@ -47,7 +47,6 @@ export class WvExtendedTimeseriesEntryComponent extends TimeseriesEntryComponent
   }
   public onMetadata(metadata: ExportData): void {
     this.metadata = metadata;
-    console.log(this.metadata);
     this.disabled = true;
   }
   public onCloseHandled(): void {
