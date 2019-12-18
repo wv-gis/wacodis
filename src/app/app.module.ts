@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -35,6 +35,7 @@ import { CsvDataService } from 'src/app/settings/csvData.service';
 import { ComparisonSelectionService } from 'src/app/services/comparison-selection.service';
 import { RequestTokenService } from 'src/app/services/request-token.service';
 import { HelgolandOpenLayersModule } from '@helgoland/open-layers';
+import { SelectedProviderService } from './services/selected-provider.service';
 
 
 
@@ -93,7 +94,11 @@ import { HelgolandOpenLayersModule } from '@helgoland/open-layers';
       useClass: DatasetEmitServiceService
     }, 
   
-    CsvDataService, ComparisonSelectionService, RequestTokenService
+    CsvDataService, ComparisonSelectionService, RequestTokenService,SelectedProviderService,
+    // {provide: APP_INITIALIZER,
+    //   useFactory: HttpLoaderFactory,
+    //   deps:[SelectedProviderService]  
+    // }
 
   ],
   bootstrap: [AppComponent],

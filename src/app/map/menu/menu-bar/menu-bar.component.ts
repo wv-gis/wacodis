@@ -30,10 +30,10 @@ export class MenuBarComponent implements OnInit {
     if (settingsService.getSettings().datasetApis) {
       this.datasetApis = settingsService.getSettings().datasetApis;
 
-      this.selProv.service$.subscribe((res) => {
+      this.selProv.getSelectedProvider().subscribe((res) => {
         if (res.url) {
-          this.datasetApiInt.getServices(res.url).subscribe((service) => {
-            this.selectedService = service[0];
+          this.datasetApiInt.getService(res.id,res.url).subscribe((service) => {
+            this.selectedService = service;
             // this.selProv.setProvider({ id: this.selectedService.id, url: this.selectedService.apiUrl });
             this.label = this.selectedService.label;
           });
