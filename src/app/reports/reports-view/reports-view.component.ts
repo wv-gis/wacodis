@@ -1,9 +1,20 @@
-import { Component, OnInit, ViewChild, ElementRef, HostListener, AfterViewInit } from '@angular/core';
-import { PlatformTypes, Timespan, DatasetApiInterface, ColorService, DataParameterFilter, SettingsService } from '@helgoland/core';
+import { Component, OnInit, ViewChild, ElementRef, HostListener, AfterViewInit, EventEmitter } from '@angular/core';
+import { PlatformTypes, Timespan, DatasetApiInterface, ColorService, DataParameterFilter, SettingsService, TimeseriesData, Data, IDataEntry, SplittedDataDatasetApiInterface } from '@helgoland/core';
 import { ExtendedSettings, ReportReferenceValues } from 'src/app/settings/settings.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as d3 from 'd3';
+import { DataEntry, D3TimeFormatLocaleService } from '@helgoland/d3';
+import { SelectedProviderService } from 'src/app/services/selected-provider.service';
+import { Observable } from 'rxjs';
+
 declare var require: any;
+
+interface D3DataElement {
+  date: Date;
+  value: number;
+  year?: string;
+  label?: string;
+}
 
 
 const svgWidth = 1480, svgHeight = 520;
@@ -21,7 +32,7 @@ export class ReportsViewComponent implements OnInit, AfterViewInit {
   //   this.onResize();
   // }
 
-  @ViewChild('reportComponent', {static: false})
+  @ViewChild('reportComponent', { static: false })
   public d3Elem: ElementRef;
 
   public serviceUrl: string = '';
@@ -51,6 +62,7 @@ export class ReportsViewComponent implements OnInit, AfterViewInit {
   public intervals: Date[] = [];
   public values: number[] = [];
   public loading: boolean = false;
+  public loadingCounter =0;
   public reservoirs;
   public g: any;
   public compSeriesMax: number = 0;
@@ -58,12 +70,13 @@ export class ReportsViewComponent implements OnInit, AfterViewInit {
   public svg: any;
   public svgCont: any;
   public unresolvableTimeseries: string[] = [];
-  public refColors: string[] = ['rgb(199,21,133)', 'rgb(255,0,255)', 'rgb(131,111,255)'];
+  public refColors: string[] = ['rgb(255,0, 0)', 'rgb(0,111,100)', 'rgb(0,200,100)'];
   public compSerColors: string[] = ['rgb(0,100,0)', 'rgb(102,205,0)', 'rgb(205,205,0)', 'rgb(255,130,71)'];
 
 
   constructor(private datasetApi: DatasetApiInterface, private colSrvc: ColorService,
-    private settingsService: SettingsService<ExtendedSettings>, private route: ActivatedRoute, private router: Router) {
+    private settingsService: SettingsService<ExtendedSettings>, private route: ActivatedRoute, 
+    private router: Router, private timeFormatLocalService: D3TimeFormatLocaleService, private selProv: SelectedProviderService) {
 
     if (settingsService.getSettings().reservoirs) {
       this.reservoirs = settingsService.getSettings().reservoirs;
@@ -75,15 +88,18 @@ export class ReportsViewComponent implements OnInit, AfterViewInit {
       }
 
     }
-    for(let i =0; i< settingsService.getSettings().datasetApis.length; i++){
-      
-            if(settingsService.getSettings().datasetApis[i].url.includes(this.reservoirs[0].graph.seriesId.split("/")[0])){
-              this.serviceUrl = settingsService.getSettings().datasetApis[i].url;
-            }
-            else{
-              this.serviceUrl = settingsService.getSettings().datasetApis[0].url;
-            }
-          }
+    this.selProv.getSelectedProvider().subscribe((prov)=>{
+      this.serviceUrl = prov.url;
+    })
+    // for (let i = 0; i < settingsService.getSettings().datasetApis.length; i++) {
+
+    //   if (settingsService.getSettings().datasetApis[i].url.includes(this.reservoirs[0].graph.seriesId.split("/")[0])) {
+    //     this.serviceUrl = settingsService.getSettings().datasetApis[i].url;
+    //   }
+    //   else {
+    //     this.serviceUrl = settingsService.getSettings().datasetApis[0].url;
+    //   }
+    // }
 
   }
 
@@ -93,12 +109,14 @@ export class ReportsViewComponent implements OnInit, AfterViewInit {
         for (let k = 0; k < this.reservoirs.length; k++) {
           if (params["id"] === this.reservoirs[k].id) {
             this.checkSelection(this.reservoirs[k].label, k);
-            this.loading = !this.loading;
+            // this.loading = !this.loading;
+          
           }
         }
 
       }
     });
+
   }
   ngAfterViewInit(): void {
 
@@ -136,15 +154,18 @@ export class ReportsViewComponent implements OnInit, AfterViewInit {
    */
   public generateReport() {
 
+    if(this.loadingCounter === 0){this.loading = !this.loading;}
+    this.loadingCounter ++;
+
     let graphData = [];
     let compLine, actualLine, refLine, dots, compDots, refdots;
     let height = svgHeight - margin.top - margin.bottom;
 
-    let svgCont = d3.select('#reports').append("div")
+    let svgDiv = d3.select('#reports').append("div")
       .style("width", "100%").style("height", "100%")
       .classed("svg-container", true);
 
-    this.svg = svgCont.append("svg")
+    this.svg = svgDiv.append("svg")
       .attr("viewBox", '0 0 ' + svgWidth + ' ' + svgHeight)
       .attr("version", "1.1")
       .attr("xmlns", "http://www.w3.org/2000/svg")
@@ -172,12 +193,12 @@ export class ReportsViewComponent implements OnInit, AfterViewInit {
     //set the boundings of the graph
     this.g = this.svg.append("g")
       .attr("transform",
-      "translate(" + margin.left + "," + margin.top + ")"
+        "translate(" + margin.left + "," + margin.top + ")"
       );
 
     //set scale of x and y axis
-    let x = d3.scaleTime().rangeRound([0, graphWidth]);
-    let y = d3.scaleLinear().rangeRound([height, 0]);
+    let x: d3.ScaleTime<number, number> = d3.scaleTime().rangeRound([0, graphWidth]);
+    let y: d3.ScaleLinear<number, number> = d3.scaleLinear().rangeRound([height, 0]);
     let formatTime = d3.timeFormat("%e %B");
 
     // let clip = g.append("defs").append("svg:clipPath")
@@ -190,7 +211,24 @@ export class ReportsViewComponent implements OnInit, AfterViewInit {
 
     //define the axis
     let yAxis = d3.axisLeft(y);
-    let xAxis = d3.axisBottom(x).ticks(d3.timeMonth.every(2));
+    // let xAxis = d3.axisBottom(x).ticks(d3.timeMonth.every(2));
+    let xAxis = d3.axisBottom(x).tickFormat((d)=> {
+      const date = new Date(d.valueOf());
+      const formatMillisecond = '.%L',
+      formatSecond = ':%S',
+      formatMinute = '%H:%M',
+      formatHour = '%H:%M',
+      formatDay = '%b %d',
+      formatWeek = '%b %d',
+      formatMonth = '%B',
+      formatYear = '%Y';
+
+  const format = d3.timeMonth(date) < date ? (d3.timeWeek(date) < date ? formatDay : formatWeek)
+                      : d3.timeYear(date) < date ? formatMonth
+                          : formatYear;
+      
+     return this.timeFormatLocalService.getTimeLocale(format)(new Date(d.valueOf())) 
+    });
 
     //set the title of the graph
     this.svg.append("text")
@@ -202,22 +240,9 @@ export class ReportsViewComponent implements OnInit, AfterViewInit {
       .style("text-decoration", "underline")
       .text('Speicherinhalt ' + this.damLabel);
 
-    // //add brushing
-    // let brush = d3.brushX()
-    //   .extent([[0, 0], [this.width, height]])
-    //   .on("end", updateChart);
-    // //create scatter variable
-    // let scatter = g.append('g')
-    //   .attr("class", "focus")
-    //   .attr("transform", "translate(" + '0' + "," + '0' + ")")
-    //   .attr("clip_path", "url(#clip)");
-    // let focus = g.append("g")
-    //   .attr("class", "focus")
-    //   .attr("transform", "translate(" + '0' + "," + '0' + ")")
-    //   .attr("clip_path", "url(#clip)");
 
     // set the definition of the drawing line for series
-    let line = d3.line()
+    let line = d3.line<D3DataElement>()
       .curve(d3.curveBasis)
       .x((d) => { return x(d.date) })
       .y((d) => { return y(d.value) });
@@ -227,24 +252,50 @@ export class ReportsViewComponent implements OnInit, AfterViewInit {
       .attr("class", "tooltip")
       .style("opacity", 0);
 
-    //collect and add timeseries of last two years from today back to the diagram
-    this.datasetApi.getTsData(this.seriesId.split('__')[1], this.serviceUrl, this.timespan[0], this.filter).subscribe((data) => {
+          // this.datasetApi.getTsData<[number, number]>( this.seriesId.split('__')[1], this.serviceUrl, 
+          // new Timespan(new Date(2018,9,4).getTime(), new Date(2019,9,4).getTime())).subscribe((data) => {
+          // });
+
+    this.datasetApi.getTimeseriesData(this.serviceUrl, [this.seriesId.split('__')[1]], this.timespan[0]).subscribe((data) => {
+      //collect and add timeseries of last two years from today back to the diagram
+      // this.datasetApi.getTsData(this.seriesId.split('__')[1], this.serviceUrl, new Timespan(this.timespan[0].from , this.timespan[0].from + 30556925000), this.filter).subscribe((data) => {
       this.intervals = [];
       this.values = [];
-      for (let i = 0; i < data.values.length; i++) {
-        if (new Date(data.values[i]['timestamp']).getFullYear() === new Date(this.timespan[0].from).getFullYear()) {
-          this.intervals.push(new Date(new Date().getFullYear() - 1, new Date(data.values[i]['timestamp']).getMonth(), new Date(data.values[i]['timestamp']).getDate()));
+
+      // for (let i = 0; i < data.values.length; i++) {
+     
+      //     if (new Date(data.values[i]['timestamp']).getFullYear() === new Date(this.timespan[0].from).getFullYear()) {
+      //       this.intervals.push(new Date(new Date().getFullYear() - 1, new Date(data.values[i]['timestamp']).getMonth(), new Date(data.values[i]['timestamp']).getDate()));
+      //     }
+      //     else if (new Date(data.values[i]['timestamp']).getFullYear() === new Date().getFullYear()
+      //       && new Date(data.values[i]['timestamp']).getMonth() <= new Date().getMonth()) {
+      //       this.intervals.push(new Date(new Date().getFullYear() + 1, new Date(data.values[i]['timestamp']).getMonth(), new Date(data.values[i]['timestamp']).getDate()));
+      //     }
+      //     else {
+      //       this.intervals.push(new Date(new Date().getFullYear(), new Date(data.values[i]['timestamp']).getMonth(), new Date(data.values[i]['timestamp']).getDate()));
+      //     }
+      //     this.values.push(data.values[i]['value']);
+      // }
+
+      for (let i = 0; i < data.length; i++) {
+        for (let k = 0; k < data[i].data.length; k++) {
+          if (new Date(data[i].data[k].timestamp).getFullYear() === new Date(this.timespan[0].from).getFullYear()) {
+            this.intervals.push(new Date(new Date().getFullYear() - 2, new Date(data[i].data[k].timestamp).getMonth(), new Date(data[i].data[k].timestamp).getDate()));
+          }
+          else if (new Date(data[i].data[k].timestamp).getFullYear() === new Date(this.timespan[0].to).getFullYear()
+            && new Date(data[i].data[k].timestamp).getMonth() <= new Date(this.timespan[0].to).getMonth()) {
+            this.intervals.push(new Date(new Date().getFullYear() , new Date(data[i].data[k].timestamp).getMonth(), new Date(data[i].data[k].timestamp).getDate()));
+          }
+          else {
+            this.intervals.push(new Date(new Date().getFullYear()-1, new Date(data[i].data[k].timestamp).getMonth(), new Date(data[i].data[k].timestamp).getDate()));
+          }
+          this.values.push(data[i].data[k].value);
+
         }
-        else if (new Date(data.values[i]['timestamp']).getFullYear() === new Date(this.timespan[0].to).getFullYear()
-          && new Date(data.values[i]['timestamp']).getMonth() <= new Date(this.timespan[0].to).getMonth()) {
-          this.intervals.push(new Date(new Date().getFullYear() + 1, new Date(data.values[i]['timestamp']).getMonth(), new Date(data.values[i]['timestamp']).getDate()));
-        }
-        else {
-          this.intervals.push(new Date(new Date().getFullYear(), new Date(data.values[i]['timestamp']).getMonth(), new Date(data.values[i]['timestamp']).getDate()));
-        }
-        this.values.push(data.values[i]['value']);
+
+
       }
-      let d3Data = [];
+      let d3Data: D3DataElement[] = [];
       for (let p = 0; p < this.intervals.length; p++)
         d3Data.push({ date: (this.intervals[p]), value: this.values[p], year: new Date(this.timespan[0].from).getFullYear() + '/' + new Date(this.timespan[0].to).getFullYear() });
 
@@ -279,27 +330,14 @@ export class ReportsViewComponent implements OnInit, AfterViewInit {
       }
       // add the Y gridlines
       //scatter
-      this.g.append("g")
-        .attr("class", "grid")
-        .attr('opacity', 0.5)
-        .attr('stroke-width', 0.25)
-        .call(make_y_gridlines()
-          .tickSize(-graphWidth)
-          .tickFormat("")
-        );
-
-      // add line for timeseries to graph
-      //focus
-      actualLine = this.g.append("path")
-        .datum(d3Data)
-        .attr('class', 'line')
-        .attr("fill", "none")
-        .attr("stroke", "red")
-        .attr("id", "line")
-        .attr("stroke-linejoin", "round")
-        .attr("stroke-linecap", "round")
-        .attr("stroke-width", 2.5)
-        .attr("d", line);
+      // this.g.append("g")
+      //   .attr("class", "grid")
+      //   .attr('opacity', 0.5)
+      //   .attr('stroke-width', 0.25)
+      //   .call(make_y_gridlines()
+      //     .tickSize(-graphWidth)
+      //     .tickFormat()
+      //   );   
 
       //add Datapoints
       //focus
@@ -318,7 +356,7 @@ export class ReportsViewComponent implements OnInit, AfterViewInit {
           div.transition()
             .duration(200)
             .style("opacity", .9);
-          div.html(formatTime(d.date) + "<span style='color: red; stroke=black;'><i class='fas fa-circle' style='padding: 5px;font-size: 80%;'> </i></span>"
+          div.html(formatTime(d.date) + "<span style='color: darkblue; stroke=black;'><i class='fas fa-circle' style='padding: 5px;font-size: 80%;'> </i></span>"
             + "<br/>" + d.year + ": " + d.value)
             .style("left", (d3.event.pageX) + "px")
             .style("top", (d3.event.pageY - 28) + "px")
@@ -332,6 +370,19 @@ export class ReportsViewComponent implements OnInit, AfterViewInit {
             .duration(500)
             .style("opacity", 0);
         });
+
+           // add line for timeseries to graph
+      //focus
+      actualLine = this.g.append("path")
+      .datum(d3Data)
+      .attr('class', 'line')
+      .attr("fill", "none")
+      .attr("stroke", "darkblue")
+      .attr("id", "line")
+      .attr("stroke-linejoin", "round")
+      .attr("stroke-linecap", "round")
+      .attr("stroke-width", 2.5)
+      .attr("d", line);
 
       //add legend description
       this.svg.append("text")
@@ -354,7 +405,7 @@ export class ReportsViewComponent implements OnInit, AfterViewInit {
         })
         .text('Inhalt: ' + new Date(this.timespan[0].from).getFullYear() + ' - heute');
 
-        this.svg.append("text")
+      this.svg.append("text")
         .attr("x", width - margin.left - 20)
         .attr("y", margin.top)
         .attr("class", "state")
@@ -363,9 +414,9 @@ export class ReportsViewComponent implements OnInit, AfterViewInit {
         .style("font-size", "12px")
         .style("font-weight", "normal")
         .style("fill", "black")
-        .style("padding", "5px").text('Stand vom: '+ new Date().toLocaleDateString());
+        .style("padding", "5px").text('Stand vom: ' + new Date().toLocaleDateString());
 
-        this.svg.append('text')
+      this.svg.append('text')
         .attr("x", width - margin.left - 20)
         .attr("y", margin.top + 20)
         .attr("class", "state")
@@ -374,48 +425,75 @@ export class ReportsViewComponent implements OnInit, AfterViewInit {
         .style("font-size", "12px")
         .style("font-weight", "normal")
         .style("fill", "black")
-        .text('Letzter Wert: ' + d3Data[d3Data.length-1].value +' [Mio m³]'); 
-         
-
+        .text('Letzter Wert: ' + d3Data[d3Data.length - 1].value + ' [Mio m³]');
 
       this.svg.append('text')
         .attr("y", width - 65)
         .attr("x", -(height - margin.bottom - 25 * (this.timespan.length)))
-        .attr("fill", "red")
+        .attr("fill", "darkblue")
         .attr('font-size', 'x-large')
         .attr("transform", "rotate(-90)")
         .text('|');
 
-      this.loading = !this.loading;
-    }, (err) => { this.errorOnLoading() });
+      // this.loading = !this.loading;
+    }, (err) => { this.errorOnLoading(err) },() => this.getLoading());
+
+     
     // }
     //collect and add timeseries of comparison years to the diagram
     if (this.compSeriesId != '') {
+  
       for (let j = 1; j < this.timespan.length; j++) {
-        this.datasetApi.getTsData(this.compSeriesId.split('__')[1], this.serviceUrl, this.timespan[j], this.filter).subscribe((data) => {
+            this.loadingCounter ++;
+        // this.datasetApi.getTsData(this.compSeriesId.split('__')[1], this.serviceUrl, this.timespan[j], this.filter).subscribe((data) => {
+        this.datasetApi.getTimeseriesData(this.serviceUrl, [this.compSeriesId.split('__')[1]], this.timespan[j]).subscribe((data) => {
           let compIntervals = [];
           let compValues = [];
-          for (let i = 0; i < data.values.length; i++) {
-            if (new Date(data.values[i]['timestamp']).getFullYear() === new Date(this.timespan[j].from).getFullYear()) {
-              compIntervals.push(new Date(new Date().getFullYear() - 1, new Date(data.values[i]['timestamp']).getMonth(), new Date(data.values[i]['timestamp']).getDate()));
+          // for (let i = 0; i < data.values.length; i++) {
+          //   if (new Date(data.values[i]['timestamp']).getFullYear() === new Date(this.timespan[j].from).getFullYear()) {
+          //     compIntervals.push(new Date(new Date().getFullYear() - 1, new Date(data.values[i]['timestamp']).getMonth(), new Date(data.values[i]['timestamp']).getDate()));
+          //   }
+          //   else if (new Date(data.values[i]['timestamp']).getFullYear() === new Date(this.timespan[j].to).getFullYear()
+          //     && new Date(data.values[i]['timestamp']).getMonth() <= new Date(this.timespan[0].to).getMonth()) {
+          //     compIntervals.push(new Date(new Date().getFullYear() + 1, new Date(data.values[i]['timestamp']).getMonth(), new Date(data.values[i]['timestamp']).getDate()));
+          //   }
+          //   else if (new Date(data.values[i]['timestamp']).getFullYear() === new Date(this.timespan[j].to).getFullYear()
+          //     && new Date(data.values[i]['timestamp']).getMonth() > new Date(this.timespan[0].to).getMonth()) {
+          //   }
+          //   else {
+          //     compIntervals.push(new Date(new Date().getFullYear(), new Date(data.values[i]['timestamp']).getMonth(), new Date(data.values[i]['timestamp']).getDate()));
+          //   }
+          //   compValues.push(data.values[i]['value']);
+          // }
+          for (let i = 0; i < data.length; i++) {
+            for (let k = 0; k < data[i].data.length; k++) {
+              if (new Date(data[i].data[k].timestamp).getFullYear() === new Date(this.timespan[j].from).getFullYear()) {
+                compIntervals.push(new Date(new Date().getFullYear() - 2, new Date(data[i].data[k].timestamp).getMonth(), new Date(data[i].data[k].timestamp).getDate()));
+              }
+              else if (new Date(data[i].data[k].timestamp).getFullYear() === new Date(this.timespan[j].to).getFullYear()
+                && new Date(data[i].data[k].timestamp).getMonth() <= new Date(this.timespan[0].to).getMonth()) {
+                compIntervals.push(new Date(new Date().getFullYear() , new Date(data[i].data[k].timestamp).getMonth(), new Date(data[i].data[k].timestamp).getDate()));
+              }
+              else if (new Date(data[i].data[k].timestamp).getFullYear() === new Date(this.timespan[j].to).getFullYear()
+                && new Date(data[i].data[k].timestamp).getMonth() > new Date(this.timespan[0].to).getMonth()) {
+              }
+              else {
+                compIntervals.push(new Date(new Date().getFullYear()-1, new Date(data[i].data[k].timestamp).getMonth(), new Date(data[i].data[k].timestamp).getDate()));
+              }
+              compValues.push(data[i].data[k].value);
+
             }
-            else if (new Date(data.values[i]['timestamp']).getFullYear() === new Date(this.timespan[j].to).getFullYear()
-              && new Date(data.values[i]['timestamp']).getMonth() <= new Date(this.timespan[0].to).getMonth()) {
-              compIntervals.push(new Date(new Date().getFullYear() + 1, new Date(data.values[i]['timestamp']).getMonth(), new Date(data.values[i]['timestamp']).getDate()));
-            }
-            else if (new Date(data.values[i]['timestamp']).getFullYear() === new Date(this.timespan[j].to).getFullYear()
-              && new Date(data.values[i]['timestamp']).getMonth() > new Date(this.timespan[0].to).getMonth()) {
-            }
-            else {
-              compIntervals.push(new Date(new Date().getFullYear(), new Date(data.values[i]['timestamp']).getMonth(), new Date(data.values[i]['timestamp']).getDate()));
-            }
-            compValues.push(data.values[i]['value']);
+
+
           }
-          let datasets = [];
+
+          let datasets: D3DataElement[] = [];
           for (let k = 0; k < compIntervals.length; k++)
             datasets.push({ date: (compIntervals[k]), value: compValues[k], year: new Date(this.timespan[j].from).getFullYear() + '/' + new Date(this.timespan[j].to).getFullYear() });
 
           x.domain(d3.extent(datasets, function (d) { return (d.date) }));
+        // x.domain([this.timespan[0].from, this.timespan[0].to]);
+        
           graphData.push(datasets);
 
           if (this.compSeriesMax != 0) {
@@ -521,29 +599,32 @@ export class ReportsViewComponent implements OnInit, AfterViewInit {
 
           // document.getElementById('htmlLegend'+(j-1)).firstElementChild.setAttribute('style', "stroke: black;color: "+color);
 
-        }, (err) => { this.errorOnLoading() })
+        }, (err) => { this.errorOnLoading(err) }, ()=> this.getLoading());
 
       }
     }
     // // collect timeseries of rainfall at the reservoir 
-    if (this.rainSeriesId != ''){
-      this.datasetApi.getTsData(this.rainSeriesId.split('__')[1], this.serviceUrl, this.timespan[0], this.rainFilter).subscribe((res) => {
+    if (this.rainSeriesId != '') {
+      this.loadingCounter ++;
+      // this.datasetApi.getTsData(this.rainSeriesId.split('__')[1], this.serviceUrl, this.timespan[0], this.rainFilter).subscribe((res) => {
+      this.datasetApi.getTimeseriesData(this.serviceUrl, [this.rainSeriesId.split('__')[1]], this.timespan[0]).subscribe((res) => {
         let rainInterval = [];
         let rainValues = [];
-        let secDataset = [];
-        for (let k = 0; k < res.values.length; k++) {
-          if (new Date(res.values[k]['timestamp']).getFullYear() === new Date(this.timespan[0].from).getFullYear()) {
+        let secDataset: D3DataElement[] = [];
+        for (let k = 0; k < res.length; k++) {
+          for (let l = 0; l < res[k].data.length; l++) {
+            if (new Date(res[k].data[l].timestamp).getFullYear() === new Date(this.timespan[0].from).getFullYear()) {
 
-            rainInterval.push(new Date(new Date().getFullYear() - 1, new Date(res.values[k]['timestamp']).getMonth(), new Date(res.values[k]['timestamp']).getDate()));
+              rainInterval.push(new Date(new Date().getFullYear() - 2, new Date(res[k].data[l].timestamp).getMonth(), new Date(res[k].data[l].timestamp).getDate()));
+            }
+            else if (new Date(res[k].data[l].timestamp).getFullYear() === new Date(this.timespan[0].to).getFullYear()) {
+              rainInterval.push(new Date(new Date().getFullYear() , new Date(res[k].data[l].timestamp).getMonth(), new Date(res[k].data[l].timestamp).getDate()));
+            }
+            else {
+              rainInterval.push(new Date(new Date().getFullYear()-1, new Date(res[k].data[l].timestamp).getMonth(), new Date(res[k].data[l].timestamp).getDate()));
+            }
+            rainValues.push(res[k].data[l].value);
           }
-          else if (new Date(res.values[k]['timestamp']).getFullYear() === new Date(this.timespan[0].to).getFullYear()) {
-            rainInterval.push(new Date(new Date().getFullYear() + 1, new Date(res.values[k]['timestamp']).getMonth(), new Date(res.values[k]['timestamp']).getDate()));
-          }
-          else {
-            rainInterval.push(new Date(new Date().getFullYear(), new Date(res.values[k]['timestamp']).getMonth(), new Date(res.values[k]['timestamp']).getDate()));
-          }
-          rainValues.push(res.values[k]['value']);
-
         }
 
         for (let p = 0; p < rainInterval.length; p++) {
@@ -613,47 +694,50 @@ export class ReportsViewComponent implements OnInit, AfterViewInit {
           .attr('font-size', 'large')
           .text('|');
 
-      }, (error) => { this.errorOnLoading() });
+      }, (error) => { this.errorOnLoading(error) }, ()=> this.getLoading());
     }
     //collect and add referenceVaues for the selected reservoir to the diagram
     if (this.refValues != undefined) {
+
       for (let b = 0; b < this.refValues.length; b++) {
-        this.datasetApi.getTsData(this.refValues[b].referenceId.split('__')[1], this.serviceUrl, this.timespan[0]).subscribe((refVal) => {
+              this.loadingCounter++;
+        // this.datasetApi.getTsData(this.refValues[b].referenceId.split('__')[1], this.serviceUrl, this.timespan[0]).subscribe((refVal) => {
+        this.datasetApi.getTimeseriesData(this.serviceUrl,[this.refValues[b].referenceId.split('__')[1]], this.timespan[0]).subscribe((refVal) => {
           let refInterval = [];
           let currentRefValues = [];
-          let refDataset = [];
-          for (let k = 0; k < refVal.values.length; k++) {
+          let refDataset: D3DataElement[] = [];
+          for (let k = 0; k < refVal.length; k++) {
+            for (let i = 0; i < refVal[k].data.length; i++) {
 
             if (this.refValues[b].label === 'Vollstau') {
-              if (k === 0) {
-                refInterval.push(new Date(new Date().getFullYear() - 1, new Date(refVal.values[k]['timestamp']).getMonth(), new Date(refVal.values[k]['timestamp']).getDate()));
-                refInterval.push(new Date(new Date().getFullYear(), new Date(refVal.values[k]['timestamp']).getMonth(), new Date(refVal.values[k]['timestamp']).getDate()));
-                refInterval.push(new Date(new Date().getFullYear() + 1, new Date(this.timespan[0].to).getMonth() +1, new Date(this.timespan[0].to).getDate()));
-              }
+              if (k === 0 && i === 0) {
+              refInterval.push(new Date(new Date().getFullYear() - 2, new Date(this.timespan[0].from).getMonth(), new Date(this.timespan[0].from).getDate()));
+              refInterval.push(new Date(new Date().getFullYear() , new Date(this.timespan[0].to).getMonth(), new Date(this.timespan[0].to).getDate()));
+            }
             }
             else {
 
-              if (new Date(refVal.values[k]['timestamp']).getFullYear() === new Date(this.timespan[0].from).getFullYear()) {
-                refInterval.push(new Date(new Date().getFullYear() - 1, new Date(refVal.values[k]['timestamp']).getMonth(), new Date(refVal.values[k]['timestamp']).getDate()));
+              if (new Date(refVal[k].data[i].timestamp).getFullYear() === new Date(this.timespan[0].from).getFullYear()) {
+                refInterval.push(new Date(new Date().getFullYear() - 2, new Date(refVal[k].data[i].timestamp).getMonth(), new Date(refVal[k].data[i].timestamp).getDate()));
               }
-              else if (new Date(refVal.values[k]['timestamp']).getFullYear() === new Date(this.timespan[0].to).getFullYear()
-                && new Date(refVal.values[k]['timestamp']).getMonth() <= new Date(this.timespan[0].to).getMonth()) {
-                refInterval.push(new Date(new Date().getFullYear() + 1, new Date(refVal.values[k]['timestamp']).getMonth(), new Date(refVal.values[k]['timestamp']).getDate()));
+              else if (new Date(refVal[k].data[i].timestamp).getFullYear() === new Date(this.timespan[0].to).getFullYear()
+                && new Date(refVal[k].data[i].timestamp).getMonth() <= new Date(this.timespan[0].to).getMonth()) {
+                refInterval.push(new Date(new Date().getFullYear() , new Date(refVal[k].data[i].timestamp).getMonth(), new Date(refVal[k].data[i].timestamp).getDate()));
               }
-              else if (new Date(refVal.values[k]['timestamp']).getFullYear() === new Date(this.timespan[0].to).getFullYear()
-                && new Date(refVal.values[k]['timestamp']).getMonth() > new Date(this.timespan[0].to).getMonth()) {
+              else if (new Date(refVal[k].data[i].timestamp).getFullYear() === new Date(this.timespan[0].to).getFullYear()
+                && new Date(refVal[k].data[i].timestamp).getMonth() > new Date(this.timespan[0].to).getMonth()) {
                 // do nothing
               }
               else {
-                refInterval.push(new Date(new Date().getFullYear(), new Date(refVal.values[k]['timestamp']).getMonth(), new Date(refVal.values[k]['timestamp']).getDate()));
+                refInterval.push(new Date(new Date().getFullYear()-1, new Date(refVal[k].data[i].timestamp).getMonth(), new Date(refVal[k].data[i].timestamp).getDate()));
               }
             }
-            currentRefValues.push(refVal.values[k]['value']);
+            currentRefValues.push(refVal[k].data[i].value);
           }
+        }
           for (let p = 0; p < refInterval.length; p++) {
             refDataset.push({ date: refInterval[p], value: currentRefValues[p], label: this.refValues[b].label });
           }
-
           graphData.push(refDataset);
           // add line for referenceSeries
           redraw(refDataset);
@@ -734,14 +818,15 @@ export class ReportsViewComponent implements OnInit, AfterViewInit {
             .text('|');
 
         }, (err) => {
-          this.errorOnLoading();
-        });
+          this.errorOnLoading(err);
+        },()=> this.getLoading());
       }
 
     }
     else {
-      this.loading = !this.loading;
+      // this.loading = !this.loading;
     }
+
     // let rect = svg.append('rect')
     //   .attr('x', 10)
     //   .attr('y', (svgHeight - 200))
@@ -763,13 +848,13 @@ export class ReportsViewComponent implements OnInit, AfterViewInit {
 
     // var idleTimeout
     // function idled() { idleTimeout = null; }
-    function redraw(data) {
+    function redraw(data: D3DataElement[]) {
 
       let yDomain = d3.scaleLinear().domain([0, d3.max(data, function (d) { return d.value })]);
 
       if (y.domain() < yDomain.domain()) {
         y.domain([0, d3.max(data, function (d) { return d.value })]);
-        d3.select(".y").transition().call(yAxis);
+        d3.select(".y").call(d3.axisLeft(y)).transition();
       }
 
     }
@@ -789,11 +874,10 @@ export class ReportsViewComponent implements OnInit, AfterViewInit {
     //   console.log(focus.selectAll('path'));
 
     //   }
-
-
   }
-  public errorOnLoading() {
-    this.loading = !this.loading;
+  public errorOnLoading(error: any) {
+    this.loadingCounter--;
+   console.error(error);
   }
 
   /**
@@ -803,7 +887,6 @@ export class ReportsViewComponent implements OnInit, AfterViewInit {
    */
   public checkSelection(label: string, id: number) {
 
-
     if (this.diagram) {
       this.diagram = !this.diagram;
       this.compSeriesMax = 0;
@@ -811,22 +894,28 @@ export class ReportsViewComponent implements OnInit, AfterViewInit {
 
     }
     this.diagram = !this.diagram;
-    this.timespan[0].from = new Date(new Date().getFullYear(), new Date().getMonth()).getTime() - 31556926000;
-    this.timespan[0].to = new Date(new Date().getFullYear(), 1).getTime() + 31556926000;
+    if(new Date().getMonth()==11){
+      this.timespan[0].from = new Date(new Date().getFullYear(), new Date().getMonth(),2).getTime() - 31556926000*2;
+      this.timespan[0].to = new Date(new Date().getFullYear(), 0,2).getTime() + 31556926000;
+    }else{
+      this.timespan[0].from = new Date(new Date().getFullYear(), new Date().getMonth(),2).getTime() - 31556926000*2;
+      this.timespan[0].to = new Date(new Date().getFullYear(),new Date().getMonth()+1,new Date().getDate()).getTime();
+    }
+
     this.timespan.splice(1);
 
-    console.log("Timespan from: " +this.timespan[0].from);
-    console.log("Timespan to: " +this.timespan[0].to);
-
+    // console.log("Timespan from: " +this.timespan[0].from);
+    // console.log("Timespan to: " +this.timespan[0].to);
 
     this.damLabel = label;
     this.seriesId = this.reservoirs[id].graph.seriesId;
 
     if (this.reservoirs[id].graph.compYearsFrom) {
       for (let y = 0; y < this.reservoirs[id].graph.compYearsFrom.length; y++) {
-        this.timespan.push(new Timespan(new Date(this.reservoirs[id].graph.compYearsFrom[y], new Date(this.timespan[0].from).getMonth()).getTime(),
+        this.timespan.push(new Timespan(new Date(this.reservoirs[id].graph.compYearsFrom[y], 
+          new Date(this.timespan[0].from).getMonth(),new Date(this.timespan[0].from).getDate()).getTime(),
           new Date(this.reservoirs[id].graph.compYearsFrom[y] + 2, new Date(this.timespan[0].to).getMonth()).getTime()));
-          console.log("Timespans: " + JSON.stringify(this.timespan));
+        // console.log("Timespans: " + JSON.stringify(this.timespan));
       }
     }
     if (this.reservoirs[id].graph.rainSeriesID) {
@@ -852,32 +941,33 @@ export class ReportsViewComponent implements OnInit, AfterViewInit {
 
     this.generateReport();
   }
+
   onSelection(id: number) {
 
-    if(this.router.url.length> 10){
-      console.log(this.router.url.substr(9,2))
-      if (this.router.url.substr(9,2) === 'TS') {
+    if (this.router.url.length > 10) {
+      if (this.router.url.substr(9, 2) === 'TS') {
         this.router.navigate(['reports/TS', this.reservoirs[id].id]);
       }
-      else{
+      else {
         this.router.navigate(['reports', this.reservoirs[id].id]);
       }
     }
-   else {
+    else {
       this.router.navigate(['reports', this.reservoirs[id].id]);
     }
-
-
-
   }
 
+  public getLoading(): void{
+    this.loadingCounter --;
+    if(this.loadingCounter === 0) {this.loading = !this.loading;}
+ 
+  }
 
   exportImage() {
 
-    document.querySelector('svg').getElementById('state').setAttribute('opacity','1');
-    document.querySelector('svg').getElementById('stateVal').setAttribute('opacity','1');
-    
-  
+    document.querySelector('svg').getElementById('state').setAttribute('opacity', '1');
+    document.querySelector('svg').getElementById('stateVal').setAttribute('opacity', '1');
+
     if (navigator.userAgent.indexOf("Firefox") != -1) {
       //set defined width of svg to export as png in firefox
       // if width of svg is set to percentage it does not work
@@ -923,9 +1013,7 @@ export class ReportsViewComponent implements OnInit, AfterViewInit {
       //set width back to viewport percentage
       document.querySelector('svg').setAttribute('width', '100%');
     }
-    document.querySelector('svg').getElementById('state').setAttribute('opacity','0');
-    document.querySelector('svg').getElementById('stateVal').setAttribute('opacity','0');
+    document.querySelector('svg').getElementById('state').setAttribute('opacity', '0');
+    document.querySelector('svg').getElementById('stateVal').setAttribute('opacity', '0');
   }
-
-
 }
