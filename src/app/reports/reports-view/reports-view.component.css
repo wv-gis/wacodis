@@ -62,3 +62,15 @@ canvas{
     max-width: 100%;
     height: auto;
 }
+
+.loader{
+    width: 85%;
+    height: 50%;
+    position: absolute;
+    z-index: 99;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: lightgray, 0.5;
+   
+}
