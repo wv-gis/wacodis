@@ -96,15 +96,15 @@
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <div class="modal-body">
+        <div class="modal-body" >
           <table>
-            <tbody>
+            <tbody *ngIf="metadataset">
               <tr>
                 <td>
                   <b> Measure Parameter: </b>
                 </td>
                 <td>
-                  {{metadata.phenomenon}}
+                  {{metadataset.parameters.phenomenon.label}}
                 </td>
               </tr>
               <tr>
@@ -112,7 +112,7 @@
                   <b>Unit: </b>
                 </td>
                 <td>
-                  {{metadata.uom}}
+                  {{metadataset.uom}}
                 </td>
               </tr>
               <tr>
@@ -120,7 +120,7 @@
                   <b>First Value: </b>
                 </td>
                 <td>
-                  {{metadata.firstvalue}}
+                  {{metadataset.firstValue.value}}
                 </td>
               </tr>
               <tr>
@@ -128,7 +128,7 @@
                   <b>Last Value: </b>
                 </td>
                 <td>
-                  {{metadata.lastvalue}}
+                  {{metadataset.lastValue.value}}
                 </td>
               </tr>
               <tr>
@@ -144,7 +144,7 @@
                   <b>From: </b>
                 </td>
                 <td>
-                  {{metadata.timeperiod.from}}
+                  {{metadataset.firstValue.timestamp}}
                 </td>
               </tr>
               <tr>
@@ -152,19 +152,19 @@
                   <b>To: </b>
                 </td>
                 <td>
-                  {{metadata.timeperiod.to}}
+                  {{metadataset.lastValue.timestamp}}
                 </td>
               </tr>
               <tr>
                 <td></td>
                 <td>
-                    <input matInput placeholder="Choose from" [value]="metadata.timeperiod.from" ng-model-options="{timezone: 'utc'}">
+                    <input matInput placeholder="Choose from" [value]="selectedStart" ng-model-options="{timezone: 'utc'}">
                 </td>
               </tr>
               <tr>
                 <td></td>
                 <td>
-                  <input matInput placeholder="Choose to" [value]="metadata.timeperiod.to" ng-model-options="{timezone: 'utc'}">
+                  <input matInput placeholder="Choose to" [value]="selectedEnd" ng-model-options="{timezone: 'utc'}">
                 </td>
               </tr>
             </tbody>
@@ -172,8 +172,8 @@
           <n52-dataset-export [inputId]="datasetId" [exportOptions]="exportOptions" (onMetadataChange)="onMetadata($event)" (onLoadingChange)="onLoading($event)"></n52-dataset-export>
         </div>
         <div class="modal-footer">
-          <button class="btn btn-default" (click)="onDownload('csv')">CSV</button>
-          <button class="btn btn-success" (click)="onDownload('xlsx')">Excel</button>
+          <button class="btn btn-default" (click)="onCSVDownload()">CSV</button>
+          <button class="btn btn-success" (click)="onXSLXDownload()">Excel</button>
           <button type="button" class="btn btn-danger" (click)="onCloseHandled()">Close</button>
         </div>
       </div>

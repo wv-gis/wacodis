@@ -32,6 +32,7 @@ export class TimeseriesViewComponent {
         yaxis: true,
         groupYaxis: true,
         showTimeLabel: false,
+        yAxisStepper: true,
 
     };
     public selectedIds: string[] = [];

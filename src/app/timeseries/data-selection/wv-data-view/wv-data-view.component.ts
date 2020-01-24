@@ -137,7 +137,7 @@ export class WvDataViewComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-    this.resultSubs = this.facetSearch.getResults().subscribe(ts => this.resultCount = ts.length);
+    this.resultSubs = this.facetSearch.getResults().subscribe(ts => {this.resultCount = ts.length; console.log(this.resultCount)});
     
     this.baseLayer = L.tileLayer.wms('http://ows.terrestris.de/osm/service?',
     {
@@ -230,7 +230,7 @@ export class WvDataViewComponent implements OnInit, OnDestroy {
           }
         });
   
-    this.facetSearch.getFilteredResults().filter(e => e.url === elem.url && e.station.id === elem.station.id);
+    // this.facetSearch.getFilteredResults().filter(e => e.url === elem.url && e.station.id === elem.station.id);
   }
   public addDataset(ts: Timeseries) {
         // for (let i = 0; i < this.entryLabel.length; i++) {
@@ -247,9 +247,10 @@ export class WvDataViewComponent implements OnInit, OnDestroy {
     } else {
       this.datasetService.addDataset(ts.internalId)
         // console.log('Selectedtimeseries: ' + JSON.stringify(ts));
+        this.diagramEntry = !this.diagramEntry;
+        this.moveToDiagram('/timeseries-diagram');
     }
-    this.diagramEntry = !this.diagramEntry;
-    this.moveToDiagram('/timeseries-diagram');
+  
 
   }
   public onCloseHandled() {

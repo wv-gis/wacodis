@@ -6,8 +6,8 @@ import localeDe from '@angular/common/locales/de';
 import { D3TimeFormatLocaleService } from '@helgoland/d3';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { ExtendedSettings } from 'src/app/settings/settings.service';
-import { InitializeService } from './services/initialize.service';
 import { Icon } from 'leaflet';
+import { InitializeService } from './services/initialize.service';
 
 @Component({
   selector: 'wv-root',
