@@ -14,6 +14,7 @@ import { HelgolandModificationModule } from '@helgoland/modification';
 import { HelgolandControlModule } from '@helgoland/control';
 import { HelgolandTimeModule } from '@helgoland/time';
 import { HelgolandFacetSearchModule } from '@helgoland/facet-search';
+import { HelgolandPlotlyModule } from '@helgoland/plotly';
 import {
   HelgolandMapModule,
   HelgolandMapSelectorModule,
@@ -36,6 +37,7 @@ import { ComparisonSelectionService } from 'src/app/services/comparison-selectio
 import { RequestTokenService } from 'src/app/services/request-token.service';
 import { HelgolandOpenLayersModule } from '@helgoland/open-layers';
 import { SelectedProviderService } from './services/selected-provider.service';
+
 
 
 
@@ -68,6 +70,7 @@ import { SelectedProviderService } from './services/selected-provider.service';
     HelgolandControlModule,
     HelgolandOpenLayersModule,
     HelgolandFacetSearchModule,
+    HelgolandPlotlyModule,
     FormsModule,
     WvMapModule,
     WvTimeseriesModule,

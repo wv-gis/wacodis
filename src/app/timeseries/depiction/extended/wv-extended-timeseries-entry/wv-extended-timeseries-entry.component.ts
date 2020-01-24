@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { TimeseriesEntryComponent, ExportOptions, ExportData } from '@helgoland/depiction';
+import { TimeseriesEntryComponent, ExportOptions, DownloadType } from '@helgoland/depiction';
+import { IDataset, Timespan } from '@helgoland/core';
 
 
 interface TimePeriod {
@@ -17,36 +18,52 @@ export class WvExtendedTimeseriesEntryComponent extends TimeseriesEntryComponent
   public display = 'hidden';
   public exportOptions: ExportOptions;
   public inputId: string;
+  public selectedStart: Date;// = new Date();
+  public selectedEnd: Date;// = new Date();
   // pre-define variable metadata to avoid errors (undefined)
-  public metadata: ExportData = {
-    phenomenon: null,
-    uom: null,
-    firstvalue: null,
-    lastvalue: null,
-    timeperiod: {
-      from: new Date(),
-      to: new Date()
-    },
-    timezone: null,
-    station: null
-  };
+  // public metadata: ExportData = {
+  //   phenomenon: null,
+  //   uom: null,
+  //   firstvalue: null,
+  //   lastvalue: null,
+  //   timeperiod: {
+  //     from: new Date(),
+  //     to: new Date()
+  //   },
+  //   timezone: null,
+  //   station: null
+  // };
+  public metadataset: IDataset;
   public timeperiod: TimePeriod;
   public timezone: string;
   public disabled = false;
 
 
-  public onDownload(dwType: string): void {
+  public onDownload(dwType: DownloadType): void {
     this.exportOptions = {
       downloadType: dwType,
-      timeperiod: {
-        from: this.metadata.timeperiod.from,
-        to: this.metadata.timeperiod.to
-      },
-      timezone: this.metadata.timezone
+      timeperiod: 
+     new Timespan(this.selectedStart, this.selectedEnd)    
     };
   }
-  public onMetadata(metadata: ExportData): void {
-    this.metadata = metadata;
+
+  public onCSVDownload() {
+    this.onDownload(DownloadType.CSV);
+  }
+
+  public onXSLXDownload() {
+    this.onDownload(DownloadType.XLSX);
+  }
+  public onMetadata(metadata: IDataset): void {
+    // this.metadata = metadata;
+    // this.disabled = true;
+    if (!this.selectedStart) {
+      this.selectedStart = new Date(metadata.firstValue.timestamp);
+    }
+    if (!this.selectedEnd) {
+      this.selectedEnd = new Date(metadata.lastValue.timestamp);
+    }
+    this.metadataset = metadata;
     this.disabled = true;
   }
   public onCloseHandled(): void {

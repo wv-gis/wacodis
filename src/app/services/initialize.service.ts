@@ -31,7 +31,10 @@ export class InitializeService {
    
         this.loading.next(true);
             this.api.getTimeseries(service.apiUrl, { expanded: true, service: service.id }).subscribe(
-                res => this.facetSearch.setTimeseries(res),
+                res =>{
+                    this.facetSearch.resetAllFacets();
+                    this.facetSearch.setTimeseries(res);
+                } ,
                 error => console.error(error),
                 () => this.loading.next(false)
         );

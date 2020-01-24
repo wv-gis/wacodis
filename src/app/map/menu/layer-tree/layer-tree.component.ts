@@ -40,12 +40,9 @@ export class LayerTreeComponent implements OnInit {
 
   public getLegendUrl(url: string) {
 
-    console.log(url);
       var img = document.getElementById('legend'); 
       img.setAttribute('src', url);
       document.getElementById('legendToast').setAttribute('style', 'visibility:visible');
-      
-      // this.display = 'inline';
     
     }
     public toggleVisibility(layer: BaseLayer ) {
