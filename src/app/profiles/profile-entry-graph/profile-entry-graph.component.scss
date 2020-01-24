@@ -1,0 +1,185 @@
+:host {
+
+    .container-fluid {
+        background-color: lightgray;
+    }
+    .diagram{
+        width: 100%;
+        background-color: white;
+    }
+    .diagram.active{
+        width: 100%;
+        background-color: white;
+    }
+    .diagramEntry {
+        height: 500px;
+        flex: 1;
+        padding: 5px;
+        width: 100%;
+        stroke: none;
+    }
+    .diagramEntry.active{
+        width: 80%;
+        height: 500px;
+        flex: 1;
+        padding: 5px;
+    }
+    .legendEntry {
+        display: flex;
+        flex-direction: row;
+        
+        .left,
+        .right {
+            width: 50%;
+        }
+    }
+    .btn-light {
+        background-color: pink;
+    }
+    .row {
+        background-color: white;
+    }
+    .menu{
+        position: inherit;
+        width: 250px;
+    }
+
+    .datasetMenu .expand-button.active {
+        right: 300px;
+        background-color: #2c4869;
+    }
+    
+    .datasetMenu .expand-button {
+        position: absolute;
+        top: 88px;
+        right: 0;
+        width: 49px;
+        height: 54px;
+        border-radius: 3px 0 0 3px;
+        box-shadow: inset -3px 0 0 rgba(0,0,0,.2);
+        text-align: center;
+        background-color: #718296;
+        z-index: 800;
+        cursor: pointer;
+    }
+    .datasetMenu .expand-button .icon {
+        color: #fff;
+        font-size: 20px;
+        line-height: 52px;
+    } 
+    
+    
+    .datasetMenu .selectedDataset.active {
+        top: 80px;
+        width: 300px;
+        height: auto;
+    }
+    .datasetMenu .selectedDataset.active {
+        display: inline;
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        background-color: #718296;
+    }
+    .datasetMenu .selectedDataset {
+        overflow: auto;
+        display: none;
+    }
+    .legendEntry {
+        display: flex;
+        flex-direction: row;
+        border-bottom: #2c4869 solid 0.2px;
+        
+        .left,
+        .right {
+            width: 50%;
+        }
+    
+    }
+    .btn.btn-default{
+        margin: 2.5px;
+        height: 25px;
+        padding: 0.1px;
+        cursor: pointer;
+        font-size: 90%;
+    }
+    .bottom{
+        bottom: 0px;
+        position: relative;
+    }
+    .modal{
+        display: block;
+        background-color: rgba(0,0,0,0.6)
+    }
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 40px;
+        height: 24px;
+      }
+      
+      .switch input { 
+        opacity: 0.0001;
+        width: 0;
+        height: 0;
+        // display: none;
+      }
+      
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        -webkit-transition: .4s;
+        transition: .4s;
+      }
+      
+      .slider::before {
+        position: absolute;
+        content: "";
+        height: 16px;
+        width: 16px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        -webkit-transition: .4s;
+        transition: .4s;
+      }
+      
+      input:checked + .slider {
+        background-color: #2c4869;
+      }
+      
+      input:focus + .slider {
+        box-shadow: 0 0 1px #2c4869;
+      }
+      
+      input:checked + .slider::before {
+        -webkit-transform: translateX(16px);
+        -ms-transform: translateX(16px);
+        transform: translateX(16px);
+      }
+      
+      /* Rounded sliders */
+      .slider.round {
+        border-radius: 24px;
+      }
+      
+      .slider.round::before {
+        border-radius: 50%;
+      }
+      .groupButton{
+          background-color: #e4e4e7;
+          margin: 2.5px;
+          height: 25px;
+          padding: 0.5px;
+          width: fit-content;
+          border-radius: 4px; 
+      }
+     .btn{
+         background-color: lightgray;
+     }
+}

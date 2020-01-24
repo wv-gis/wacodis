@@ -18,30 +18,36 @@
         {
             "name":"Wupperverband Timeseries intern",
             "url": "https://fluggs.wupperverband.de/sos2-intern/api/v1/"
+        },
+        {
+            "name":"Nexos Profiles",
+            "url": "http://nexos.demo.52north.org/52n-sos-nexos-test/api/"
+        },
+        {
+            "name":"SOS 3 Wupperverband",
+            "url": "http://192.168.101.105/sos3/api/"
         }
+
     ],
     "reservoirs": [
         {
             "id": "BE",
             "label": "Bever-Talsperre",
             "graph": {
-                "seriesId": "sos2-intern-gis/api/v1/__37",
-                "compSeriesId": "sos2-intern-gis/api/v1/__743",
+                "seriesId": "sos2/api/v1/__37",
+                "compSeriesId": "sos2/api/v1/__743",
                 "referenceValues": [
                     {
-                        "referenceId": "sos2-intern-gis/api/v1/__600",
+                        "referenceId": "sos2/api/v1/__600",
                         "label": "Hochwasserschutzraum"
                     },
                     {
-                        "referenceId": "sos2-intern-gis/api/v1/__355",
+                        "referenceId": "sos2/api/v1/__355",
                         "label": "Vollstau"
-                    },
-                    {
-                        "referenceId": "sos2-intern-gis/api/v1/__601",
-                        "label": "Orientierungslinie"
                     }
+            
                 ],
-                "rainSeriesID":"sos2-intern-gis/api/v1/__427",
+                "rainSeriesID":"sos2/api/v1/__427",
                 "compYearsFrom": [1995, 1996, 2003]
             }
         },
@@ -49,19 +55,19 @@
             "id": "DT",
             "label": "Große Dhünn-Talsperre",
             "graph": {
-                "seriesId": "sos2-intern-gis/api/v1/__42",
+                "seriesId": "sos2/api/v1/__42",
                 "compSeriesId": "sos2-intern-gis/api/v1/__745",
                 "referenceValues": [
                     {
-                        "referenceId": "sos2-intern-gis/api/v1/__736",
+                        "referenceId": "sos2/api/v1/__736",
                         "label": "Hochwasserschutzraum"
                     },
                     {
-                        "referenceId": "sos2-intern-gis/api/v1/__376",
+                        "referenceId": "sos2/api/v1/__376",
                         "label": "Vollstau"
                     }
                 ],
-                "rainSeriesID":"sos2-intern-gis/api/v1/__432",
+                "rainSeriesID":"sos2/api/v1/__432",
                 "compYearsFrom": [1995, 1996, 2014, 2015]
             }
         },
@@ -69,19 +75,19 @@
             "id": "WU",
             "label": "Wupper-Talsperre",
             "graph": {
-                "seriesId": "sos2-intern-gis/api/v1/__48",
-                "compSeriesId": "sos2-intern-gis/api/v1/__744",
+                "seriesId": "sos2/api/v1/__48",
+                "compSeriesId": "sos2/api/v1/__744",
                 "referenceValues": [
                     {
-                        "referenceId": "sos2-intern-gis/api/v1/__737",
+                        "referenceId": "sos2/api/v1/__737",
                         "label": "Hochwasserschutzraum"
                     },
                     {
-                        "referenceId": "sos2-intern-gis/api/v1/__360",
+                        "referenceId": "sos2/api/v1/__360",
                         "label": "Vollstau"
                     }
                 ],
-                "rainSeriesID":"sos2-intern-gis/api/v1/__425",
+                "rainSeriesID":"sos2/api/v1/__425",
                 "compYearsFrom": [1995, 1996, 2003, 2010]
             }
         },
@@ -90,7 +96,7 @@
             "id": "KT",
             "label": "Kerspe-Talsperre",
             "graph": {
-                "seriesId": "sos2-intern-gis/api/v1/__741",
+                "seriesId": "sos2-intern/api/v1/__741",
                 "compYearsFrom": [2006, 2008, 2014]
             }
         },
@@ -98,7 +104,7 @@
             "id": "HT",
             "label": "Herbringhauser Talsperre",
             "graph": {
-                "seriesId": "sos2-intern-gis/api/v1/__742",
+                "seriesId": "sos2-intern/api/v1/__742",
                 "compYearsFrom": [2008, 2014, 2015]
             }
         }

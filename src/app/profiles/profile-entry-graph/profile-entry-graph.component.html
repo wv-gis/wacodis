@@ -1,0 +1,41 @@
+<div class="container-fluid" style="padding-right: 0px; padding-left: 0px;">
+    <div class="diagram">
+        <div class="diagramEntry" style="height: 650px; padding: 5px;" id="#diagram" [ngClass]="{'active': isActive}">
+            <div class="loading-overlay">
+                <div *ngIf="overviewLoading">
+                    <div class="spinner-border text-dark" role="status">
+                        <i class="fa fa-spinner fa-spin" style="font-size:24px"></i>
+                    </div>
+                </div>
+            </div>
+            <n52-plotly-profile-graph [datasetIds]="ids" [datasetOptions]="profileDatasetOptions"></n52-plotly-profile-graph>
+        </div>
+    </div>
+    <div class="menu" [ngClass]="{'active': isActive}">
+        <div class="datasetMenu">
+            <div class="expand-button" [ngClass]="{'active': isActive}" (click)="change()">
+                <span class="icon">
+                    <i class="fas fa-angle-right" [ngClass]="{'fa-angle-right': isActive, 'fa-angle-left': !isActive}"></i>
+                </span>
+            </div>
+            <div class="selectedDataset" [ngClass]="{'active': isActive}">
+                <div class="legendEntry" *ngFor="let id of ids; let i = index">
+                    <n52-profile-entry [datasetId]="id" [datasetOptions]="datasetOptions" (onDeleteDatasetOptions)="deleteProfileOptions($event,i)"
+                        (onSelectDataset)="selectProfile($event, id)" (onUpdateOptions)="updateOptions($event,i)" (onEditOptions)="editOption($event)"
+                        (onOpenInCombiView)="openCombiView($event)" (onShowGeometry)="showGeometry($event)"></n52-profile-entry>
+                </div>
+                <div class="bottom">
+                    <div class="btn btn-default groupButton"> Gruppieren
+                        <label class="switch" for="toggle_1">
+                            <input id="toggle_1" type="checkbox" (click)="groupYaxisChanged()" name="group" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <button class="btn btn-default" (click)="refreshData()">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                    <button class="btn btn-default" (click)="showAllStations()">Karte</button>
+                </div>
+            </div>
+        </div>
+    </div>

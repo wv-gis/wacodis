@@ -29,5 +29,38 @@
 		"phenomenon": "Messparameter",
 		"station": "Station",
 		"timeframe": "Zeitraum"
+	},
+	"map": {
+		"layers": {
+			"baselayerHeader": "Basiskarten",
+			"overlayHeader": "Overlay"
+		},
+		"loading": "Stationen werden geladen",
+		"providerList": {
+			"phenomena": "Messparameter",
+			"provider": "Datenanbieter",
+			"source": "Quelle",
+			"stations": "Stationen",
+			"timeseries": "Zeitreihen"
+		},
+		"search": {
+			"label": "Suche Adresse ..."
+		},
+		"station": {
+			"add": "Zeitreihe erfolgreich hinzugefügt",
+			"addMulti": "Zeitreihen erfolgreich hinzugefügt",
+			"category": "Kategorie",
+			"lastValue": "letzter Messwert:",
+			"loading": "Zeitreihen werden geladen...",
+			"remove": "Zeitreihe entfernt",
+			"showAll": "weitere Messparameter hier",
+			"showChart": "zur Diagrammansicht"
+		},
+		"stationLocation": {
+			"jumpBackToChart": "zurück zum Diagramm",
+			"provider": "Datenanbieter",
+			"station": "Station",
+			"timeseries": "Zeitreihe"
+		}
 	}
  }

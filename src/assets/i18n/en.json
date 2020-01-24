@@ -31,5 +31,38 @@
        "phenomenon": "Phenomenon",
        "station": "Station",
        "timeframe": "Timeframe"
-     }
+     },
+     "map": {
+      "layers": {
+        "baselayerHeader": "Base layer",
+        "overlayHeader": "Overlay layer"
+      },
+      "loading": "Stations will be loaded",
+      "providerList": {
+        "phenomena": "Phenomenons",
+        "provider": "Datenanbieter",
+        "source": "Provider",
+        "stations": "Stations",
+        "timeseries": "Timeseries"
+      },
+      "search": {
+        "label": "Search adress ..."
+      },
+      "station": {
+        "add": "Timeseries successfully added",
+        "addMulti": "Timeseries successfully added",
+        "category": "Category",
+        "lastValue": "Last value:",
+        "loading": "Timeseries will be loaded...",
+        "remove": "Timeseries removed",
+        "showAll": "further phenomenons",
+        "showChart": "Open diagram view"
+      },
+      "stationLocation": {
+        "jumpBackToChart": "back to chart",
+        "provider": "Provider",
+        "station": "Station",
+        "timeseries": "Timeseries"
+      }
+    }
  }
