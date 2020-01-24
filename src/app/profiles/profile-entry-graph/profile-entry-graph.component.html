@@ -8,7 +8,7 @@
                     </div>
                 </div>
             </div>
-            <n52-plotly-profile-graph [datasetIds]="ids" [datasetOptions]="profileDatasetOptions"></n52-plotly-profile-graph>
+            <n52-plotly-profile-graph [datasetIds]="ids" [datasetOptions]="profileDatasetOptions" [selectedDatasetIds]="selectedIds"></n52-plotly-profile-graph>
         </div>
     </div>
     <div class="menu" [ngClass]="{'active': isActive}">
@@ -20,9 +20,9 @@
             </div>
             <div class="selectedDataset" [ngClass]="{'active': isActive}">
                 <div class="legendEntry" *ngFor="let id of ids; let i = index">
-                    <n52-profile-entry [datasetId]="id" [datasetOptions]="datasetOptions" (onDeleteDatasetOptions)="deleteProfileOptions($event,i)"
-                        (onSelectDataset)="selectProfile($event, id)" (onUpdateOptions)="updateOptions($event,i)" (onEditOptions)="editOption($event)"
-                        (onOpenInCombiView)="openCombiView($event)" (onShowGeometry)="showGeometry($event)"></n52-profile-entry>
+                    <wv-custom-profile-entry [datasetId]="id" [datasetOptions]="profileDatasetOptions.get(id)" (onDeleteDatasetOptions)="deleteProfileOptions($event,id)"
+                        (onSelectDataset)="selectProfile($event, id)" (onUpdateOptions)="updateOptions($event,id)" (onEditOptions)="editOption($event)"
+                        (onOpenInCombiView)="openCombiView($event)" (onShowGeometry)="showGeometry($event)" [selected]="isSelected(id)"></wv-custom-profile-entry>
                 </div>
                 <div class="bottom">
                     <div class="btn btn-default groupButton"> Gruppieren

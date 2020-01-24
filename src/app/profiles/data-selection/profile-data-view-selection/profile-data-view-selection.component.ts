@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { DatasetService, TimedDatasetOptions } from '@helgoland/core';
 
 @Component({
   selector: 'wv-profile-data-view-selection',
@@ -7,7 +8,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ProfileDataViewSelectionComponent implements OnInit {
 
-  constructor() { }
+  constructor(private dataService: DatasetService<TimedDatasetOptions>) { }
 
   ngOnInit() {
   }
