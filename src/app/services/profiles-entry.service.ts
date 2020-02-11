@@ -15,6 +15,19 @@ export class ProfilesEntryService  extends DatasetService<Array<TimedDatasetOpti
     this.loadState();
   }
 
+  public async addDataset(internalId: string, options?: Array<TimedDatasetOptions>): Promise<boolean> {
+    if (this.datasetOptions.has(internalId)) {
+        options.forEach(entry => {
+            if (!this.datasetOptions.get(internalId).find(e => e.timestamp === entry.timestamp)) {
+                this.datasetOptions.get(internalId).push(entry);
+                this.saveState();
+            }
+        });
+        return true;
+    } else {
+        return super.addDataset(internalId, options);
+    }
+}
   protected createStyles(internalId: string): TimedDatasetOptions[] {
     return [new TimedDatasetOptions(internalId, this.color.getColor(), 0)];
   }

@@ -11,6 +11,7 @@ import { ComparisonSelectionViewComponent } from 'src/app/change-detection/view/
 import { WeatherForecastComponent } from 'src/app/weather/weather-forecast/weather-forecast.component';
 import { AppComponent } from 'src/app/app.component';
 import { SelectionViewComponent } from './reports/selection/selection-view/selection-view.component';
+import { ProfileDataViewSelectionComponent } from './profiles/data-selection/profile-data-view-selection/profile-data-view-selection.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'start', pathMatch: 'full' },
@@ -27,7 +28,8 @@ const routes: Routes = [
   { path: 'reports', component: SelectionViewComponent, data: { title: 'WaCoDiS Web Client' } },
   { path: 'reports/TS/:id', component: ReportsViewComponent, data: { title: 'WaCoDiS Web Client' } },
   { path: 'reports/TS', component: ReportsViewComponent, data: { title: 'WaCoDiS Web Client' } },
-  { path: 'profiles', component: ProfileEntryGraphComponent, data: { title: 'WaCoDiS Web Client' } },
+  { path: 'profiles-selection', component: ProfileDataViewSelectionComponent, data: { title: 'WaCoDiS Web Client' } },
+  { path: 'profiles-diagram', component: ProfileEntryGraphComponent, data: { title: 'WaCoDiS Web Client' } },
   { path: 'weather-forecast', component: WeatherForecastComponent, data: { title: 'WaCoDiS Web Client' } },
 ];
 

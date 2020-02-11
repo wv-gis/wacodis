@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TimedDatasetOptions, DatasetService } from '@helgoland/core';
+import { ProfilesEntryService } from 'src/app/services/profiles-entry.service';
 
 @Component({
   selector: 'wv-profile-entry-graph',
@@ -15,14 +16,15 @@ export class ProfileEntryGraphComponent implements OnInit {
   public profileDatasetOptions: Map<string, TimedDatasetOptions[]> = new Map();
   public isActive = true;
   protected selectedIds: Array<string> = [];
+  protected reloadedDataset: string[] = [];
 
-  constructor(private profileDataService: DatasetService<Array<TimedDatasetOptions>>) {
-    this.ids.forEach((entry) => {
-      this.profileDatasetOptions.set(entry, [new TimedDatasetOptions(entry, '#00FF00', 1491178657000)]);
-    });
+  constructor(private profileDataService: ProfilesEntryService) {
+    // this.ids.forEach((entry) => {
+    //   this.profileDatasetOptions.set(entry, [new TimedDatasetOptions(entry, '#00FF00', 1491178657000)]);
+    // });
 
     if (profileDataService !== undefined && profileDataService.hasDatasets()) {
-     this.ids = profileDataService.datasetIds;
+    //  profileDataService.datasetIds.forEach((id)=> this.ids.push(id));
      this.profileDatasetOptions = profileDataService.datasetOptions;
     }
   }
@@ -30,12 +32,15 @@ export class ProfileEntryGraphComponent implements OnInit {
   ngOnInit() {
   }
   public updateOptions(options: TimedDatasetOptions[], id: string) {
-    this.profileDataService.updateDatasetOptions(options, id);
+  console.log(JSON.stringify(options));
+      this.profileDataService.updateDatasetOptions(options, id);
+    
 
   }
 
   public deleteProfileOptions(option: TimedDatasetOptions, id: string) {
-    this.profileDatasetOptions.delete(id);
+    // this.profileDatasetOptions.delete(id);
+    this.profileDataService.removeDataset(id);
   }
 
   public selectProfile(selected: boolean, id: string) {
