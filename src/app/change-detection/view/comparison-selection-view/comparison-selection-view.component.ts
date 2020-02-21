@@ -11,6 +11,7 @@ import { ImageMapLayer } from 'esri-leaflet';
 // const sentinelLayerOptions = ['Agriculture', 'Bathymetric', 'Color Infrared', 'Natural Color', 'Healthy Vegetation'];
 const sentinelLayerOptions = ['Natural Color','Color Infrared'];
 const externLayerOptions = ['Landcover'];
+const wacodisUrl = "https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS";
 // const bandIdOptions = ['10,8,3', '4,3,1', '8,4,3', '4,3,2', '11,8,2'];
 const bandIdOptions = ['4,3,2','8,4,3'];
 // const rasterFunctionOpt = [{ "rasterFunction": "Agriculture with DRA" }, { "rasterFunction": "Bathymetric with DRA" }, { "rasterFunction": "Color Infrared with DRA" },
@@ -41,6 +42,7 @@ export class ComparisonSelectionViewComponent implements OnInit {
   public selLeftDate: Date[] = [];
   public defaultLDate: Date = new Date(2019,1);
   public defaultRDate: Date = new Date(2018,1);
+  public wacodisMeta: string[] = [];
   constructor(private mapCache: MapCache, private datasetApiInt: DatasetApiInterface, private tokenService: RequestTokenService,
     private router: Router, private compSelSrvc: ComparisonSelectionService) {
 
@@ -52,9 +54,16 @@ export class ComparisonSelectionViewComponent implements OnInit {
       this.comparisonOptions.push(sentinelLayerOptions[i]);
       // this.comparisonOptions.push(externLayerOptions[i]);
     }
+    esri.imageMapLayer({url: wacodisUrl}).metadata((error, metadata)=>{
+      metadata["services"].forEach(element => {
+        this.wacodisMeta.push(element);
+        console.log(element);
+      });
+      console.log(metadata["services"]);
+    });
     this.comparisonOptions.push(externLayerOptions[0]);
     this.setSentinelLayer('https://sentinel.arcgis.com/arcgis/rest/services/Sentinel2/ImageServer');
-
+    console.log("On Init");
     let toDate = new Date().getTime();
     for (let i = 0; i < 13; i++) {
       this.selLeftDate.push(new Date(2018, i));
@@ -99,6 +108,7 @@ export class ComparisonSelectionViewComponent implements OnInit {
         }
         this.comparisonBaseLayers.push(L.imageOverlay('https://wacodis.maps.arcgis.com/sharing/rest/content/items/846c30b6a1874841ac9d5f6954f19aad/data',
           [[51.299046, 6.949204], [51.046668, 7.615934]], { opacity: 0.6, pane: 'overlayPane', alt: 'Landcover' }));
+        //  esri.imageMapLayer({url: "https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS"}) 
         
         this.tokenService.setToken(this.token);
       });

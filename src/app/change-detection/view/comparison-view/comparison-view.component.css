@@ -46,6 +46,7 @@ li {
     display: inline-block;
     padding: 5px;
     margin: 5px;
+    width: 200px;
 }
 .layerSelect{
     color: black;
@@ -89,4 +90,13 @@ input[type=range]::-ms-tooltip {
 
 input[type=range]::-ms-thumb {
     transform: scale(1) !important;
+  }
+  .loader{
+    width: 40%;
+    position: absolute;
+    z-index: 99;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: lightgray, 0.5;
   }
