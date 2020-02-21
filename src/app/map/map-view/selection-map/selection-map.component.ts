@@ -24,6 +24,8 @@ import { Tile } from 'ol/layer';
 
 const senLayer = 'https://sentinel.arcgis.com/arcgis/rest/services/Sentinel2/ImageServer';
 const landService = "https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/EO_WACODIS_DAT_LANDCOVERService/ImageServer";
+const intraLandService = 'https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/EO_WACODIS_DAT_INTRA_LAND_COVER_CLASSIFICATION_Service/ImageServer';
+const waterTempService = 'https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/EO_WACODIS_DAT_WATER_SURFACE_TEMPERATURE_Service/ImageServer';
 const WvG_URL = 'http://fluggs.wupperverband.de/secman_wss_v2/service/WMS_WV_Oberflaechengewaesser_EZG/guest?';
 
 
@@ -80,25 +82,25 @@ export class SelectionMapComponent implements OnInit {
       })
     }));
 
-    this.baselayers.push(new TileLayer({
-      visible: false,
-      source: new TileWMS({
-        url: 'https://maps.dwd.de/geoserver/ows',
-        params: {
-          'LAYERS': 'dwd:FX-Produkt',
-        }
-      })
-    }));
-    this.baselayers.push(new ImageLayer({
-      visible: false,
-      source: new ImageWMS({
-        url: ' https://www.wms.nrw.de/umwelt/waldNRW',
-        attributions: "Datenlizenz Deutschland – Namensnennung – Version 2.0",
-        params: {
-          'LAYERS': 'waldbedeckung_Sentinel2',
-        }
-      })
-    }));
+    // this.baselayers.push(new TileLayer({
+    //   visible: false,
+    //   source: new TileWMS({
+    //     url: 'https://maps.dwd.de/geoserver/ows',
+    //     params: {
+    //       'LAYERS': 'dwd:FX-Produkt',
+    //     }
+    //   })
+    // }));
+    // this.baselayers.push(new ImageLayer({
+    //   visible: false,
+    //   source: new ImageWMS({
+    //     url: ' https://www.wms.nrw.de/umwelt/waldNRW',
+    //     attributions: "Datenlizenz Deutschland – Namensnennung – Version 2.0",
+    //     params: {
+    //       'LAYERS': 'waldbedeckung_Sentinel2',
+    //     }
+    //   })
+    // }));
 
     this.baselayers.push(new ImageLayer({
       visible: true,
@@ -123,6 +125,34 @@ export class SelectionMapComponent implements OnInit {
         })
       })
     );
+
+    this.baselayers.push(
+      new ImageLayer({
+        visible: false,
+        source: new ImageArcGISRest({
+          ratio: 1,
+          params: {
+            'LAYERS': 'Wacodis/EO_WACODIS_DAT_INTRA_LAND_COVER_CLASSIFICATION_Service',
+          },
+          url: intraLandService
+        })
+      })
+    );
+
+    this.baselayers.push(
+      new ImageLayer({
+        visible: false,
+        source: new ImageArcGISRest({
+          ratio: 1,
+          params: {
+            'LAYERS': 'Wacodis/EO_WACODIS_DAT_WATER_SURFACE_TEMPERATURE_Service',
+          },
+          url: waterTempService
+        })
+      })
+    );
+
+
 
     // this.baselayers.push(
     //   new ImageLayer({

@@ -45,14 +45,14 @@
         <td>
             <button id="leftTime" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown"  [disabled]="isDisabledL">{{defaultLDate| date: 'mediumDate' }}</button>
             <div class="dropdown-menu" aria-labelledby="leftTime">
-              <button class="dropdown-item" *ngFor="let lDate of selLeftDate; let i = index" (click)="changeLeftDate(lDate, i)">{{lDate| date: 'mediumDate' }}</button>
+              <button class="dropdown-item" *ngFor="let lDate of selLeftDate; let j = index" (click)="changeLeftDate(lDate, j)">{{lDate| date: 'mediumDate' }}</button>
             </div>
         </td>
       </div>
         <td id="rightName">
             <button id="rightLayer" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">{{selectRightLayer}}</button>
             <div class="dropdown-menu" aria-labelledby="rightLayer">
-              <button class="dropdown-item" *ngFor="let rightLayers of comparisonOptions; let i = index" (click)="changeRightLayer(rightLayers, i)">{{rightLayers}}</button>
+              <button class="dropdown-item" *ngFor="let rightLayers of comparisonOptions; let p = index" (click)="changeRightLayer(rightLayers, p)">{{rightLayers}}</button>
               <div *ngFor="let item of unresolvableServices">
                 <div style="color: red;">{{item}} is currently not reachable</div>
             </div>
@@ -63,7 +63,7 @@
         <td>
             <button id="rightTime" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" [disabled]="isDisabledR">{{defaultRDate| date: 'mediumDate'}}</button>
             <div class="dropdown-menu" aria-labelledby="rightTime">
-              <button class="dropdown-item" *ngFor="let rDate of selRightDate; let i = index" (click)="changeRightDate(rDate, i)">{{rDate| date: 'mediumDate' }}</button>
+              <button class="dropdown-item" *ngFor="let rDate of selRightDate; let k = index" (click)="changeRightDate(rDate, k)">{{rDate| date: 'mediumDate' }}</button>
             </div>
         </td>
       </tr>
@@ -94,7 +94,7 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td>
+                    <td style="overflow: hidden;">
                       <button id="leftLayer" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">{{selectLeftLayer}}</button>
                       <div class="dropdown-menu" aria-labelledby="leftLayer">
                         <button class="dropdown-item" *ngFor="let layers of comparisonOptions; let i = index" (click)="checkLeftLayer(layers, i)">{{layers}}</button>
@@ -103,7 +103,7 @@
                         <div style="color: red;">{{item}} is currently not reachable</div>
                     </div>
                     </td>
-                    <td>
+                    <td style="overflow: hidden;">
                       <button id="rightLayer" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">{{selectRightLayer}}</button>
                       <div class="dropdown-menu" aria-labelledby="rightLayer">
                         <button class="dropdown-item" *ngFor="let rightLayers of comparisonOptions; let i = index" (click)="checkRightLayer(rightLayers, i)">{{rightLayers}}</button>
@@ -115,6 +115,13 @@
                   </tr>
                   <tr>
                     <td>
+                        <div class="loader">
+                            <div *ngIf="loadingL">
+                                <div class="spinner-border text-dark" role="status">
+                                    <i class="fa fa-spinner fa-spin" style="font-size:24px;"></i>
+                                </div>
+                            </div>
+                        </div>
                       <button id="leftTime" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" [disabled]="isDisabledL">{{defaultLDate| date: 'mediumDate' }}</button>
                       <div class="dropdown-menu" aria-labelledby="leftTime">
                         <button class="dropdown-item" *ngFor="let lDate of selLeftDate; let i = index" (click)="checkLeftDate(lDate, i)">{{lDate| date: 'mediumDate' }}</button>
@@ -122,6 +129,13 @@
                       </div>
                     </td>
                     <td>
+                        <div class="loader">
+                            <div *ngIf="loadingR">
+                                <div class="spinner-border text-dark" role="status">
+                                    <i class="fa fa-spinner fa-spin" style="font-size:24px;"></i>
+                                </div>
+                            </div>
+                        </div>
                       <button id="rightTime" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" [disabled]="isDisabledR">{{defaultRDate| date: 'mediumDate'}}</button>
                       <div class="dropdown-menu" aria-labelledby="rightTime">
                         <button class="dropdown-item" *ngFor="let rDate of selRightDate; let i = index" (click)="checkRightDate(rDate, i)">{{rDate| date: 'mediumDate' }}</button>
