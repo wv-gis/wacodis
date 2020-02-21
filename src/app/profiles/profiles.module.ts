@@ -10,13 +10,28 @@ import { CustomProfileEntryComponent } from './customized/custom-profile-entry/c
 import { ProfilesEntryService } from '../services/profiles-entry.service';
 import { CustomPlotlyProfileGraphComponent } from './customized/custom-plotly-profile-graph/custom-plotly-profile-graph.component';
 import { HelgolandSelectorModule } from '@helgoland/selector';
+import { WvTimeseriesModule } from '../timeseries/timeseries.module';
+import { SelectedProviderService } from '../services/selected-provider.service';
+import { HelgolandCoreModule } from '@helgoland/core';
 
 
 
 @NgModule({
   imports: [
-    CommonModule, HelgolandDatasetlistModule, HelgolandPlotlyModule, HelgolandLabelMapperModule,HelgolandSelectorModule
+    CommonModule, 
+    HelgolandDatasetlistModule, 
+    HelgolandPlotlyModule, 
+    HelgolandLabelMapperModule, 
+    HelgolandSelectorModule,
+    HelgolandCoreModule,
+    WvTimeseriesModule
   ],
-  declarations: [ProfileViewComponent, ProfileEntryGraphComponent, ProfileDataViewSelectionComponent, CustomProfileEntryComponent, CustomPlotlyProfileGraphComponent], providers: [CsvDataService, ProfilesEntryService], exports: [ProfileViewComponent]
+  declarations: [ProfileViewComponent, 
+    ProfileEntryGraphComponent, 
+    ProfileDataViewSelectionComponent, 
+    CustomProfileEntryComponent, 
+    CustomPlotlyProfileGraphComponent
+  ],
+     providers: [CsvDataService, ProfilesEntryService, SelectedProviderService], exports: [ProfileViewComponent]
 })
 export class WvProfilesModule { }

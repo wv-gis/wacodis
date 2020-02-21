@@ -2,11 +2,11 @@
     <div class="diagram">
         <div class="diagramEntry" style="height: 650px; padding: 5px;" id="#diagram" [ngClass]="{'active': isActive}">
             <div class="loading-overlay">
-                <div *ngIf="overviewLoading">
+                <!-- <div *ngIf="overviewLoading"> -->
                     <div class="spinner-border text-dark" role="status">
                         <i class="fa fa-spinner fa-spin" style="font-size:24px"></i>
                     </div>
-                </div>
+                <!-- </div> -->
             </div>
             <n52-plotly-profile-graph [datasetIds]="ids" [datasetOptions]="profileDatasetOptions" [selectedDatasetIds]="selectedIds" [reloadForDatasets]="reloadedDataset"></n52-plotly-profile-graph>
         </div>
@@ -27,7 +27,7 @@
                 <div class="bottom">
                     <div class="btn btn-default groupButton"> Gruppieren
                         <label class="switch" for="toggle_1">
-                            <input id="toggle_1" type="checkbox" (click)="groupYaxisChanged()" name="group" checked>
+                            <!-- <input id="toggle_1" type="checkbox" value="" (click)="groupYaxisChanged()" name="group" checked> -->
                             <span class="slider round"></span>
                         </label>
                     </div>

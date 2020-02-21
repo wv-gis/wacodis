@@ -15,8 +15,8 @@ export class ProfileEntryGraphComponent implements OnInit {
   public datasetOptions: TimedDatasetOptions[] = [];
   public profileDatasetOptions: Map<string, TimedDatasetOptions[]> = new Map();
   public isActive = true;
-  protected selectedIds: Array<string> = [];
-  protected reloadedDataset: string[] = [];
+  public selectedIds: Array<string> = [];
+  public reloadedDataset: string[] = [];
 
   constructor(private profileDataService: ProfilesEntryService) {
     // this.ids.forEach((entry) => {
