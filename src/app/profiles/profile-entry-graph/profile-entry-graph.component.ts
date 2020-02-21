@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TimedDatasetOptions, DatasetService } from '@helgoland/core';
+import { ProfilesEntryService } from 'src/app/services/profiles-entry.service';
 
 @Component({
   selector: 'wv-profile-entry-graph',
@@ -14,51 +15,46 @@ export class ProfileEntryGraphComponent implements OnInit {
   public datasetOptions: TimedDatasetOptions[] = [];
   public profileDatasetOptions: Map<string, TimedDatasetOptions[]> = new Map();
   public isActive = true;
+  public selectedIds: Array<string> = [];
+  public reloadedDataset: string[] = [];
 
-  constructor(profileDataService: DatasetService<TimedDatasetOptions>) {
-    this.ids.forEach((entry) => {
-      this.profileDatasetOptions.set(entry, [new TimedDatasetOptions(entry, '#00FF00', 1491178657000)]);
-      this.datasetOptions.push(new TimedDatasetOptions(entry, '#00FF00', 1491178657000));
-    });
-    // if (profileDataService !== undefined && profileDataService.hasDatasets()) {
-    //   for (let k = 0; k < profileDataService.datasetIds.length; k++) {
-    //     this.ids.push(profileDataService.datasetIds[k]);
-    //   }
-    //   try {
-    //     profileDataService.datasetOptions.forEach((options) => {
-    //       this.ids.forEach((entry, i) => {
-    //         this.profileDatasetOptions.set(entry, [options]);
-    //         this.datasetOptions.push(options[i]);
-    //       });
-    //     });
-    //   } catch (e) {
-    //     console.log('Error in TimeseriesView ' + e);
-    //   }
-    // }
+  constructor(private profileDataService: ProfilesEntryService) {
+    // this.ids.forEach((entry) => {
+    //   this.profileDatasetOptions.set(entry, [new TimedDatasetOptions(entry, '#00FF00', 1491178657000)]);
+    // });
+
+    if (profileDataService !== undefined && profileDataService.hasDatasets()) {
+    //  profileDataService.datasetIds.forEach((id)=> this.ids.push(id));
+     this.profileDatasetOptions = profileDataService.datasetOptions;
+    }
   }
 
   ngOnInit() {
   }
-  public updateOptions(options: TimedDatasetOptions[], id: number) {
-    console.log('update options');
-    options.forEach(element => {
-      element.visible = false;
-    });
+  public updateOptions(options: TimedDatasetOptions[], id: string) {
+  console.log(JSON.stringify(options));
+      this.profileDataService.updateDatasetOptions(options, id);
+    
 
   }
 
-  public deleteProfileOptions(option: TimedDatasetOptions, id: number) {
-    console.log('delete options');
+  public deleteProfileOptions(option: TimedDatasetOptions, id: string) {
+    // this.profileDatasetOptions.delete(id);
+    this.profileDataService.removeDataset(id);
   }
 
   public selectProfile(selected: boolean, id: string) {
-    this.datasetOptions.forEach((value, i, arr) => {
-      if (value.internalId === id)
-        arr[i].lineWidth == 4;
-    });
-    console.log(id + ' selected: ' + selected);
+    if (selected) {
+      this.selectedIds.push(id);
+    } else {
+      this.selectedIds.splice(this.selectedIds.findIndex(e => e === id), 1);
+    }
+
   }
 
+  public isSelected(internalId: string) {
+    return this.selectedIds.find(e => e === internalId);
+}
   public editOption(option: TimedDatasetOptions) {
     console.log('edit options');
 
@@ -73,8 +69,8 @@ export class ProfileEntryGraphComponent implements OnInit {
     console.dir(geometry);
   }
 
-  public groupYaxisChanged() {
-    this.datasetOptions.forEach((opt) => opt.separateYAxis = !opt.separateYAxis)
+  public groupYaxisChanged(id: string) {
+    this.profileDatasetOptions.get(id).forEach((opt) => opt.separateYAxis = !opt.separateYAxis)
   }
   change() {
     if (this.isActive) {

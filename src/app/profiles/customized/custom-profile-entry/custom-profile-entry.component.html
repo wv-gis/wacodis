@@ -1,0 +1,34 @@
+<div *ngFor="let item of datasetOptions">
+    <div class="legendItem" style="position: relative;" [ngStyle]="{'border-color': item.color}" [ngClass]="{'selected': selected}"
+        (click)="toggleSelection()">
+        <div class="legendItemheader">
+            <div class="legendItemLabel">
+                <n52-label-mapper label="{{dataset?.parameters.platform.label}}"></n52-label-mapper>
+            </div>
+            <div class="small">
+                <n52-label-mapper label="{{dataset?.parameters.phenomenon.label}}"></n52-label-mapper>
+                <span *ngIf="dataset?.uom">[
+                    <n52-label-mapper label="{{dataset.uom}}"></n52-label-mapper>]</span>
+            </div>
+            <div class="small">
+                <n52-label-mapper label="{{dataset?.parameters.procedure.label}}"></n52-label-mapper>
+            </div>
+            <div class="small" *ngIf="dataset?.parameters.category.label != dataset?.parameters.phenomenon.label">
+                <n52-label-mapper label="{{dataset?.parameters.category.label}}"></n52-label-mapper>
+            </div>
+        </div>
+
+        <div>
+            <span [ngStyle]="{'color': item.color}">{{item.timestamp | date: 'short'}}</span>
+            <span class="fa" [ngClass]="{'fa-eye-slash': item.visible, 'fa-eye': !item.visible}" (click)="toggleVisibility(item); $event.stopPropagation();"
+                title="{{'profiles.legend.visibility'}}"></span>
+            <span class="fas fa-pencil-alt" (click)="editDatasetOptions(item); $event.stopPropagation();" title="{{'profiles.legend.edit-style'}}"></span>
+            <span class="fa fa-map-marker" (click)="showGeometry(item); $event.stopPropagation();" title="{{'profiles.legend.show-geometry'}}"></span>
+            <span class="fa fa-times" (click)="removeDatasetOptions(item); $event.stopPropagation();" title="{{'profiles.legend.delete-subentry'}}"></span>
+        </div>
+        <!-- <div (click)="openInCombiView(item); $event.stopPropagation();" *ngIf="isMobile()" class="toCombiView">
+            <span class="fa fa-arrow-right"></span>
+            <span>{{'profiles.legend.go-to-combi-view'}}</span>
+        </div> -->
+    </div>
+</div>
