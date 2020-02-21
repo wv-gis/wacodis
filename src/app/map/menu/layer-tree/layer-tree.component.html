@@ -19,32 +19,25 @@
         <div class="legendicons">
           <span style="margin: 5px;" class="fa" [ngClass]="{'fa-eye-slash': !layer?.getVisible(), 'fa-eye': layer?.getVisible()}" (click)="toggleVisibility(layer)"></span>
           <wv-extended-ol-layer-zoom-extent [layer]="layer" [mapId]="mapId"></wv-extended-ol-layer-zoom-extent>
-          <wv-extended-ol-layer-legend-url [layer]="layer" (legendUrl)="getLegendUrl($event)">
+          <wv-extended-ol-layer-legend-url [layer]="layer" (legendUrl)="getLegendUrl($event)" (legendUrls)="getLegendUrls($event)">
           </wv-extended-ol-layer-legend-url>
         </div>
         <div>
           <span>Opacity:
-          <n52-ol-layer-opacitiy-slider [layer]="layer"></n52-ol-layer-opacitiy-slider>
-        </span>
+            <n52-ol-layer-opacitiy-slider [layer]="layer"></n52-ol-layer-opacitiy-slider>
+          </span>
         </div>
         <div>
           <wv-extended-ol-layer-time-selector [layer]="layer"></wv-extended-ol-layer-time-selector>
         </div>
         <div class="legendicons">
-            <n52-ol-layer-animate-time [layer]="layer"></n52-ol-layer-animate-time>
+          <n52-ol-layer-animate-time [layer]="layer"></n52-ol-layer-animate-time>
         </div>
       </div>
     </div>
   </div>
 </div>
-<div id="legendToast" class="legend">
-  <div class="toast-header">
-    <strong class="mr-auto">Legende</strong>
-    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close" (click)="onCloseHandled()">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="toast-body">
-    <img id="legend" src="" />
-  </div>
+
+<div *ngIf="legendUrls">
+    <wv-layer-legend-table [urls]="legendUrls"></wv-layer-legend-table>
 </div>

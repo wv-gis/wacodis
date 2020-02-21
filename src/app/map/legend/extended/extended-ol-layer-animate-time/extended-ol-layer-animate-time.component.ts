@@ -25,14 +25,14 @@ export class ExtendedOlLayerAnimateTimeComponent extends ExtendedOlLayerTimeSele
   }
   public startAnimation() {
     // get current time parameter
-    this.determineCurrentTimeParameter();
+    this.extendedDetermineCurrentTimeParameter();
     // find index in list
     let idx = this.timeDimensions.findIndex(e => e.getTime() === this.currentTime.getTime());
     // start animation
     this.interval = setInterval(() => {
       idx++;
       if (idx >= this.timeDimensions.length) { idx = 0; }
-      this.setTime(this.timeDimensions[idx]);
+      this.playTime(this.timeDimensions[idx]);
     }, this.timeInterval);
   }
 
@@ -41,7 +41,7 @@ export class ExtendedOlLayerAnimateTimeComponent extends ExtendedOlLayerTimeSele
   }
 
   public resetAnimation() {
-    this.wmsCaps.getDefaultTimeDimension(this.layerid, this.url).subscribe(time => this.setTime(time));
+    this.wmsCaps.getDefaultTimeDimension(this.layerid, this.url).subscribe(time => this.playTime(time));
   }
 
 }

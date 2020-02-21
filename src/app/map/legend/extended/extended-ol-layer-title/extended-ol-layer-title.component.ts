@@ -33,7 +33,7 @@ export class ExtendedOlLayerTitleComponent extends OlLayerTitleComponent impleme
         if(error){
           console.log('Error on Image Service request')
         }else{
-          this.title = metadata["description"];
+          this.title = metadata["name"].split("/")[1];
         }
        
       });

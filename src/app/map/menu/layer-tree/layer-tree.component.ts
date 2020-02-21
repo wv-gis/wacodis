@@ -4,6 +4,7 @@ import BaseLayer from 'ol/layer/Base';
 import { OlMapService } from '@helgoland/open-layers';
 import View from 'ol/View';
 import { fromLonLat } from 'ol/proj';
+import { legendParam } from '../../legend/extended/extended-ol-layer-legend-url/extended-ol-layer-legend-url.component';
 
 @Component({
   selector: 'wv-layer-tree',
@@ -13,9 +14,11 @@ import { fromLonLat } from 'ol/proj';
 export class LayerTreeComponent implements OnInit {
   @Input() baselayers: BaseLayer[];
   @Input() mapId: string;
-  
+
   public isActive = true;
   public display = 'none';
+  public legendUrl: string;
+  public legendUrls: legendParam[];
 
   constructor(private mapService: OlMapService) { }
 
@@ -34,29 +37,26 @@ export class LayerTreeComponent implements OnInit {
     this.mapService.getMap(this.mapId).subscribe(map => map.updateSize());
     this.mapService.getMap(this.mapId).subscribe(map => map.getView());
     // return this.isActive = !this.isActive;
-  
+
     this.isActive = !this.isActive;
   }
 
-  public getLegendUrl(url: string) {
+  public getLegendUrl(url?: string, urls?: string[]) {
+    // document.getElementById("legendToast").hidden =  false;
+    this.legendUrls =[ {url: url, label: ""}];
+  }
+  public getLegendUrls(urls: legendParam[]) {
+    // document.getElementById("legendToast").hidden =  true;
+    this.legendUrls = urls;
+  }
+  public toggleVisibility(layer: BaseLayer) {
 
-      var img = document.getElementById('legend'); 
-      img.setAttribute('src', url);
-      document.getElementById('legendToast').setAttribute('style', 'visibility:visible');
-    
-    }
-    public toggleVisibility(layer: BaseLayer ) {
-      
-        layer.setVisible(!layer.getVisible());
-      }
+    layer.setVisible(!layer.getVisible());
+  }
 
-      public removeLayer(i: number) {
-        const layer = this.baselayers.splice(i,1);
-        this.mapService.getMap(this.mapId).subscribe(map => map.removeLayer(layer[0]));
-      }
+  public removeLayer(i: number) {
+    const layer = this.baselayers.splice(i, 1);
+    this.mapService.getMap(this.mapId).subscribe(map => map.removeLayer(layer[0]));
+  }
 
-      public onCloseHandled() {
-        
-            document.getElementById('legendToast').setAttribute('style', 'visibility: hidden;');
-          }
 }
