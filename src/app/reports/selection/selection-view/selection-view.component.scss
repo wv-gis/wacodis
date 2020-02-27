@@ -1,0 +1,60 @@
+body{
+    overflow: hidden;
+  }
+  
+  .loader{
+    width: 85%;
+    height: 50%;
+    position: absolute;
+    z-index: 99;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: lightgray, 0.5;
+    margin-right: -50%;
+  }
+  .label{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 2;
+    color: #fff;
+    font-weight: 700;
+    font-size: larger;
+    text-align: center;
+    transform: translate(-50%, -50%);
+  }
+  
+  .card{
+    border: 0px;
+  }
+  
+  // .btn-default:active, .btn-default:focus{
+  //   outline: none;
+  //   box-shadow: none;
+  //   border: 2px solid rgb(53, 53, 104);
+  // }
+  
+  .selected{
+    border: 2px solid rgb(53, 53, 104);
+  }
+  
+  .wv-grey {
+    background-color: #c8c8c8 !important;
+    color: #000000 !important;
+  }
+  
+    @media (max-width: 767.98px){
+      .siteInfo {
+        display: none;
+      }
+      .label{
+        font-size: 12px;
+      }
+  
+      @media (min-width: 991.98px) {
+        .label{
+          font-size: 16px;
+        }
+       }
+    }

@@ -1,47 +1,10 @@
-<div>
-    <div style="margin-left: 10px;">
-        <div>
-            <b> Stauinhalte im Vergleich (niederschlagsarme Jahre)</b>
-        </div>
-        Der Bericht für die gewünschte Talsperre wird für einen Zeitraum von zwei Jahren
-        <br>im Verhältnis zum aktuellen Datum mit Voraus- und Rücksicht erstellt.
-        <table class="table">
-            <thead>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>
-                        <button id="damLabel" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">{{damLabel}}</button>
-                        <div class="dropdown-menu" aria-labelledby="damLabel">
-                            <button class="dropdown-item" *ngFor="let label of dams;let i = index" (click)="onSelection(i)">
-                                <span [ngStyle]="{ 'color': !reservoirs[i].graph.compSeriesId ? 'red': 'black'}" data-toggle="tooltip" data-placement="top"
-                                    title="{{!reservoirs[i].graph.compSeriesId ? 'Keine Referenzdaten vorhanden': ''}}">{{label}}</span>
-                            </button>
-                        </div>
-                        <button class="btn btn-default" style="padding: 5px; margin-left: 5px;" (click)="exportImage()" id="saveButton">Export</button>
-                    </td>
-                    <td>
-
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
-<!-- <div class="d-flex justify-content-center"> -->
-
-    <div class="loader">
+<div class="loader">
         <div *ngIf="loading">
             <div class="spinner-border text-dark" role="status">
-                <i class="fa fa-spinner fa-spin" style="font-size:24px"></i>
+                <i class="fa fa-spinner fa-spin" style="font-size:24px;"></i>
             </div>
         </div>
     </div>
-
-<!-- </div> -->
-
-<figure id="reports" #reportComponent></figure>
-
-
-<canvas id="canvas" style="display: none;"></canvas>
-<div id="pngContainer"></div>
+    <div style="position: relative;z-index: 200;" #d3Graph>
+        <div id="myDiv" style="width: 100%; height: 100%"></div>
+    </div>

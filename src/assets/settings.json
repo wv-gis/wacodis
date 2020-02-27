@@ -29,6 +29,10 @@
         }
 
     ],
+    "defaultService": {
+        "serviceId": "1",
+        "apiUrl": "https://fluggs.wupperverband.de/sos2-intern/api/v1/"
+    },
     "reservoirs": [
         {
             "id": "BE",
@@ -96,16 +100,30 @@
             "id": "KT",
             "label": "Kerspe-Talsperre",
             "graph": {
-                "seriesId": "sos2-intern/api/v1/__741",
-                "compYearsFrom": [2006, 2008, 2014]
+                "seriesId": "sos2-intern/api/v1/__1002",
+                "compSeriesId": "sos2-intern/api/v1/__741",
+                "referenceValues": [
+                    {
+                        "referenceId": "sos2-intern/api/v1/__2377",
+                        "label": "Vollstau"
+                    }
+                ],
+                "compYearsFrom": [1999, 2003, 2013, 2015, 2018]
             }
         },
         {
             "id": "HT",
             "label": "Herbringhauser Talsperre",
             "graph": {
-                "seriesId": "sos2-intern/api/v1/__742",
-                "compYearsFrom": [2008, 2014, 2015]
+                "seriesId": "sos2-intern/api/v1/__1003",
+                "compSeriesId": "sos2-intern/api/v1/__742",
+                "referenceValues": [
+                    {
+                        "referenceId": "sos2-intern/api/v1/__2376",
+                        "label": "Vollstau"
+                    }
+                ],
+                "compYearsFrom": [2009, 2011, 2018]
             }
         }
     ]
