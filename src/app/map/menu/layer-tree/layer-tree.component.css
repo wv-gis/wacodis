@@ -1,5 +1,5 @@
 .phenomena .expand-button.active {
-    right: 400px;
+    right: 600px;
     background-color: #2c4869;
 }
 
@@ -29,7 +29,7 @@
     right: 0;
     bottom: 0;
     background-color: #718296;
-    width: 400px;
+    width: 600px;
 
 }
 .phenomena .phenomenonSelector {
@@ -42,7 +42,17 @@
     background-color: rgba(255, 255, 255, 0.85);
 }
 
-
 .legendicons:hover {
-        cursor: pointer;
-    }
+    cursor: pointer;
+}
+
+#pieChart.active{
+    position: absolute;
+    top:250px;
+    right: 0px;
+    display: inline;
+}
+
+#pieChart{
+  display: none;
+}
