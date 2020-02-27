@@ -23,6 +23,7 @@ import {
   GeoSearch,
   NominatimGeoSearchService
 } from '@helgoland/map';
+import {SensorwappToolboxModule} from "@sensorwapp-toolbox/core";
 import { ExtendedSettingsService } from './settings/settings.service';
 import { WvMapModule } from 'src/app/map/map.module';
 import { LandingpageComponent } from './landingpage/landingpage.component';
@@ -37,6 +38,12 @@ import { ComparisonSelectionService } from 'src/app/services/comparison-selectio
 import { RequestTokenService } from 'src/app/services/request-token.service';
 import { HelgolandOpenLayersModule } from '@helgoland/open-layers';
 import { SelectedProviderService } from './services/selected-provider.service';
+import { LandCoverComponent } from './copernicus/products/land-cover/land-cover.component';
+import { VitalityViewComponent } from './copernicus/products/vitality-view/vitality-view.component';
+import { ChlorophyllViewComponent } from './copernicus/products/chlorophyll-view/chlorophyll-view.component';
+import { SoilTemperatureViewComponent } from './copernicus/products/soil-temperature-view/soil-temperature-view.component';
+import { MowingViewComponent } from './copernicus/products/mowing-view/mowing-view.component';
+import { CopernicusProductsModule } from './copernicus/copernicus-products/copernicus-products.module';
 
 
 
@@ -71,12 +78,14 @@ import { SelectedProviderService } from './services/selected-provider.service';
     HelgolandOpenLayersModule,
     HelgolandFacetSearchModule,
     HelgolandPlotlyModule,
+    SensorwappToolboxModule,
     FormsModule,
     WvMapModule,
     WvTimeseriesModule,
     WvProfilesModule,
     WvReportsModule,
     WvChangeDetectionModule,
+    CopernicusProductsModule,
     AppRoutingModule,
   ],
   providers: [

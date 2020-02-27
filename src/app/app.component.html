@@ -16,29 +16,52 @@
           <li routerLinkActive="active" class="nav-item wv" data-toggle="collapse" data-target=".navbar-collapse.show">
             <a routerLink='/start' class="nav-link">Home</a>
           </li>
-          <li routerLinkActive="active" class="nav-item wv" data-toggle="collapse" data-target=".navbar-collapse.show">
+          <!-- <li routerLinkActive="active" class="nav-item wv" data-toggle="collapse" data-target=".navbar-collapse.show"> -->
             <!-- [routerLinkActiveOptions]="{exact: true}" -->
-            <a routerLink='/selection-category'></a>
+            <!-- <a routerLink='/selection-category'></a>
             <a routerLink='/selection-phenomenon'></a>
             <a routerLink='/selection-station'></a>
             <a routerLink='/selection-map' class="nav-link">Zeitreihendiagramm</a>
             <a routerLink='/timeseries-diagram'></a>
+          </li> -->
+          <li routerLinkActive="active" class="nav-item wv" data-toggle="collapse" data-target=".navbar-collapse.show">
+              <div class="dropdown ">
+                  <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                      aria-expanded="false" style="font-size: 13px;">
+                      Fernerkundungsprodukte
+                  </button>
+                  <div class="dropdown-menu btn wv-menu-drop" aria-labelledby="dropdownMenuButton">
+                      <a class="dropdown-item  wv-drop" routerLink="/land-use-view" role="button">Landbedeckung</a>
+                      <a class="dropdown-item wv-drop" routerLink="/vitality-view" role="button">Vitalität</a>
+                      <a class="dropdown-item  wv-drop" routerLink="/mowing-view" role="button">Mahdereignisse</a>
+                      <a class="dropdown-item wv-drop" routerLink="/chlorophyll-view" role="button">Chlorophyll in Stauseen</a>
+                      <a class="dropdown-item  wv-drop" routerLink="/soilTemperature-view" role="button">Oberflächentemperatur</a>
+                  </div>
+              </div>
           </li>
           <li routerLinkActive="active" class="nav-item wv" data-toggle="collapse" data-target=".navbar-collapse.show">
-            <a routerLink='/profiles-selection' class="nav-link">Profildiagramm</a>
-          </li>
-          <li routerLinkActive="active" class="nav-item wv" data-toggle="collapse" data-target=".navbar-collapse.show">
-            <a routerLink='/map-view' class="nav-link">Karteneditor</a>
+            <a routerLink='/substrance-entries-view' class="nav-link">Modellierungsergebnisse</a>
           </li>
           <li routerLinkActive="active" class="nav-item wv" data-toggle="collapse" data-target=".navbar-collapse.show">
             <!-- <a routerLink='/comparison-selection' class="nav-link">ChangeDetection</a> -->
-            <a routerLink='/change-detection' class="nav-link">Änderungsdetektion</a>
+            <a routerLink='/isoplethen-view' class="nav-link">Isoplethen</a>
           </li>
           <li routerLinkActive="active" class="nav-item wv" data-toggle="collapse" data-target=".navbar-collapse.show">
             <a routerLink='/reports' class="nav-link">Wasserwirtschaftsbericht</a>
           </li>
           <li routerLinkActive="active" class="nav-item wv" data-toggle="collapse" data-target=".navbar-collapse.show">
-            <a routerLink='/weather-forecast' class="nav-link">Wettervorschau</a>
+              <div class="dropdown">
+                  <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                      aria-expanded="false" style="font-size: 13px;">
+                      Weitere Visualisierungen
+                  </button>
+                  <div class="dropdown-menu btn wv-menu-drop" aria-labelledby="dropdownMenuButton">
+                      <a class="dropdown-item wv-drop" routerLink="/selection-map" role="button">Zeitreihendiagramm</a>
+                      <a class="dropdown-item wv-drop" routerLink="/profiles-selection" role="button">Profildiagramm</a>
+                      <a class="dropdown-item wv-drop" routerLink="/map-view" role="button">Karteneditor</a>
+                      <a class="dropdown-item wv-drop" routerLink="/change-detection" role="button">Änderungsdetektion</a>
+                  </div>
+              </div>
           </li>
         </ul>
         <!-- <img src="assets/images/logo_komplett_blau-grau_35mm.jpg" alt="Wupperverband" width="99" height="77" > -->
