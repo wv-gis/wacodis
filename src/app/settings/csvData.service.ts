@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { csvData, oxyData } from '../../environments/environment';
+import {  statData,tempData } from '../../environments/environment';
+
 
 @Injectable()
 export class CsvDataService {
@@ -10,8 +11,8 @@ private interpText;
     constructor() {
         // this.headers = headerArray;
         // this.datasets = data;
-        this.text = csvData;
-        this.interpText = oxyData;
+        this.text = tempData;
+        this.interpText = statData;
     }
     public getCsvDatasets(){
         return this.datasets;

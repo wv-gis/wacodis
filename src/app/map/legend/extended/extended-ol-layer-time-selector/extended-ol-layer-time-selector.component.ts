@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { OlLayerTimeSelectorComponent, WmsCapabilitiesService } from '@helgoland/open-layers';
 import { ImageWMS, ImageArcGISRest } from 'ol/source';
 import Layer from 'ol/layer/Layer';
@@ -13,7 +13,7 @@ export class ExtendedOlLayerTimeSelectorComponent extends OlLayerTimeSelectorCom
 
   @Input() layer: Layer;
   public timeAttribute = true;
-
+  @Output() selTime:  EventEmitter<Date> = new EventEmitter<Date>();
   constructor(private wmsCap: WmsCapabilitiesService) {
     super(wmsCap);
   }
@@ -52,6 +52,7 @@ export class ExtendedOlLayerTimeSelectorComponent extends OlLayerTimeSelectorCom
           });
           this.timeDimensions = times;
         }
+        this.selTime.emit(this.currentTime);
         this.loading = false
       });
     }
@@ -69,7 +70,8 @@ export class ExtendedOlLayerTimeSelectorComponent extends OlLayerTimeSelectorCom
     }
     else if (source instanceof ImageArcGISRest) {
       source.updateParams({time: (new Date(time.getFullYear(), time.getMonth(),time.getDate()+2).getTime()-2628000000)+
-        ","+ new Date(time.getFullYear(), time.getMonth(),time.getDate()+2).getTime() })
+        ","+ new Date(time.getFullYear(), time.getMonth(),time.getDate()+2).getTime() });
+        this.selTime.emit(this.currentTime);
     }
   }
 

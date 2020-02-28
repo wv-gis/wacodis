@@ -41,7 +41,7 @@ export class ExtendedOlLayerLegendUrlComponent extends OlLayerLegendUrlComponent
       let legendResp: legendParam[] = [];
       esri.imageMapLayer({url: legendurl}).metadata((error,legendData)=>{
        legendData["layers"][0].legend.forEach((dat,i,arr)=>{
-         if(i<22)
+         if(i<25)
           legendResp.push({url: "data:image/png;base64," + arr[i].imageData, label: arr[i].label}) ;
         });
         this.legendUrls.emit(legendResp);

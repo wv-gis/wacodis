@@ -5,13 +5,16 @@ import { HelgolandD3Module } from '@helgoland/d3';
 import { ExtendedSettingsService } from 'src/app/settings/settings.service';
 import { SelectionViewComponent } from './selection/selection-view/selection-view.component';
 import { WvProfilesModule } from '../profiles/profiles.module';
+import { IsoplethenViewComponent } from './isoplethen/isoplethen-view/isoplethen-view.component';
+import { SensorwappToolboxModule } from '@sensorwapp-toolbox/core';
 
 @NgModule({
   imports: [
     CommonModule,
     HelgolandD3Module,
+    SensorwappToolboxModule,
     WvProfilesModule
   ],
-  declarations: [ReportsViewComponent, SelectionViewComponent], providers: [ExtendedSettingsService]
+  declarations: [ReportsViewComponent, SelectionViewComponent, IsoplethenViewComponent], providers: [ExtendedSettingsService]
 })
 export class WvReportsModule { }

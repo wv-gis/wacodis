@@ -28,15 +28,17 @@
           </span>
         </div>
         <div>
-          <wv-extended-ol-layer-time-selector [layer]="layer"></wv-extended-ol-layer-time-selector>
+          <wv-extended-ol-layer-time-selector [layer]="layer" (selTime)="getSelectedTime($event)"></wv-extended-ol-layer-time-selector>
         </div>
-        <div class="legendicons">
+        <!-- <div class="legendicons">
           <n52-ol-layer-animate-time [layer]="layer"></n52-ol-layer-animate-time>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
 </div>
+
+<div  [ngClass]="{'active': isActive}" *ngIf="drawChart" id="pieChart" style="height: 80%"></div>  
 
 <div *ngIf="legendUrls">
     <wv-layer-legend-table [urls]="legendUrls"></wv-layer-legend-table>

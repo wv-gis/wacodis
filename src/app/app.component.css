@@ -118,8 +118,27 @@ p.big.bold{
 .active .nav-link{
     color: #fff;
 }
+
+.active .dropdown-toggle{
+    color: #fff;
+}
 .wv-submit-btn{
     color: #fff;
     background-color: #718296;
 }
 
+.wv-drop{
+    font-style: normal;
+    color: #2C333F; 
+    font-size: 13px;
+    width:  auto;
+    padding: 8px 16px;
+    margin-right: 1rem;
+    min-width: 100px;
+    text-align: center;
+    background-color: white;
+}
+.wv-menu-drop{
+    line-height: 30px;
+    text-align: center;
+}

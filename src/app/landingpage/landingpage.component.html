@@ -1,4 +1,3 @@
-
 <main role="main">
     <div class="jumbotron">
         <div class="container">
@@ -6,10 +5,10 @@
                 <div class="col-md-5">
                     <h1 class="wv-h1 jumbo">WaCoDiS</h1>
                 </div>
-                <div class="col-md-7">                  
+                <div class="col-md-7">
                 </div>
             </div>
-            <div  class="row">
+            <div class="row">
                 <div class="col-md-5">
                     <a class="btn btn-start" routerLink="/selection-map" role="button">Zeitreihe auswählen</a>
                 </div>
@@ -39,24 +38,23 @@
                 </svg>
             </div>
             <div class="col-md-7">
-                <h2 class="wv-h2">Zeitreihenansicht </h2>
+                <h2 class="wv-h2">Landbedeckung</h2>
                 <p class="big">Die verfügbaren Messstationen werden in einer Tabelle angezeigt, per Mausklick auf eine Kategorie können
                     Sie die Daten weiter filtern und sich die entsprechenden Ganglinien anzeigen lassen.
                 </p>
                 <p>
-                    <a class="btn btn-wv" routerLink="/selection-map" role="button">View details »</a>
+                    <a class="btn btn-wv" routerLink="/land-use-view" role="button">View details »</a>
                 </p>
             </div>
         </div>
         <hr class="featurette-divider">
         <div class="row featurette">
             <div class="col-md-7">
-                <h2 class="wv-h2">Kartenansicht</h2>
-                <p class="big">Die verfügbaren Daten werden in einer Tabelle angezeigt und können über verschiedene Parameter gefiltert
-                    werden. Die Ergebnislayer werden einer Kartenansicht hinzugefügt.
+                <h2 class="wv-h2">Vitalität</h2>
+                <p class="big">Statistiken und Karten zur Vitalitätsabnahme/-zuwachs der Wälder und Wuchsgebiete im Verbandsgebiet.
                 </p>
                 <p>
-                    <a class="btn btn-wv nav-link" routerLink="/map-view" role="button">View details »</a>
+                    <a class="btn btn-wv nav-link" routerLink="/vitality-view" role="button">View details »</a>
                 </p>
             </div>
             <div class="col-md-5">
@@ -80,24 +78,24 @@
                 </svg>
             </div>
             <div class="col-md-7">
-                <h2 class="wv-h2">Profilansicht</h2>
-                <p class="big"> Die verfügbaren Daten aus der Limnologie lassen sich hierüber als Tabelle oder in Form von Profil- und Isoplethendarstellungen
-                    anzeigen und abrufen.
+                <h2 class="wv-h2">Chlorophyll in Stauseen</h2>
+                <p class="big"> Die verfügbaren Daten aus der Limnologie lassen sich hierüber zusammen mit aus Fernerkundungsdaten erhobenen
+                    Werten vergleichen.
                 </p>
                 <p>
-                    <a class="btn btn-wv nav-link" routerLink="/profiles-selection" role="button">View details »</a>
+                    <a class="btn btn-wv nav-link" routerLink="/chlorophyll-view" role="button">View details »</a>
                 </p>
             </div>
         </div>
         <hr class="featurette-divider">
         <div class="row featurette">
             <div class="col-md-7">
-                <h2 class="wv-h2">Change Detection</h2>
-                <p class="big">Innerhalb dieses Bereiches lassen sich Satellitendaten und -auswertungen verschiedener Zeitpunkte vergleichen.
-                    Es stehen zwei verschiedene Ansichten zum Vergleich von max. 2 Satellitenszenen zur Verfügung.
+                <h2 class="wv-h2">Oberflächentemperatur</h2>
+                <p class="big">Innerhalb dieses Bereiches lassen sich Satellitendaten und -auswertungen verschiedener Zeitpunkte vergleichen
+                    welche die Oberflächentemperatur des Verbandsgebiets zeigen.
                 </p>
                 <p>
-                    <a class="btn btn-wv nav-link" routerLink="/change-detection" role="button">View details »</a>
+                    <a class="btn btn-wv nav-link" routerLink="/soilTemperature-view" role="button">View details »</a>
                 </p>
             </div>
             <div class="col-md-5">
@@ -111,16 +109,28 @@
         </div>
         <hr class="featurette-divider">
         <div class="row featurette">
+
             <div class="col-md-5">
                 <svg class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="450" height="350" xmlns="http://www.w3.org/2000/svg"
-                    preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 450x225">
+                    preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 450x350">
                     <title>Placeholder</title>
                     <rect width="100%" height="100%" fill="#eee"></rect>
                     <text x="45%" y="50%" fill="#aaa" dy=".3em">450x350</text>
                 </svg>
             </div>
             <div class="col-md-7">
-                <h2 class="wv-h2">Berichte</h2>
+                <h2 class="wv-h2">Mahdereignisse</h2>
+                <p class="big">Potenzielle Zeiten für Mahdergeinisse auf den im Verbandsgebiet liegenden Grünflächen.
+                </p>
+                <p>
+                    <a class="btn btn-wv nav-link" routerLink="/mowing-view" role="button">View details »</a>
+                </p>
+            </div>
+        </div>
+        <hr class="featurette-divider">
+        <div class="row featurette">
+            <div class="col-md-7">
+                <h2 class="wv-h2">Wasserwirtschaftsbericht</h2>
                 <p class="big">Der Bericht für die gewünschte Talsperre zu "Stauinhalten im Vergleich" wird für einen Zeitraum von zwei
                     Jahren im Verhältnis zum aktuellen Datum mit Vorraus- und Rücksicht erstellt.
                 </p>
@@ -128,17 +138,42 @@
                     <a class="btn btn-wv nav-link" routerLink="/reports" role="button">View details »</a>
                 </p>
             </div>
+            <div class="col-md-5">
+                <svg class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="450" height="350" xmlns="http://www.w3.org/2000/svg"
+                    preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 450x225">
+                    <title>Placeholder</title>
+                    <rect width="100%" height="100%" fill="#eee"></rect>
+                    <text x="45%" y="50%" fill="#aaa" dy=".3em">450x350</text>
+                </svg>
+            </div>
+        </div>
+        <hr class="featurette-divider">
+        <div class="row featurette">
+            <div class="col-md-5">
+                <svg class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="450" height="350" xmlns="http://www.w3.org/2000/svg"
+                    preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 450x350">
+                    <title>Placeholder</title>
+                    <rect width="100%" height="100%" fill="#eee"></rect>
+                    <text x="45%" y="50%" fill="#aaa" dy=".3em">450x350</text>
+                </svg>
+            </div>
+            <div class="col-md-7">
+                <h2 class="wv-h2">Isoplethendiagramme</h2>
+                <p class="big">Auswertung der Sauerstoff, Trübung und ph-Werte als Isoplethendiagramm für ein Jahr.
+                </p>
+                <p>
+                    <a class="btn btn-wv nav-link" routerLink="/isoplethen-view" role="button">View details »</a>
+                </p>
+            </div>
         </div>
         <hr class="featurette-divider">
         <div class="row featurette">
             <div class="col-md-7">
-                <h2 class="wv-h2">Wettervorschau</h2>
-                <p class="big">Die Wettervorschau bietet die Vorhersage für Wind, Regenmengen und Wolkenbedeckung. Alle Angaben basieren
-                    auf dem ECMWF 9km (European Centre for Medium-range Weather Forecasts) Vorhersage Modell. Regenmengen
-                    beziehen sich auf die nächsten 3 Tage.
+                <h2 class="wv-h2">Modellergebnisse</h2>
+                <p class="big">Stoffeintragsmodell von SWAT mit Landbedeckung und DGM 5 als Eingangsparameter.
                 </p>
                 <p>
-                    <a class="btn btn-wv nav-link" routerLink="/weather-forecast" role="button">View details »</a>
+                    <a class="btn btn-wv nav-link" routerLink="/substrance-entries-view" role="button">View details »</a>
                 </p>
             </div>
             <div class="col-md-5">
@@ -152,6 +187,35 @@
         </div>
         <hr class="featurette-divider">
         <div class="row featurette">
+            <div class="col-md-5">
+                <svg class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="450" height="350" xmlns="http://www.w3.org/2000/svg"
+                    preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 450x350">
+                    <title>Placeholder</title>
+                    <rect width="100%" height="100%" fill="#eee"></rect>
+                    <text x="45%" y="50%" fill="#aaa" dy=".3em">450x350</text>
+                </svg>
+            </div>
+            <div class="col-md-7">
+                <h2 class="wv-h2">Weitere Visualisierungen</h2>
+                <p class="big">Zeitreihen auswählen und anzeigen. Profile auswählen und anzeigen, Änderungsdetektion mit Fererkundungdsdaten.
+                    Layeranimation und Datenauswahl für Kartenansicht.
+                </p>
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">
+                        Auswahl
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item btn btn-wv nav-link" routerLink="/selection-map" role="button">Zeitreihendiagramm</a>
+                        <a class="dropdown-item btn btn-wv nav-link" routerLink="/profiles-selection" role="button">Profildiagramm</a>
+                        <a class="dropdown-item btn btn-wv nav-link" routerLink="/map-view" role="button">Karteneditor</a>
+                        <a class="dropdown-itembtn btn-wv nav-link" routerLink="/change-detection" role="button">Änderungsdetektion</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr class="featurette-divider">
+        <div class="row featurette">
             <div class="col-md-6">
                 <img style="margin-top:10px" src="assets/images/mFUND_Logo_CMYK.jpg" alt="mFUND" width="160" height="90">
             </div>
@@ -160,15 +224,15 @@
             </div>
         </div>
     </div>
-    <div id="cookie-bar" class="fixed bottom" style="z-index: 99999;width: 100%">
+    <!-- <div id="cookie-bar" class="fixed bottom" style="z-index: 99999;width: 100%">
             <button type="button" class="close" aria-label="Close" (click)="onCloseHandled()">
                     <span aria-hidden="true">&times;</span>
                 </button>
         <iframe frameborder="no" height="250px" src="https://piwik.wupperverband.de/index.php?module=CoreAdminHome&action=optOut&language=de"></iframe>
-    </div>
-    
+    </div> -->
+
 </main>
 <hr>
 <footer class="container" style="float: left;">
-    <p >© Wupperverband</p>
+    <p>© Wupperverband</p>
 </footer>

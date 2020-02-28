@@ -12,6 +12,13 @@ import { WeatherForecastComponent } from 'src/app/weather/weather-forecast/weath
 import { AppComponent } from 'src/app/app.component';
 import { SelectionViewComponent } from './reports/selection/selection-view/selection-view.component';
 import { ProfileDataViewSelectionComponent } from './profiles/data-selection/profile-data-view-selection/profile-data-view-selection.component';
+import { MowingViewComponent } from './copernicus/products/mowing-view/mowing-view.component';
+import { IsoplethenViewComponent } from './reports/isoplethen/isoplethen-view/isoplethen-view.component';
+import { SoilTemperatureViewComponent } from './copernicus/products/soil-temperature-view/soil-temperature-view.component';
+import { ChlorophyllViewComponent } from './copernicus/products/chlorophyll-view/chlorophyll-view.component';
+import { VitalityViewComponent } from './copernicus/products/vitality-view/vitality-view.component';
+import { LandCoverComponent } from './copernicus/products/land-cover/land-cover.component';
+import { ProfileViewComponent } from './profiles/profile-view/profile-view.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'start', pathMatch: 'full' },
@@ -31,6 +38,13 @@ const routes: Routes = [
   { path: 'profiles-selection', component: ProfileDataViewSelectionComponent, data: { title: 'WaCoDiS Web Client' } },
   { path: 'profiles-diagram', component: ProfileEntryGraphComponent, data: { title: 'WaCoDiS Web Client' } },
   { path: 'weather-forecast', component: WeatherForecastComponent, data: { title: 'WaCoDiS Web Client' } },
+  // {path: "substrance-entries-view",component: },
+  {path: "mowing-view",component: MowingViewComponent},
+  {path: "isoplethen-view",component: IsoplethenViewComponent},
+  {path: "soilTemperature-view",component: SoilTemperatureViewComponent},
+  {path: "chlorophyll-view",component: ChlorophyllViewComponent},
+  {path: "vitality-view",component: VitalityViewComponent},
+  {path: "land-use-view",component: LandCoverComponent}
 ];
 
 @NgModule({

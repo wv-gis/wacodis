@@ -1,0 +1,13 @@
+<div style="height: 900px;">
+    <div id="map" style="width: 82%; height: 90%; padding: 5px; position:absolute;">
+        <n52-ol-map class="map mapHeight" [mapId]="mapId" [zoom]="zoom" [lat]="lat" [lon]="lon" [showZoomControl]="showZoomControl"
+            [showAttributionControl]="showAttributionControl">
+            <n52-ol-layer *ngFor="let layer of baselayers" [layer]="layer"></n52-ol-layer>
+            <n52-ol-overview-map [collapsible]="true" [layers]="overviewMapLayers" position="bottomright"></n52-ol-overview-map>
+        </n52-ol-map>
+    </div>
+    <div style="width: 20%;padding: 5px;">
+        <wv-layer-tree style="height: 20%;" id="soilTempTree" [baselayers]="baselayers" [mapId]="mapId"></wv-layer-tree> 
+    </div>
+    <div   id="tempChart" style="height: 80%"></div>  
+</div>
