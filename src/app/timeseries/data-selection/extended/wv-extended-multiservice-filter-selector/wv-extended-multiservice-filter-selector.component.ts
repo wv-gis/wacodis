@@ -1,8 +1,7 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MultiServiceFilterSelectorComponent, FilteredParameter, MultiServiceFilterEndpoint, ListSelectorService } from '@helgoland/selector';
 import { DatasetApiInterface } from '@helgoland/core';
 import { TranslateService } from '@ngx-translate/core';
-import { SimpleChanges } from '@angular/core';
 import { SelectedProviderService } from 'src/app/services/selected-provider.service';
 
 
@@ -33,24 +32,13 @@ export class WvExtendedMultiserviceFilterSelectorComponent extends MultiServiceF
   }
 
   ngOnInit() {
-    if (this.selectedItems) {
-      // console.log(this.listSelService.cache);
-   
-      // this.listSelService.cache.forEach((entry) => {
-      //   entry.forEach((selection)=>{
-      //     this.selectedItems.push(selection.headerAddition)
-      //   });
-        
-      // });
-      // console.log(this.selectedItems);
-    }
+ 
   }
 
   onSelectItem(item: FilteredParameter) {
     super.onSelectItem(item);
     this.selectedItems = [];
     this.selectedItems.push(item.label);
-    // console.log(this.items);
   }
   ngOnChanges() {
     super.ngOnChanges();

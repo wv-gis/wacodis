@@ -1,7 +1,6 @@
 declare var require;
-import { Component, OnInit, SimpleChanges, OnDestroy, OnChanges } from '@angular/core';
-import { ListSelectorParameter } from '@helgoland/selector';
-import { Provider, DatasetService, DatasetOptions, IDataset, SettingsService, Settings, ParameterFilter, Station, Phenomenon, DatasetApiInterface, Timeseries } from '@helgoland/core';
+import { Component, OnInit,  OnDestroy } from '@angular/core';
+import { Provider, DatasetService, DatasetOptions,  SettingsService, Settings, Station, DatasetApiInterface, Timeseries } from '@helgoland/core';
 import { Router } from '@angular/router';
 import { LayerOptions, MapCache } from '@helgoland/map';
 import * as L from 'leaflet';
@@ -125,10 +124,6 @@ export class WvDataViewComponent implements OnInit, OnDestroy {
             });
           }
           else {
-            // this.selectedProviderList.push({
-            //   id: settings.getSettings().datasetApis[0].name,
-            //   url: settings.getSettings().datasetApis[0].url
-            // });
           }
         }
       });
@@ -246,7 +241,6 @@ export class WvDataViewComponent implements OnInit, OnDestroy {
       this.datasetService.removeDataset(ts.internalId);
     } else {
       this.datasetService.addDataset(ts.internalId)
-        // console.log('Selectedtimeseries: ' + JSON.stringify(ts));
         this.diagramEntry = !this.diagramEntry;
         this.moveToDiagram('/timeseries-diagram');
     }
