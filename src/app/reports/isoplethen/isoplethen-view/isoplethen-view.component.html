@@ -1,1 +1,83 @@
-<sensorwapp-toolbox-isoplethen  [timespan]="timeSpan" [samplingId]="samplingId"></sensorwapp-toolbox-isoplethen>
+<div>
+    <div id="selectionMenu" style="width: 500px; height: 250px; position: relative;">
+        <table>
+            <thead>
+                <tr>
+                    <th>Messstation:</th>
+                    <th>Parameter:</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <div class="btn-group">
+                            <button id="station" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{dam_label}}</button>
+                            <div class="dropdown-menu" aria-labelledby="station">
+                                <button class="dropdown-item" *ngFor="let stat of samplingStationLabels; let i = index" (click)="changeSamplingStation(stat, i)">{{stat}}</button>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="btn-group">
+                            <button id="parameter" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true"
+                                aria-expanded="false">{{selectMeasureParam}}</button>
+                            <div class="dropdown-menu" aria-labelledby="parameter">
+                                <button class="dropdown-item" *ngFor="let param of measureParams; let i = index" (click)="changeMeasureParam(param)">{{param}}</button>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+            <thead>
+                <tr>
+                    <th>Isolinien:</th>
+                    <th>Anzahl Isolinien:</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <form id="isoline">
+                            <input type="radio" name="iso" value="fixed" checked> fester Abstand
+                            <br>
+                            <input type="radio" name="iso" value="even"> gleichm. verteilt
+                            <br>
+                            <input type="radio" name="iso" value="random" disabled> willkürlich
+                        </form>
+                    </td>
+                    <td>
+                        <form>
+                            <input type="number" id="numIso" disabled>
+                        </form>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <form id="ice">
+                            <input type="checkbox" name="ice" value="cover" unchecked>
+                            <b> Eisbedeckung</b>
+                        </form>
+                    </td>
+                    <td>Abstand Isolinien:
+                        <form>
+                            <input type="number" id="distIso">
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        Startdatum:
+     <br>
+     <div class="btn-group">
+     <button id="from" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{defaultDate| date: 'mediumDate' }}</button>
+     <div class="dropdown-menu" aria-labelledby="from">
+       <button class="dropdown-item" *ngFor="let fromDate of selDate; let i = index" (click)="changeFromDate(fromDate)">{{fromDate| date: 'mediumDate' }}</button>
+     </div>
+   </div >
+        <button type="button" (click)="createIsoPlot()">Graphik erstellen</button>
+    </div>
+<div id="isoplethen" style="margin-top: 20px;" *ngIf="showPlot">
+    <sensorwapp-toolbox-isoplethen  style="margin: 5px;"  [timespan]="timeSpan" [samplingId]="samplingId" [distIso]="size_iso" [numIso]="num_iso"></sensorwapp-toolbox-isoplethen>
+</div>
+ 
+</div>

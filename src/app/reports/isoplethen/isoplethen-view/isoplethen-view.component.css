@@ -1,0 +1,11 @@
+
+.dropdown-menu{
+    overflow: auto;
+    max-height: 250px;
+}
+#selectionMenu{
+    margin-left: 20px
+}
+text{
+    text-anchor: start;
+}
