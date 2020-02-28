@@ -33,66 +33,11 @@ h5{
     text-align: center;
     cursor: pointer;
 }
-/* .selectionsMenu .center,
-.selectionsMenu .entry+.entry {
-    border-left: solid 1px #dfe4e6;
-} */
-
-/* .selectionsMenu .center {
-    margin-left: auto;
-    margin-right: auto;
-    width: 523px;
-    height: 48px;
-    border-right: solid 1px #dfe4e6;
-} */
 
 button{
     padding: 2px;
 }
 
-/* .mid{
-    font-size: 13px;
-    line-height: 18px;
-} */
-
-/* .selectionsMenu .entry span {
-    vertical-align: middle;
-    
-} */
 .selectionsMenu .entry:hover{
     background-color: #8b9cae;
 }
-/* .collapse.navbar-collapse.show {
-    z-index: 801;
-    position: absolute;
-    background-color: #718296;
-    border: none;
-} */
-/* #selectionBar {
-    padding: 0;
-} */
-
-/* .collapse.navbar-collapse.show .entry{
-    border: none;
-} */
-
-/* .modal-body.layerSelect{
-    color: black;
-}
-
-.layerRow{
-width: 50%;
-}
-
-.modal-body.viewSelect{
-    color: black;
-} */
-/* .dropdown-item.active{
-    background-color: darkblue;
-} */
-
-/* n52-geosearch-control {
-    margin-top: 10px;
-    margin-right: 5px;
-    margin-left: 5px;
-} */

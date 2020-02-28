@@ -1,12 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ComparisonViewComponent } from '../change-detection/view/comparison-view/comparison-view.component';
-import { MenuBarComponent } from './menu/menu-bar/menu-bar.component';
-import { ComparisonSelectionViewComponent } from './view/comparison-selection-view/comparison-selection-view.component';
 import { HelgolandCoreModule } from '@helgoland/core';
 import { HelgolandMapModule, HelgolandMapControlModule, HelgolandMapSelectorModule, HelgolandMapViewModule } from '@helgoland/map';
 import { ActivatedRoute } from '@angular/router';
-import { ComparisonSelectionService } from 'src/app/services/comparison-selection.service';
 
 @NgModule({
   imports: [
@@ -17,7 +14,7 @@ import { ComparisonSelectionService } from 'src/app/services/comparison-selectio
     HelgolandMapSelectorModule,
     HelgolandMapViewModule,
   ],
-  declarations: [ComparisonViewComponent, MenuBarComponent, ComparisonSelectionViewComponent],
-  providers: [ComparisonSelectionService]
+  declarations: [ComparisonViewComponent],
+  providers: []
 })
 export class WvChangeDetectionModule { }

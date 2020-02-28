@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import * as esri from 'esri-leaflet';
-import { LayerOptions, GeoSearchOptions, MapCache } from '@helgoland/map';
-import { ParameterFilter, Station, Phenomenon, SettingsService, Settings } from '@helgoland/core';
-import { settings } from 'src/environments/environment';
-import { settingsPromise } from 'src/environments/environment.prod';
+import { GeoSearchOptions } from '@helgoland/map';
+import {  Station, Phenomenon, SettingsService, Settings } from '@helgoland/core';
 import { RequestTokenService } from 'src/app/services/request-token.service';
 import BaseLayer from 'ol/layer/Base';
 import Layer from 'ol/layer/Layer';
@@ -12,10 +10,7 @@ import { OlMapService } from '@helgoland/open-layers';
 import { OSM, TileWMS, ImageWMS, ImageArcGISRest } from 'ol/source';
 import ImageLayer from 'ol/layer/Image';
 import Map from 'ol/Map.js';
-import { fromLonLat } from 'ol/proj';
-import View from 'ol/View';
-import { Attribution, Control, Zoom } from 'ol/control';
-import XYZ from 'ol/source/XYZ';
+import { ScaleLine } from 'ol/control';
 import { Tile } from 'ol/layer';
 
 
@@ -67,6 +62,7 @@ export class SelectionMapComponent implements OnInit {
   ngOnInit() {
     this.mapService.getMap(this.mapId).subscribe((map) => {
       map.getLayers().clear();
+      map.addControl(new ScaleLine({units: "metric"}));
       map.addLayer(new Tile({
         source: new OSM()
       }));
@@ -153,7 +149,6 @@ export class SelectionMapComponent implements OnInit {
     );
 
 
-
     // this.baselayers.push(
     //   new ImageLayer({
     //     visible: false,
@@ -166,18 +161,7 @@ export class SelectionMapComponent implements OnInit {
     //     })
     //   })
     // );
-   
-    //Riparian Zones Land Cover Land USe WMS
-    // https://image.discomap.eea.europa.eu/arcgis/services/RiparianZones/LCLU/MapServer/WMSServer
-    
-
   
-    //     this.overlayMaps.set('Feldbloecke', {
-    //       label: 'Feldbloecke', visible: false,
-    //       layer: esri.featureLayer({url:'http://www.gis.nrw.de/arcgis/rest/services/gd/erosion/MapServer/0/'})
-    //  //layer: fbf:DGL (Dauergrünland),fbf:FB_AKT (Feldblöcke), http://www.landwirtschaftskammer.de/gwms/?
-    //     });
-    // this.overlayMaps.set('ArcGIS Test',{ label: 'ArcGIS Test', visible: true, layer: esri.featureLayer({url: 'https://services-tlstest.arcgisonline.com/arcgis/rest/services/World_Topo_Map/MapServer',useCors: true})});
   }
 
   public stationSelected(station: Station) {

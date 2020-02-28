@@ -7,7 +7,6 @@ import { ReportsViewComponent } from 'src/app/reports/reports-view/reports-view.
 import { ProfileEntryGraphComponent } from 'src/app/profiles/profile-entry-graph/profile-entry-graph.component';
 import { WvDataViewComponent } from 'src/app/timeseries/data-selection/wv-data-view/wv-data-view.component';
 import { TimeseriesViewComponent } from 'src/app/timeseries/depiction/timeseries-view/timeseries-view.component';
-import { ComparisonSelectionViewComponent } from 'src/app/change-detection/view/comparison-selection-view/comparison-selection-view.component';
 import { WeatherForecastComponent } from 'src/app/weather/weather-forecast/weather-forecast.component';
 import { AppComponent } from 'src/app/app.component';
 import { SelectionViewComponent } from './reports/selection/selection-view/selection-view.component';
@@ -24,7 +23,6 @@ const routes: Routes = [
   { path: '', redirectTo: 'start', pathMatch: 'full' },
   { path: 'map-view', component: SelectionMapComponent, data: { title: 'WaCoDiS Web Client' } },
   { path: 'change-detection', component: ComparisonViewComponent, data: { title: 'WaCoDiS Web Client' } },
-  { path: 'comparison-selection', component: ComparisonSelectionViewComponent , data: { title: 'WaCoDiS Web Client' } },
   { path: 'selection-category', component: WvDataViewComponent, data: { title: 'WaCoDiS Web Client' } },
   { path: 'selection-phenomenon', component: WvDataViewComponent, data: { title: 'WaCoDiS Web Client' } },
   { path: 'selection-station', component: WvDataViewComponent, data: { title: 'WaCoDiS Web Client' } },
