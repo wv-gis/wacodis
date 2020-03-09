@@ -67,17 +67,18 @@
             </tbody>
         </table>
         Startdatum:
-     <br>
-     <div class="btn-group">
-     <button id="from" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{defaultDate| date: 'mediumDate' }}</button>
-     <div class="dropdown-menu" aria-labelledby="from">
-       <button class="dropdown-item" *ngFor="let fromDate of selDate; let i = index" (click)="changeFromDate(fromDate)">{{fromDate| date: 'mediumDate' }}</button>
-     </div>
-   </div >
+        <br>
+        <div class="btn-group">
+            <button id="from" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{defaultDate| date: 'mediumDate' }}</button>
+            <div class="dropdown-menu" aria-labelledby="from">
+                <button class="dropdown-item" *ngFor="let fromDate of selDate; let i = index" (click)="changeFromDate(fromDate)">{{fromDate| date: 'mediumDate' }}</button>
+            </div>
+        </div>
         <button type="button" (click)="createIsoPlot()">Graphik erstellen</button>
     </div>
-<div id="isoplethen" style="margin-top: 20px;" *ngIf="showPlot">
-    <sensorwapp-toolbox-isoplethen  style="margin: 5px;"  [timespan]="timeSpan" [samplingId]="samplingId" [distIso]="size_iso" [numIso]="num_iso"></sensorwapp-toolbox-isoplethen>
-</div>
- 
+    <div id="isoplethen" style="margin-top: 20px;" *ngIf="showPlot">
+        <sensorwapp-toolbox-isoplethen style="margin: 5px;" [timespan]="timeSpan" [samplingId]="samplingId" [distIso]="size_iso"
+            [numIso]="num_iso"></sensorwapp-toolbox-isoplethen>
+    </div>
+
 </div>

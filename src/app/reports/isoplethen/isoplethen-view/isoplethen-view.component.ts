@@ -18,7 +18,7 @@ export class IsoplethenViewComponent implements OnInit, AfterViewInit {
   private num_iso;
   private size_iso = 1; // Abstand zwischen Isolinien
   public selectMeasureParam: string = 'Sauerstoff [mg/l]';
-  public dam_label = 'Bever-Talsperre'
+  public dam_label = 'Bever-Talsperre';
   public samplingStationLabels = [];//['Dhünn-Talsperre', "Bever-Talsperre", "Brucher-Talsperre", "Lingese-Talsperre", "Panzer-Talsperre", "Wupper-Talsperre", "Ronsdorfer-Talsperre"]
   public measureParams = [];//['Sauerstoff [mg/l]', "Temperatur C°", "ph-Wert", "Chlorophyll [yg/l]", "Leitfähigkeit [yS/cm]", "Trübung [TEF]"];
   public selDate: Date[] = [];
