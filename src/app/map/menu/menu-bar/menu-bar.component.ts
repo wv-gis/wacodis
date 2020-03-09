@@ -1,7 +1,6 @@
 import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { settings } from 'src/environments/environment';
 import { DatasetApi, Service, ParameterFilter, PlatformTypes, ValueTypes, DatasetApiInterface, SettingsService, Settings } from '@helgoland/core';
-import { GeoSearchOptions } from '@helgoland/map';
 import { SelectedProviderService } from 'src/app/services/selected-provider.service';
 
 

@@ -1,9 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { MapCache } from '@helgoland/map';
 import BaseLayer from 'ol/layer/Base';
 import { OlMapService } from '@helgoland/open-layers';
 import View from 'ol/View';
-import { fromLonLat } from 'ol/proj';
 import { legendParam } from '../../legend/extended/extended-ol-layer-legend-url/extended-ol-layer-legend-url.component';
 import Plotly from 'plotly.js-dist';
 import { CsvDataService } from 'src/app/settings/csvData.service';

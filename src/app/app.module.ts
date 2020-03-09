@@ -34,7 +34,6 @@ import { WvChangeDetectionModule } from 'src/app/change-detection/change-detecti
 import { DatasetEmitServiceService } from 'src/app/services/dataset-emit-service.service';
 import { WeatherForecastComponent } from './weather/weather-forecast/weather-forecast.component';
 import { CsvDataService } from 'src/app/settings/csvData.service';
-import { ComparisonSelectionService } from 'src/app/services/comparison-selection.service';
 import { RequestTokenService } from 'src/app/services/request-token.service';
 import { HelgolandOpenLayersModule } from '@helgoland/open-layers';
 import { SelectedProviderService } from './services/selected-provider.service';
@@ -106,7 +105,7 @@ import { CopernicusProductsModule } from './copernicus/copernicus-products/coper
       useClass: DatasetEmitServiceService
     }, 
   
-    CsvDataService, ComparisonSelectionService, RequestTokenService,SelectedProviderService,
+    CsvDataService, RequestTokenService,SelectedProviderService,
     // {provide: APP_INITIALIZER,
     //   useFactory: HttpLoaderFactory,
     //   deps:[SelectedProviderService]  

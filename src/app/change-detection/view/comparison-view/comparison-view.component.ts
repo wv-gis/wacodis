@@ -9,10 +9,7 @@ import { error } from '@angular/compiler/src/util';
 import { Location } from '@angular/common';
 require('leaflet.sync');
 
-// const sentinelLayerOptions = ['Agriculture', 'Bathymetric', 'Color Infrared', 'Natural Color', 'Healthy Vegetation', 'None'];
-// const bandIdOptions = ['10,8,3', '4,3,1', '8,4,3', '4,3,2', '11,8,2', ''];
-// const rasterFunctionOpt = [{ "rasterFunction": "Agriculture with DRA" }, { "rasterFunction": "Bathymetric with DRA" }, { "rasterFunction": "Color Infrared with DRA" },
-// { "rasterFunction": "Natural Color" }, { "rasterFunction": "Agriculture" }, { "rasterFunction": "None" }]
+
 const sentinelLayerOptions = ['Natural Color', 'Color Infrared'];
 const externLayerOptions = ['IntraChange'];
 const bandIdOptions = ['4,3,2', '8,4,3'];
@@ -222,6 +219,7 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
     // this.mapCache.getMap('comparisonMap').addControl(this.range);
     this.mainMap.addControl(this.divider);
     this.mainMap.addControl(this.range);
+    L.control.scale().addTo(this.mainMap); 
     this.container.appendChild(this.divider.getContainer());
     this.container.appendChild(this.range.getContainer());
     this.range._container.value = 0.5;
@@ -494,7 +492,7 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
     newMap.style.cssFloat = 'right'
     document.getElementById('mainMap').appendChild(newMap);
     document.getElementById('main').style.width = '50%';
-
+    L.control.scale().addTo(this.mainMap); 
     // this.compMap = this.mapCache.getMap('comparisonMap');
     // this.compMap = this.mainMap;
     this.syncedMap = L.map(newMap).setView([51.161, 7.482], 13);

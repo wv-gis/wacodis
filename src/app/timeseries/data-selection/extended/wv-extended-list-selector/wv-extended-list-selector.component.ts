@@ -1,6 +1,6 @@
 import { Component, OnInit, SimpleChanges } from '@angular/core';
 import { ListSelectorComponent, FilteredParameter, ListSelectorService } from '@helgoland/selector';
-import { DatasetApiMapping, DatasetApiInterface, FilteredProvider } from '@helgoland/core';
+import { DatasetApiMapping, DatasetApiInterface } from '@helgoland/core';
 import { Router } from '@angular/router';
 import { SelectedProviderService } from 'src/app/services/selected-provider.service';
 

@@ -107,55 +107,11 @@ export class ProfileViewComponent implements OnInit, AfterViewInit {
   public autocontourPara = false;
 
   constructor(protected csvService: CsvDataService) {
-    this.responseText = csvService.getCsvText();
-    this.responseInterp = csvService.getInterpText();
+    this.responseInterp = csvService.getCsvText();
   }
 
   ngOnInit() {
-    let csvRecordsArray = this.responseText.split(/\r\n|\n/);
     let csvInterArray = this.responseInterp.split(/\r\n|\n/);
-
-    let header = ['LIMSAuftrag', 'Probe', 'Probenahme', 'coordX', 'coordY', 'entnahmeStelle', 'externeBez', 'Wert', 'uom'];
-    for (let j = 0; j < header.length; j++) {
-      this.headers.push(header[j]);
-    }
-    for (let k = 1; k < csvRecordsArray.length; k++) {
-      this.dataArr = csvRecordsArray[k].split(';'); // Zeilen
-      let col = [];
-      for (let i = 0; i < this.dataArr.length; i++) {
-        col.push(this.dataArr[i]); //Spalten
-
-        /**
-         * 0 = LIMS Auftrag
-         * 1 = Probe
-         * 2 = Probenahmedatum
-         * 3 = Probenahmezeit
-         * 4 = Gauss Hoch
-         * 5 = Gauss Rechts
-         * 6 = Entnahmestelle
-         * 7 = Externe Bezeichnung
-         * 8 = Anzeigewert
-         * 9 = Einheit
-         */
-      }
-      this.currentPage = 1;
-      this.entries.push(col);
-
-    }
-    this.entry = this.entries.slice(0, 10);
-    for (let p = 0; p < this.entry.length; p++) {
-      this.bwlData.push({
-        LIMSAuftrag: this.entry[p][0],
-        Probe: this.entry[p][1],
-        Probenahme: this.entry[p][2] + " " + this.entry[p][3],
-        coordY: this.entry[p][4],
-        coordX: this.entry[p][5],
-        entnahmeStelle: this.entry[p][6],
-        externeBez: this.entry[p][7],
-        Wert: this.entry[p][8],
-        uom: this.entry[p][9],
-      });
-    }
 
     for (let k = 1; k < csvInterArray.length; k++) {
       this.InterArr = csvInterArray[k].split(';'); // Zeilen
@@ -239,28 +195,11 @@ export class ProfileViewComponent implements OnInit, AfterViewInit {
     this.dam_label = this.samplingStationLabels[index];
   }
 
-  // public calculateWidth(): number {
-  //   return this.svg.node().width.baseVal.value - margin.left - margin.right;
-  // }
-
-  // public calculateHeight(): number {
-  //   return (this.d3Elem.nativeElement as HTMLElement).clientHeight - margin.top - margin.bottom;
-  // }
   protected onResize(): void {
     // this.createDepthView();
   }
   public createDepthView() {
 
-    // let reWidth = this.calculateWidth();
-    // let reHeight = this.calculateHeight();
-    // if (reWidth < 0) {
-    //   reWidth = width;
-    // }
-    // this.chart.selectAll('*').remove();
-    // this.pchart.selectAll('*').remove();
-    // this.svg.selectAll('.axis').remove();
-    // this.profileSvg.selectAll('.axis').remove();
-    // this.profileSvg.selectAll('.legend').remove();
     let data: InterDataset[] = [{
       depth: 10,
       value: 8.1
@@ -337,156 +276,7 @@ export class ProfileViewComponent implements OnInit, AfterViewInit {
     },
     ];
 
-    // let x = d3.scaleLinear().rangeRound([reWidth, 0]);
-    // let y = d3.scaleLinear().rangeRound([0, reHeight]);
-
-    // let line = d3.line<InterDataset>()
-    //   .x(function (d) { return x(d.value); })
-    //   .y(function (d) { return y(d.depth); });
-
-
-    // let secLine = d3.line<InterDataset>()
-    //   .x(function (d) { return x(d.value); })
-    //   .y(function (d) { return y(d.depth); });
-
-    // let div = d3.select("#d3Graph").append("div")
-    //   .attr("class", "tooltip")
-    //   .style("opacity", 0);
-
-    // y.domain(d3.extent(data, function (d) { return d.depth }));
-
-    // let chart = this.svg.append('g').attr('transform', 'translate(' + margin.left + "," + margin.top + ")");
-
-    // let d3Max = d3.max(data, function (d) { return d.value }) as number;
-    // let d3MaxSec = d3.max(secData, function (d) { return d.value }) as number;
-
-    // let max = Math.max(d3Max, d3MaxSec);
-
-    // x.domain([max, 0]);
-    // this.svg.append("g")
-    //   .attr("class", "axis")
-    //   .attr('font-size', '10px')
-    //   .attr('stroke-width', 0.25)
-    //   .attr("transform", "translate(" + margin.left + ',' + margin.top + ")")
-    //   .call(d3.axisTop(x)).attr('font-size', '10px')
-
-    // gridlines in y axis function
-    // function make_y_gridlines() {
-    //   return d3.axisLeft(y)
-    //     .ticks(4)
-    // }
-    // add the Y gridlines
-    // this.chart.append("g")
-    //   .attr("class", "grid")
-    //   .attr('opacity', 0.5)
-    //   .attr('stroke-width', 0.25)
-    //   .call(make_y_gridlines()
-    //     .tickSize(-reWidth)
-    //     .tickFormat()
-    //   );
-
-    // gridlines in y axis function
-    // function make_x_gridlines() {
-    //   return d3.axisLeft(x)
-    //     .ticks(1)
-    // }
-    // add the Y gridlines
-    // this.chart.append("g")
-    //   .attr("class", "xgrid")
-    //   .attr('opacity', 0.5)
-    //   .attr('stroke-width', 0.25)
-    //   .attr("transform", "translate(" + reWidth + ',' + 0 + ")")
-    //   .call(make_x_gridlines()
-    //     .tickSize(reHeight)
-    //     .tickFormat()
-    //   );
-
-    // this.chart.append('path')
-    //   .attr("fill", "none")
-    //   .attr("stroke", "red")
-    //   .attr("stroke-linejoin", "round")
-    //   .attr("stroke-linecap", "round")
-    //   .attr("stroke-width", 0.5)
-    //   .attr('d', line(data));
-
-    // this.chart.append('path')
-    //   .datum(secData)
-    //   .attr("fill", "none")
-    //   .attr("stroke", "blue")
-    //   .attr("stroke-linejoin", "round")
-    //   .attr("stroke-linecap", "round")
-    //   .attr("stroke-width", 0.5)
-    //   .attr('d', secLine);
-
-    // this.chart.append("g")
-    //   .call(d3.axisLeft(y)).attr('font-size', '10px').attr('stroke-width', 0.25)
-    //   .append("text")
-    //   .attr("fill", "#000")
-    //   .attr('font-size', '10px')
-    //   .attr("transform", "rotate(-90)")
-    //   .attr("y", 0 - margin.left)
-    //   .attr("x", 0 - (reHeight / 2))
-    //   .attr("dy", "1.71em")
-    //   .attr("text-anchor", "middle")
-    //   .text("Tiefe [m]");
-
-    // let dots = this.chart.selectAll("dot")
-    //   .data(secData)
-    //   .enter().append("circle")
-    //   .attr("opacity", 0.5)
-    //   .attr("stroke", 'blue')
-    //   .attr("cursor", "pointer")
-    //   .attr("fill", "blue")
-    //   .attr("id", 'dots')
-    //   .attr("r", 1.0)
-    //   .attr("cx", function (d) { return x(d.value); })
-    //   .attr("cy", function (d) { return y(d.depth); })
-    //   .on("mouseover", function (d) {
-    //     div.transition()
-    //       .duration(200)
-    //       .style("opacity", .9);
-    //     div.html('Chlorophyll: ' + d.value + ' [µg/l]')
-    //       .style("left", (d3.event.pageX) + "px")
-    //       .style("top", (d3.event.pageY - 28) + "px")
-    //       .style("border", "0px")
-    //       .style("border-radius", "8px")
-    //       .style("background", "lightsteelblue")
-    //       .style("text-align", "center");
-    //   })
-    //   .on("mouseout", function (d) {
-    //     div.transition()
-    //       .duration(500)
-    //       .style("opacity", 0);
-    //   });
-
-    // let secdots = this.chart.selectAll("dot")
-    //   .data(data)
-    //   .enter().append("circle")
-    //   .attr("opacity", 0.5)
-    //   .attr("stroke", 'red')
-    //   .attr("cursor", "pointer")
-    //   .attr("fill", "red")
-    //   .attr("id", 'dots')
-    //   .attr("r", 1.0)
-    //   .attr("cx", function (d) { return x(d.value); })
-    //   .attr("cy", function (d) { return y(d.depth); })
-    //   .on("mouseover", function (d) {
-    //     div.transition()
-    //       .duration(200)
-    //       .style("opacity", .9);
-    //     div.html('Temperatur: ' + d.value + ' [C°]')
-    //       .style("left", (d3.event.pageX) + "px")
-    //       .style("top", (d3.event.pageY - 28) + "px")
-    //       .style("border", "0px")
-    //       .style("border-radius", "8px")
-    //       .style("background", "lightsteelblue")
-    //       .style("text-align", "center");
-    //   })
-    //   .on("mouseout", function (d) {
-    //     div.transition()
-    //       .duration(500)
-    //       .style("opacity", 0);
-    //   });
+  
   }
 
   // set Definitions for Isoplethen diagram and create Graph
@@ -508,73 +298,6 @@ export class ProfileViewComponent implements OnInit, AfterViewInit {
       Plotly.purge("myDiv");
     }
 
-    // .classed("svg-content-responsive", true);
-    // .attr('width', svgWidth).attr('height', svgHeight);
-    // .attr("preserveAspectRatio", "xMinYMin meet")
-    // .attr("viewBox", '0 0 ' + svgWidth + ' ' + svgHeight)
-    // let width = this.calculateWidth();
-    // let height = this.calculateHeight();
-
-
-
-    // let xr = d3.scaleLinear().rangeRound([0, width]);
-    // let yr = d3.scaleLinear().rangeRound([height,0]);
-    // // xr.domain([0, secData.length]);
-    // yr.domain([0, d3.max(secData, function (d) { return d.value; })]);
-    // chart.append("g")
-    //   .attr("transform", "translate(" + width + ',' +  "0 )")
-    //   .call(d3.axisRight(yr))
-    //   .append("text")
-    //   .attr("fill", "#000")
-    //   .attr("transform", "rotate(-360)")
-    //   .attr("y", 6)
-    //   .attr("dy", "0.71em")
-    //   .attr("text-anchor", "end")
-    //   .text("rain (mm)");
-    // chart.selectAll("rect")
-    //   .data(secData)
-    //   .enter()
-    //   .append("svg:rect")
-    //   .style("fill", "steelblue")
-    //   .attr("x", function (d, i) { return x(d.date); })
-    //   .attr("width", 2)
-    //   .attr("y", function (d) { return  yr(d.value); })
-    //   .attr("height", function (d) { return height-yr(d.value); });
-    // console.log(new Date(2019,0,1));
-
-
-    // let profile = d3.select("#profileGraph").append("div")
-    //   .classed("svg-container", true)
-    //   .append("svg")
-    //   .attr("preserveAspectRatio", "xMinYMin meet")
-    //   .attr("viewBox", '0 0 ' + svgWidth + ' ' + svgHeight)
-    //   .attr('width', svgWidth)
-    //   .attr('height', svgHeight)
-    //   .classed("svg-content-responsive", true);
-    // .attr('width', svgWidth).attr('height', svgHeight);
-
-
-
-    // let legend = this.profileSvg.selectAll(".legend")
-    //   .data([0].concat(colorScale.quantiles()), function (d) { return d.value; }).enter().append("g")
-    //   .attr("class", "legend");
-
-    // legend.append("rect")
-    //   .attr("x", function (d, i) { return gridSize * i + margin.left; })
-    //   .attr("y", height + margin.top)
-    //   .attr("width", gridSize)
-    //   .attr("height", gridSize / 3)
-    //   .style("fill", function (d, i) { return colors[i]; });
-
-    // legend.append("text")
-    //   .attr("class", "mono")
-    //   .text(function (d) { return "≥" + Math.round(d); })
-    //   .attr("x", function (d, i) { return gridSize * i + margin.left; })
-    //   .attr("y", height + margin.top);
-
-    // legend.exit().remove();
-
-
 
     // split dataset in x, y and z values
     let x_dates = [], y_depths = [], z_value = [];
@@ -583,7 +306,6 @@ export class ProfileViewComponent implements OnInit, AfterViewInit {
       x_dates.push(this.dataset[i].date);
       y_depths.push(this.dataset[i].depth);
       z_value.push(this.dataset[i].value);
-      // p_evaluate.push([profData[i].date.getTime(), profData[i].depth])
     }
 
 

@@ -11,6 +11,7 @@ import ImageLayer from 'ol/layer/Image';
 import Plotly from 'plotly.js-dist';
 import { CsvDataService } from 'src/app/settings/csvData.service';
 import { StatisticData } from 'src/app/map/menu/layer-tree/layer-tree.component';
+import { ScaleLine } from 'ol/control';
 
 
 
@@ -195,6 +196,7 @@ export class LandCoverComponent implements OnInit {
 
     this.mapService.getMap(this.mapId).subscribe((map) => {
       map.getLayers().clear();
+      map.addControl(new ScaleLine({units: "metric"}));
       map.addLayer(new Tile({
         source: new OSM()
       }));

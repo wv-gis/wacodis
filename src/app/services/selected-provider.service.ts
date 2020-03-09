@@ -22,8 +22,6 @@ export class SelectedProviderService {
  }
 
  setProvider(provider: Provider){
-
-  //  this.observableService.next(provider);
   this.selectedService.next(provider);
  }
 

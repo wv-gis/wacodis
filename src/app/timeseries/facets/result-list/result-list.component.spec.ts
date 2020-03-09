@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ResultListComponent } from './result-list.component';
+import { WvResultListComponent } from './result-list.component';
 
 describe('ResultListComponent', () => {
-  let component: ResultListComponent;
-  let fixture: ComponentFixture<ResultListComponent>;
+  let component: WvResultListComponent;
+  let fixture: ComponentFixture<WvResultListComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ResultListComponent ]
+      declarations: [ WvResultListComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ResultListComponent);
+    fixture = TestBed.createComponent(WvResultListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

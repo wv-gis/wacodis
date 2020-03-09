@@ -1,7 +1,6 @@
-import { Component, OnInit, ViewChild, ElementRef, HostListener, AfterViewInit, EventEmitter, OnDestroy, Input } from '@angular/core';
-import { PlatformTypes, Timespan, DatasetApiInterface, ColorService, DataParameterFilter, SettingsService, TimeseriesData, Data, IDataEntry, SplittedDataDatasetApiInterface, FirstLastValue } from '@helgoland/core';
-import { ExtendedSettings, ReportReferenceValues } from 'src/app/settings/settings.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, OnInit, ViewChild, ElementRef,  OnDestroy, Input } from '@angular/core';
+import {  Timespan, DatasetApiInterface,   SettingsService, TimeseriesData, FirstLastValue } from '@helgoland/core';
+import { ExtendedSettings } from 'src/app/settings/settings.service';
 import { locale } from '../../../environments/environment';
 import Plotly from 'plotly.js-dist';
 

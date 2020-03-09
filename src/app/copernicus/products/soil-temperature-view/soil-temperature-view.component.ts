@@ -10,6 +10,7 @@ import { OlMapService } from '@helgoland/open-layers';
 import ImageLayer from 'ol/layer/Image';
 import { CsvDataService } from 'src/app/settings/csvData.service';
 import Plotly from 'plotly.js-dist';
+import { ScaleLine } from 'ol/control';
 const waterTempService = 'https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/EO_WACODIS_DAT_WATER_SURFACE_TEMPERATURE_Service/ImageServer';
 
 export interface StatisticTempData{
@@ -67,6 +68,7 @@ export class SoilTemperatureViewComponent implements OnInit {
   ngOnInit() {
     this.mapService.getMap(this.mapId).subscribe((map) => {
       map.getLayers().clear();
+      map.addControl(new ScaleLine({units: "metric"}));
       map.addLayer(new Tile({
         source: new OSM()
       }));
@@ -111,32 +113,8 @@ export class SoilTemperatureViewComponent implements OnInit {
         temp: this.entries[p][2],
       });
     }
-    // for (let k = 0; k < this.stats.length; k++) {
-    //     this.values.push(this.stats[k].temp);
-    //     this.labels.push(this.stats[k].ts);
-    //     this.dates.push(this.stats[k].date);           
-    // }
 
     let trace =[]
-    
-    //   categoryVal.forEach((val)=>{
-    //     this.stats.forEach((a,i,arr)=>{
-    //       if(val === arr[i].ts){
-    //         this.values.push( a.date);
-    //         this.labels.push(a.temp);
-    //       }
-    //       trace.push({
-    //         x: this.values,
-    //         y:this.labels,
-    //       type: 'scatter'})
-    //     });
-    // });
-
-    // var data = [{
-    //   type: "scatter",
-    //   x: this.values,
-    //   y: this.dates,
-    // }];
 
 
 

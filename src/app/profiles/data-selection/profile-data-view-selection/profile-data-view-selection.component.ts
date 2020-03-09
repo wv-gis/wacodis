@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DatasetService, TimedDatasetOptions, SettingsService, Settings, Provider, IDataset, Platform } from '@helgoland/core';
+import {  TimedDatasetOptions, SettingsService, Settings, Provider, Platform } from '@helgoland/core';
 import { ProfilesEntryService } from 'src/app/services/profiles-entry.service';
 import { ListSelectorParameter } from '@helgoland/selector';
 import { Router } from '@angular/router';

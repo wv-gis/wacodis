@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ParameterFacetComponent } from './parameter-facet.component';
+import { WvParameterFacetComponent } from './parameter-facet.component';
 
 describe('ParameterFacetComponent', () => {
-  let component: ParameterFacetComponent;
-  let fixture: ComponentFixture<ParameterFacetComponent>;
+  let component: WvParameterFacetComponent;
+  let fixture: ComponentFixture<WvParameterFacetComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ParameterFacetComponent ]
+      declarations: [ WvParameterFacetComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ParameterFacetComponent);
+    fixture = TestBed.createComponent(WvParameterFacetComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -56,7 +56,6 @@ export class TimeseriesViewComponent {
                 
                 dataEmitService.datasetOptions.forEach((options) => {
                     this.colors.push(options.color);
-                    // console.log('Color OPtion: ' + options.color);
                     this.datasetIdsMultiple.forEach((entry, i) => {
                         const option = new DatasetOptions(entry, this.colors[i]);
                         option.generalize = true;
@@ -104,7 +103,6 @@ export class TimeseriesViewComponent {
         else {
             this.isActive = !this.isActive;
             this.refreshData();
-            // this.isActive = true;
             return true;
         }
     }
@@ -131,18 +129,7 @@ export class TimeseriesViewComponent {
         }
     }
     public updateOptions(options: any[]) {
-        // public updateOptions(options: Map<string, DatasetOptions>) {
-        // this.dataEmitService.datasetOptions.forEach((opt)=>{
-        //     this.datasetIdsMultiple.forEach((entry)=>{
-        //         this.datasetOptionsMultiple.set(entry, opt);
-        //     })
-        // })
-        // this.datasetIdsMultiple.forEach((ent)=>{
-        //     this.datasetOptionsMultiple.set(ent, options.get(ent));
-        //     console.log('Received Colors: ' + options.get(ent).color);
-        // });
         this.datasetOptionsMultiple.set(options[1].toString(), options[0]);
-        // console.log(options[1].toString());
         this.refreshData(this.datasetIdsMultiple.indexOf(options[1]));
     }
 }
