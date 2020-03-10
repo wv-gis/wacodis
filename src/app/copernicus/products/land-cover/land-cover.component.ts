@@ -67,45 +67,10 @@ export class LandCoverComponent implements OnInit {
 
   ngOnInit() {
 
-    // let csvInterArray = this.responseInterp.split(/\r\n|\n/);
-    
-    //     let header = ['Datum', 'Klasse', 'Wert'];
-    //     for (let j = 0; j < header.length; j++) {
-    //       this.headers.push(header[j]);
-    //     }
-    //     for (let k = 1; k < csvInterArray.length; k++) {
-    //       this.dataArr = csvInterArray[k].split(';'); // Zeilen
-    //       let col = [];
-    //       for (let i = 0; i < this.dataArr.length; i++) {
-    //         col.push(this.dataArr[i]); //Spalten
-    //       }
-    //       this.entries.push(col);
-    //     }
-    //     for (let p = 0; p < this.entries.length; p++) {
-    //       this.stats.push({
-    //         date: new Date(this.entries[p][0].split('.')[2], this.entries[p][0].split('.')[1] - 1, this.entries[p][0].split('.')[0]),
-    //         class: this.entries[p][1],
-    //         value: this.entries[p][2],
-    //       });
-    //     }
-    
-        // for (let k = 0; k < this.stats.length; k++) {
-        //   if (this.selectedTime.toDateString() == this.stats[k].date.toDateString()) {
-        //     this.values.push(this.stats[k].value);
-        //     this.labels.push(categoryVal[this.stats[k].class]);
-        //     this.colorRgb.push(colors[this.stats[k].class]);
-            
-        //   }
-        // }
-        // var data = [{
-        //   type: "pie",
-        //   values: this.values,
-        //   labels: this.labels,
-        //   textinfo: "percent",
-        //   marker: {
-        //     colors: this.colorRgb
-        //   },
-        // }];
+
+  
+
+
     
         // var data=[
         //   {x: [this.stats[0].date,this.stats[15].date,this.stats[29].date,this.stats[43].date,this.stats[57].date,
@@ -182,14 +147,7 @@ export class LandCoverComponent implements OnInit {
         // ]
     
     
-        // var layout = {
-     
-   
-        //   showlegend: true,
-          // title: 'Landbedeckung ' + this.selectedTime.toDateString(),
-        // }
-    
-        // Plotly.newPlot('pieChart', data, layout,{responsive: true})
+      
       
 
 

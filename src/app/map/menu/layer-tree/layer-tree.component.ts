@@ -5,6 +5,7 @@ import View from 'ol/View';
 import { legendParam } from '../../legend/extended/extended-ol-layer-legend-url/extended-ol-layer-legend-url.component';
 import Plotly from 'plotly.js-dist';
 import { CsvDataService } from 'src/app/settings/csvData.service';
+import * as esri from 'esri-leaflet';
 
 export class StatisticData {
   date: Date;
@@ -12,11 +13,11 @@ export class StatisticData {
   value: number;
 }
 
-const categoryVal = ["no Data", "Acker - Mais", "Acker - sonstige Ackerfruch", "Gewaesser",
-  "Gewaesser stehend", "Siedlung - Gewerbe", "Gruenland - unbestimmt", "Gruenland - Gestruepp",
+const categoryVal = ["no Data", "Acker - Mais", "Acker - sonstige Ackerfruch", "Gewaesser","unbekanntGF",
+   "Siedlung - Gewerbe", "Gruenland - unbestimmt", "Gruenland - Gestruepp",
   "Offenboden", "Siedlung geschlossen", "Siedlung offen", "Verkehrsflaeche", "Laubbaeume",
-  "Mischwald", "Nadelbaeume", "Acker - Raps", "Acker - unbewachsen", "Acker - Zwischenfrucht",
-  "unbekannt", "unbekannt", "Acker-sonstiges-Offenboden", "Acker-Mais-Offenboden",
+  "unbekanntM", "Nadelbaeume", "Acker - Raps", "Acker - unbewachsen", "Acker - Zwischenfrucht",
+  "unbekanntA", "unbekanntAs", "Acker-sonstiges-Offenboden", "Acker-Mais-Offenboden",
   "Acker-Mais-Zwischenfrucht", "Acker-Raps-Offenboden", "Acker-Raps-Zwischenfrucht"];
   const colors = ["rgb(0,0,0)","rgb(255,215,0)","rgb(184,134,11)","rgb(65,105,225)","rgb(30,144,255)","rgb(190,190,190)","rgb(192,255,62)",
   "rgb(189,183,107)","rgb(139,69,19)","rgb(205,92,92)","rgb(250,128,144)","rgb(186,85,211)","rgb(60,179,113)","rgb(0,0,0)","rgb(49,139,87)",
@@ -47,6 +48,7 @@ export class LayerTreeComponent implements OnInit {
   public labels: string[] = [];
   public colorRgb: string[] = [];
   public selectedTime: Date = new Date();
+  public selectedIndex: number = 1;
 
   constructor(private mapService: OlMapService, protected csvService: CsvDataService) {    
     this.responseInterp = csvService.getInterpText(); 
@@ -93,46 +95,40 @@ export class LayerTreeComponent implements OnInit {
 
 
   public createPieChart() {
-    let csvInterArray = this.responseInterp.split(/\r\n|\n/);
 
-    //Datum;Talsperre;AvgTemp
-    let header = ['Datum', 'Klasse', 'Wert'];
-    for (let j = 0; j < header.length; j++) {
-      this.headers.push(header[j]);
-    }
-    for (let k = 1; k < csvInterArray.length; k++) {
-      this.dataArr = csvInterArray[k].split(';'); // Zeilen
-      let col = [];
-      for (let i = 0; i < this.dataArr.length; i++) {
-        col.push(this.dataArr[i]); //Spalten
-      }
-      this.entries.push(col);
-    }
-    for (let p = 0; p < this.entries.length; p++) {
-      this.stats.push({
-        date: new Date(this.entries[p][0].split('.')[2], this.entries[p][0].split('.')[1] - 1, this.entries[p][0].split('.')[0]),
-        class: this.entries[p][1],
-        value: this.entries[p][2],
-      });
-    }
+    esri.imageService({ url: 'https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/EO_WACODIS_DAT_INTRA_LAND_COVER_CLASSIFICATION_Service/ImageServer' })
+    .get((this.selectedIndex) +"/info/histograms",{},(error,response)=>{
+      if (error) {
+        console.log(error);
+      } else {
+        for (let p = 1; p < response.histograms[0].counts.length; p++) {
+          this.values.push(response.histograms[0].counts[p]);
+          this.labels.push(categoryVal[p]);
+          this.colorRgb.push(colors[p]);
+        }
 
-    for (let k = 0; k < this.stats.length; k++) {
-      if (this.selectedTime.toDateString() == this.stats[k].date.toDateString()) {
-        this.values.push(this.stats[k].value);
-        this.labels.push(categoryVal[this.stats[k].class]);
-        this.colorRgb.push(colors[this.stats[k].class]);
-        
+        var data = [{
+          type: "pie",
+          values: this.values,
+          labels: this.labels,
+          textinfo: "percent",
+          marker: {
+            colors: this.colorRgb
+          },
+        }];
+
+        var layout = {
+          width: 600,
+          height: 400,
+          margin: { "t": 0, "b": 0, "l": 0, "r": 0 },
+          showlegend: true,
+          // title: 'Landbedeckung ' + this.selectedTime.toDateString(),
+        }
+    
+        Plotly.newPlot('pieChart', data, layout,{responsive: true})
       }
-    }
-    var data = [{
-      type: "pie",
-      values: this.values,
-      labels: this.labels,
-      textinfo: "percent",
-      marker: {
-        colors: this.colorRgb
-      },
-    }];
+    });
+  
 
     // var data=[
     //   {x: [this.stats[0].date,this.stats[15].date,this.stats[29].date,this.stats[43].date,this.stats[57].date,
@@ -210,20 +206,11 @@ export class LayerTreeComponent implements OnInit {
 
     // ]
 
-
-    var layout = {
-      width: 600,
-      height: 400,
-      margin: { "t": 0, "b": 0, "l": 0, "r": 0 },
-      showlegend: true,
-      // title: 'Landbedeckung ' + this.selectedTime.toDateString(),
-    }
-
-    Plotly.newPlot('pieChart', data, layout,{responsive: true})
   }
 
-  public getSelectedTime(dat: Date) {
-    this.selectedTime = dat;
+  public getSelectedTime(dat: number) {
+    // this.selectedTime = dat;
+    this.selectedIndex = dat+1;
     if(this.drawChart){
       this.createPieChart();
     }

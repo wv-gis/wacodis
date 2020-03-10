@@ -13,7 +13,9 @@ export class ExtendedOlLayerTimeSelectorComponent extends OlLayerTimeSelectorCom
 
   @Input() layer: Layer;
   public timeAttribute = true;
-  @Output() selTime:  EventEmitter<Date> = new EventEmitter<Date>();
+  // @Output() selTime:  EventEmitter<Date> = new EventEmitter<Date>();
+  @Output() selIndexTime:  EventEmitter<number> = new EventEmitter<number>();
+
   constructor(private wmsCap: WmsCapabilitiesService) {
     super(wmsCap);
   }
@@ -47,12 +49,13 @@ export class ExtendedOlLayerTimeSelectorComponent extends OlLayerTimeSelectorCom
           let times: Date[] = [];
           feature["features"].forEach((element, i, arr) => {
             times.push(new Date(element["attributes"].startTime));
-            if (i == 0)
-              this.currentTime = new Date(arr[arr.length-1]["attributes"].startTime);
+            
           });
           this.timeDimensions = times;
+          this.currentTime = this.timeDimensions[this.timeDimensions.length-1];
         }
-        this.selTime.emit(this.currentTime);
+        // this.selTime.emit(this.currentTime);
+        this.selIndexTime.emit(this.timeDimensions.indexOf(this.currentTime));
         this.loading = false
       });
     }
@@ -71,7 +74,8 @@ export class ExtendedOlLayerTimeSelectorComponent extends OlLayerTimeSelectorCom
     else if (source instanceof ImageArcGISRest) {
       source.updateParams({time: (new Date(time.getFullYear(), time.getMonth(),time.getDate()+2).getTime()-2628000000)+
         ","+ new Date(time.getFullYear(), time.getMonth(),time.getDate()+2).getTime() });
-        this.selTime.emit(this.currentTime);
+        // this.selTime.emit(this.currentTime);
+        this.selIndexTime.emit(this.timeDimensions.indexOf(time));
     }
   }
 
