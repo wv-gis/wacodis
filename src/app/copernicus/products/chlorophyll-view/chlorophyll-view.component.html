@@ -1,1 +1,69 @@
-<p>chlorophyll-view works!</p>
+<div>
+    <div id="selectionMenu" style="width: 500px; height: 30%; position: relative;">
+        <!-- <table>
+            <thead>
+                <tr>
+                    <th>Messstation:</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <div class="btn-group">
+                            <button id="station" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{dam_label}}</button>
+                            <div class="dropdown-menu" aria-labelledby="station">
+                                <button class="dropdown-item" *ngFor="let stat of samplingStationLabels; let i = index" (click)="changeSamplingStation(stat, i)">{{stat}}</button>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table> -->
+        <div class="row">
+            <div class="col-xl-6 col-md-6 mb-4">
+                <div class="card border-left-primary shadow h-100 py-2">
+                    <div class="card-header">
+                        Messstation:
+                    </div>
+                    <div class="card-body">
+                        <div class="btn-group">
+                            <button id="station" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{dam_label}}</button>
+                            <div class="dropdown-menu" aria-labelledby="station">
+                                <button class="dropdown-item" *ngFor="let stat of samplingStationLabels; let i = index" (click)="changeSamplingStation(stat, i)">{{stat}}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6 col-md-6 mb-4">
+                <div class="card border-left-primary shadow h-100 py-2">
+                    <div class="card-header">
+                        Nächster Überflug:
+                    </div>
+                    <div class="card-body">
+                        12.03.2020
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" style="margin-right: 0;">
+        <div class="col-xl-9 col-lg-9">
+            <sensorwapp-toolbox-isoplethen [timespan]="timeSpan" [samplingId]="samplingId"></sensorwapp-toolbox-isoplethen>
+        </div>
+        <div class="col-xl-3 col-lg-3">
+            <div class="card border-left-primary shadow h-100 py-2" style="overflow-y:scroll;overflow-x: hidden;max-height: 660px;">
+                <span style="text-align: center;background-color: lightgrey;">02.07.2018</span>
+                <img src="assets/images/Chloro_20180702.PNG" width="350" height="350">
+                <span style="text-align: center;background-color: lightgrey;">07.07.2018</span>
+                <img src="assets/images/Chloro_20180707.PNG" width="350" height="350">
+                <span style="text-align: center;background-color: lightgrey;">17.07.2018</span>
+                <img src="assets/images/Chloro_20180717.PNG" width="350" height="350">
+                <span style="text-align: center;background-color: lightgrey;">24.07.2018</span>
+                <img src="assets/images/Chloro_20180724.PNG" width="350" height="350">
+                <span style="text-align: center;background-color: lightgrey;">27.07.2018</span>
+                <img src="assets/images/Chloro_20180727.PNG" width="350" height="350">
+            </div>
+        </div>
+    </div>
+</div>

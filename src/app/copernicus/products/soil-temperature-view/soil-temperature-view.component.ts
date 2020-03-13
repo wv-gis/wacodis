@@ -12,6 +12,7 @@ import { CsvDataService } from 'src/app/settings/csvData.service';
 import Plotly from 'plotly.js-dist';
 import { ScaleLine } from 'ol/control';
 const waterTempService = 'https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/EO_WACODIS_DAT_WATER_SURFACE_TEMPERATURE_Service/ImageServer';
+const WvG_URL = 'http://fluggs.wupperverband.de/secman_wss_v2/service/WMS_WV_Oberflaechengewaesser_EZG/guest?';
 
 export interface StatisticTempData{
   date: Date;
@@ -72,6 +73,16 @@ export class SoilTemperatureViewComponent implements OnInit {
       map.addLayer(new Tile({
         source: new OSM()
       }));
+      map.addLayer(new ImageLayer({
+        visible: true,
+        opacity: 0.5,
+        source: new ImageWMS({
+          url: WvG_URL,
+          params: {
+            'LAYERS': '0',
+          },
+        })
+      }));
     });
 
     this.baselayers.push(
@@ -86,13 +97,11 @@ export class SoilTemperatureViewComponent implements OnInit {
         })
       })
     );
-
     // this.createPieChart();
   }
 
   public createPieChart() {
     let csvInterArray = this.responseInterp.split(/\r\n|\n/);
-
     //Datum;Talsperre;AvgTemp
     let header = ['Datum', 'Talsperre', 'AvgTemp'];
     for (let j = 3; j < header.length; j++) {
@@ -116,8 +125,6 @@ export class SoilTemperatureViewComponent implements OnInit {
 
     let trace =[]
 
-
-
     var layout = {
       width: 600,
       height: 400,
@@ -125,8 +132,6 @@ export class SoilTemperatureViewComponent implements OnInit {
       showlegend: true,
       // title: 'Landbedeckung ' + this.selectedTime.toDateString(),
     }
-
     Plotly.newPlot('tempChart', trace, layout,{responsive: true})
   }
-
 }

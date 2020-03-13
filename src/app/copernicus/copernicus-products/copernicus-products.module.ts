@@ -9,6 +9,7 @@ import { HelgolandCoreModule } from '@helgoland/core';
 import { HelgolandMapModule, HelgolandMapControlModule, HelgolandMapSelectorModule, HelgolandMapViewModule } from '@helgoland/map';
 import { HelgolandOpenLayersModule } from '@helgoland/open-layers';
 import { WvMapModule } from 'src/app/map/map.module';
+import { SensorwappToolboxModule } from '@sensorwapp-toolbox/core';
 
 
 
@@ -22,6 +23,7 @@ import { WvMapModule } from 'src/app/map/map.module';
     HelgolandMapSelectorModule,
     HelgolandMapViewModule,
     HelgolandOpenLayersModule,
+    SensorwappToolboxModule,
     WvMapModule
   ],exports:[LandCoverComponent, ChlorophyllViewComponent, MowingViewComponent, SoilTemperatureViewComponent,VitalityViewComponent]
 })
