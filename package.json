@@ -30,7 +30,6 @@
     "@helgoland/map": "^1.0.0-beta.6",
     "@helgoland/modification": "^1.0.0-beta.11",
     "@helgoland/open-layers": "^1.0.0-beta.11",
-    "@helgoland/plotly": "^1.0.0-beta.11",
     "@helgoland/selector": "^1.0.0-beta.11",
     "@helgoland/time": "^1.0.0-beta.11",
     "@ngx-translate/http-loader": "^4.0.0",

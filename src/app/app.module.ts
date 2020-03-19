@@ -14,7 +14,7 @@ import { HelgolandModificationModule } from '@helgoland/modification';
 import { HelgolandControlModule } from '@helgoland/control';
 import { HelgolandTimeModule } from '@helgoland/time';
 import { HelgolandFacetSearchModule } from '@helgoland/facet-search';
-import { HelgolandPlotlyModule } from '@helgoland/plotly';
+
 import {
   HelgolandMapModule,
   HelgolandMapSelectorModule,
@@ -76,7 +76,6 @@ import { CopernicusProductsModule } from './copernicus/copernicus-products/coper
     HelgolandControlModule,
     HelgolandOpenLayersModule,
     HelgolandFacetSearchModule,
-    HelgolandPlotlyModule,
     SensorwappToolboxModule,
     FormsModule,
     WvMapModule,
