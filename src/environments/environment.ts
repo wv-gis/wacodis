@@ -32,73 +32,7 @@ export const settingsPromise = new Promise<Settings>((resolve, reject) => {
   xhr.send();
 });
 
-// export let csvData: string = '';
-// export const dataPromise = new Promise((resolve, reject)=>{
-//  const input = new XMLHttpRequest();
-//  input.open('GET', './assets/GDT_2014.csv');
-//   input.onload = (e)=>{
-//     if(input.status === 200){
-//         csvData = input.responseText;
-//       //  let csvRecordsArray = csvData.split(/\r\n|\n/);
 
-//       //  let header = csvRecordsArray[0].split(';');
-//       //  for(let j = 0; j< header.length; j++){
-//       //   headerArray.push(header[j]);
-//       //  }
-//       //  for(let k = 1; k< csvRecordsArray.length; k++){
-//       //   let dataArr = csvRecordsArray[k].split(';');
-//       //   let col = [];
-//       //   for(let i = 0; i<dataArr.length; i++){
-//       //     col.push(dataArr[i]);
-//       //   }
-//       //   data.push(col);
-//       //  }
-       
-//       //   resolve({headerArray,data});
-//       resolve(csvData);
-      
-//     }
-//     else{
-//       reject('Cannot load csv file');
-//     }
-//   };
-//   input.send();
-// });
-// export let oxyData: string = '';
-// export const OxyDataPromise = new Promise((resolve, reject)=>{
-//  const input_ = new XMLHttpRequest();
-//  input_.open('GET', './assets/Be_Sauerst_2013.csv');
-//   input_.onload = (e)=>{
-//     if(input_.status === 200){
-//         oxyData = input_.responseText;
-
-//       resolve(oxyData);
-      
-//     }
-//     else{
-//       reject('Cannot load csv file');
-//     }
-//   };
-//   input_.send();
-// });
-
-export let statData: string = '';
-export const DataPromise = new Promise((resolve, reject)=>{
- const input_ = new XMLHttpRequest();
- input_.open('GET', './assets/Landbedeckung_Statistik_2018.csv');
-  input_.onload = (e)=>{
-    if(input_.status === 200){
-      statData = input_.responseText;
-
-      resolve(statData);
-      
-    }
-    else{
-      reject('Cannot load csv file');
-    }
-  };
-  input_.send();
-});
 
 export let tempData: string = '';
 export const tempDataPromise = new Promise((resolve, reject)=>{
@@ -108,7 +42,7 @@ export const tempDataPromise = new Promise((resolve, reject)=>{
     if(input_n.status === 200){
       tempData = input_n.responseText;
 
-      resolve(statData);
+      resolve(tempData);
       
     }
     else{
