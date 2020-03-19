@@ -47,15 +47,26 @@ export class ExtendedOlLayerTimeSelectorComponent extends OlLayerTimeSelectorCom
           this.timeAttribute = false;
         } else {
           let times: Date[] = [];
-          feature["features"].forEach((element, i, arr) => {
-            times.push(new Date(element["attributes"].startTime));
-            
-          });
+          if(feature["features"]){
+            feature["features"].forEach((element, i, arr) => {
+              times.push(new Date(element["attributes"].startTime));
+              
+            });
+          }
+ 
           this.timeDimensions = times;
-          this.currentTime = this.timeDimensions[this.timeDimensions.length-1];
+          if(this.timeDimensions){
+            this.currentTime = this.timeDimensions[this.timeDimensions.length-1];
+          }
+          
         }
         // this.selTime.emit(this.currentTime);
-        this.selIndexTime.emit(this.timeDimensions.indexOf(this.currentTime));
+        if(this.timeDimensions){
+          this.selIndexTime.emit(this.timeDimensions.indexOf(this.currentTime));
+        }
+        else{
+          this.timeAttribute = false;
+        }
         this.loading = false
       });
     }

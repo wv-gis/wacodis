@@ -1,5 +1,5 @@
 declare var require;
-import { Component, OnInit, Input, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Input, AfterViewInit, OnDestroy } from '@angular/core';
 import { MapCache, GeoSearchOptions, LayerOptions } from '@helgoland/map';
 import * as L from 'leaflet';
 import * as esri from "esri-leaflet";
@@ -8,7 +8,7 @@ import { RequestTokenService } from 'src/app/services/request-token.service';
 import { error } from '@angular/compiler/src/util';
 import { Location } from '@angular/common';
 require('leaflet.sync');
-
+import Plotly from 'plotly.js-dist';
 
 const sentinelLayerOptions = ['Natural Color', 'Color Infrared'];
 const externLayerOptions = ['IntraChange'];
@@ -20,7 +20,8 @@ const wacodisUrl = "https://gis.wacodis.demo.52north.org:6443/arcgis/rest/servic
   templateUrl: './comparison-view.component.html',
   styleUrls: ['./comparison-view.component.css']
 })
-export class ComparisonViewComponent implements OnInit, AfterViewInit {
+export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy {
+
 
 
   public syncedMap: L.Map;
@@ -71,9 +72,10 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
   public refreshInterval = '';
   public isDisabledR = true;
   public isDisabledL = true;
-  public wacodisMeta: string[] = [];
+  public wacodisMeta = [];
   public loadingL: boolean = false;
   public loadingR: boolean = false;
+
 
   constructor(private mapCache: MapCache, private tokenService: RequestTokenService, private _location: Location) {
 
@@ -85,20 +87,17 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
       this.comparisonOptions.push(sentinelLayerOptions[i]);
     }
     this.comparisonOptions.push(externLayerOptions[0]);
-
-    this.setSentinelLayer('https://sentinel.arcgis.com/arcgis/rest/services/Sentinel2/ImageServer');
-
     esri.imageMapLayer({ url: wacodisUrl }).metadata((error, metadata) => {
       metadata["services"].forEach(element => {
         this.wacodisMeta.push(element);
-        this.comparisonOptions.push(element["name"].split("/")[1]);
+        this.comparisonOptions.push(element["name"].split("/")[1]);   
       });
+    this.setSentinelLayer('https://sentinel.arcgis.com/arcgis/rest/services/Sentinel2/ImageServer');
     });
 
 
-
+  
     let toDate = new Date().getTime();
-
     this.wmsLayer = L.tileLayer.wms('http://ows.terrestris.de/osm/service?',
       {
         layers: 'OSM-WMS', format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
@@ -112,6 +111,8 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
     this.mainMap = L.map('main', this.mapOptions).setView([51.161, 7.482], 10);
 
     this.mainMap.addLayer(this.wmsLayer);
+    L.control.scale().addTo(this.mainMap);
+
   }
   /**
    * Method which decides which View is depicted depending on the selected parameters
@@ -219,7 +220,6 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
     // this.mapCache.getMap('comparisonMap').addControl(this.range);
     this.mainMap.addControl(this.divider);
     this.mainMap.addControl(this.range);
-    L.control.scale().addTo(this.mainMap); 
     this.container.appendChild(this.divider.getContainer());
     this.container.appendChild(this.range.getContainer());
     this.range._container.value = 0.5;
@@ -318,21 +318,65 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
     map.on('zoom', this.addSplitScreenNew, this);
     L.DomEvent.on(this.range._container, 'mouseover', this.cancelMapDrag, this);
     L.DomEvent.on(this.range._container, 'mouseout', this.uncancelMapDrag, this);
+
+    map.on('click', this.identifyPixel, this);
+  }
+
+
+  public identifyPixel(e) {
+    let identifiedPixel;
+    let dateVal :{date: Date, value: number}[] = [];
+    let dates: Date[] =[];
+    let values: number[]=[];
+    let pane = document.getElementById("pixelValue");
+    if (this.rightLayer instanceof esri.ImageMapLayer) {
+      this.rightLayer.bindPopup(function (error,identifyResults, response) {
+        if (error) {
+          return;
+        }
+        pane.innerHTML='';
+        identifiedPixel = identifyResults.pixel.properties.values.reverse();
+        identifyResults.catalogItems.features.forEach((f,i,arr)=>{
+          dateVal.push({date: new Date(f.properties.startTime), value:identifiedPixel[i] });       
+        });
+        dateVal.sort(function (a,b) { return a.date.getTime() - b.date.getTime();} );
+        dateVal.forEach((v,i,arr)=>{
+          dates.push(v.date);
+          values.push(v.value);
+        });
+
+        let data = {
+          x: dates,
+          y: values,
+          mode: 'lines+markers',
+          type: 'scatter'
+        };  
+        let layout = {
+          title: "Pixelverlauf",
+          yaxis: {
+            title: 'Pixelwert',
+            showline: true,
+          },
+          xaxis:{showline:true},
+          height: 390,
+        };
+        let config = {
+          toImageButtonOptions: {
+            format: 'png'
+          },
+          responsive: true,
+          displaylogo: false,
+          modeBarButtonsToRemove: ['select2d', 'lasso2d', 'hoverClosestCartesian',
+            'hoverCompareCartesian', 'toggleSpikelines', 'pan2d', 'zoomOut2d', 'zoomIn2d', 'autoScale2d', 'resetScale2d'],
+        };
+        Plotly.newPlot('pixelValue',[data],layout,config);
+      });
+    }
   }
   /**
    * cancel Map Drag if the slider is in use
    */
   private cancelMapDrag(e) {
-    // this.mapWasDragEnabled = this._map.dragging.enabled()
-    // if (this._map.tap && this._map.tap.enabled()) {
-    //   this.mapWasTapEnabled = true;
-    //   this._map.tap.disable();
-    // }
-    // else {
-    //   this.mapWasTapEnabled = false
-    // }
-    // this._map.dragging.disable();
-
     this.mapWasDragEnabled = this.mainMap.dragging.enabled()
     if (this.mainMap.tap && this.mainMap.tap.enabled()) {
       this.mapWasTapEnabled = true;
@@ -348,12 +392,6 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
    * @param e event
    */
   private uncancelMapDrag(e) {
-    // if (this.mapWasDragEnabled) {
-    //   this._map.dragging.enable()
-    // }
-    // if (this.mapWasTapEnabled) {
-    //   this._map.tap.enable()
-    // }
 
     if (this.mapWasDragEnabled) {
       this.mainMap.dragging.enable()
@@ -389,6 +427,7 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
       map.off('layeradd layerremove', this.updateLayers, this);
       map.off('zoom', this.addSplitScreenNew, this);
       map.off('move', this.addSplitScreenNew, this);
+      map.off('click', this.identifyPixel, this);
     }
   }
 
@@ -492,7 +531,7 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
     newMap.style.cssFloat = 'right'
     document.getElementById('mainMap').appendChild(newMap);
     document.getElementById('main').style.width = '50%';
-    L.control.scale().addTo(this.mainMap); 
+
     // this.compMap = this.mapCache.getMap('comparisonMap');
     // this.compMap = this.mainMap;
     this.syncedMap = L.map(newMap).setView([51.161, 7.482], 13);
@@ -595,9 +634,9 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
           [[50.9854181, 6.9313883], [51.3190536, 7.6071338]], {
             opacity: 0.8, pane: 'overlayPane', alt: 'IntraChange'
           }));
-
+    
         this.wacodisMeta.forEach((element) => {
-          this.comparisonBaseLayers.push(esri.imageMapLayer({
+            this.comparisonBaseLayers.push(esri.imageMapLayer({
             url: wacodisUrl + "/" + element["name"].split("/")[1] + "/" + element["type"],
             maxZoom: 16, opacity: 0.8, alt: element["name"].split("/")[1], pane: 'overlayPane' + this.comparisonBaseLayers.length
           }));
@@ -615,80 +654,81 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
         this.senLayers[k].authenticate(this.tokenService.getToken());
         this.comparisonBaseLayers.push(this.senLayers[k]);
       }
-      this.comparisonBaseLayers.push(L.imageOverlay('https://wacodis.maps.arcgis.com/sharing/rest/content/items/b2fa6b41d64c4a649f4bd6f75e0f5d74/data',
-        [[50.9854181, 6.9313883], [51.3190536, 7.6071338]], {
-          opacity: 0.8, pane: 'overlayPane', alt: 'IntraChange'
-        }));
-
       this.wacodisMeta.forEach((element, i) => {
         this.comparisonBaseLayers.push(esri.imageMapLayer({
           url: wacodisUrl + "/" + element["name"].split("/")[1] + "/" + element["type"],
           maxZoom: 16, opacity: 0.8, alt: element["name"].split("/")[1], pane: 'overlayPane' + this.comparisonBaseLayers.length
         }));
       });
-
+      this.comparisonBaseLayers.push(L.imageOverlay('https://wacodis.maps.arcgis.com/sharing/rest/content/items/b2fa6b41d64c4a649f4bd6f75e0f5d74/data',
+        [[50.9854181, 6.9313883], [51.3190536, 7.6071338]], {
+          opacity: 0.8, pane: 'overlayPane', alt: 'IntraChange'
+        }));
+    
+ 
+    
     }
   }
   private queryImagelayer(side: string, id: number) {
     esri.imageService({ url: this.comparisonBaseLayers[id].options.url }).query().where("1=1")
-    .fields(["startTime", "endTime", "OBJECTID"]).returnGeometry(false).run((error, featureCollection, feature) => {
-      this.acquisitionDates = [];
-      if(feature !=null){
-        if(side === "ri"){
-          this.loadingR = !this.loadingR;
-        }else{
-          this.loadingL = !this.loadingL;
-        }
-       
-        feature["features"].forEach((element, i, arr) => {
-          this.acquisitionDates.push(new Date(arr[i]["attributes"].startTime));
-        });
-        switch (side) {
-          case 'le': {
-            this.defaultLDate = this.acquisitionDates[this.acquisitionDates.length - 1];
-            this.selLeftDate = this.acquisitionDates.filter((value, p, self) => self.indexOf(value) === p);
-            if (this.isDisabledL){
-              this.isDisabledL = !this.isDisabledL;
-              this.loadingL = !this.loadingL;
-            } 
-            break;
+      .fields(["startTime", "endTime", "OBJECTID"]).returnGeometry(false).run((error, featureCollection, feature) => {
+        this.acquisitionDates = [];
+        if (feature != null) {
+          if (side === "ri") {
+            this.loadingR = !this.loadingR;
+          } else {
+            this.loadingL = !this.loadingL;
           }
-          case 'ri': {
-            this.defaultRDate = this.acquisitionDates[this.acquisitionDates.length - 1];
-            this.selRightDate = this.acquisitionDates.filter((value, p, self) => self.indexOf(value) === p);
-            if (this.isDisabledR){
-              this.isDisabledR = !this.isDisabledR;
-              this.loadingR = !this.loadingR;
-            }
-            break;
-          }
-        }
-      }else{
-        switch(side){
-          case 'le':{
-            if(!this.isDisabledL){
-              this.isDisabledL = !this.isDisabledL;
-            }
-           
-          }
-          case 'ri':{
-            if(!this.isDisabledR){
-              this.isDisabledR = !this.isDisabledR;
-            }
-           
-          }
-        }
-     
-      }
 
-    }, (error) => console.log('Error on Image Service request: ' + error));
+          feature["features"].forEach((element, i, arr) => {
+            this.acquisitionDates.push(new Date(arr[i]["attributes"].startTime));
+          });
+          switch (side) {
+            case 'le': {
+              this.defaultLDate = this.acquisitionDates[this.acquisitionDates.length - 1];
+              this.selLeftDate = this.acquisitionDates.filter((value, p, self) => self.indexOf(value) === p);
+              if (this.isDisabledL) {
+                this.isDisabledL = !this.isDisabledL;
+                this.loadingL = !this.loadingL;
+              }
+              break;
+            }
+            case 'ri': {
+              this.defaultRDate = this.acquisitionDates[this.acquisitionDates.length - 1];
+              this.selRightDate = this.acquisitionDates.filter((value, p, self) => self.indexOf(value) === p);
+              if (this.isDisabledR) {
+                this.isDisabledR = !this.isDisabledR;
+                this.loadingR = !this.loadingR;
+              }
+              break;
+            }
+          }
+        } else {
+          switch (side) {
+            case 'le': {
+              if (!this.isDisabledL) {
+                this.isDisabledL = !this.isDisabledL;
+              }
+
+            }
+            case 'ri': {
+              if (!this.isDisabledR) {
+                this.isDisabledR = !this.isDisabledR;
+              }
+
+            }
+          }
+
+        }
+
+      }, (error) => console.log('Error on Image Service request: ' + error));
 
   }
 
   private queryLayer(side: string) {
-    if(side === "ri"){
+    if (side === "ri") {
       this.loadingR = !this.loadingR;
-    }else{
+    } else {
       this.loadingL = !this.loadingL;
     }
     if (!this.tokenService.getToken()) {
@@ -702,7 +742,7 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
     }
     esri.imageService({ url: 'https://sentinel.arcgis.com/arcgis/rest/services/Sentinel2/ImageServer' }).query()
       .contains(L.latLngBounds([50.9952, 6.931481], [51.309139, 7.607089])).where(" cloudcover<=0.4 AND category=1")
-      .fields(['acquisitiondate', 'cloudcover', 'q', 'best','groupname']).orderBy('acquisitiondate', 'ASC')
+      .fields(['acquisitiondate', 'cloudcover', 'q', 'best', 'groupname']).orderBy('acquisitiondate', 'ASC')
       .token(this.token).returnGeometry(false)
       .run((error, featureCollection, feature) => {
         if (error) {
@@ -719,43 +759,43 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
             this.unresolvableServices = [];
 
           this.acquisitionDates = [];
-       
-            for (let i in featureCollection.features) {
-              if (parseInt(i) < 1 && parseInt(i)>=0) {
+
+          for (let i in featureCollection.features) {
+            if (parseInt(i) < 1 && parseInt(i) >= 0) {
+              this.acquisitionDates.push(featureCollection.features[i]["properties"]['acquisitiondate']);
+            }
+            else {
+              var tempValue = featureCollection.features[i]["properties"]['acquisitiondate'];
+              var tempCurrentValue = this.acquisitionDates[0];
+              if (tempValue !== tempCurrentValue) {
                 this.acquisitionDates.push(featureCollection.features[i]["properties"]['acquisitiondate']);
-              }
-              else {
-                var tempValue = featureCollection.features[i]["properties"]['acquisitiondate'];
-                var tempCurrentValue = this.acquisitionDates[0];
-                if (tempValue !== tempCurrentValue) {
-                  this.acquisitionDates.push(featureCollection.features[i]["properties"]['acquisitiondate']);
-                  // console.log(this.acquisitionDates);
-                }
+                // console.log(this.acquisitionDates);
               }
             }
-            switch (side) {
-              case 'le': {
-                this.defaultLDate = tempCurrentValue;
-                this.selLeftDate = this.acquisitionDates.filter((value, p, self) => self.indexOf(value) === p);
-                if (this.isDisabledL){
-                  this.isDisabledL = !this.isDisabledL;
-                  this.loadingL = !this.loadingL;
-                }              
-                break;
+          }
+          switch (side) {
+            case 'le': {
+              this.defaultLDate = tempCurrentValue;
+              this.selLeftDate = this.acquisitionDates.filter((value, p, self) => self.indexOf(value) === p);
+              if (this.isDisabledL) {
+                this.isDisabledL = !this.isDisabledL;
+                this.loadingL = !this.loadingL;
               }
-              case 'ri': {
-                this.defaultRDate = tempCurrentValue;
-                this.selRightDate = this.acquisitionDates.filter((value, p, self) => self.indexOf(value) === p);
-                if (this.isDisabledR){
-                  this.isDisabledR = !this.isDisabledR;
-                  this.loadingR = !this.loadingR;
-                }           
-                break;
-              }
+              break;
             }
+            case 'ri': {
+              this.defaultRDate = tempCurrentValue;
+              this.selRightDate = this.acquisitionDates.filter((value, p, self) => self.indexOf(value) === p);
+              if (this.isDisabledR) {
+                this.isDisabledR = !this.isDisabledR;
+                this.loadingR = !this.loadingR;
+              }
+              break;
+            }
+          }
         }
       });
-    
+
   }
 
   public checkLeftLayer(layerName: string, id: number) {
@@ -763,7 +803,7 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
     this.selectedIdL = id;
     // this._leftLayer = this.senLayers[id];
     this._leftLayer = this.comparisonBaseLayers[id];
-    console.log('Name: ' + layerName + ' Layer: ' + this._leftLayer + ' index:' + id);
+    // console.log('Name: ' + layerName + ' Layer: ' + this._leftLayer + ' index:' + id);
     if (this._leftLayer.options.pane == 'imagePane' + id) {
       this.queryLayer('le');
     } else if (this._leftLayer.options.pane == 'overlayPane' + id) {
@@ -776,7 +816,7 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
     this.selectRightLayer = layerName;
     this.selectedIdR = id;
     this._rightLayer = this.comparisonBaseLayers[id];
-    console.log('Name: ' + layerName + ' Layer: ' + this._rightLayer + ' index:' + id);
+    // console.log('Name: ' + layerName + ' Layer: ' + this._rightLayer + ' index:' + id );
     if (this._rightLayer.options.pane == 'imagePane' + id) {
       this._rightLayer = esri.imageMapLayer({
         url: this.comparisonBaseLayers[id].options.url, maxZoom: 16, alt: sentinelLayerOptions[id].toString(),
@@ -786,8 +826,8 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
       this.queryLayer('ri');
     } else if (this._rightLayer.options.pane == 'overlayPane' + id) {
       this._rightLayer = esri.imageMapLayer({
-        url: this.comparisonBaseLayers[id].options.url, maxZoom: 16, alt:  this.comparisonBaseLayers[id].options.alt,
-       position: 'pane', pane: 'overlayPane' + id + 1, opacity: 0.8
+        url: this.comparisonBaseLayers[id].options.url, maxZoom: 16, alt: this.comparisonBaseLayers[id].options.alt,
+        position: 'pane', pane: 'overlayPane' + id + 1, opacity: 0.8
       });
       this.queryImagelayer('ri', id);
     }
@@ -795,23 +835,23 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
 
   private checkLeftDate(date: number, id: number) {
     this.defaultLDate = new Date(date);
-    let to = new Date( this.defaultLDate.getFullYear(),  this.defaultLDate.getMonth() + 1);
+    let to = new Date(this.defaultLDate.getFullYear(), this.defaultLDate.getMonth() + 1);
     if (this._leftLayer.options.pane.startsWith('imagePane') && this._leftLayer instanceof esri.ImageMapLayer) {
       this._leftLayer.authenticate(this.tokenService.getToken());
       this._leftLayer.setOpacity(0.8);
-      this._leftLayer.setTimeRange( this.defaultLDate,this.defaultLDate);
+      this._leftLayer.setTimeRange(this.defaultLDate, this.defaultLDate);
     }
     else if (this._leftLayer.options.pane.startsWith('overlayPane') && this._leftLayer instanceof esri.ImageMapLayer) {
       this._leftLayer.setOpacity(0.8);
-      this._leftLayer.setTimeRange(new Date(new Date( this.defaultLDate.getFullYear(),  this.defaultLDate.getMonth(),  this.defaultLDate.getDate() + 2).getTime() - 2628000000),
-        new Date( this.defaultLDate.getFullYear(),  this.defaultLDate.getMonth(),  this.defaultLDate.getDate() + 2));
+      this._leftLayer.setTimeRange(new Date(new Date(this.defaultLDate.getFullYear(), this.defaultLDate.getMonth(), this.defaultLDate.getDate() + 2).getTime() - 2628000000),
+        new Date(this.defaultLDate.getFullYear(), this.defaultLDate.getMonth(), this.defaultLDate.getDate() + 2));
     }
   }
 
   private checkRightDate(date: number, id: number) {
     this.defaultRDate = new Date(date);
     let to = new Date(this.defaultRDate.getFullYear(), this.defaultRDate.getMonth() + 1);
-   
+
     if (this._rightLayer.options.pane.startsWith('imagePane') && this._rightLayer instanceof esri.ImageMapLayer) {
 
       this._rightLayer.authenticate(this.tokenService.getToken());
@@ -841,11 +881,11 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
         this.leftLayer.authenticate(this.tokenService.getToken());
         this.leftLayer.setTimeRange(this.defaultLDate, this.defaultLDate);
       } else if (this.leftLayer instanceof esri.ImageMapLayer && this.leftLayer.options.pane === 'overlayPane' + id) {
-        this.leftLayer.setTimeRange(new Date(new Date(this.defaultLDate.getFullYear(), this.defaultLDate.getMonth(), this.defaultLDate.getDate() + 2).getTime() - 2628000000), 
-        new Date(this.defaultLDate.getFullYear(), this.defaultLDate.getMonth(), this.defaultLDate.getDate() + 2));
-      }else{
+        this.leftLayer.setTimeRange(new Date(new Date(this.defaultLDate.getFullYear(), this.defaultLDate.getMonth(), this.defaultLDate.getDate() + 2).getTime() - 2628000000),
+          new Date(this.defaultLDate.getFullYear(), this.defaultLDate.getMonth(), this.defaultLDate.getDate() + 2));
+      } else {
         if (!this.isDisabledL)
-        this.isDisabledL = !this.isDisabledL;
+          this.isDisabledL = !this.isDisabledL;
       }
       this.setSplittedMap();
     }
@@ -854,17 +894,17 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
       this.checkLeftLayer(layerName, id);
       this.leftLayer = this._leftLayer;
       if (this.leftLayer instanceof esri.ImageMapLayer && this.leftLayer.options.pane === 'overlayPane' + id) {
-        this.leftLayer.setTimeRange(new Date(new Date(this.defaultLDate.getFullYear(), this.defaultLDate.getMonth(), this.defaultLDate.getDate() + 2).getTime() - 2628000000), 
-        new Date(this.defaultLDate.getFullYear(), this.defaultLDate.getMonth(), this.defaultLDate.getDate() + 2));
+        this.leftLayer.setTimeRange(new Date(new Date(this.defaultLDate.getFullYear(), this.defaultLDate.getMonth(), this.defaultLDate.getDate() + 2).getTime() - 2628000000),
+          new Date(this.defaultLDate.getFullYear(), this.defaultLDate.getMonth(), this.defaultLDate.getDate() + 2));
       }
-        else if(this.leftLayer instanceof esri.ImageMapLayer && this.leftLayer.options.pane === 'imagePane' + id){ 
-          this.leftLayer.authenticate(this.tokenService.getToken());
-          this.leftLayer.setTimeRange(this.defaultLDate, this.defaultLDate);
-      } 
-      else{
+      else if (this.leftLayer instanceof esri.ImageMapLayer && this.leftLayer.options.pane === 'imagePane' + id) {
+        this.leftLayer.authenticate(this.tokenService.getToken());
+        this.leftLayer.setTimeRange(this.defaultLDate, this.defaultLDate);
+      }
+      else {
         if (!this.isDisabledL)
-        this.isDisabledL = !this.isDisabledL;
-      }    
+          this.isDisabledL = !this.isDisabledL;
+      }
       this.setsyncedMap();
     }
   }
@@ -875,21 +915,21 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
       this.checkRightLayer(layerName, id);
       this.rightLayer = this._rightLayer;
       if (this.rightLayer instanceof esri.ImageMapLayer && this.rightLayer.options.pane === 'imagePane' + id) {
-        this.rightLayer.options.pane = 'imagePane' +id +1;
+        this.rightLayer.options.pane = 'imagePane' + id + 1;
         this.rightLayer.authenticate(this.tokenService.getToken());
         this.rightLayer.setOpacity(0.8);
         this.rightLayer.setTimeRange(this.defaultRDate, this.defaultRDate);
       }
       else if (this.rightLayer instanceof esri.ImageMapLayer && this.rightLayer.options.pane === 'overlayPane' + id) {
-        this.rightLayer.options.pane = 'overlayPane' +id +1;
+        this.rightLayer.options.pane = 'overlayPane' + id + 1;
         this.rightLayer.setOpacity(0.8);
         this.rightLayer.setTimeRange(new Date(new Date(this.defaultRDate.getFullYear(), this.defaultRDate.getMonth(), this.defaultRDate.getDate() + 2).getTime() - 2628000000),
           new Date(this.defaultRDate.getFullYear(), this.defaultRDate.getMonth(), this.defaultRDate.getDate() + 2));
-        }
-        else{
-          if (this.isDisabledR)
+      }
+      else {
+        if (this.isDisabledR)
           this.isDisabledR = !this.isDisabledR;
-        }
+      }
       this.setSplittedMap();
     }
     else {
@@ -898,18 +938,18 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
       this.rightLayer = this._rightLayer;
 
       if (this.rightLayer.options.pane === 'imagePane' + id && this.rightLayer instanceof esri.ImageMapLayer) {
-        this.rightLayer.options.pane = 'imagePane' +id +1;
+        this.rightLayer.options.pane = 'imagePane' + id + 1;
         this.rightLayer.authenticate(this.tokenService.getToken());
         this.rightLayer.setTimeRange(this.defaultRDate, this.defaultRDate);
       }
       else if (this.rightLayer.options.pane === 'overlayPane' + id && this.rightLayer instanceof esri.ImageMapLayer) {
-        this.rightLayer.options.pane = 'overlayPane' +id +1;
+        this.rightLayer.options.pane = 'overlayPane' + id + 1;
         this.rightLayer.setOpacity(0.8);
         this.rightLayer.setTimeRange(new Date(new Date(this.defaultRDate.getFullYear(), this.defaultRDate.getMonth(), this.defaultRDate.getDate() + 2).getTime() - 2628000000),
           new Date(this.defaultRDate.getFullYear(), this.defaultRDate.getMonth(), this.defaultRDate.getDate() + 2));
-      }else{
+      } else {
         if (!this.isDisabledR)
-        this.isDisabledR = !this.isDisabledR;
+          this.isDisabledR = !this.isDisabledR;
       }
       this.setsyncedMap();
     }
@@ -939,5 +979,10 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit {
       this.rightLayer.authenticate(this.tokenService.getToken());
       this.rightLayer.setTimeRange(this.defaultRDate, this.defaultRDate);
     }
+  }
+
+
+  ngOnDestroy(): void {
+  this.removeEvents();
   }
 }

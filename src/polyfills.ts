@@ -88,6 +88,8 @@ import 'web-animations-js';  // Run `npm install --save web-animations-js`.
     });
 })([Element.prototype, CharacterData.prototype, DocumentType.prototype]);
 
+(window as any).global = window;
+
 /***************************************************************************************************
  * Zone JS is required by default for Angular itself.
  */

@@ -28,11 +28,11 @@ export class ExtendedOlLayerTitleComponent extends OlLayerTitleComponent impleme
     }
     else if(imageSource instanceof ImageArcGISRest){
       const restUrl = imageSource.getUrl();
-
       esri.imageMapLayer({url: restUrl}).metadata((error, metadata)=>{
         if(error){
           console.log('Error on Image Service request')
         }else{
+          if(metadata["name"])
           this.title = metadata["name"].split("/")[1];
         }
        

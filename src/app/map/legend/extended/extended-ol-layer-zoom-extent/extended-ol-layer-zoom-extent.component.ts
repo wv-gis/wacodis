@@ -64,22 +64,26 @@ export class ExtendedOlLayerZoomExtentComponent extends OlLayerZoomExtentCompone
             if (error) {
               console.log('Error on imageService Query');
             } else {
-              for (let i in featureCollection.features) {
-                for (let p = 0; p < featureCollection.features[i]["geometry"]["coordinates"][0].length; p++) {
-                  this.latValues.push(featureCollection.features[i]["geometry"]["coordinates"][0][p][1]);
-                  this.lonValues.push(featureCollection.features[i]["geometry"]["coordinates"][0][p][0]);
+              if(featureCollection.features){
+                for (let i in featureCollection.features) {
+                    for (let p = 0; p < featureCollection.features[i]["geometry"]["coordinates"][0].length; p++) {
+                      this.latValues.push(featureCollection.features[i]["geometry"]["coordinates"][0][p][1]);
+                      this.lonValues.push(featureCollection.features[i]["geometry"]["coordinates"][0][p][0]);
+                    }
+             
+                  this.latValues.sort((a, b) => { return a - b });
+                  this.lonValues.sort((a, b) => { return a - b });
+
+                    this.maxLon = this.lonValues[this.lonValues.length - 1];
+                    this.minLon = this.lonValues[0];
+                    this.maxLat = this.latValues[this.latValues.length - 1];
+                    this.minLat = this.latValues[0];
+
+                  this.imageExtent = [this.minLon, this.minLat, this.maxLon, this.maxLat];
+                  this.imageCrs = "EPSG:"+ feature["spatialReference"]["wkid"];
                 }
-                this.latValues.sort((a, b) => { return a - b });
-                this.lonValues.sort((a, b) => { return a - b });
-
-                this.maxLon = this.lonValues[this.lonValues.length - 1];
-                this.minLon = this.lonValues[0];
-                this.maxLat = this.latValues[this.lonValues.length - 1];
-                this.minLat = this.latValues[0];
-
-                this.imageExtent = [this.minLon, this.minLat, this.maxLon, this.maxLat];
-                this.imageCrs = "EPSG:"+ feature["spatialReference"]["wkid"];
               }
+        
             }
           });   
         });
