@@ -132,7 +132,7 @@ export class WvDataViewComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-    this.resultSubs = this.facetSearch.getResults().subscribe(ts => {this.resultCount = ts.length; console.log(this.resultCount)});
+    this.resultSubs = this.facetSearch.getResults().subscribe(ts => {this.resultCount = ts.length; });
     
     this.baseLayer = L.tileLayer.wms('http://ows.terrestris.de/osm/service?',
     {

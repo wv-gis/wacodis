@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {  statData,tempData } from '../../environments/environment';
+import {  tempData } from '../../environments/environment';
 
 
 @Injectable()
@@ -12,7 +12,7 @@ private interpText;
         // this.headers = headerArray;
         // this.datasets = data;
         this.text = tempData;
-        this.interpText = statData;
+        // this.interpText = statData;
     }
     public getCsvDatasets(){
         return this.datasets;
