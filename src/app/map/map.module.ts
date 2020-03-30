@@ -21,6 +21,7 @@ import { FormsModule } from '@angular/forms';
 import { ExtendedOlLayerLegendUrlComponent } from './legend/extended/extended-ol-layer-legend-url/extended-ol-layer-legend-url.component';
 import { ExtendedOlLayerAnimateTimeComponent } from './legend/extended/extended-ol-layer-animate-time/extended-ol-layer-animate-time.component';
 import { LayerLegendTableComponent } from './menu/layer-legend-table/layer-legend-table.component';
+import { ExtendedVisibilityTogglerComponent } from './legend/extended/extended-visibility-toggler/extended-visibility-toggler.component';
 
 @NgModule({
   imports: [
@@ -36,7 +37,7 @@ import { LayerLegendTableComponent } from './menu/layer-legend-table/layer-legen
     FormsModule,
 
   ],
-  declarations: [SelectionMapComponent, LayerTreeComponent, MenuBarComponent, WvExtendedServiceSelectorComponent, ExtendedExtentControlComponent, ExtendedOlLayerTitleComponent, ExtendedOlLayerTimeSelectorComponent, ExtendedOlLayerZoomExtentComponent, ExtendedOlLayerLegendUrlComponent, ExtendedOlLayerAnimateTimeComponent, LayerLegendTableComponent],
+  declarations: [SelectionMapComponent, LayerTreeComponent, MenuBarComponent, WvExtendedServiceSelectorComponent, ExtendedExtentControlComponent, ExtendedOlLayerTitleComponent, ExtendedOlLayerTimeSelectorComponent, ExtendedOlLayerZoomExtentComponent, ExtendedOlLayerLegendUrlComponent, ExtendedOlLayerAnimateTimeComponent, LayerLegendTableComponent, ExtendedVisibilityTogglerComponent],
   exports: [SelectionMapComponent, LayerTreeComponent, MenuBarComponent, WvExtendedServiceSelectorComponent],
   providers: [ExtendedSettingsService, SelectedProviderService, RequestTokenService, OlMapService],
 })
