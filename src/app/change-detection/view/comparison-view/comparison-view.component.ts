@@ -1,20 +1,21 @@
 declare var require;
-import { Component, OnInit, Input, AfterViewInit, OnDestroy } from '@angular/core';
-import { MapCache, GeoSearchOptions, LayerOptions } from '@helgoland/map';
+import { Component, OnInit, AfterViewInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+import { MapCache, GeoSearchOptions } from '@helgoland/map';
 import * as L from 'leaflet';
 import * as esri from "esri-leaflet";
-import { DatasetApiInterface, ParameterFilter } from '@helgoland/core';
 import { RequestTokenService } from 'src/app/services/request-token.service';
-import { error } from '@angular/compiler/src/util';
 import { Location } from '@angular/common';
 require('leaflet.sync');
 import Plotly from 'plotly.js-dist';
+import { legendParam } from 'src/app/map/legend/extended/extended-ol-layer-legend-url/extended-ol-layer-legend-url.component';
 
 const sentinelLayerOptions = ['Natural Color', 'Color Infrared'];
 const externLayerOptions = ['IntraChange'];
-const bandIdOptions = ['4,3,2', '8,4,3'];
 const rasterFunctionOpt = [{ "rasterFunction": "Natural Color" }, { "rasterFunction": "Color Infrared with DRA" }];//, { "rasterFunction": "Landcover" }
 const wacodisUrl = "https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS";
+
+
+
 @Component({
   selector: 'wv-comparison-view',
   templateUrl: './comparison-view.component.html',
@@ -22,11 +23,10 @@ const wacodisUrl = "https://gis.wacodis.demo.52north.org:6443/arcgis/rest/servic
 })
 export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy {
 
-
+  @ViewChild("pixelValue", { static: true }) public plotlydiv: ElementRef;
 
   public syncedMap: L.Map;
   public container: HTMLElement;
-  // public defaultBaseMap: Map<string, LayerOptions> = new Map<string, LayerOptions>();
   public zoomControlOptions: L.Control.ZoomOptions = { position: 'topleft' };
   public layerControlOptions: L.Control.LayersOptions = { position: 'bottomleft' };
   public mapOptions: L.MapOptions = { dragging: true, zoomControl: true, boxZoom: false };
@@ -35,10 +35,10 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
   public avoidZoomToSelection = false;
   public mapWasDragEnabled: boolean;
   public mapWasTapEnabled: boolean;
-  public range;
+  public range: any;
   public _map: L.Map;
-  public divider;
-  public dividerSym;
+  public divider: any;
+  public dividerSym: HTMLElement;
   public leftLayer: (L.TileLayer | esri.ImageMapLayer);
   public rightLayer: (L.TileLayer | esri.ImageMapLayer);
   public view: string;
@@ -77,6 +77,7 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
   public loadingR: boolean = false;
 
 
+
   constructor(private mapCache: MapCache, private tokenService: RequestTokenService, private _location: Location) {
 
   }
@@ -90,13 +91,11 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
     esri.imageMapLayer({ url: wacodisUrl }).metadata((error, metadata) => {
       metadata["services"].forEach(element => {
         this.wacodisMeta.push(element);
-        this.comparisonOptions.push(element["name"].split("/")[1]);   
+        this.comparisonOptions.push(element["name"].split("/")[1]);
       });
-    this.setSentinelLayer('https://sentinel.arcgis.com/arcgis/rest/services/Sentinel2/ImageServer');
+      this.setSentinelLayer('https://sentinel.arcgis.com/arcgis/rest/services/Sentinel2/ImageServer');
     });
 
-
-  
     let toDate = new Date().getTime();
     this.wmsLayer = L.tileLayer.wms('http://ows.terrestris.de/osm/service?',
       {
@@ -114,21 +113,40 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
     L.control.scale().addTo(this.mainMap);
 
   }
+
+  ngAfterViewInit(): void {
+    this.controlLegend = new L.Control({ position: 'topleft' });
+    // L.DomEvent.on(this.controlHtml,'click', this.changeVisibility(this.legend));
+  }
+
+  public requestLegendUrl() {
+    this.comparisonBaseLayers.forEach((lay, i, layArr) => {
+      if (this.leftLayer instanceof esri.ImageMapLayer) {
+        if (this.leftLayer.options.alt == lay.options.alt)
+          esri.imageMapLayer({ url: layArr[i].options.url }).metadata((error, metadata) => {
+
+            let legendurl = layArr[i].options.url + "/legend?bandIds=&renderingRule=rasterfunction:" + metadata["rasterFunctionInfos"][0].name + "&f=pjson";
+            let legendResp: legendParam[] = [];
+            esri.imageMapLayer({ url: legendurl }).metadata((error, legendData) => {
+              legendData["layers"][0].legend.forEach((dat, i, arr) => {
+                if (i < 25)
+                  legendResp.push({ url: "data:image/png;base64," + arr[i].imageData, label: arr[i].label });
+              });
+              this.controlLegend.onAdd = function (map) {
+                this.controlHtml = L.DomUtil.create('div');
+
+                this.controlHtml.innerHTML = '<img src=' + legendResp + ' alt="Legende">';
+                return this.controlHtml;
+              };
+            });
+          });
+      }
+    });
+  }
+
   /**
    * Method which decides which View is depicted depending on the selected parameters
    */
-  ngAfterViewInit(): void {
-    this.controlLegend = new L.Control({ position: 'topright' });
-    this.controlLegend.onAdd = function (map) {
-      this.controlHtml = L.DomUtil.create('div');
-      // this.legend = L.DomUtil.create('div', 'legend', this.controlHtml);
-      // this.legend.setAttribute('display', 'block');
-      this.controlHtml.innerHTML = '<img src="assets/images/Legende.png" alt="Legende">';
-      // this.controlHtml.innerHTML = '<span>- </span>' + this.legend.innerHTML;
-      return this.controlHtml;
-    };
-    // L.DomEvent.on(this.controlHtml,'click', this.changeVisibility(this.legend));
-  }
   public submitSelection() {
 
     this.leftLayer = this._leftLayer;
@@ -292,6 +310,8 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
   */
   public changeView() {
     if (this.view === 'split') {
+      Plotly.purge(this.plotlydiv.nativeElement);
+      this.rightLayer.unbindPopup();
       this.remove();
       // this.mainMap.remove();
       this.setsyncedMap();
@@ -301,6 +321,7 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
       this.setSplittedMap();
       this.view = 'split';
     }
+
   }
   /**
    * Method for adding EventListeners for mouseover , move and zoom in regard to the divider
@@ -318,59 +339,63 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
     map.on('zoom', this.addSplitScreenNew, this);
     L.DomEvent.on(this.range._container, 'mouseover', this.cancelMapDrag, this);
     L.DomEvent.on(this.range._container, 'mouseout', this.uncancelMapDrag, this);
-
-    map.on('click', this.identifyPixel, this);
+    map.on('click', this.identifyPixel,this);
   }
 
 
   public identifyPixel(e) {
-    let identifiedPixel;
-    let dateVal :{date: Date, value: number}[] = [];
-    let dates: Date[] =[];
-    let values: number[]=[];
     let pane = document.getElementById("pixelValue");
-    if (this.rightLayer instanceof esri.ImageMapLayer) {
-      this.rightLayer.bindPopup(function (error,identifyResults, response) {
-        if (error) {
-          return;
-        }
-        pane.innerHTML='';
-        identifiedPixel = identifyResults.pixel.properties.values.reverse();
-        identifyResults.catalogItems.features.forEach((f,i,arr)=>{
-          dateVal.push({date: new Date(f.properties.startTime), value:identifiedPixel[i] });       
-        });
-        dateVal.sort(function (a,b) { return a.date.getTime() - b.date.getTime();} );
-        dateVal.forEach((v,i,arr)=>{
-          dates.push(v.date);
-          values.push(v.value);
-        });
+   
+      let identifiedPixel;
+      let dateVal: { date: Date, value: number }[] = [];
+      let dates: Date[] = [];
+      let values: number[] = [];
+      let plotPane = this.plotlydiv.nativeElement;
 
-        let data = {
-          x: dates,
-          y: values,
-          mode: 'lines+markers',
-          type: 'scatter'
-        };  
-        let layout = {
-          title: "Pixelverlauf",
-          yaxis: {
-            title: 'Pixelwert',
-            showline: true,
-          },
-          xaxis:{showline:true},
-          height: 390,
-        };
-        let config = {
-          toImageButtonOptions: {
-            format: 'png'
-          },
-          responsive: true,
-          displaylogo: false,
-          modeBarButtonsToRemove: ['select2d', 'lasso2d', 'hoverClosestCartesian',
-            'hoverCompareCartesian', 'toggleSpikelines', 'pan2d', 'zoomOut2d', 'zoomIn2d', 'autoScale2d', 'resetScale2d'],
-        };
-        Plotly.newPlot('pixelValue',[data],layout,config);
-      });
+      if (this.rightLayer instanceof esri.ImageMapLayer) {
+        this.rightLayer.bindPopup(function (error, identifyResults, response) {
+          if (error) {
+            console.error(error);
+            return;
+          }
+          pane.innerHTML = '';
+          identifiedPixel = identifyResults.pixel.properties.values.reverse();
+          identifyResults.catalogItems.features.forEach((f, i, arr) => {
+            dateVal.push({ date: new Date(f.properties.startTime), value: identifiedPixel[i] });
+          });
+          dateVal.sort(function (a, b) { return a.date.getTime() - b.date.getTime(); });
+          dateVal.forEach((v, i, arr) => {
+            dates.push(v.date);
+            values.push(v.value);
+          });
+
+          let data = {
+            x: dates,
+            y: values,
+            mode: 'lines+markers',
+            type: 'scatter'
+          };
+          let layout = {
+            title: "Pixelverlauf",
+            yaxis: {
+              title: 'Pixelwert',
+              showline: true,
+            },
+            xaxis: { showline: true },
+            height: 390,
+          };
+          let config = {
+            toImageButtonOptions: {
+              format: 'png'
+            },
+            responsive: true,
+            displaylogo: false,
+            modeBarButtonsToRemove: ['select2d', 'lasso2d', 'hoverClosestCartesian',
+              'hoverCompareCartesian', 'toggleSpikelines', 'pan2d', 'zoomOut2d', 'zoomIn2d', 'autoScale2d', 'resetScale2d'],
+          };
+           Plotly.newPlot(plotPane, [data], layout, config);
+        });
+      
     }
   }
   /**
@@ -424,6 +449,7 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
       L.DomEvent.off(this.range._container, 'mouseout', this.uncancelMapDrag, this);
     }
     if (map) {
+      console.log("RemoveMapEvents");
       map.off('layeradd layerremove', this.updateLayers, this);
       map.off('zoom', this.addSplitScreenNew, this);
       map.off('move', this.addSplitScreenNew, this);
@@ -632,11 +658,11 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
 
         this.comparisonBaseLayers.push(L.imageOverlay('https://wacodis.maps.arcgis.com/sharing/rest/content/items/b2fa6b41d64c4a649f4bd6f75e0f5d74/data',
           [[50.9854181, 6.9313883], [51.3190536, 7.6071338]], {
-            opacity: 0.8, pane: 'overlayPane', alt: 'IntraChange'
-          }));
-    
+          opacity: 0.8, pane: 'overlayPane', alt: 'IntraChange'
+        }));
+
         this.wacodisMeta.forEach((element) => {
-            this.comparisonBaseLayers.push(esri.imageMapLayer({
+          this.comparisonBaseLayers.push(esri.imageMapLayer({
             url: wacodisUrl + "/" + element["name"].split("/")[1] + "/" + element["type"],
             maxZoom: 16, opacity: 0.8, alt: element["name"].split("/")[1], pane: 'overlayPane' + this.comparisonBaseLayers.length
           }));
@@ -662,11 +688,11 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
       });
       this.comparisonBaseLayers.push(L.imageOverlay('https://wacodis.maps.arcgis.com/sharing/rest/content/items/b2fa6b41d64c4a649f4bd6f75e0f5d74/data',
         [[50.9854181, 6.9313883], [51.3190536, 7.6071338]], {
-          opacity: 0.8, pane: 'overlayPane', alt: 'IntraChange'
-        }));
-    
- 
-    
+        opacity: 0.8, pane: 'overlayPane', alt: 'IntraChange'
+      }));
+
+
+
     }
   }
   private queryImagelayer(side: string, id: number) {
@@ -983,6 +1009,6 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
 
 
   ngOnDestroy(): void {
-  this.removeEvents();
+    this.removeEvents();
   }
 }
