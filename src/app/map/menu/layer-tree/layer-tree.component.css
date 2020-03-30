@@ -29,7 +29,8 @@
     right: 0;
     bottom: 0;
     background-color: #718296;
-    width: 600px;
+   width:600px;
+    z-index: 1000;
 
 }
 .phenomena .phenomenonSelector {
@@ -51,6 +52,7 @@
     top:250px;
     right: 0px;
     display: inline;
+    z-index: 1000;
 }
 
 #pieChart{

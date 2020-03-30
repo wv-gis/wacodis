@@ -6,6 +6,7 @@ import { legendParam } from '../../legend/extended/extended-ol-layer-legend-url/
 import Plotly from 'plotly.js-dist';
 import { CsvDataService } from 'src/app/settings/csvData.service';
 import * as esri from 'esri-leaflet';
+import { MapCache } from '@helgoland/map';
 
 export class StatisticData {
   date: Date;
@@ -30,7 +31,7 @@ const categoryVal = ["no Data", "Acker - Mais", "Acker - sonstige Ackerfruch", "
   styleUrls: ['./layer-tree.component.css']
 })
 export class LayerTreeComponent implements OnInit {
-  @Input() baselayers: BaseLayer[];
+  @Input() baselayers: L.TileLayer[]|esri.ImageMapLayer[];
   @Input() mapId: string;
   @Input() drawChart: boolean = false;
 
@@ -50,8 +51,8 @@ export class LayerTreeComponent implements OnInit {
   public selectedTime: Date = new Date();
   public selectedIndex: number = 1;
 
-  constructor(private mapService: OlMapService, protected csvService: CsvDataService) {    
-    this.responseInterp = csvService.getInterpText(); 
+  constructor(private mapService: OlMapService, private mapCache: MapCache) {    
+   
   }
 
   ngOnInit() {
@@ -68,9 +69,9 @@ export class LayerTreeComponent implements OnInit {
         document.getElementById('map').setAttribute('style', 'width: 82% ;height: 100%; padding: 5px; position:fixed;');
       }
     }
-    this.mapService.getMap(this.mapId).subscribe(map => map.updateSize());
-    this.mapService.getMap(this.mapId).subscribe(map => map.getView());
-    // return this.isActive = !this.isActive;
+    // this.mapService.getMap(this.mapId).subscribe(map => map.updateSize());
+    // this.mapService.getMap(this.mapId).subscribe(map => map.getView());
+    this.mapCache.getMap(this.mapId).invalidateSize();
 
     this.isActive = !this.isActive;
   }
@@ -83,14 +84,15 @@ export class LayerTreeComponent implements OnInit {
     // document.getElementById("legendToast").hidden =  true;
     this.legendUrls = urls;
   }
-  public toggleVisibility(layer: BaseLayer) {
+  public toggleVisibility(layer: L.TileLayer|esri.ImageMapLayer) {
 
-    layer.setVisible(!layer.getVisible());
+    layer.setOpacity(0);
   }
 
   public removeLayer(i: number) {
     const layer = this.baselayers.splice(i, 1);
-    this.mapService.getMap(this.mapId).subscribe(map => map.removeLayer(layer[0]));
+    // this.mapService.getMap(this.mapId).subscribe(map => map.removeLayer(layer[0]));
+    // this.mapCache.getMap('map').removeLayer(layer[0]);
   }
 
 

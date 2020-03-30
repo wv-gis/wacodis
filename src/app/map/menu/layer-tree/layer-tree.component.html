@@ -13,20 +13,22 @@
           <wv-extended-ol-layer-title [layer]="layer"></wv-extended-ol-layer-title>
           <span class="fa fa-times" (click)="removeLayer(i)" style="float: right;"></span>
         </div>
-        <div>
+        <!-- <div>
           <n52-ol-layer-abstract [layer]="layer"></n52-ol-layer-abstract>
-        </div>
+        </div> -->
         <div class="legendicons">
-          <span style="margin: 5px;" class="fa" [ngClass]="{'fa-eye-slash': !layer?.getVisible(), 'fa-eye': layer?.getVisible()}" (click)="toggleVisibility(layer)"></span>
+          <wv-extended-visibility-toggler [layer]="layer"></wv-extended-visibility-toggler>
+          <!-- [ngClass]="{'fa-eye-slash': !layer?.getVisible(), 'fa-eye': layer?.getVisible()}" -->
+          <!-- <span style="margin: 5px;" class="fa"  (click)="toggleVisibility(layer)"></span> -->
           <wv-extended-ol-layer-zoom-extent [layer]="layer" [mapId]="mapId"></wv-extended-ol-layer-zoom-extent>
           <wv-extended-ol-layer-legend-url [layer]="layer" (legendUrl)="getLegendUrl($event)" (legendUrls)="getLegendUrls($event)">
           </wv-extended-ol-layer-legend-url>
         </div>
-        <div>
+        <!-- <div>
           <span>Opacity:
             <n52-ol-layer-opacitiy-slider [layer]="layer"></n52-ol-layer-opacitiy-slider>
           </span>
-        </div>
+        </div> -->
         <div>
           <wv-extended-ol-layer-time-selector [layer]="layer" (selIndexTime)="getSelectedTime($event)"></wv-extended-ol-layer-time-selector>
         </div>
@@ -38,7 +40,7 @@
   </div>
 </div>
 
-<div  [ngClass]="{'active': isActive}" *ngIf="drawChart" id="pieChart" style="height: 80%"></div>  
+<div  [ngClass]="{'active': isActive}" *ngIf="drawChart" id="pieChart" ></div>  
 
 <div *ngIf="legendUrls">
     <wv-layer-legend-table [urls]="legendUrls"></wv-layer-legend-table>
