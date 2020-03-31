@@ -48,6 +48,8 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
   public wmsLayer: L.TileLayer;
   public abkLayer: any;
   public mainMap: L.Map;
+  public mapId = 'comparisonMap';
+  public legendUrls: legendParam[];
 
   public comparisonOptions = [];
   public comparisonBaseLayers = [];
@@ -130,7 +132,7 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
             esri.imageMapLayer({ url: legendurl }).metadata((error, legendData) => {
               legendData["layers"][0].legend.forEach((dat, i, arr) => {
                 if (i < 25)
-                  legendResp.push({ url: "data:image/png;base64," + arr[i].imageData, label: arr[i].label });
+                  legendResp.push({ url: "data:image/png;base64," + arr[i].imageData, label: arr[i].label ,layer:metadata["description"] });
               });
               this.controlLegend.onAdd = function (map) {
                 this.controlHtml = L.DomUtil.create('div');
@@ -1006,7 +1008,12 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
       this.rightLayer.setTimeRange(this.defaultRDate, this.defaultRDate);
     }
   }
-
+  public getLegendUrl(url?: string, urls?: string[]) {
+    this.legendUrls = [{ url: url, label: "", layer: url.split('layer=')[1] }];
+  }
+  public getLegendUrls(urls: legendParam[]) {
+    this.legendUrls = urls;
+  }
 
   ngOnDestroy(): void {
     this.removeEvents();

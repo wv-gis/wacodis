@@ -4,6 +4,7 @@ import { ComparisonViewComponent } from '../change-detection/view/comparison-vie
 import { HelgolandCoreModule } from '@helgoland/core';
 import { HelgolandMapModule, HelgolandMapControlModule, HelgolandMapSelectorModule, HelgolandMapViewModule } from '@helgoland/map';
 import { ActivatedRoute } from '@angular/router';
+import { WvMapModule } from '../map/map.module';
 
 @NgModule({
   imports: [
@@ -13,6 +14,7 @@ import { ActivatedRoute } from '@angular/router';
     HelgolandMapControlModule,
     HelgolandMapSelectorModule,
     HelgolandMapViewModule,
+    WvMapModule
   ],
   declarations: [ComparisonViewComponent],
   providers: []
