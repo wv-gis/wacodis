@@ -1,10 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
-import BaseLayer from 'ol/layer/Base';
+// import BaseLayer from 'ol/layer/Base';
 import { OlMapService } from '@helgoland/open-layers';
-import View from 'ol/View';
+// import View from 'ol/View';
 import { legendParam } from '../../legend/extended/extended-ol-layer-legend-url/extended-ol-layer-legend-url.component';
 import Plotly from 'plotly.js-dist';
-import { CsvDataService } from 'src/app/settings/csvData.service';
+// import { CsvDataService } from 'src/app/settings/csvData.service';
 import * as esri from 'esri-leaflet';
 import { MapCache } from '@helgoland/map';
 
@@ -78,21 +78,18 @@ export class LayerTreeComponent implements OnInit {
 
   public getLegendUrl(url?: string, urls?: string[]) {
     // document.getElementById("legendToast").hidden =  false;
-    this.legendUrls = [{ url: url, label: "" }];
+    this.legendUrls = [{ url: url, label: "", layer: url.split('layer=')[1] }];
   }
   public getLegendUrls(urls: legendParam[]) {
     // document.getElementById("legendToast").hidden =  true;
     this.legendUrls = urls;
   }
-  public toggleVisibility(layer: L.TileLayer|esri.ImageMapLayer) {
-
-    layer.setOpacity(0);
-  }
+ 
 
   public removeLayer(i: number) {
     const layer = this.baselayers.splice(i, 1);
     // this.mapService.getMap(this.mapId).subscribe(map => map.removeLayer(layer[0]));
-    // this.mapCache.getMap('map').removeLayer(layer[0]);
+    this.mapCache.getMap(this.mapId).removeLayer(layer[0]);
   }
 
 
