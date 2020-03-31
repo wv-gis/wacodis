@@ -1,10 +1,12 @@
 
 <div style="height: 900px;">
   <div id="map" style="width: 82%; height: 90%; padding: 5px; position:absolute;">
+    <div class="map-wrapper" style="height: 100%;">
     <n52-station-map-selector [mapId]="mapId" [serviceUrl]="providerUrl" [filter]="stationFilter" [zoomControlOptions]="zoomControlOptions"
     [mapOptions]="mapOptions" [fitBounds]="fitBounds" [avoidZoomToSelection]="avoidZoomToSelection" [baseMaps]="baseMaps"
      [layerControlOptions]="layerControlOptions" (onSelected)="onStationSelected($event)"
     [cluster]="cluster" [statusIntervals]="statusIntervals" (onContentLoading)="loadingStations = $event"></n52-station-map-selector>
+  </div>
     <!-- <n52-ol-map class="map mapHeight" [mapId]="mapId" [zoom]="zoom" [lat]="lat" [lon]="lon" [showZoomControl]="showZoomControl"
       [showAttributionControl]="showAttributionControl">
       <n52-ol-layer *ngFor="let layer of baselayers" [layer]="layer"></n52-ol-layer>

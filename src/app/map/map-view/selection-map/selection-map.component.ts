@@ -1,26 +1,23 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import * as esri from 'esri-leaflet';
 import { GeoSearchOptions, LayerOptions, MapCache } from '@helgoland/map';
 import { Station, Phenomenon, SettingsService, Settings, ParameterFilter } from '@helgoland/core';
-import { RequestTokenService } from 'src/app/services/request-token.service';
-import BaseLayer from 'ol/layer/Base';
-import Layer from 'ol/layer/Layer';
-import TileLayer from 'ol/layer/Tile';
+// import { RequestTokenService } from 'src/app/services/request-token.service';
+// import BaseLayer from 'ol/layer/Base';
+// import Layer from 'ol/layer/Layer';
+// import TileLayer from 'ol/layer/Tile';
 import { OlMapService } from '@helgoland/open-layers';
-import { OSM, TileWMS, ImageArcGISRest } from 'ol/source';
-import ImageLayer from 'ol/layer/Image';
+// import { OSM, TileWMS, ImageArcGISRest } from 'ol/source';
+// import ImageLayer from 'ol/layer/Image';
 // import Map from 'ol/Map.js';
-import { ScaleLine } from 'ol/control';
-import { Tile } from 'ol/layer';
-import ImageWMS from 'ol/source/ImageWMS';
+// import { ScaleLine } from 'ol/control';
+// import { Tile } from 'ol/layer';
+// import ImageWMS from 'ol/source/ImageWMS';
 
 import * as L from 'leaflet';
 
 
 const senLayer = 'https://sentinel.arcgis.com/arcgis/rest/services/Sentinel2/ImageServer';
-const landService = "https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/EO_WACODIS_DAT_LANDCOVERService/ImageServer";
-const intraLandService = 'https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/EO_WACODIS_DAT_INTRA_LAND_COVER_CLASSIFICATION_Service/ImageServer';
-const waterTempService = 'https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/EO_WACODIS_DAT_WATER_SURFACE_TEMPERATURE_Service/ImageServer';
 const WvG_URL = 'http://fluggs.wupperverband.de/secman_wss_v2/service/WMS_WV_Oberflaechengewaesser_EZG/guest?';
 const wacodisUrl = "https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS";
 
@@ -29,7 +26,7 @@ const wacodisUrl = "https://gis.wacodis.demo.52north.org:6443/arcgis/rest/servic
   templateUrl: './selection-map.component.html',
   styleUrls: ['./selection-map.component.css']
 })
-export class SelectionMapComponent implements OnInit {
+export class SelectionMapComponent implements OnInit,AfterViewInit {
 
 
   public searchOptions: GeoSearchOptions = { countrycodes: [] };
@@ -66,10 +63,17 @@ export class SelectionMapComponent implements OnInit {
   public statusIntervals = false;
   public mapOptions: L.MapOptions = { dragging: true, zoomControl: false };
 
-  constructor(private mapService: OlMapService, private settingsService: SettingsService<Settings>, private requestTokenSrvc: RequestTokenService, private mapCache: MapCache) {
+  constructor(private mapService: OlMapService, private settingsService: SettingsService<Settings>, private mapCache: MapCache) {
     if (this.settingsService.getSettings().datasetApis) {
       this.providerUrl = this.settingsService.getSettings().defaultService.apiUrl;
     }
+  }
+  ngAfterViewInit(): void {
+   this.mapCache.getMap(this.mapId).addLayer(
+     L.tileLayer.wms(WvG_URL,{
+       layers: '0', format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; Wupperverband'
+     })
+   );
   }
 
 
@@ -188,7 +192,8 @@ export class SelectionMapComponent implements OnInit {
         });
         this.baselayers.forEach((blayer,i,arr)=>{
           this.mapCache.getMap(this.mapId).addLayer(blayer);
-        })
+        });
+        L.control.scale().addTo(this.mapCache.getMap(this.mapId));
       }
     });
 
