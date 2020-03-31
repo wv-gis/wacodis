@@ -22,6 +22,8 @@ import { ExtendedOlLayerLegendUrlComponent } from './legend/extended/extended-ol
 import { ExtendedOlLayerAnimateTimeComponent } from './legend/extended/extended-ol-layer-animate-time/extended-ol-layer-animate-time.component';
 import { LayerLegendTableComponent } from './menu/layer-legend-table/layer-legend-table.component';
 import { ExtendedVisibilityTogglerComponent } from './legend/extended/extended-visibility-toggler/extended-visibility-toggler.component';
+import { ExtendedOpacitySliderComponent } from './legend/extended/extended-opacity-slider/extended-opacity-slider.component';
+import { ExtendedLayerAbstractComponent } from './legend/extended/extended-layer-abstract/extended-layer-abstract.component';
 
 @NgModule({
   imports: [
@@ -37,8 +39,8 @@ import { ExtendedVisibilityTogglerComponent } from './legend/extended/extended-v
     FormsModule,
 
   ],
-  declarations: [SelectionMapComponent, LayerTreeComponent, MenuBarComponent, WvExtendedServiceSelectorComponent, ExtendedExtentControlComponent, ExtendedOlLayerTitleComponent, ExtendedOlLayerTimeSelectorComponent, ExtendedOlLayerZoomExtentComponent, ExtendedOlLayerLegendUrlComponent, ExtendedOlLayerAnimateTimeComponent, LayerLegendTableComponent, ExtendedVisibilityTogglerComponent],
-  exports: [SelectionMapComponent, LayerTreeComponent, MenuBarComponent, WvExtendedServiceSelectorComponent],
+  declarations: [SelectionMapComponent, LayerTreeComponent, MenuBarComponent, WvExtendedServiceSelectorComponent, ExtendedExtentControlComponent, ExtendedOlLayerTitleComponent, ExtendedOlLayerTimeSelectorComponent, ExtendedOlLayerZoomExtentComponent, ExtendedOlLayerLegendUrlComponent, ExtendedOlLayerAnimateTimeComponent, LayerLegendTableComponent, ExtendedVisibilityTogglerComponent, ExtendedOpacitySliderComponent, ExtendedLayerAbstractComponent],
+  exports: [SelectionMapComponent, LayerTreeComponent, MenuBarComponent, WvExtendedServiceSelectorComponent, LayerLegendTableComponent, ExtendedOlLayerLegendUrlComponent],
   providers: [ExtendedSettingsService, SelectedProviderService, RequestTokenService, OlMapService],
 })
 export class WvMapModule { }
