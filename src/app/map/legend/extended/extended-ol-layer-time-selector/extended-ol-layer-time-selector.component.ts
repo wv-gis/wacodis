@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { OlLayerTimeSelectorComponent, WmsCapabilitiesService } from '@helgoland/open-layers';
-import { ImageWMS, ImageArcGISRest } from 'ol/source';
-import Layer from 'ol/layer/Layer';
+// import { ImageWMS, ImageArcGISRest } from 'ol/source';
+// import Layer from 'ol/layer/Layer';
 import * as esri from "esri-leaflet";
 import * as L from 'leaflet';
 
@@ -50,7 +50,8 @@ export class ExtendedOlLayerTimeSelectorComponent implements OnInit { //extends 
             error => { this.timeAttribute = false },
             () => this.loading = false
           );
-        if (this.timeAttribute) { }
+        
+        if (!this.timeDimensions) { this.timeAttribute = false ,this.loading = false}
         // this.determineCurrentTimeParameter();
       }
     } else if (this.layer.options.url) {
@@ -108,7 +109,6 @@ export class ExtendedOlLayerTimeSelectorComponent implements OnInit { //extends 
       // });
       this.layer.setTimeRange(new Date((new Date(time.getFullYear(), time.getMonth(), time.getDate() + 2).getTime() - 2628000000))
         , new Date(time.getFullYear(), time.getMonth(), time.getDate() + 2))
-      // this.selTime.emit(this.currentTime);
       this.selIndexTime.emit(this.timeDimensions.indexOf(time));
     }
   }

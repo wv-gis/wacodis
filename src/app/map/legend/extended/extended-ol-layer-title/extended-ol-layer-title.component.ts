@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { OlLayerTitleComponent, WmsCapabilitiesService } from '@helgoland/open-layers';
-import {ImageWMS, ImageArcGISRest} from 'ol/source';
+// import {ImageWMS, ImageArcGISRest} from 'ol/source';
 import * as esri from "esri-leaflet";
 import L from 'leaflet';
 

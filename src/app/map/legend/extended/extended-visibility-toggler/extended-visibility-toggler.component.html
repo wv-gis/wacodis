@@ -1,1 +1,2 @@
-<span [ngClass]="{'fa-eye': layer.options.opacity > 0, 'fas fa-eye-slash': layer.options.opacity == 0}" (click)="toggleVisibility()"></span>
+<!-- <span [ngClass]="{'fas fa-eye-slash': layer.options.opacity == 0, 'fas fa-eye': layer.options.opacity != 0}" (click)="toggleVisibility()"></span> -->
+<span [ngClass]="[layer.options.opacity == 0 ? 'fas fa-eye-slash':'fas fa-eye']" (click)="toggleVisibility()"></span>

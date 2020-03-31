@@ -1,16 +1,16 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import * as esri  from 'esri-leaflet';
 import * as L from 'leaflet'; 
+
 
 @Component({
   selector: 'wv-extended-visibility-toggler',
   templateUrl: './extended-visibility-toggler.component.html',
   styleUrls: ['./extended-visibility-toggler.component.css']
 })
-export class ExtendedVisibilityTogglerComponent implements OnInit {
+export class ExtendedVisibilityTogglerComponent {
   @Input() layer: any | esri.ImageMapLayer;
 
-  protected visible: boolean= false;
 
   constructor() { }
  
@@ -31,7 +31,5 @@ export class ExtendedVisibilityTogglerComponent implements OnInit {
     }
     
   }
-  ngOnInit() {
-  }
-
+  
 }

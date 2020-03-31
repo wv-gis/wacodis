@@ -1,13 +1,14 @@
 import { Component, Output, EventEmitter, Input} from '@angular/core';
 import { OlLayerLegendUrlComponent, WmsCapabilitiesService } from '@helgoland/open-layers';
-import { ImageWMS } from 'ol/source';
-import ImageArcGISRest from 'ol/source/ImageArcGISRest';
+// import { ImageWMS } from 'ol/source';
+// import ImageArcGISRest from 'ol/source/ImageArcGISRest';
 import * as esri from "esri-leaflet";
 import L from 'leaflet';
 
 export interface legendParam{
   url: string;
   label: string;
+  layer: string;
 }
 
 @Component({
@@ -51,7 +52,7 @@ export class ExtendedOlLayerLegendUrlComponent {//extends OlLayerLegendUrlCompon
       esri.imageMapLayer({url: legendurl}).metadata((error,legendData)=>{
        legendData["layers"][0].legend.forEach((dat,i,arr)=>{
          if(i<25)
-          legendResp.push({url: "data:image/png;base64," + arr[i].imageData, label: arr[i].label}) ;
+          legendResp.push({url: "data:image/png;base64," + arr[i].imageData, label: arr[i].label, layer:metadata["description"] }) ;
         });
         this.legendUrls.emit(legendResp);
       });
