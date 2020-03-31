@@ -5,10 +5,9 @@
             <n52-ol-layer *ngFor="let layer of baselayers" [layer]="layer"></n52-ol-layer>
             <n52-ol-overview-map [collapsible]="true" [layers]="overviewMapLayers" position="bottomright"></n52-ol-overview-map>
         </n52-ol-map> -->
-        <n52-station-map-selector [mapId]="mapId" [serviceUrl]="providerUrl" [filter]="stationFilter" [zoomControlOptions]="zoomControlOptions"
-        [mapOptions]="mapOptions" [fitBounds]="fitBounds" [avoidZoomToSelection]="avoidZoomToSelection" [baseMaps]="baseMaps"
-         [layerControlOptions]="layerControlOptions" (onSelected)="onStationSelected($event)"
-        [cluster]="cluster" [statusIntervals]="statusIntervals" (onContentLoading)="loadingStations = $event"></n52-station-map-selector>
+        <div class="map-wrapper" style="height: 100%;">
+            <div id="vitality-map" class="map-viewer"></div>
+          </div>
     </div>
     <div style="width: 20%;padding: 5px;">
         <wv-layer-tree style="height: 20%;" id="vitalityTree" [baselayers]="baselayers" [mapId]="mapId"></wv-layer-tree> 
