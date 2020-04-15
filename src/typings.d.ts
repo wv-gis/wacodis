@@ -5,7 +5,9 @@ interface NodeModule {
 }
 
 import * as L from 'leaflet'
+
 import { RasterLayerOptions } from 'esri-leaflet';
+import { Time } from '@angular/common';
 
 
 declare module 'leaflet' {
@@ -21,26 +23,26 @@ declare module 'leaflet' {
     offsetFn?: (center: LatLng, zoom: number, refMap: L.Map, targetMap: L.Map) => LatLng;
   }
 
-  interface Map{
+  interface Map {
     sync(map: Map, options?: SyncOptions): Map;
     unsync(map: Map): Map;
     isSynced(otherMap: Map): boolean;
   }
-    
 
-//  class SyncMap extends Map{
-//    constructor(element: string | HTMLElement, options?: MapOptions)
-//       sync(map: Map, options?: SyncOptions): Map;
-//       unsync(map: Map): Map;
-//       isSynced(otherMap: Map): boolean;
-//   }
-// export function map(element: string | HTMLElement, options?: MapOptions): SyncMap;
 
- 
+  //  class SyncMap extends Map{
+  //    constructor(element: string | HTMLElement, options?: MapOptions)
+  //       sync(map: Map, options?: SyncOptions): Map;
+  //       unsync(map: Map): Map;
+  //       isSynced(otherMap: Map): boolean;
+  //   }
+  // export function map(element: string | HTMLElement, options?: MapOptions): SyncMap;
+
+
   namespace Sync {
     export function offSetHelper(ratioRef: number[], ratioTarget: number[]): L.LatLng;
   }
- 
+
 
   interface ImageMapLayerOptions extends RasterLayerOptions {
     url: string;
@@ -86,6 +88,380 @@ declare module 'leaflet' {
     from?: Date;
 
   }
+  // var timeDimension: any;
+  interface TimeDimensionOptions extends L.LayerOptions {
+       /**
+     * @default null
+     */
+    times?: any
+   /**
+    * @default "'P1M/'+today"
+    */
+    timeInterval?: string;
+      /**
+     * @default "P1D"
+     */
+    period?: string;
+
+    validTimeRange?: string;
+    currentTime?: number;
+        /**
+     * @default 3000
+     */
+    loadingTimeout?: number;
+
+    lowerLimitTime?: number;
+    upperLimitTime?: number;
+  }
+
+ 
+  
+
+  namespace TimeDimension {
+
+    abstract class Layer extends L.Layer {
+      options: TimeDimensionLayerOptions
+      constructor(layer: L.TileLayer, options: TimeDimensionLayerOptions);
+      addTo(map: Map): this;
+      eachLayer(method: (layer: Layer) => void, context?: any): this;
+      setZIndex(zIndex: number): this;
+      setOpacity(opacity: number): this;
+      bringToBack(): this;
+      bringtoFront(): this;
+      protected _onNewTimeLoading(ev: Event): this;
+      isReady(time: number): boolean;
+      protected _update():this;
+      getBaseLayer(): L.TimeDimension.Layer;
+      getBounds(): L.LatLngBounds;
+
+      onAdd(map:Map):this;
+      onRemove(map: Map):this;
+    }
+
+    class Player extends L.Layer {
+      constructor(timeDimension: L.TimeDimension, options?: TimeDimensionPlayerOptions)
+      start(numSteps: number): void;
+      stop(): void;
+      pause(): void;
+      release(): void;
+      getTransitionTime(): number;
+      isLooped(): boolean;
+      setTransitionTime(transitionTime: number): void;
+      setLooped(looped: boolean): void;
+    }
+
+    namespace Layer {
+      class WMS extends L.TimeDimension.Layer {
+        constructor(layer: L.TileLayer.WMS, options?: TimeDimensionLayerWMSOptions)
+        getEvents(): { [name: string]: (event: LeafletEvent) => void };
+        eachLayer(method: (layer: Layer) => void, context?: any): this;
+        isReady(time: number): boolean;
+        onAdd(map: Map): this;
+        setZIndex(zIndex: number): this;
+        setOpacity(opacity: number): this;
+        setParams(params: L.WMSParams, noRedraw: boolean): this;
+        setMinimumForwardCache(value: number): void;
+        setAvailableTimes(times: number[]): void;
+        protected _requestTimeDimensionFromCapabilities():this;
+        protected _update():this;
+        protected _unvalidateCache(): void;
+        protected _showLayer(layer: L.TileLayer, time: number):void;
+        protected _evictCachedTimes(keepforward:number, keepbachward:number):void;
+        protected _getLayerForTime(time: number): L.Layer;
+        protected _onNewTimeLoading(ev: Event): this;
+        protected _createLayerForTime(time:number):L.Layer;
+        protected _getLoadedTimes():any[];
+        protected _removeLayers(times:number[]):void;
+        setMinimumForwardCache(value: number): void;
+        protected _getCapabilitiesUrl(): string;
+        protected _parseTimeDimensionFromCapabilities(xml: any):number[];
+        protected _getDefaultTimeFromCapabilities(xml:any): number;
+        protected _getDefaultTimeFromLayerCapabilities(layer: L.TileLayer): number;
+        protected _updateTimeDimensionAvailableTimes();
+        protected _getNearestTime(time: number):number;
+        options: TimeDimensionLayerWMSOptions;
+      }
+    }
+  }
+
+  interface TimeDimensionPlayerOptions extends L.LayerOptions {
+        /**
+     * @default 1000
+     */
+    transitionTime: number;
+
+        /**
+      * @default 5
+      */
+    buffer: number;
+
+         /**
+      * @default 1
+      */
+    minBufferReady: number;
+
+         /**
+      * @default false
+      */
+    loop: boolean;
+
+        /**
+    * @default false
+    */
+      startOver: boolean;
+
+  }
+  interface TimeDimensionLayerWMSOptions extends L.WMSOptions,L.TimeDimensionLayerOptions {
+    /**
+     * @default 0
+     * 
+     */
+    cache?: number;
+   /**
+     * @default cache||0
+     * 
+     */
+    cacheBackward?: number;
+    /**
+     * @default cache||0
+     * 
+     */
+    cacheForward?: number;
+     /**
+     * @default false
+     * 
+     */
+    updateTimeDimension?: boolean;
+       /**
+     * @default "intersect"
+     * 
+     */
+    updateTimeDimensionMode?: string;
+    /**
+     * @default false
+     * 
+     */
+    requestTimeFromCapabilities?: boolean;
+    proxy?: string;
+    getCapabilitiesParams?: Object;
+    getCapabilitiesUrl?: string;
+    getCapabilitiesLayerName?: string;
+    /**
+     * @default false
+     * 
+     */
+    setDefaultTime?: boolean;
+    period?: string;
+    /**
+     * @default layer.options.version||"1.1.1"
+     * 
+     */
+    wmsVersion?: string;
+
+  }
+  interface TimeDimensionLayerOptions extends L.LayerOptions {
+    timeDimension?: L.TimeDimension;
+        /**
+     * @default 1
+     */
+    opacity?: number;
+    /**
+     * @default 1
+     */
+    zIndex?: number;
+
+  }
+   namespace timeDimension {
+    export  function layer(layer: L.Layer, options?: TimeDimensionLayerOptions): TimeDimension.Layer;
+     namespace layer{
+      export  function wms(layer: L.TileLayer.WMS, options?: TimeDimensionLayerWMSOptions): TimeDimension.Layer.WMS;
+    }
+   
+  }
+  export function timeDimension(options?: TimeDimensionOptions): L.TimeDimension;
+  class TimeDimension extends L.Layer {
+    constructor(options?: TimeDimensionOptions);
+    getAvailableTimes(): number[];
+    getCurrentTimeIndex(): number;
+    getCurrentTime(): number;
+    isLoading(): boolean;
+
+    setCurrentTimeIndex(newIndex: number): void;
+    protected _newTimeIndexLoaded():void;
+    protected _checkSyncedLayersReady(time: number): boolean;
+    setCurrentTime(time: number): void;
+    seekNearestTime(time: Date): Date;
+    nextTime(numSteps: number, loop: boolean): void;
+    prepareNextTimes(numSteps: number, howmany: number, loop: any): void;
+    getNumberNextTimesReady(numSteps: number, howmany: number, loop: boolean): number;
+    previousTime(numSteps: number, loop: boolean): void;
+    registerSyncedLayer(layer: L.TimeDimension.Layer): void;
+    unregisterSyncedLayer(layer: L.TimeDimension.Layer): void;
+    protected _onSyncedLayerLoaded(e: Event):void;
+    protected _generateAvailableTimes(): string[];
+    protected _getDefaultCurrentTime(): number;
+    protected _seekNearestTimeIndex(time: number): number;
+    
+    setAvailableTimes(times: number[], mode: string): void;
+    getLowerLimit(): number;
+    getUpperLimit(): number;
+    setLowerLimit(time: number): void;
+    setUpperLimit(time: number): void;
+    setLowerLimitIndex(index: number): void;
+    setUpperLimitIndex(index: number): void;
+    getLowerLimitIndex(): number;
+    getUpperLimitIndex(): number;
+    options: TimeDimensionOptions;
+  }
+  interface KnobOptions {
+       /**
+    * @default 'knob'
+    */
+    className: string;
+   /**
+    * @default 1
+    */
+    step: number;
+     /**
+    * @default 0
+    */
+    rangeMin: number;
+    /**
+    * @default 10
+    */
+    rangeMax: number;
+  }
+  namespace UI {
+    class Knob extends L.Draggable {
+      constructor(slider: string, options?: KnobOptions)
+
+      getMinValue(): number;
+      getMaxValue(): number;
+      setStep(step: number): void;
+      setPosition(x: number): void;
+      getPosition(): number;
+      setValue(v: number): void;
+      getValue(): number;
+    }
+  }
+  interface TimeDimensionMapOptions extends L.MapOptions {
+    /**
+     * @default false
+     */
+    timeDimension?: boolean;
+    timeDimensionOptions?: L.TimeDimensionOptions;
+    /**
+    * @default false
+    */
+    timeDimensionControl?: boolean;
+    timeDimensionControlOptions?: L.TimedimensionControlOptions;
+  }
+  interface TimedimensionControlOptions extends L.ControlOptions{
+    /**
+     * @default 'leaflet-control-timecontrol'
+     *  */
+    styleNS: string;
+    /**
+     * @default 'bottomleft'
+     */
+    position: L.ControlPosition;
+    /**
+     * @default 'Time Control'
+     */
+    title: string;
+    /**
+    * @default true
+    */
+    backwardButton: boolean;
+    /**
+    * @default true
+    */
+    forwardButton: boolean;
+    /**
+    * @default true
+    */
+    playButton: boolean;
+    /**
+    * @default false
+    */
+    playReverseButton: boolean;
+   /**
+    * @default false
+    */
+    loopButton: boolean;
+     /**
+    * @default true
+    */
+    displayDate: boolean;
+    /**
+    * @default true
+    */
+    timeSlider: boolean;
+    /**
+    * @default false
+    */
+    timeSliderDragUpdate: boolean;
+    /**
+    * @default false
+    */
+    limitSliders: boolean;
+    /**
+     * @default 5
+     */
+    limitMinimumRange: number;
+    /**
+    * @default true
+    */
+    speedSlider: boolean;
+    /**
+     * @default 0.1
+     */
+    minSpeed: number;
+    /**
+     * @default 10
+     */
+    maxSpeed: number;
+    /**
+     * @default 0.1
+     */
+    speedStep: number;
+    /**
+     * @default   1
+     */
+    timeSteps: number;
+    /**
+    * @default false
+    */
+    autoPlay: boolean;
+
+    playerOptions: {   
+    /**
+      * @default 1000
+      */
+      transitionTime: number;
+
+    },
+    /**
+  * @default ['Local','UTC']
+  */
+    timeZones: string[];
+    player: L.TimeDimension.Player;
+  }
+  namespace Control {
+    class TimeDimension extends L.Control {
+      constructor(options?: TimedimensionControlOptions)
+
+      addTo(map: Map): this;
+      onRemove?(map: Map): void;
+  
+      options: TimedimensionControlOptions;
+    }
+  }
+  export namespace control {
+    function timeDimension(options?: TimedimensionControlOptions): L.Control.TimeDimension;
+  }
+
+
 
 
   namespace esri {
@@ -136,3 +512,4 @@ declare module 'leaflet' {
   }
 
 }
+
