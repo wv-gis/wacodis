@@ -29,7 +29,13 @@ export class ExtendedVisibilityTogglerComponent {
         this.layer.setOpacity(0);
       }
     }
-    
+    else if(this.layer instanceof L.TimeDimension.Layer){
+      if(this.layer.options.opacity == 0){
+        this.layer.setOpacity(1);
+      }else{
+        this.layer.setOpacity(0);
+      }
+    }
   }
   
 }

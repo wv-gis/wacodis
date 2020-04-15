@@ -53,16 +53,24 @@ export class ExtendedOlLayerTitleComponent implements OnInit {
               this.title = metadata["name"].split("/")[1];
             }          
           });
+        }        
+       else if(this.layer instanceof  L.TimeDimension.Layer.WMS){      
+          const twmsUrl = this.layer.options.getCapabilitiesUrl;
+          const layerName = this.layer.options.getCapabilitiesLayerName;
+          this.wmsCap.getTitle(layerName, twmsUrl).subscribe(res => {       
+            this.title = res;
+          });
         }
-        else{
-          
+        else{       
           const wmsUrl = this.layer._url;
-          if(this.layer instanceof L.TileLayer.WMS){
+        
+          if(this.layer instanceof L.TileLayer.WMS ){
             const layerName = this.layer.wmsParams.layers;
             this.wmsCap.getTitle(layerName, wmsUrl).subscribe(res => {       
               this.title = res;
             });
           }
+         
           
          }
   }

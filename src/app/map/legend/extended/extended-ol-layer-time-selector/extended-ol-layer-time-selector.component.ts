@@ -1,9 +1,11 @@
+declare var require;
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { OlLayerTimeSelectorComponent, WmsCapabilitiesService } from '@helgoland/open-layers';
 // import { ImageWMS, ImageArcGISRest } from 'ol/source';
 // import Layer from 'ol/layer/Layer';
 import * as esri from "esri-leaflet";
 import * as L from 'leaflet';
+require('leaflet-timedimension');
 
 @Component({
   selector: 'wv-extended-ol-layer-time-selector',
@@ -48,7 +50,7 @@ export class ExtendedOlLayerTimeSelectorComponent implements OnInit { //extends 
           .subscribe(
             res => this.timeDimensions = res,
             error => { this.timeAttribute = false },
-            () => this.loading = false
+            () => {this.loading = false; this.timeAttribute=true;}
           );
         
         if (!this.timeDimensions) { this.timeAttribute = false ,this.loading = false}
@@ -87,6 +89,20 @@ export class ExtendedOlLayerTimeSelectorComponent implements OnInit { //extends 
         });
       }
     }
+    else if(this.layer instanceof L.TimeDimension.Layer.WMS){
+      this.loading = true;
+      this.url = this.layer.options.getCapabilitiesUrl;
+      this.layerid = this.layer.options.getCapabilitiesLayerName;
+      this.wmsCap.getTimeDimensionArray(this.layerid, this.url)
+        .subscribe(
+          res => {this.timeDimensions = res; this.timeAttribute=true;},
+          error => { this.timeAttribute = false },
+          () => this.loading = false
+        );
+      
+      if (!this.timeDimensions) { this.timeAttribute = false ,this.loading = false}
+      this.extendedDetermineCurrentTimeParameter();
+    }
   }
 
   public onSelection(time: Date) {
@@ -99,7 +115,22 @@ export class ExtendedOlLayerTimeSelectorComponent implements OnInit { //extends 
     // if (this.layerSource) {
       if(this.layer instanceof L.TileLayer.WMS){
       // this.layerSource.updateParams({ time: time.toISOString()});
-      // this.layer.wmsParams.time = time.toISOString();
+      // this.layer.wmsParams.time = time.toISOString();    
+    }
+    else if(this.layer instanceof L.TimeDimension.Layer){
+      this.selIndexTime.emit(this.timeDimensions.indexOf(this.currentTime));
+      let avTimes: number[]=[];
+      this.timeDimensions.forEach(a=>{
+        avTimes.push(a.getTime());
+      })
+    this.layer.options.timeDimension = new L.TimeDimension({times: avTimes});
+    console.log('Before' + JSON.stringify(this.layer.options.timeDimension));
+    this.layer.options.timeDimension.setAvailableTimes([this.currentTime.getTime()],'replace');
+    this.layer.options.timeDimension.setCurrentTime(this.currentTime.getTime()); 
+    console.log('After'+ JSON.stringify(this.layer.options.timeDimension)); 
+   
+      L.timeDimension().setAvailableTimes([this.currentTime.getTime()],'replace');
+      L.timeDimension().setCurrentTime(this.currentTime.getTime());
     }
     // else if (source instanceof ImageArcGISRest) {
     else if (this.layer instanceof esri.ImageMapLayer) {

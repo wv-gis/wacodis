@@ -16,12 +16,12 @@ export class ExtendedOpacitySliderComponent implements OnInit,DoCheck {
   constructor() { }
 
   ngOnInit(): void {
-    if(this.layer instanceof L.TileLayer || this.layer instanceof esri.ImageMapLayer)
+    if(this.layer instanceof L.TileLayer || this.layer instanceof esri.ImageMapLayer || L.TimeDimension.Layer)
     this.opacity = this.layer.options.opacity * 100;
   }
 
   ngDoCheck() {
-    if(this.layer instanceof L.TileLayer || this.layer instanceof esri.ImageMapLayer){
+    if(this.layer instanceof L.TileLayer || this.layer instanceof esri.ImageMapLayer || L.TimeDimension.Layer){
     const o = this.layer.options.opacity * 100;
     if (this.layer && o !== this.opacity) {
       this.opacity = o;
