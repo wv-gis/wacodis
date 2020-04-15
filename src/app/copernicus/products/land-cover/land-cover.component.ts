@@ -9,9 +9,10 @@ import { RequestTokenService } from 'src/app/services/request-token.service';
 import { OlMapService } from '@helgoland/open-layers';
 import ImageLayer from 'ol/layer/Image';
 import Plotly from 'plotly.js-dist';
-import { CsvDataService } from 'src/app/settings/csvData.service';
 import { StatisticData } from 'src/app/map/menu/layer-tree/layer-tree.component';
 import { ScaleLine } from 'ol/control';
+import * as L from 'leaflet';
+import { MapCache } from '@helgoland/map';
 
 
 
@@ -21,12 +22,12 @@ const categoryVal = ["no Data", "Acker - Mais", "Acker - sonstige Ackerfrucht", 
   "Mischwald", "Nadelbaeume", "Acker - Raps", "Acker - unbewachsen", "Acker - Zwischenfrucht",
   "unbekannt", "unbekannt", "Acker-sonstiges-Offenboden", "Acker-Mais-Offenboden",
   "Acker-Mais-Zwischenfrucht", "Acker-Raps-Offenboden", "Acker-Raps-Zwischenfrucht"];
-  const colors = ["rgb(0,0,0)","rgb(255,215,0)","rgb(184,134,11)","rgb(65,105,225)","rgb(30,144,255)","rgb(190,190,190)","rgb(192,255,62)",
-  "rgb(189,183,107)","rgb(139,69,19)","rgb(205,92,92)","rgb(250,128,144)","rgb(186,85,211)","rgb(60,179,113)","rgb(0,0,0)","rgb(49,139,87)",
-  "rgb(255,255,0)","rgb(205,133,63)","rgb(210,180,140)","rgb(0,0,0)","rgb(0,0,0)","rgb(255,218,185)","rgb(255,250,205)",
-  "rgb(255,246,143)","rgb(205,205,0)","rgb(238,238,0)" ];
+const colors = ["rgb(0,0,0)", "rgb(255,215,0)", "rgb(184,134,11)", "rgb(65,105,225)", "rgb(30,144,255)", "rgb(190,190,190)", "rgb(192,255,62)",
+  "rgb(189,183,107)", "rgb(139,69,19)", "rgb(205,92,92)", "rgb(250,128,144)", "rgb(186,85,211)", "rgb(60,179,113)", "rgb(0,0,0)", "rgb(49,139,87)",
+  "rgb(255,255,0)", "rgb(205,133,63)", "rgb(210,180,140)", "rgb(0,0,0)", "rgb(0,0,0)", "rgb(255,218,185)", "rgb(255,250,205)",
+  "rgb(255,246,143)", "rgb(205,205,0)", "rgb(238,238,0)"];
 const intraLandService = 'https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/EO_WACODIS_DAT_INTRA_LAND_COVER_CLASSIFICATION_Service/ImageServer';
-
+const vitalityService = 'https://www.wms.nrw.de/umwelt/waldNRW';
 
 @Component({
   selector: 'wv-land-cover',
@@ -39,7 +40,7 @@ export class LandCoverComponent implements OnInit {
   public showAttributionControl = true;
   public map: Map;
 
-  public baselayers: BaseLayer[] = [];
+  public baselayers: L.Layer[] = [];
   public overviewMapLayers: Layer[] = [new Tile({
     source: new OSM()
   })];
@@ -61,117 +62,126 @@ export class LandCoverComponent implements OnInit {
   public colorRgb: string[] = [];
   public selectedTime: Date = new Date();
 
-  constructor(private mapService: OlMapService, private requestTokenSrvc: RequestTokenService, private csvService: CsvDataService) {
-    // this.responseInterp = csvService.getInterpText(); 
+  public mapOptions: L.MapOptions = { dragging: true, zoomControl: true, boxZoom: false };
+  public wmsLayer: any;
+  public mainMap: L.Map;
+
+  constructor(private mapService: OlMapService, private requestTokenSrvc: RequestTokenService, private mapCache: MapCache) {
+  
   }
 
   ngOnInit() {
 
-
-  
-
-
-    
-        // var data=[
-        //   {x: [this.stats[0].date,this.stats[15].date,this.stats[29].date,this.stats[43].date,this.stats[57].date,
-        //     this.stats[71].date,this.stats[85].date,this.stats[99].date,this.stats[112].date], 
-        //     y:[this.stats[0].value,this.stats[15].value,this.stats[29].value,this.stats[43].value,this.stats[57].value,
-        //     this.stats[71].value,this.stats[85].value,this.stats[99].value,this.stats[112].value ], 
-        //     stackgroup: 'one', groupnorm:'percent', name: categoryVal[this.stats[0].class]},
-        //     {x: [this.stats[1].date,this.stats[16].date,this.stats[30].date,this.stats[44].date,this.stats[58].date,
-        //       this.stats[72].date,this.stats[86].date,this.stats[100].date,this.stats[113].date], 
-        //       y:[this.stats[1].value,this.stats[16].value,this.stats[30].value,this.stats[44].value,this.stats[58].value,
-        //       this.stats[72].value,this.stats[86].value,this.stats[100].value,this.stats[113].value ], 
-        //       stackgroup: 'one', name: categoryVal[this.stats[1].class]},
-        //       {x: [this.stats[2].date,this.stats[17].date,this.stats[31].date,this.stats[45].date,this.stats[59].date,
-        //         this.stats[73].date,this.stats[87].date,this.stats[101].date,this.stats[114].date], 
-        //         y:[this.stats[2].value,this.stats[17].value,this.stats[31].value,this.stats[45].value,this.stats[59].value,
-        //         this.stats[73].value,this.stats[87].value,this.stats[101].value,this.stats[114].value ], 
-        //         stackgroup: 'one', name: categoryVal[this.stats[2].class]},
-        //         {x: [this.stats[3].date,this.stats[18].date,this.stats[32].date,this.stats[46].date,this.stats[60].date,
-        //           this.stats[74].date,this.stats[88].date,this.stats[102].date,this.stats[115].date], 
-        //           y:[this.stats[3].value,this.stats[18].value,this.stats[32].value,this.stats[46].value,this.stats[60].value,
-        //           this.stats[74].value,this.stats[88].value,this.stats[102].value,this.stats[115].value ], 
-        //           stackgroup: 'one', name: categoryVal[this.stats[3].class]},
-        //           {x: [this.stats[4].date,this.stats[19].date,this.stats[33].date,this.stats[47].date,this.stats[61].date,
-        //             this.stats[75].date,this.stats[89].date,this.stats[103].date,this.stats[116].date], 
-        //             y:[this.stats[4].value,this.stats[19].value,this.stats[33].value,this.stats[47].value,this.stats[61].value,
-        //             this.stats[75].value,this.stats[89].value,this.stats[103].value,this.stats[116].value ], 
-        //             stackgroup: 'one', name: categoryVal[this.stats[4].class]},
-        //             {x: [this.stats[5].date,this.stats[20].date,this.stats[34].date,this.stats[48].date,this.stats[62].date,
-        //               this.stats[76].date,this.stats[90].date,this.stats[104].date,this.stats[117].date], 
-        //               y:[this.stats[5].value,this.stats[20].value,this.stats[34].value,this.stats[48].value,this.stats[62].value,
-        //               this.stats[76].value,this.stats[90].value,this.stats[104].value,this.stats[117].value ], 
-        //               stackgroup: 'one', name: categoryVal[this.stats[5].class]},
-        //               {x: [this.stats[6].date,this.stats[21].date,this.stats[35].date,this.stats[49].date,this.stats[63].date,
-        //                 this.stats[77].date,this.stats[91].date,this.stats[105].date,this.stats[118].date], 
-        //                 y:[this.stats[6].value,this.stats[21].value,this.stats[35].value,this.stats[49].value,this.stats[63].value,
-        //                 this.stats[77].value,this.stats[91].value,this.stats[105].value,this.stats[118].value ], 
-        //                 stackgroup: 'one', name: categoryVal[this.stats[6].class]},
-        //                 {x: [this.stats[7].date,this.stats[22].date,this.stats[36].date,this.stats[50].date,this.stats[64].date,
-        //                   this.stats[78].date,this.stats[92].date,this.stats[106].date,this.stats[119].date], 
-        //                   y:[this.stats[7].value,this.stats[22].value,this.stats[36].value,this.stats[50].value,this.stats[64].value,
-        //                   this.stats[78].value,this.stats[92].value,this.stats[106].value,this.stats[119].value ], 
-        //                   stackgroup: 'one', name: categoryVal[this.stats[7].class]},
-        //                   {x: [this.stats[8].date,this.stats[23].date,this.stats[37].date,this.stats[51].date,this.stats[65].date,
-        //                     this.stats[79].date,this.stats[93].date,this.stats[107].date,this.stats[120].date], 
-        //                     y:[this.stats[8].value,this.stats[23].value,this.stats[37].value,this.stats[51].value,this.stats[65].value,
-        //                     this.stats[79].value,this.stats[93].value,this.stats[107].value,this.stats[120].value ], 
-        //                     stackgroup: 'one', name: categoryVal[this.stats[8].class]},
-    
-    
-        //                     {x: [this.stats[9].date,this.stats[24].date,this.stats[38].date,this.stats[52].date,this.stats[66].date,
-        //                      ], 
-        //                       y:[this.stats[9].value,this.stats[24].value,this.stats[38].value,this.stats[52].value,this.stats[66].value,
-        //                      ], stackgroup: 'one', name: categoryVal[this.stats[9].class]},
-        //                       {x: [this.stats[10].date,this.stats[25].date,this.stats[38].date,this.stats[52].date,this.stats[66].date,
-        //                         this.stats[80].date,this.stats[94].date,this.stats[108].date,this.stats[121].date], 
-        //                         y:[this.stats[10].value,this.stats[25].value,this.stats[38].value,this.stats[52].value,this.stats[66].value,
-        //                         this.stats[80].value,this.stats[94].value,this.stats[108].value,this.stats[121].value ], 
-        //                         stackgroup: 'one', name: categoryVal[this.stats[10].class]},
-        //                         {x: [this.stats[11].date,this.stats[25].date,this.stats[39].date,this.stats[53].date,this.stats[67].date,
-        //                           this.stats[81].date,this.stats[95].date,this.stats[109].date,this.stats[122].date], 
-        //                           y:[this.stats[11].value,this.stats[25].value,this.stats[39].value,this.stats[53].value,this.stats[67].value,
-        //                           this.stats[81].value,this.stats[95].value,this.stats[109].value,this.stats[122].value ], 
-        //                           stackgroup: 'one', name: categoryVal[this.stats[11].class]},
-
-        //                           {x: [this.stats[12].date,,this.stats[123].date], 
-        //                             y:[this.stats[12].value,this.stats[123].value ], 
-        //                             stackgroup: 'one', name: categoryVal[this.stats[12].class]},
-        //                             {x: [this.stats[13].date,this.stats[26].date,this.stats[40].date,this.stats[54].date,this.stats[68].date,
-        //                               this.stats[82].date,this.stats[96].date,this.stats[110].date,this.stats[123].date], 
-        //                               y:[this.stats[13].value,this.stats[26].value,this.stats[40].value,this.stats[54].value,this.stats[68].value,
-        //                               this.stats[82].value,this.stats[96].value,this.stats[110].value,this.stats[123].value ], 
-        //                               stackgroup: 'one', name: categoryVal[this.stats[13].class]},
-    
-        // ]
-    
-    
-      
-      
-
-
-
-    this.mapService.getMap(this.mapId).subscribe((map) => {
-      map.getLayers().clear();
-      map.addControl(new ScaleLine({units: "metric"}));
-      map.addLayer(new Tile({
-        source: new OSM()
-      }));
+    this.wmsLayer = L.tileLayer.wms('http://ows.terrestris.de/osm/service?',
+    {
+      layers: 'OSM-WMS', format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      className: 'OSM'
     });
 
-    this.baselayers.push(
-      new ImageLayer({
-        visible: true,
-        source: new ImageArcGISRest({
-          ratio: 1,
-          params: {
-            'LAYERS': 'Wacodis/EO_WACODIS_DAT_INTRA_LAND_COVER_CLASSIFICATION_Service',
-          },
-          url: intraLandService
-        })
-      })
-    );
+  this.mainMap = L.map(this.mapId, this.mapOptions).setView([51.161, 7.482], 10);
+
+  this.mainMap.addLayer(this.wmsLayer);
+  L.control.scale().addTo(this.mainMap);
+  this.mapCache.setMap(this.mapId,this.mainMap);
+    // var mousePosition = [];
+    this.sentinelLayer = esri.imageMapLayer({url: intraLandService, opacity: 0.8, maxZoom: 16});
+    this.mainMap.addLayer(this.sentinelLayer);
+    
+    // this.mapService.getMap(this.mapId).subscribe((map) => {
+    //   map.getLayers().clear();
+    //   map.addControl(new ScaleLine({ units: "metric" }));
+    //   map.addLayer(new Tile({
+    //     source: new OSM()
+    //   }));
+
+    //   map.on('click', function (evt) {
+    //     mousePosition = evt.coordinate;
+    //     map.forEachLayerAtPixel(evt.pixel,(layer,arr)=>{
+
+    //       let identifiedPixel;
+    //       let dateVal: { date: Date, value: number }[] = [];
+    //       let dates: Date[]=[];
+    //       let values: number[]=[];
+    //         imageMap.bindPopup(function (error, identifyResults, response) {
+    //           if (error) {
+    //             console.error(error);
+    //             return;
+    //           }
+             
+    //           identifiedPixel = identifyResults.pixel.properties.values.reverse();
+    //           console.log(identifiedPixel);
+    //           identifyResults.catalogItems.features.forEach((f, i, arr) => {
+    //             dateVal.push({ date: new Date(f.properties.startTime), value: identifiedPixel[i] });
+    //           });
+    //           dateVal.sort(function (a, b) { return a.date.getTime() - b.date.getTime(); });
+    //           dateVal.forEach((v, i, arr) => {
+    //             dates.push(v.date);
+    //             values.push(v.value);
+    //           });
+    
+    //           let data = {
+    //             x: dates,
+    //             y: values,
+    //             mode: 'lines+markers',
+    //             type: 'scatter'
+    //           };
+    //           let layout = {
+    //             title: "Pixelverlauf",
+    //             yaxis: {
+    //               title: 'Pixelwert',
+    //               showline: true,
+    //             },
+    //             xaxis: { showline: true },
+    //             height: 390,
+    //           };
+    //           let config = {
+    //             toImageButtonOptions: {
+    //               format: 'png'
+    //             },
+    //             responsive: true,
+    //             displaylogo: false,
+    //             modeBarButtonsToRemove: ['select2d', 'lasso2d', 'hoverClosestCartesian',
+    //               'hoverCompareCartesian', 'toggleSpikelines', 'pan2d', 'zoomOut2d', 'zoomIn2d', 'autoScale2d', 'resetScale2d'],
+    //           };
+    //            Plotly.newPlot("pixelPlot", [data], layout, config);
+    //         });
+        
+    //     });
+    //   });
+    // });
+
+    // let imageSource = new ImageArcGISRest({
+    //   ratio: 1,
+    //   params: {
+    //     'LAYERS': 'Wacodis/EO_WACODIS_DAT_INTRA_LAND_COVER_CLASSIFICATION_Service',
+    //   },
+    //   url: intraLandService
+    // });
+    // this.baselayers.push(
+    //   new ImageLayer({
+    //     visible: true,
+    //     source: imageSource
+    //   })
+    // );
+    // this.baselayers.push(this.wmsLayer);
+    this.baselayers.push(this.sentinelLayer);
+
+    // let forestSource = new ImageWMS({
+    //   attributions: "Datenlizenz Deutschland – Namensnennung – Version 2.0",
+    //   params: {
+    //     'LAYERS': 'waldbedeckung_Sentinel2',
+    //   },
+    //   url: vitalityService
+    // });
+
+    // this.baselayers.push(
+    //   new ImageLayer({
+    //     visible: false,
+    //     source: forestSource
+    //   })
+    // );
+
   }
+
 
 }

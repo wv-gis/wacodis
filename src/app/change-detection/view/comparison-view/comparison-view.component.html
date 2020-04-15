@@ -25,6 +25,9 @@
        [avoidZoomToSelection]="avoidZoomToSelection" [baseMaps]="defaultBaseMap"></n52-station-map-selector> -->
   </div> 
   <div id="pixelValue" class="leaflet-bar" style="width:20%;" #pixelValue>Click map for RightLayer PixelInfo</div>
+  <div *ngIf="legendUrls">
+    <wv-layer-legend-table [urls]="legendUrls"></wv-layer-legend-table>
+</div>
 </div>
 <div class="view-legend">
   <table class="table">
@@ -38,7 +41,8 @@
               <div *ngFor="let item of unresolvableServices">
                 <div style="color: red;">{{item}} is currently not reachable</div>
             </div>
-            </div>       
+            </div>   
+            <wv-extended-ol-layer-legend-url [layer]="leftLayer" (legendUrl)="getLegendUrl($event)" (legendUrls)="getLegendUrls($event)"></wv-extended-ol-layer-legend-url>    
           <!-- <label>{{leftLayer?.options.alt}} {{defaultLDate | date: 'mediumDate'}}</label> -->
         </td>
         <td>
@@ -55,7 +59,8 @@
               <div *ngFor="let item of unresolvableServices">
                 <div style="color: red;">{{item}} is currently not reachable</div>
             </div>
-            </div>            
+            </div>  
+            <wv-extended-ol-layer-legend-url [layer]="rightLayer" (legendUrl)="getLegendUrl($event)" (legendUrls)="getLegendUrls($event)"></wv-extended-ol-layer-legend-url>          
           <!-- <label>{{rightLayer?.options.alt}} {{defaultRDate | date: 'mediumDate'}}</label> -->
         </td>
         <td>

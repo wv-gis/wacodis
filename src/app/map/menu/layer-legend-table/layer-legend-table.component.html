@@ -9,9 +9,13 @@
     <table>
       <tbody id="tableLegend">
         <div>
+          <tr>
+            <td><b>{{urls[0].layer}}</b></td>
+          </tr>
           <tr *ngFor="let url of urls,let i= index">
-            <img src={{url.url}}>
+            
             <td>
+              <img src={{url.url}}>
               {{url.label}}
             </td>
           </tr>

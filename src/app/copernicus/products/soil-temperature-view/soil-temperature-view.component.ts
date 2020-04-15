@@ -1,16 +1,20 @@
-import { Component, OnInit } from '@angular/core';
-import Map from 'ol/Map.js';
-import BaseLayer from 'ol/layer/Base';
-import Layer from 'ol/layer/Layer';
-import { Tile } from 'ol/layer';
-import { OSM, TileWMS, ImageWMS, ImageArcGISRest } from 'ol/source';
-import * as esri from 'esri-leaflet';
-import { RequestTokenService } from 'src/app/services/request-token.service';
-import { OlMapService } from '@helgoland/open-layers';
-import ImageLayer from 'ol/layer/Image';
-import { CsvDataService } from 'src/app/settings/csvData.service';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
+// import Map from 'ol/Map.js';
+// import BaseLayer from 'ol/layer/Base';
+// import Layer from 'ol/layer/Layer';
+// import { Tile } from 'ol/layer';
+// import { OSM, TileWMS, ImageWMS, ImageArcGISRest } from 'ol/source';
+// import * as esri from 'esri-leaflet';
+// import { RequestTokenService } from 'src/app/services/request-token.service';
+// import { OlMapService } from '@helgoland/open-layers';
+// import ImageLayer from 'ol/layer/Image';
+// import { CsvDataService } from 'src/app/settings/csvData.service';
 import Plotly from 'plotly.js-dist';
-import { ScaleLine } from 'ol/control';
+// import { ScaleLine } from 'ol/control';
+import { MapCache, LayerOptions } from '@helgoland/map';
+import { ParameterFilter, Station } from '@helgoland/core';
+import * as L from 'leaflet';
+import * as esri from 'esri-leaflet';
 const waterTempService = 'https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/EO_WACODIS_DAT_WATER_SURFACE_TEMPERATURE_Service/ImageServer';
 const WvG_URL = 'http://fluggs.wupperverband.de/secman_wss_v2/service/WMS_WV_Oberflaechengewaesser_EZG/guest?';
 
@@ -33,23 +37,23 @@ const categoryVal = ["BB0", "BE0", "BE1", "BE2",
   templateUrl: './soil-temperature-view.component.html',
   styleUrls: ['./soil-temperature-view.component.css']
 })
-export class SoilTemperatureViewComponent implements OnInit {
+export class SoilTemperatureViewComponent implements OnInit, AfterViewInit {
 
 
   public showZoomControl = true;
   public showAttributionControl = true;
-  public map: Map;
+  public map: L.Map;
 
-  public baselayers: BaseLayer[] = [];
-  public overviewMapLayers: Layer[] = [new Tile({
-    source: new OSM()
-  })];
-  public zoom = 11;
-  public lat = 51.15;
-  public lon = 7.22;
+  // public baselayers: BaseLayer[] = [];
+  // public overviewMapLayers: Layer[] = [new Tile({
+  //   source: new OSM()
+  // })];
+  // public zoom = 11;
+  // public lat = 51.15;
+  // public lon = 7.22;
 
-  public token: string = '';
-  public sentinelLayer: esri.ImageMapLayer;
+  // public token: string = '';
+  // public sentinelLayer: esri.ImageMapLayer;
   public mapId = 'soilTemp-map';
 
   public headers: string[] = [];
@@ -62,44 +66,101 @@ export class SoilTemperatureViewComponent implements OnInit {
   public dates: Date[] = [];
   public selectedTime: Date = new Date();
 
-  constructor(private mapService: OlMapService, private requestTokenSrvc: RequestTokenService, private csvService: CsvDataService) {
+  public providerUrl: string = 'https://www.fluggs.de/sos2-intern-gis/api/v1/';
+  public fitBounds: L.LatLngBoundsExpression = [[50.985, 6.924], [51.319, 7.607]];
+  public zoomControlOptions: L.Control.ZoomOptions = { position: 'topleft' };
+  public avoidZoomToSelection = false;
+  public baseMaps: Map<string, LayerOptions> = new Map<string, LayerOptions>();
+  public layerControlOptions: L.Control.LayersOptions = { position: 'bottomleft' };
+  public cluster = true;
+  public loadingStations: boolean;
+  public baselayers: L.Layer[] = [];
+  public stationFilter: ParameterFilter = {
+    phenomenon: '7'
+  };
+  public statusIntervals = false;
+  public mapOptions: L.MapOptions = { dragging: true, zoomControl: false };
+
+  constructor(private mapCache: MapCache){//private mapService: OlMapService, private requestTokenSrvc: RequestTokenService, private csvService: CsvDataService) {
     // this.responseInterp = csvService.getCsvText(); 
+  }
+  ngAfterViewInit(): void {
+    this.baselayers.forEach((blayer,i,arr)=>{
+      this.mapCache.getMap(this.mapId).addLayer(blayer);
+    });
+    this.mapCache.getMap(this.mapId).addLayer(L.tileLayer.wms(
+      WvG_URL,
+        {
+          layers: '0', format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; Wupperverband>',
+          className: 'WV_GB'
+        }
+    ));
+    L.control.scale().addTo(this.mapCache.getMap(this.mapId));
   }
 
   ngOnInit() {
-    this.mapService.getMap(this.mapId).subscribe((map) => {
-      map.getLayers().clear();
-      map.addControl(new ScaleLine({units: "metric"}));
-      map.addLayer(new Tile({
-        source: new OSM()
-      }));
-      map.addLayer(new ImageLayer({
-        visible: true,
-        opacity: 0.5,
-        source: new ImageWMS({
-          url: WvG_URL,
-          params: {
-            'LAYERS': '0',
-          },
-        })
-      }));
-    });
 
-    this.baselayers.push(
-      new ImageLayer({
-        visible: true,
-        source: new ImageArcGISRest({
-          ratio: 1,
-          params: {
-            'LAYERS': 'Wacodis/EO_WACODIS_DAT_INTRA_LAND_COVER_CLASSIFICATION_Service',
-          },
-          url: waterTempService
-        })
-      })
-    );
+    this.baseMaps.set(this.mapId,
+      {
+          label: 'OSM-WMS', // will be shown in layer control
+          visible: true, // is layer by default visible
+          layer: L.tileLayer.wms(
+            'http://ows.terrestris.de/osm/service?',
+              {
+                layers: 'OSM-WMS', format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+                className: 'OSM'
+              }
+          )
+      }
+  );
+
+  
+
+  this.baselayers.push(
+    (esri.imageMapLayer({
+      url: waterTempService,
+      maxZoom: 16, opacity: 1, alt: 'WaterTemperatureService'
+    }))
+  );
+
+  
+    // this.mapService.getMap(this.mapId).subscribe((map) => {
+    //   map.getLayers().clear();
+    //   map.addControl(new ScaleLine({units: "metric"}));
+    //   map.addLayer(new Tile({
+    //     source: new OSM()
+    //   }));
+    //   map.addLayer(new ImageLayer({
+    //     visible: true,
+    //     opacity: 0.5,
+    //     source: new ImageWMS({
+    //       url: WvG_URL,
+    //       params: {
+    //         'LAYERS': '0',
+    //       },
+    //     })
+    //   }));
+    // });
+
+    // this.baselayers.push(
+    //   new ImageLayer({
+    //     visible: true,
+    //     source: new ImageArcGISRest({
+    //       ratio: 1,
+    //       params: {
+    //         'LAYERS': 'Wacodis/EO_WACODIS_DAT_INTRA_LAND_COVER_CLASSIFICATION_Service',
+    //       },
+    //       url: waterTempService
+    //     })
+    //   })
+    // );
     // this.createPieChart();
   }
+  public onStationSelected(station: Station) {
+    alert(station.properties.label);
+    console.log(station);
 
+  }
   public createPieChart() {
     let csvInterArray = this.responseInterp.split(/\r\n|\n/);
     //Datum;Talsperre;AvgTemp

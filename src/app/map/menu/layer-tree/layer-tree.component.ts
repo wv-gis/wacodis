@@ -1,11 +1,12 @@
 import { Component, OnInit, Input } from '@angular/core';
-import BaseLayer from 'ol/layer/Base';
+// import BaseLayer from 'ol/layer/Base';
 import { OlMapService } from '@helgoland/open-layers';
-import View from 'ol/View';
+// import View from 'ol/View';
 import { legendParam } from '../../legend/extended/extended-ol-layer-legend-url/extended-ol-layer-legend-url.component';
 import Plotly from 'plotly.js-dist';
-import { CsvDataService } from 'src/app/settings/csvData.service';
+// import { CsvDataService } from 'src/app/settings/csvData.service';
 import * as esri from 'esri-leaflet';
+import { MapCache } from '@helgoland/map';
 
 export class StatisticData {
   date: Date;
@@ -30,7 +31,7 @@ const categoryVal = ["no Data", "Acker - Mais", "Acker - sonstige Ackerfruch", "
   styleUrls: ['./layer-tree.component.css']
 })
 export class LayerTreeComponent implements OnInit {
-  @Input() baselayers: BaseLayer[];
+  @Input() baselayers: L.TileLayer[]|esri.ImageMapLayer[];
   @Input() mapId: string;
   @Input() drawChart: boolean = false;
 
@@ -50,8 +51,8 @@ export class LayerTreeComponent implements OnInit {
   public selectedTime: Date = new Date();
   public selectedIndex: number = 1;
 
-  constructor(private mapService: OlMapService, protected csvService: CsvDataService) {    
-    this.responseInterp = csvService.getInterpText(); 
+  constructor(private mapService: OlMapService, private mapCache: MapCache) {    
+   
   }
 
   ngOnInit() {
@@ -68,29 +69,27 @@ export class LayerTreeComponent implements OnInit {
         document.getElementById('map').setAttribute('style', 'width: 82% ;height: 100%; padding: 5px; position:fixed;');
       }
     }
-    this.mapService.getMap(this.mapId).subscribe(map => map.updateSize());
-    this.mapService.getMap(this.mapId).subscribe(map => map.getView());
-    // return this.isActive = !this.isActive;
+    // this.mapService.getMap(this.mapId).subscribe(map => map.updateSize());
+    // this.mapService.getMap(this.mapId).subscribe(map => map.getView());
+    this.mapCache.getMap(this.mapId).invalidateSize();
 
     this.isActive = !this.isActive;
   }
 
   public getLegendUrl(url?: string, urls?: string[]) {
     // document.getElementById("legendToast").hidden =  false;
-    this.legendUrls = [{ url: url, label: "" }];
+    this.legendUrls = [{ url: url, label: "", layer: url.split('layer=')[1] }];
   }
   public getLegendUrls(urls: legendParam[]) {
     // document.getElementById("legendToast").hidden =  true;
     this.legendUrls = urls;
   }
-  public toggleVisibility(layer: BaseLayer) {
-
-    layer.setVisible(!layer.getVisible());
-  }
+ 
 
   public removeLayer(i: number) {
     const layer = this.baselayers.splice(i, 1);
-    this.mapService.getMap(this.mapId).subscribe(map => map.removeLayer(layer[0]));
+    // this.mapService.getMap(this.mapId).subscribe(map => map.removeLayer(layer[0]));
+    this.mapCache.getMap(this.mapId).removeLayer(layer[0]);
   }
 
 
