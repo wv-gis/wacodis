@@ -27,8 +27,8 @@ declare module 'leaflet' {
     sync(map: Map, options?: SyncOptions): Map;
     unsync(map: Map): Map;
     isSynced(otherMap: Map): boolean;
+    timeDimension?: L.TimeDimension;
   }
-
 
   //  class SyncMap extends Map{
   //    constructor(element: string | HTMLElement, options?: MapOptions)
@@ -172,7 +172,6 @@ declare module 'leaflet' {
         protected _createLayerForTime(time:number):L.Layer;
         protected _getLoadedTimes():any[];
         protected _removeLayers(times:number[]):void;
-        setMinimumForwardCache(value: number): void;
         protected _getCapabilitiesUrl(): string;
         protected _parseTimeDimensionFromCapabilities(xml: any):number[];
         protected _getDefaultTimeFromCapabilities(xml:any): number;
@@ -181,9 +180,47 @@ declare module 'leaflet' {
         protected _getNearestTime(time: number):number;
         options: TimeDimensionLayerWMSOptions;
       }
+      class ImageMapLayer extends L.TimeDimension.Layer {
+        constructor(layer: esri.ImageMapLayer, options?: TimeDimensionLayerImageOptions)
+        
+        eachLayer(method: (layer: Layer) => void, context?: any): this;
+        isReady(time: number): boolean;
+        onAdd(map: Map): this;
+        setZIndex(zIndex: number): this;
+        setOpacity(opacity: number): this;
+        setMinimumForwardCache(value: number): void;
+        setAvailableTimes(times: number[]): void;
+
+        protected _update():this;
+        protected _onNewTimeLoading(ev: Event): this;   
+        protected _getLayerForTime(time: number): L.Layer;
+        protected _getLoadedTimes():any[];
+        protected _removeLayers(times:number[]):void;
+        protected _showLayer(layer: L.TileLayer, time: number):void;
+        options: TimeDimensionLayerImageOptions;
+      }
     }
   }
-
+interface TimeDimensionLayerImageOptions extends ImageMapLayerOptions{
+   /**
+     * @default false
+     * 
+     */
+    updateTimeDimension?: boolean;
+       /**
+     * @default "intersect"
+     * 
+     */
+    updateTimeDimensionMode?: string;
+    /**
+     * @default false
+     * 
+     */
+    setDefaultTime?: boolean;
+    period?:string;
+    timeCachBackward:number;
+    timeCachForward: number;
+}
   interface TimeDimensionPlayerOptions extends L.LayerOptions {
         /**
      * @default 1000
@@ -272,9 +309,10 @@ declare module 'leaflet' {
 
   }
    namespace timeDimension {
-    export  function layer(layer: L.Layer, options?: TimeDimensionLayerOptions): TimeDimension.Layer;
+    export function layer(layer: L.Layer, options?: TimeDimensionLayerOptions): TimeDimension.Layer;
      namespace layer{
-      export  function wms(layer: L.TileLayer.WMS, options?: TimeDimensionLayerWMSOptions): TimeDimension.Layer.WMS;
+      export function wms(layer: L.TileLayer.WMS, options?: TimeDimensionLayerWMSOptions): TimeDimension.Layer.WMS;
+      export function imageMapLayer(layer: esri.ImageMapLayer, options?: TimeDimensionLayerImageOptions): TimeDimension.Layer.ImageMapLayer;
     }
    
   }
@@ -360,81 +398,81 @@ declare module 'leaflet' {
     /**
      * @default 'leaflet-control-timecontrol'
      *  */
-    styleNS: string;
+    styleNS?: string;
     /**
      * @default 'bottomleft'
      */
-    position: L.ControlPosition;
+    position?: L.ControlPosition;
     /**
      * @default 'Time Control'
      */
-    title: string;
+    title?: string;
     /**
     * @default true
     */
-    backwardButton: boolean;
+    backwardButton?: boolean;
     /**
     * @default true
     */
-    forwardButton: boolean;
+    forwardButton?: boolean;
     /**
     * @default true
     */
-    playButton: boolean;
+    playButton?: boolean;
     /**
     * @default false
     */
-    playReverseButton: boolean;
+    playReverseButton?: boolean;
    /**
     * @default false
     */
-    loopButton: boolean;
+    loopButton?: boolean;
      /**
     * @default true
     */
-    displayDate: boolean;
+    displayDate?: boolean;
     /**
     * @default true
     */
-    timeSlider: boolean;
+    timeSlider?: boolean;
     /**
     * @default false
     */
-    timeSliderDragUpdate: boolean;
+    timeSliderDragUpdate?: boolean;
     /**
     * @default false
     */
-    limitSliders: boolean;
+    limitSliders?: boolean;
     /**
      * @default 5
      */
-    limitMinimumRange: number;
+    limitMinimumRange?: number;
     /**
     * @default true
     */
-    speedSlider: boolean;
+    speedSlider?: boolean;
     /**
      * @default 0.1
      */
-    minSpeed: number;
+    minSpeed?: number;
     /**
      * @default 10
      */
-    maxSpeed: number;
+    maxSpeed?: number;
     /**
      * @default 0.1
      */
-    speedStep: number;
+    speedStep?: number;
     /**
      * @default   1
      */
-    timeSteps: number;
+    timeSteps?: number;
     /**
     * @default false
     */
-    autoPlay: boolean;
+    autoPlay?: boolean;
 
-    playerOptions: {   
+    playerOptions?: {   
     /**
       * @default 1000
       */
@@ -444,8 +482,8 @@ declare module 'leaflet' {
     /**
   * @default ['Local','UTC']
   */
-    timeZones: string[];
-    player: L.TimeDimension.Player;
+    timeZones?: string[];
+    player?: L.TimeDimension.Player;
   }
   namespace Control {
     class TimeDimension extends L.Control {

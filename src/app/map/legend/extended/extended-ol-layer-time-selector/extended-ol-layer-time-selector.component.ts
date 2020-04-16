@@ -5,6 +5,7 @@ import { OlLayerTimeSelectorComponent, WmsCapabilitiesService } from '@helgoland
 // import Layer from 'ol/layer/Layer';
 import * as esri from "esri-leaflet";
 import * as L from 'leaflet';
+import { MapCache } from '@helgoland/map';
 require('leaflet-timedimension');
 
 @Component({
@@ -15,6 +16,7 @@ require('leaflet-timedimension');
 export class ExtendedOlLayerTimeSelectorComponent implements OnInit { //extends OlLayerTimeSelectorComponent implements OnInit {
 
   @Input() layer: any | esri.ImageMapLayer;
+  @Input() mapId?: string;
   public timeAttribute = true;
 
   public currentTime: Date;
@@ -29,7 +31,7 @@ export class ExtendedOlLayerTimeSelectorComponent implements OnInit { //extends 
   // @Output() selTime:  EventEmitter<Date> = new EventEmitter<Date>();
   @Output() selIndexTime: EventEmitter<number> = new EventEmitter<number>();
 
-  constructor(private wmsCap: WmsCapabilitiesService) {
+  constructor(private wmsCap: WmsCapabilitiesService, private mapCache: MapCache) {
     // super(wmsCap);
   }
 
@@ -50,10 +52,10 @@ export class ExtendedOlLayerTimeSelectorComponent implements OnInit { //extends 
           .subscribe(
             res => this.timeDimensions = res,
             error => { this.timeAttribute = false },
-            () => {this.loading = false; this.timeAttribute=true;}
+            () => { this.loading = false; this.timeAttribute = true; }
           );
-        
-        if (!this.timeDimensions) { this.timeAttribute = false ,this.loading = false}
+
+        if (!this.timeDimensions) { this.timeAttribute = false, this.loading = false }
         // this.determineCurrentTimeParameter();
       }
     } else if (this.layer.options.url) {
@@ -89,18 +91,18 @@ export class ExtendedOlLayerTimeSelectorComponent implements OnInit { //extends 
         });
       }
     }
-    else if(this.layer instanceof L.TimeDimension.Layer.WMS){
+    else if (this.layer instanceof L.TimeDimension.Layer.WMS) {
       this.loading = true;
       this.url = this.layer.options.getCapabilitiesUrl;
       this.layerid = this.layer.options.getCapabilitiesLayerName;
       this.wmsCap.getTimeDimensionArray(this.layerid, this.url)
         .subscribe(
-          res => {this.timeDimensions = res; this.timeAttribute=true;},
+          res => { this.timeDimensions = res; this.timeAttribute = true; },
           error => { this.timeAttribute = false },
           () => this.loading = false
         );
-      
-      if (!this.timeDimensions) { this.timeAttribute = false ,this.loading = false}
+
+      if (!this.timeDimensions) { this.timeAttribute = false, this.loading = false }
       this.extendedDetermineCurrentTimeParameter();
     }
   }
@@ -113,24 +115,13 @@ export class ExtendedOlLayerTimeSelectorComponent implements OnInit { //extends 
     this.currentTime = time;
     // let source = this.layer.getSource();
     // if (this.layerSource) {
-      if(this.layer instanceof L.TileLayer.WMS){
+    if (this.layer instanceof L.TileLayer.WMS) {
       // this.layerSource.updateParams({ time: time.toISOString()});
       // this.layer.wmsParams.time = time.toISOString();    
     }
-    else if(this.layer instanceof L.TimeDimension.Layer){
+    else if (this.layer instanceof L.TimeDimension.Layer) {
+      this.mapCache.getMap(this.mapId).timeDimension.setCurrentTimeIndex(this.timeDimensions.indexOf(this.currentTime));
       this.selIndexTime.emit(this.timeDimensions.indexOf(this.currentTime));
-      let avTimes: number[]=[];
-      this.timeDimensions.forEach(a=>{
-        avTimes.push(a.getTime());
-      })
-    this.layer.options.timeDimension = new L.TimeDimension({times: avTimes});
-    console.log('Before' + JSON.stringify(this.layer.options.timeDimension));
-    this.layer.options.timeDimension.setAvailableTimes([this.currentTime.getTime()],'replace');
-    this.layer.options.timeDimension.setCurrentTime(this.currentTime.getTime()); 
-    console.log('After'+ JSON.stringify(this.layer.options.timeDimension)); 
-   
-      L.timeDimension().setAvailableTimes([this.currentTime.getTime()],'replace');
-      L.timeDimension().setCurrentTime(this.currentTime.getTime());
     }
     // else if (source instanceof ImageArcGISRest) {
     else if (this.layer instanceof esri.ImageMapLayer) {
@@ -155,7 +146,7 @@ export class ExtendedOlLayerTimeSelectorComponent implements OnInit { //extends 
     // let source = this.layer.getSource();
 
     // if (source instanceof ImageArcGISRest) {
-      if (this.layer instanceof esri.ImageMapLayer) {
+    if (this.layer instanceof esri.ImageMapLayer) {
       esri.imageService({ url: this.url }).query().where("1=1").fields(["startTime", "endTime", "OBJECTID"]).returnGeometry(true).run((error, featureCollection, feature) => {
 
         let times: Date[] = [];
