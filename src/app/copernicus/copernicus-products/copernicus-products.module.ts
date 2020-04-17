@@ -10,11 +10,12 @@ import { HelgolandMapModule, HelgolandMapControlModule, HelgolandMapSelectorModu
 import { HelgolandOpenLayersModule } from '@helgoland/open-layers';
 import { WvMapModule } from 'src/app/map/map.module';
 import { SensorwappToolboxModule } from '@sensorwapp-toolbox/core';
+import { LayerLegendCardComponent } from '../cards/layer-legend-card/layer-legend-card.component';
 
 
 
 @NgModule({
-  declarations: [LandCoverComponent, ChlorophyllViewComponent, MowingViewComponent, SoilTemperatureViewComponent,VitalityViewComponent],
+  declarations: [LandCoverComponent, ChlorophyllViewComponent, MowingViewComponent, SoilTemperatureViewComponent,VitalityViewComponent, LayerLegendCardComponent],
   imports: [
     CommonModule,
     HelgolandCoreModule,
