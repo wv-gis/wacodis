@@ -58,6 +58,10 @@ export class ExtendedOlLayerLegendUrlComponent {//extends OlLayerLegendUrlCompon
       });
      });    
     }
+  } else if(this.layer instanceof L.TimeDimension.Layer.WMS){
+    this.url = this.layer.options.getCapabilitiesUrl;
+    const layerid = this.layer.options.getCapabilitiesLayerName;
+      this.wmsCap.getLegendUrl(layerid, this.url).subscribe(res => this.legendUrl.emit(res));
   }
     else{
       if(this.layer._url){

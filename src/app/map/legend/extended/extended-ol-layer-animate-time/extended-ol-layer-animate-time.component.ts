@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { OlLayerAnimateTimeComponent, WmsCapabilitiesService } from '@helgoland/open-layers';
 import { Layer } from 'ol/layer';
 import { ExtendedOlLayerTimeSelectorComponent } from '../extended-ol-layer-time-selector/extended-ol-layer-time-selector.component';
+import { MapCache } from '@helgoland/map';
 
 @Component({
   selector: 'wv-extended-ol-layer-animate-time',
@@ -17,8 +18,8 @@ export class ExtendedOlLayerAnimateTimeComponent extends ExtendedOlLayerTimeSele
 
   private interval: any;
 
-  constructor(protected wmsCaps: WmsCapabilitiesService) {
-    super(wmsCaps);
+  constructor(private wmsCaps: WmsCapabilitiesService, private mapCaches: MapCache) {
+    super(wmsCaps, mapCaches);
   }
 
   ngOnInit() {

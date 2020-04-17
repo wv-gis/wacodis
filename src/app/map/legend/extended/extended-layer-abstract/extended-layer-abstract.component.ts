@@ -38,6 +38,14 @@ export class ExtendedLayerAbstractComponent implements OnInit {
           }          
         });
       }
+     else if (this.layer._baseLayer._url) {
+        const url = this.layer._baseLayer._url;
+  
+        if (this.layer instanceof L.TimeDimension.Layer.WMS) {
+          const layerid = this.layer.options.getCapabilitiesLayerName;
+          this.wmsCaps.getAbstract(layerid, url).subscribe(res => this.abstract = res);
+        }
+      }
     
   }
 

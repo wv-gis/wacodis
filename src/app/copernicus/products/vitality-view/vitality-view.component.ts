@@ -1,17 +1,22 @@
+declare var require;
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { OlMapService } from '@helgoland/open-layers';
 import { RequestTokenService } from 'src/app/services/request-token.service';
-import BaseLayer from 'ol/layer/Base';
+
+// import BaseLayer from 'ol/layer/Base';
 // import Layer from 'ol/layer/Layer';
-import { OSM, ImageArcGISRest, ImageWMS } from 'ol/source';
+// import { OSM, ImageArcGISRest, ImageWMS } from 'ol/source';
 // import Map from 'ol/Map.js';
 // import { Tile } from 'ol/layer';
-import { ScaleLine } from 'ol/control';
-import ImageLayer from 'ol/layer/Image';
-import * as esri from 'esri-leaflet';
+// import { ScaleLine } from 'ol/control';
+// import ImageLayer from 'ol/layer/Image';
+// import * as esri from 'esri-leaflet';
 import * as L from 'leaflet';
+// import * as timeDimension from 'leaflet-timedimension';
+require('leaflet-timedimension');
+// import '../../node_modules/leaflet-timedimension/dist/leaflet.timedimension.src.js';
 import { MapCache, LayerOptions } from '@helgoland/map';
-import { ParameterFilter, Station } from '@helgoland/core';
+// import { ParameterFilter, Station } from '@helgoland/core';
 
 const vitalityService = 'https://www.wms.nrw.de/umwelt/waldNRW';
 const WvG_URL = 'http://fluggs.wupperverband.de/secman_wss_v2/service/WMS_WV_Oberflaechengewaesser_EZG/guest?';
@@ -33,20 +38,21 @@ export class VitalityViewComponent implements OnInit,AfterViewInit {
   public lat = 51.07;
   public lon = 7.21;
   public mainMap: L.Map;
-
   public mapId = 'vitality-map';
   public zoomControlOptions: L.Control.ZoomOptions = { position: 'topleft' };
   public avoidZoomToSelection = false;
   public layerControlOptions: L.Control.LayersOptions = { position: 'bottomleft' };
 
-  public mapOptions: L.MapOptions = { dragging: true, zoomControl: true };
+  public mapOptions: L.TimeDimensionMapOptions = { dragging: true, zoomControl: true, 
+    timeDimension: true, timeDimensionControl: true, 
+    timeDimensionControlOptions: {timeZones:['Local']}};
   public providerUrl: string = 'https://www.fluggs.de/sos2-intern-gis/api/v1/';
   constructor(private mapService: OlMapService, private requestTokenSrvc: RequestTokenService, private mapCache: MapCache) { }
   ngAfterViewInit(): void {
+
     this.baselayers.forEach((lay,i,arr)=>{
       this.mapCache.getMap(this.mapId).addLayer(lay);
     });
-   
   }
 
   ngOnInit() {
@@ -57,6 +63,9 @@ export class VitalityViewComponent implements OnInit,AfterViewInit {
   //   });
 
   this.mainMap = L.map(this.mapId, this.mapOptions).setView([51.07, 7.21], 13);
+ 
+  this.mainMap.timeDimension.setCurrentTime(new Date().getTime());
+  console.log(this.mainMap.timeDimension);
 
   L.control.scale().addTo(this.mainMap);
   this.mapCache.setMap(this.mapId,this.mainMap);
@@ -96,8 +105,21 @@ export class VitalityViewComponent implements OnInit,AfterViewInit {
             className: 'waldtypen_real', opacity: 0
           })
           );
-
-    // this.mapService.getMap(this.mapId).subscribe((map) => {
+          let testTimeLayer = L.timeDimension.layer.wms(L.tileLayer.wms("https://maps.dwd.de/geoserver/ows",
+          {
+            layers: 'dwd:RX-Produkt', format: 'image/png', transparent: true
+          }),{ 
+           updateTimeDimension: true, getCapabilitiesLayerName: 'dwd:RX-Produkt', getCapabilitiesUrl: "https://maps.dwd.de/geoserver/ows" });
+        this.baselayers.push(testTimeLayer);
+        let secTimeLayer = L.timeDimension.layer.wms(L.tileLayer.wms("https://maps.dwd.de/geoserver/ows",
+        {
+          layers: 'dwd:FX-Produkt', format: 'image/png', transparent: true
+        }),{ updateTimeDimensionMode: 'union',setDefaultTime: true,
+         updateTimeDimension: true, getCapabilitiesLayerName: 'dwd:FX-Produkt', getCapabilitiesUrl: "https://maps.dwd.de/geoserver/ows" });
+      this.baselayers.push(secTimeLayer);
+  
+     
+        // this.mapService.getMap(this.mapId).subscribe((map) => {
     //   map.getLayers().clear();
     //   map.addControl(new ScaleLine({units: "metric"}));
     //   map.addLayer(new Tile({

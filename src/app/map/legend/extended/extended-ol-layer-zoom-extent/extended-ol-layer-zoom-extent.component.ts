@@ -51,67 +51,77 @@ export class ExtendedOlLayerZoomExtentComponent implements OnInit {
       this.imageurl = this.layer._url;
 
       if (this.layer instanceof L.TileLayer) {
-        if(this.layer.options.bounds){
-          this.imageExtent= this.layer.options.bounds;
-        }else{
+        if (this.layer.options.bounds) {
+          this.imageExtent = this.layer.options.bounds;
+        } else {
           if (this.layer instanceof L.TileLayer.WMS) {
             let epsgCode;
-              if( this.mapCache.getMap(this.mapId)){
-                epsgCode = this.mapCache.getMap(this.mapId).options.crs.code;
-              }
-            else{
-              epsgCode = this.layer.options.crs;
-            }
+            epsgCode = this.layer.options.crs;
             // this.imageid = imageSource.getParams()['layers'] || imageSource.getParams()['LAYERS'];
             this.imageid = this.layer.wmsParams.layers;
             this.wmsCap.getExtent(this.imageid, this.imageurl, epsgCode).subscribe(res => {
-              this.imageExtent = new L.LatLngBounds([res.extent[1],res.extent[0]],[res.extent[3],res.extent[2]]);
+              this.imageExtent = new L.LatLngBounds([res.extent[1], res.extent[0]], [res.extent[3], res.extent[2]]);
               this.imageCrs = res.crs;
             });
           }
         }
         // this.imageurl = imageSource.getUrl();
         // this.mapService.getMap(this.mapId).subscribe(map => {
-        // this.imageView = this.mapCache.getMap(this.mapId).getBounds();
-      
+        // this.imageView = this.mapCache.getMap(this.mapId).getBounds();    
         // });
       }
     } else if (this.layer.options.url) {
       this.imageurl = this.layer.options.url;
-      if (this.layer instanceof esri.ImageMapLayer) {       
+      if (this.layer instanceof esri.ImageMapLayer) {
         // this.mapService.getMap(this.mapId).subscribe(map => {    
         // this.imageView = this.mapCache.getMap(this.mapId).getBounds();
-
         esri.imageService({ url: this.imageurl }).query().returnGeometry(true).run((error, featureCollection, feature) => {
-
           if (error) {
             console.log('Error on imageService Query');
           } else {
             if (featureCollection.features) {
-             for (let i in featureCollection.features) {
+              for (let i in featureCollection.features) {
                 for (let p = 0; p < featureCollection.features[i]["geometry"]["coordinates"][0].length; p++) {
                   this.latValues.push(featureCollection.features[i]["geometry"]["coordinates"][0][p][1]);
                   this.lonValues.push(featureCollection.features[i]["geometry"]["coordinates"][0][p][0]);
                 }
               }
-                this.latValues.sort((a, b) => { return a - b });
-                this.lonValues.sort((a, b) => { return a - b });
+              this.latValues.sort((a, b) => { return a - b });
+              this.lonValues.sort((a, b) => { return a - b });
 
-                this.maxLon = this.lonValues[this.lonValues.length - 1];
-                this.minLon = this.lonValues[0];
-                this.maxLat = this.latValues[this.latValues.length - 1];
-                this.minLat = this.latValues[0];
+              this.maxLon = this.lonValues[this.lonValues.length - 1];
+              this.minLon = this.lonValues[0];
+              this.maxLat = this.latValues[this.latValues.length - 1];
+              this.minLat = this.latValues[0];
 
-                this.imageExtent = new LatLngBounds([ this.minLat,this.minLon],[ this.maxLat,this.maxLon]);
-             
-                this.imageCrs = "EPSG:" + feature["spatialReference"]["wkid"];
-             }
+              this.imageExtent = new LatLngBounds([this.minLat, this.minLon], [this.maxLat, this.maxLon]);
 
+              this.imageCrs = "EPSG:" + feature["spatialReference"]["wkid"];
+            }
           }
         });
         // });
       }
     }
+    else if (this.layer._baseLayer._url) {
+      this.imageurl = this.layer._baseLayer._url;
+
+      if (this.layer instanceof L.TimeDimension.Layer.WMS) {
+        let epsgCode;
+        epsgCode = this.layer.options.crs;
+        if (epsgCode !== L.CRS.EPSG4326) {
+          epsgCode = L.CRS.EPSG4326.code;
+        }
+        this.imageid = this.layer.options.getCapabilitiesLayerName;
+        this.wmsCap.getExtent(this.imageid, this.imageurl, epsgCode).subscribe(res => {
+
+          this.imageCrs = res.crs;
+          this.imageExtent = new L.LatLngBounds([res.extent[1], res.extent[0]], [res.extent[3], res.extent[2]]);
+          });
+      }
+    }
+    // }
+    // }
   }
 
 
@@ -119,7 +129,7 @@ export class ExtendedOlLayerZoomExtentComponent implements OnInit {
     // super.zoomToExtent();
     if (this.imageExtent) {
       if (!this.imageCrs) {
-       this.mapCache.getMap(this.mapId).fitBounds(this.imageExtent);
+        this.mapCache.getMap(this.mapId).fitBounds(this.imageExtent);
       } else {
         // const transformation = transformExtent(this.imageExtent, this.imageCrs, this.mapCache.getMap(this.mapId).options.crs.code);     
         // this.mapCache.getMap(this.mapId).fitBounds(
@@ -128,7 +138,6 @@ export class ExtendedOlLayerZoomExtentComponent implements OnInit {
         //     this.mapCache.getMap(this.mapId).project([this.imageExtent[2], this.imageExtent[3]], this.mapCache.getMap(this.mapId).getZoom()).x,
         //     this.mapCache.getMap(this.mapId).project([this.imageExtent[2], this.imageExtent[3]], this.mapCache.getMap(this.mapId).getZoom()).y
         //   ]]);
-      
         this.mapCache.getMap(this.mapId).fitBounds(this.imageExtent);
       }
     }
