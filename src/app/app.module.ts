@@ -48,6 +48,7 @@ import { CopernicusProductsModule } from './copernicus/copernicus-products/coper
     AppComponent,
     LandingpageComponent,
     WeatherForecastComponent,
+  
   ],
   imports: [
     BrowserModule,
