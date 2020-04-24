@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, OnChanges } from '@angular/core';
 import Plotly from 'plotly.js-dist';
 import * as esri from 'esri-leaflet';
+import { locale } from 'src/environments/environment.prod';
 
 
 
@@ -42,25 +43,36 @@ export class CopernicusLayerChartComponent implements OnInit,OnChanges {
   
   constructor() { }
   ngOnChanges(changes: import("@angular/core").SimpleChanges): void {
-    this.createPieChart();
+    if(changes.selectedTimeIndex.firstChange){
+
+    }else{
+      this.createPieChart();
+    }
+   
   }
 
   ngOnInit() {
     this.createPieChart();
   }
+
+  /**
+   * method creates a pie chart with percentage Values for the defined classes
+   */
   public createPieChart() {
+    Plotly.register(locale);
 
     esri.imageService({ url: 'https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/EO_WACODIS_DAT_INTRA_LAND_COVER_CLASSIFICATION_Service/ImageServer' })
     .get((this.selectedTimeIndex) +"/info/histograms",{},(error,response)=>{
       if (error) {
         console.log(error);
       } else {
+        let val = [];
         for (let p = 1; p < response.histograms[0].counts.length; p++) {
-          this.values.push(response.histograms[0].counts[p]);
+          val.push(response.histograms[0].counts[p]);
           this.labels.push(categoryVal[p]);
           this.colorRgb.push(colors[p]);
         }
-
+        this.values = val;
         var data = [{
           type: "pie",
           values: this.values,
@@ -69,21 +81,42 @@ export class CopernicusLayerChartComponent implements OnInit,OnChanges {
           marker: {
             colors: this.colorRgb
           },
+          automargin: true,
+          textposition: this.calculateTextpositions(this.values)
         }];
 
         var layout = {
           width: 200,
           height: 220,
-          margin: { "t": 0, "b": 0, "l": 0, "r": 0 },
+          margin: { "t": 0, "b": 0, "l": 0, "r": 40 },
           showlegend: false,
           // title: 'Landbedeckung ' + this.selectedTime.toDateString(),
         }
+        var config={
+          locale: 'de',
+          responsive: true
+        }
     
-        Plotly.newPlot(this.chartId, data,layout, {responsive: true})
+        Plotly.newPlot(this.chartId, data,layout, config)
       }
     });
 
   }
 
+  /**
+   * method to define wether or not the percentage label is shown
+   * @param values  which define the parts of the pie
+   */
+  public calculateTextpositions(values: number[]):string[]{
+    let total=0;
+    let percentages = []
+     values.forEach((element,i,arr) => {
+      total = total + element ;
+    });
+     values.forEach((element,i,arr) => {
+    percentages.push((element/total)*100 < 2 ? 'none': 'auto')  ;
+    });
+    return percentages;
+  }
  
 }
