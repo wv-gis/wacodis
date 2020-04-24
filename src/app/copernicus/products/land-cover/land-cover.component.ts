@@ -5,8 +5,13 @@ import { RequestTokenService } from 'src/app/services/request-token.service';
 import * as L from 'leaflet';
 import { MapCache } from '@helgoland/map';
 import Plotly from 'plotly.js-dist';
+import { locale } from 'src/environments/environment.prod';
 
+require('leaflet-timedimension');
 require('leaflet.sync');
+import 'src/assets/js/leaflet.timedimension.layer.imagemap';
+import { ExtendedOlLayerAnimateTimeComponent } from 'src/app/map/legend/extended/extended-ol-layer-animate-time/extended-ol-layer-animate-time.component';
+
 
 
 const intraLandService = 'https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/EO_WACODIS_DAT_INTRA_LAND_COVER_CLASSIFICATION_Service/ImageServer';
@@ -40,18 +45,25 @@ export class LandCoverComponent implements OnInit, AfterViewInit {
 
   public selectedTime: number = 1;
   public selectedSyncTime: number = 1;
+  public currentSelectedTimeL: Date = new Date();
+  public currentSelectedTimeR: Date= new Date();
 
-  public mapOptions: L.MapOptions = { dragging: true, zoomControl: true, boxZoom: false };
+  public syncmapOptions: L.MapOptions = { dragging: true, zoomControl: true, boxZoom: false };
+  public mapOptions: L.TimeDimensionMapOptions = { dragging: true, zoomControl: true, boxZoom: false , timeDimension: true, timeDimensionControl: false, 
+    timeDimensionControlOptions: {timeZones:['Local'],position: 'bottomleft'}};
   public wmsLayer: any;
   public mainMap: L.Map;
   public showDiagram: boolean = false;
+  public loading:boolean = false;
+  public defTimeL = 2;
+  public defTimeR = 5;
 
   constructor(private requestTokenSrvc: RequestTokenService, private mapCache: MapCache) {
 
   }
   ngAfterViewInit(): void {
-    this.mainMap.on('mouseup', this.identifyPixel, this);
-    this.syncMap.on('mouseup', this.identifyPixel, this);
+    // this.mainMap.on('mouseup', this.identifyPixel, this);
+    // this.syncMap.on('mouseup', this.identifyPixel, this);
   }
 
   ngOnInit() {
@@ -62,8 +74,9 @@ export class LandCoverComponent implements OnInit, AfterViewInit {
         className: 'OSM'
       });
 
-    this.mainMap = L.map(this.mapId, this.mapOptions).setView([51.161, 7.212], 10);
-    this.syncMap = L.map(this.syncMapId, this.mapOptions).setView([51.161, 7.212], 10);
+    this.mainMap = L.map(this.mapId, this.mapOptions).setView([51.180, 7.307], 13);
+    this.mainMap.timeDimension.setCurrentTime(new Date().getTime());
+    this.syncMap = L.map(this.syncMapId, this.syncmapOptions).setView([51.180, 7.307], 13);
 
     this.mainMap.addLayer(this.wmsLayer);
     L.tileLayer.wms('http://ows.terrestris.de/osm/service?',
@@ -79,11 +92,17 @@ export class LandCoverComponent implements OnInit, AfterViewInit {
     this.mapCache.setMap(this.mapId, this.mainMap);
     this.mapCache.setMap(this.syncMapId, this.syncMap);
 
-    this.sentinelLayer = esri.imageMapLayer({ url: intraLandService, opacity: 0.8, maxZoom: 16 });
-    this.syncSentinelLayer = esri.imageMapLayer({ url: intraLandService, opacity: 0.8, pane: 'imagePane' })
+    this.sentinelLayer = esri.imageMapLayer({ url: intraLandService, opacity: 0.6, maxZoom: 16 });
+    // let testTimeLayer = new ExtendedOlLayerAnimateTimeComponent(esri.imageMapLayer(
+    // {
+    //   url: intraLandService, opacity: 0.8, maxZoom: 16
+    // }),{});
+    
+    this.syncSentinelLayer = esri.imageMapLayer({ url: intraLandService, opacity: 0.6, pane: 'imagePane' })
     this.syncMap.createPane('imagePane');
 
     this.mainMap.addLayer(this.sentinelLayer);
+    // this.mainMap.addLayer(testTimeLayer);
     this.syncMap.addLayer(this.syncSentinelLayer);
 
     this.mainMap.sync(this.syncMap);
@@ -95,7 +114,7 @@ export class LandCoverComponent implements OnInit, AfterViewInit {
     this.mainMap.invalidateSize();
     this.syncMap.invalidateSize();
 
- 
+
 
   }
   public setSelectedTime(num: number) {
@@ -104,9 +123,17 @@ export class LandCoverComponent implements OnInit, AfterViewInit {
   public setSelectedSyncTime(num: number) {
     this.selectedSyncTime = num;
   }
+  public setSelectedCurrentTimeLeft(date: Date) {
+    this.currentSelectedTimeL = date;
+  }
+  public setSelectedCurrentTimeRight(date: Date) {
+    this.currentSelectedTimeR = date;
+
+  }
 
   public identifyPixel(e) {
-    this.showDiagram = true;
+    this.loading = true;
+ 
 
 
     let identifiedPixel;
@@ -116,12 +143,14 @@ export class LandCoverComponent implements OnInit, AfterViewInit {
     // let plotPane = this.plotlydiv.nativeElement;
 
     if (this.sentinelLayer) {
+      this.showDiagram = true;
+      Plotly.register(locale);
       this.sentinelLayer.bindPopup(function (error, identifyResults, response) {
         if (error) {
           console.log('Error: ' + error);
           return;
         } else {
-
+          this.loading = false;
           identifiedPixel = identifyResults.pixel.properties.values.reverse();
           identifyResults.catalogItems.features.forEach((f, i, arr) => {
             dateVal.push({ date: new Date(f.properties.startTime), value: identifiedPixel[i] });
@@ -141,15 +170,15 @@ export class LandCoverComponent implements OnInit, AfterViewInit {
           let layout = {
             yaxis: {
               title: {
-                text:'Pixelwert',
-            
+                text: 'Pixelwert',
+
               },
               showline: true,
 
             },
             xaxis: { showline: true },
             height: 125,
-            width: 800,
+            // width: 800,
             margin: { "t": 0, "b": 15, "l": 45, "r": 0 },
           };
           let config = {
@@ -157,14 +186,14 @@ export class LandCoverComponent implements OnInit, AfterViewInit {
               format: 'png'
             },
             responsive: true,
+            locale: 'de',
             displaylogo: false,
             modeBarButtonsToRemove: ['select2d', 'lasso2d', 'hoverClosestCartesian',
               'hoverCompareCartesian', 'toggleSpikelines', 'pan2d', 'zoomOut2d', 'zoomIn2d', 'autoScale2d', 'resetScale2d'],
           };
+
           Plotly.newPlot('pixelChart', [data], layout, config);
-
-
-        }
+        }      
       });
     }
   }

@@ -31,3 +31,22 @@ n52-station-map-selector{
     right: 10px;
     z-index: 1000
   }
+  .loader{
+    width: 85%;
+    height: 50%;
+    position: absolute;
+    z-index: 99;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: lightgray, 0.5;
+   
+}
+.dashboard{
+    /* background-color: #718296; */
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: small;
+}
+.wv-bold-header{
+    font-weight: bold;
+}

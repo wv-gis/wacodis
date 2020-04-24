@@ -1,29 +1,31 @@
-<div class="container-fluid">
+<div class="container-fluid dashboard">
   <div class="row">
-    <div class="col-xl-8 col-md-4 mb-2">
+    <div class="col-xl-8 col-md-6 mb-2">
       <div class="card border-left-primary shadow h-100 ">
-        <div class="card-header">
+        <div class="card-header wv-bold-header">
           Fernerkundungsprodukt: Landbedeckungsklassifikation
         </div>
         <div class="card-body">
-          Text zur Erläuterung der Seite
+          Synthetisches Bild - berechnet durch Kombination mehrerer Einzelszenen aus der Gesamtheit einer 
+          Vegetationsperiode (eventuell mit Einbeziehung der Information bezüglich der Fruchtfolge aus den
+           Vorjahren. Regelmäßige Auswertung nach meteorologischer Verfügbarkeit der Daten.
         </div>
       </div>
     </div>
-    <div class="col-xl-2 col-md-2 mb-2">
+    <div class="col-xl-2 col-md-3 mb-2">
       <div class="card border-left-primary shadow h-100 ">
-        <div class="card-header">
-          Nächstes verfügbare Bild:
+        <div class="card-header wv-bold-header">
+          Nächster Generierungsdurchlauf:
         </div>
         <div class="card-body">
-          12.03.2020
+         24.04.2020
         </div>
       </div>
     </div>
-    <div class="col-xl-2 col-md-2 mb-2">
+    <div class="col-xl-2 col-md-3 mb-2">
       <div class="card border-left-primary shadow h-100 ">
-        <div class="card-header">
-          Verfügbare Anzahl an Bildern
+        <div class="card-header wv-bold-header">
+          Aktuell verfügbare Anzahl an Bildern
         </div>
         <div class="card-body">
           <!-- {{}} -->
@@ -32,19 +34,19 @@
     </div>
   </div>
   <div class="row" style="height: 700px;">
-    <div class="col-xl-2">
+    <div class="col-xl-2 col-md-2" style="height: 60%;">
       <div class="card border-left-primary shadow h-100 ">
-        <div class="card-header">
+        <div class="card-header wv-bold-header">
           Legende
         </div>
         <div class="card-body" style="height: 700px; overflow-y: scroll;">
           <div style="width: 100%;padding: 5px;">
-           <wv-layer-legend-card [layer]="baselayers[0]"></wv-layer-legend-card>
+            <wv-layer-legend-card [layer]="baselayers[0]"></wv-layer-legend-card>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-xl-8">
+    <div class="col-xl-6 col-md-5">
       <div class='row' style="height: 60%;">
         <div class="col-xl-6 col-md-6 mb-2">
           <div id="map">
@@ -64,24 +66,26 @@
         </div>
       </div>
       <div class="row" style="top: 0px;">
-        <div class="col-xl-6 col-md-4 mb-2">
-          <div class="card border-left-primary shadow h-100">
-            <div class="card-body">
+        <div class="col-xl-6 col-md-6 mb-2">
+          <div class="card border-left-primary shadow ">
+            <div class="card-body" style="padding: 0rem;">
               <div style="width: 100%;">
                 <wv-layer-card style="height: 20%;" id="layerLegendCard" [baselayers]="baselayers" [mapId]="mapId"
-                  (timeIndex)="setSelectedTime($event)">
+                  (timeIndex)="setSelectedTime($event)" (curTimeIndex)="setSelectedCurrentTimeLeft($event)"
+                  [defTimeIndex]="defTimeL">
                 </wv-layer-card>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="col-xl-6 col-md-4 mb-2">
-          <div class="card border-left-primary shadow h-100 ">
-            <div class="card-body">
+        <div class="col-xl-6 col-md-6 mb-2">
+          <div class="card border-left-primary shadow ">
+            <div class="card-body" style="padding: 0rem;">
               <div style="width: 100%;">
                 <wv-layer-card style="height: 20%;" id="layerLegendCard" [baselayers]="syncBaselayers"
-                  [mapId]="syncMapId" (timeIndex)="setSelectedSyncTime($event)">
+                  [mapId]="syncMapId" (timeIndex)="setSelectedSyncTime($event)"
+                  (curTimeIndex)="setSelectedCurrentTimeRight($event)" [defTimeIndex]="defTimeR">
                 </wv-layer-card>
               </div>
             </div>
@@ -89,61 +93,67 @@
         </div>
       </div>
       <div class="row">
-        <div class="card-header">
-          Pixelverlauf
-        </div>
-        <div class="col-xl-6 col-md-4 mb-2">
-          <!-- <div class="card border-left-primary shadow h-100 "> -->
-            <!-- <div class="card-body"> -->
+        <div class="col-xl-6 ">
+          <div class="card border-left-primary shadow ">
+            <div class="card-header wv-bold-header">
+              Prozentuale Verteilung der Landbedeckung im WV-Gebiet <br> 
+              {{currentSelectedTimeL | date:'longDate':'':'de'}}
+            </div>
+            <div class="card-body" style="padding: 0px;">
               <div style="width: 100%;">
-                <div *ngIf="!showDiagram">In die Karte klicken um ein Verlaufsdiagramm der Pixelwerte anzeigen zu können</div>
-                <div *ngIf="showDiagram" class="" id="pixelChart" style="width: 100%;" #pixelChart></div>
-              </div>
-            <!-- </div> -->
-          <!-- </div> -->
-        </div>
-      </div>
-    </div>
-
-    <div class="col-xl-2 col-md-4 mb-2">
-
-      <div class="row">
-        <div class="row" style="height: 50%;">
-          <div class="col-xl-12 mb-2">
-            <div class="card border-left-primary shadow h-100 ">
-              <div class="card-header">
-                Auswertung links
-              </div>
-              <div class="card-body">
-                <div style="width: 100%;padding: 5px;">
-                  <wv-copernicus-layer-chart [drawChart]='true' [selectedTimeIndex]='selectedTime' [chartId]='chartId'>
-                  </wv-copernicus-layer-chart>
-                </div>
+                <wv-copernicus-layer-chart [drawChart]='true' [selectedTimeIndex]='selectedTime' [chartId]='chartId'>
+                </wv-copernicus-layer-chart>
               </div>
             </div>
           </div>
         </div>
-        <div class="row">
-          <div class="col-xl-12 mb-2">
-            <div class="card border-left-primary shadow h-100 ">
-              <div class="card-header">
-                Auswertung rechts
-              </div>
-              <div class="card-body">
-                <div style="width: 100%;padding: 5px;">
-                  <wv-copernicus-layer-chart [drawChart]='true' [selectedTimeIndex]='selectedSyncTime'
-                    [chartId]='syncChartId'>
-                  </wv-copernicus-layer-chart>
-                </div>
+        <div class="col-xl-6 ">
+          <div class="card border-left-primary shadow ">
+            <div class="card-header wv-bold-header">
+              Prozentuale Verteilung der Landbedeckung im WV-Gebiet <br>
+               {{currentSelectedTimeR | date:'longDate':'':'de'}}
+            </div>
+            <div class="card-body" style="padding: 0px;">
+              <div style="width: 100%;">
+                <wv-copernicus-layer-chart [drawChart]='true' [selectedTimeIndex]='selectedSyncTime'
+                  [chartId]='syncChartId'>
+                </wv-copernicus-layer-chart>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-
-
-  </div>
-
-  <!-- <div id="pieChart" style="height: 80%;"></div>   -->
+    <div class="col-xl-4">
+      <div class="card border-left-primary shadow ">
+        <div class="card-header wv-bold-header">
+          Prozentuale Veränderung vom {{currentSelectedTimeL | date:'longDate':'':'de'}} auf den {{currentSelectedTimeR | date:'longDate':'':'de'}}
+        </div>
+        <div class="card-body" style="padding: 0px;">
+          <div style="width: 100%;">
+            <wv-copernicus-bar-chart-card [selIndices]="[selectedTime,selectedSyncTime]" [barChartId]="'absChange'"></wv-copernicus-bar-chart-card>
+          </div>
+        </div>
+      </div>
+    
+    </div>
 </div>
+
+<!-- <div class="row">
+  <div class="card-header">
+    Pixelverlauf
+  </div>
+  <div class="col-xl-6 col-md-4 mb-2">
+        <div style="width: 100%;">
+          <div *ngIf="!showDiagram">In die Karte klicken um ein Verlaufsdiagramm der Pixelwerte anzeigen zu können</div>
+          <div class="loader">
+            <div *ngIf="loading">
+                <div class="spinner-border text-dark" role="status">
+                    <i class="fa fa-spinner fa-spin" style="font-size:24px;"></i>
+                </div>
+            </div>
+        </div>
+          <div *ngIf="showDiagram" class="" id="pixelChart" style="width: 100%;" #pixelChart></div>
+        </div>
+  </div>
+</div> -->
