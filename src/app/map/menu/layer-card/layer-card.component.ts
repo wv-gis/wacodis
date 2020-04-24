@@ -11,7 +11,9 @@ import { legendParam } from '../../legend/extended/extended-ol-layer-legend-url/
 export class LayerCardComponent implements OnInit {
   @Input() baselayers: L.TileLayer[]|esri.ImageMapLayer[];
   @Input() mapId: string;
-  @Output() timeIndex: EventEmitter<number> = new EventEmitter();
+  @Input() defTimeIndex: number = 1;
+  @Output() timeIndex: EventEmitter<number> = new EventEmitter<number>();
+  @Output() curTimeIndex: EventEmitter<Date> = new EventEmitter<Date>();
 
   public legendUrl: string;
   public legendUrls: legendParam[];
@@ -19,6 +21,7 @@ export class LayerCardComponent implements OnInit {
   constructor(private mapCache: MapCache) { }
 
   ngOnInit() {
+    this.timeIndex.emit(this.defTimeIndex+1);
   }
   public getLegendUrl(url?: string, urls?: string[]) {
     this.legendUrls = [{ url: url, label: "", layer: url.split('layer=')[1] }];
@@ -36,5 +39,8 @@ export class LayerCardComponent implements OnInit {
     // this.selectedTime = dat;
     this.selectedIndex = dat+1;
     this.timeIndex.emit(this.selectedIndex);
+  }
+  public setCurrentTime(dat: Date){
+    this.curTimeIndex.emit(dat);
   }
 }

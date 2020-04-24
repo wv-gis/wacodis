@@ -1,25 +1,28 @@
 <div *ngFor="let layer of baselayers; let i = index">
     <div style="margin: 5px; padding: 5px; ">
-      <div>
-        <wv-extended-ol-layer-title [layer]="layer"></wv-extended-ol-layer-title>
+      <!-- <div> -->
+        <!-- <wv-extended-ol-layer-title [layer]="layer"></wv-extended-ol-layer-title> -->
         <!-- <span class="fa fa-times" (click)="removeLayer(i)" style="float: right;"></span> -->
-      </div>
-       <div>
-        <wv-extended-layer-abstract [layer]="layer"></wv-extended-layer-abstract>
-      </div>
-      <div class="legendicons">         
-        <wv-extended-visibility-toggler [layer]="layer"></wv-extended-visibility-toggler>
-        <wv-extended-ol-layer-zoom-extent [layer]="layer" [mapId]="mapId"></wv-extended-ol-layer-zoom-extent>
+      <!-- </div> -->
+       <!-- <div> -->
+        <!-- <wv-extended-layer-abstract [layer]="layer"></wv-extended-layer-abstract> -->
+      <!-- </div> -->
+      <!-- <div class="legendicons">          -->
+        <!-- <wv-extended-visibility-toggler [layer]="layer"></wv-extended-visibility-toggler> -->
+        <!-- <wv-extended-ol-layer-zoom-extent [layer]="layer" [mapId]="mapId"></wv-extended-ol-layer-zoom-extent> -->
         <!-- <wv-extended-ol-layer-legend-url [layer]="layer" (legendUrl)="getLegendUrl($event)" (legendUrls)="getLegendUrls($event)">
         </wv-extended-ol-layer-legend-url> -->
-      </div>
-      <div>
+      <!-- </div> -->
+      <!-- <div>
         <span>Opacity:
           <wv-extended-opacity-slider [layer]="layer"></wv-extended-opacity-slider>
         </span>
-      </div>
+      </div> -->
       <div>
-        <wv-extended-ol-layer-time-selector [layer]="layer" [mapId]='mapId' (selIndexTime)="getSelectedTime($event)"></wv-extended-ol-layer-time-selector>
+        <wv-extended-ol-layer-time-selector [layer]="layer" [mapId]='mapId'
+         (selIndexTime)="getSelectedTime($event)" (currentIndexTime)="setCurrentTime($event)"
+         [defTimeIndex]='defTimeIndex'>
+        </wv-extended-ol-layer-time-selector>
       </div>
       <!-- <div class="legendicons">
         <wv-extended-ol-layer-animate-time [layer]="layer"></wv-extended-ol-layer-animate-time>
