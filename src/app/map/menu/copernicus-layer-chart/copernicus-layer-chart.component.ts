@@ -2,6 +2,7 @@ import { Component, OnInit, Input, OnChanges } from '@angular/core';
 import Plotly from 'plotly.js-dist';
 import * as esri from 'esri-leaflet';
 import { locale } from 'src/environments/environment.prod';
+import { LatLngBounds } from 'leaflet';
 
 
 
@@ -40,14 +41,22 @@ export class CopernicusLayerChartComponent implements OnInit,OnChanges {
   @Input() drawChart: boolean = false;
   @Input() selectedTimeIndex: number;
   @Input() chartId: string;
+  @Input() bounds: LatLngBounds;
   
   constructor() { }
   ngOnChanges(changes: import("@angular/core").SimpleChanges): void {
+   if(changes.selectedTimeIndex){
     if(changes.selectedTimeIndex.firstChange){
 
     }else{
       this.createPieChart();
     }
+   }else{
+     if(!changes.bounds.firstChange){
+       this.createPieChart();
+     }
+   }
+    
    
   }
 
@@ -62,7 +71,15 @@ export class CopernicusLayerChartComponent implements OnInit,OnChanges {
     Plotly.register(locale);
 
     esri.imageService({ url: 'https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/EO_WACODIS_DAT_INTRA_LAND_COVER_CLASSIFICATION_Service/ImageServer' })
-    .get((this.selectedTimeIndex) +"/info/histograms",{},(error,response)=>{
+       .get('computeHistograms',
+      {geometryType:'esriGeometryEnvelope', 
+      geometry:{"xmin":this.bounds.toBBoxString().split(',')[0],
+      "ymin": this.bounds.toBBoxString().split(',')[1],
+      "xmax":this.bounds.toBBoxString().split(',')[2],
+      "ymax":this.bounds.toBBoxString().split(',')[3],"spatialReference":{"wkid":4326}},
+      mosaicRule:{"mosaicMethod":"esriMosaicNorthwest","where":"OBJECTID="+this.selectedTimeIndex}},(error,response)=>{ 
+   // .get((this.selectedTimeIndex) +"/info/histograms",{},(error,response)=>{
+
       if (error) {
         console.log(error);
       } else {
@@ -86,9 +103,9 @@ export class CopernicusLayerChartComponent implements OnInit,OnChanges {
         }];
 
         var layout = {
-          width: 200,
-          height: 220,
-          margin: { "t": 0, "b": 0, "l": 0, "r": 40 },
+          width: 240,
+          height: 230,
+          margin: { "t": 0, "b": 20, "l": 40, "r": 40 },
           showlegend: false,
           // title: 'Landbedeckung ' + this.selectedTime.toDateString(),
         }
