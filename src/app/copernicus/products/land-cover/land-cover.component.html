@@ -34,13 +34,13 @@
     </div>
   </div>
   <div class="row" style="height: 700px;">
-    <div class="col-xl-2 col-md-2" style="height: 60%;">
-      <div class="card border-left-primary shadow h-100 ">
+    <div class="col-xl-2 col-md-2" style="height: 100%;">
+      <div class="card border-left-primary shadow  ">
         <div class="card-header wv-bold-header">
           Legende
         </div>
-        <div class="card-body" style="height: 700px; overflow-y: scroll;">
-          <div style="width: 100%;padding: 5px;">
+        <div class="card-body h-100" >
+          <div class="wv-legend" style="width: 100%;">
             <wv-layer-legend-card [layer]="baselayers[0]"></wv-layer-legend-card>
           </div>
         </div>
@@ -96,12 +96,12 @@
         <div class="col-xl-6 ">
           <div class="card border-left-primary shadow ">
             <div class="card-header wv-bold-header">
-              Prozentuale Verteilung der Landbedeckung im WV-Gebiet <br> 
+              Prozentuale Verteilung der Landbedeckung im Kartenausschnitt 
               {{currentSelectedTimeL | date:'longDate':'':'de'}}
             </div>
             <div class="card-body" style="padding: 0px;">
               <div style="width: 100%;">
-                <wv-copernicus-layer-chart [drawChart]='true' [selectedTimeIndex]='selectedTime' [chartId]='chartId'>
+                <wv-copernicus-layer-chart [drawChart]='true' [selectedTimeIndex]='selectedTime' [chartId]='chartId' [bounds]='mapBounds'>
                 </wv-copernicus-layer-chart>
               </div>
             </div>
@@ -110,13 +110,13 @@
         <div class="col-xl-6 ">
           <div class="card border-left-primary shadow ">
             <div class="card-header wv-bold-header">
-              Prozentuale Verteilung der Landbedeckung im WV-Gebiet <br>
+              Prozentuale Verteilung der Landbedeckung im Kartenausschnitt 
                {{currentSelectedTimeR | date:'longDate':'':'de'}}
             </div>
             <div class="card-body" style="padding: 0px;">
               <div style="width: 100%;">
                 <wv-copernicus-layer-chart [drawChart]='true' [selectedTimeIndex]='selectedSyncTime'
-                  [chartId]='syncChartId'>
+                  [chartId]='syncChartId' [bounds]='mapBounds'>
                 </wv-copernicus-layer-chart>
               </div>
             </div>
@@ -128,10 +128,11 @@
       <div class="card border-left-primary shadow ">
         <div class="card-header wv-bold-header">
           Prozentuale Veränderung vom {{currentSelectedTimeL | date:'longDate':'':'de'}} auf den {{currentSelectedTimeR | date:'longDate':'':'de'}}
+          im Kartenausschnitt
         </div>
         <div class="card-body" style="padding: 0px;">
           <div style="width: 100%;">
-            <wv-copernicus-bar-chart-card [selIndices]="[selectedTime,selectedSyncTime]" [barChartId]="'absChange'"></wv-copernicus-bar-chart-card>
+            <wv-copernicus-bar-chart-card [selIndices]="[selectedTime,selectedSyncTime]" [barChartIds]="['perChange','absChange']" [bounds]='mapBounds' (maskData)="addMaskLayer($event)"></wv-copernicus-bar-chart-card>
           </div>
         </div>
       </div>

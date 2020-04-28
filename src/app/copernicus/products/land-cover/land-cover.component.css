@@ -50,3 +50,6 @@ n52-station-map-selector{
 .wv-bold-header{
     font-weight: bold;
 }
+.wv-legend{
+    font-size: smaller;
+}
