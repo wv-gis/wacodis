@@ -53,7 +53,7 @@ export class ExtendedOlLayerLegendUrlComponent {//extends OlLayerLegendUrlCompon
       let legendResp: legendParam[] = [];
       esri.imageMapLayer({url: legendurl}).metadata((error,legendData)=>{
        legendData["layers"][0].legend.forEach((dat,i,arr)=>{
-         if(i<25)
+         if(arr[i].label.split('-').length > 1)
           legendResp.push({url: "data:image/png;base64," + arr[i].imageData, label: arr[i].label.slice(3), layer:metadata["description"] }) ;
       //  console.log(JSON.stringify(dat));
         });
