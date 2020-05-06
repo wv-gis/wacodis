@@ -8,7 +8,6 @@ import { ProfileEntryGraphComponent } from 'src/app/profiles/profile-entry-graph
 import { WvDataViewComponent } from 'src/app/timeseries/data-selection/wv-data-view/wv-data-view.component';
 import { TimeseriesViewComponent } from 'src/app/timeseries/depiction/timeseries-view/timeseries-view.component';
 import { WeatherForecastComponent } from 'src/app/weather/weather-forecast/weather-forecast.component';
-import { AppComponent } from 'src/app/app.component';
 import { SelectionViewComponent } from './reports/selection/selection-view/selection-view.component';
 import { ProfileDataViewSelectionComponent } from './profiles/data-selection/profile-data-view-selection/profile-data-view-selection.component';
 import { MowingViewComponent } from './copernicus/products/mowing-view/mowing-view.component';
@@ -17,7 +16,6 @@ import { SoilTemperatureViewComponent } from './copernicus/products/soil-tempera
 import { ChlorophyllViewComponent } from './copernicus/products/chlorophyll-view/chlorophyll-view.component';
 import { VitalityViewComponent } from './copernicus/products/vitality-view/vitality-view.component';
 import { LandCoverComponent } from './copernicus/products/land-cover/land-cover.component';
-import { ProfileViewComponent } from './profiles/profile-view/profile-view.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'start', pathMatch: 'full' },
@@ -42,7 +40,8 @@ const routes: Routes = [
   {path: "soilTemperature-view",component: SoilTemperatureViewComponent},
   {path: "chlorophyll-view",component: ChlorophyllViewComponent},
   {path: "vitality-view",component: VitalityViewComponent},
-  {path: "land-use-view",component: LandCoverComponent}
+  {path: "land-use-view", component: LandCoverComponent},
+  {path: "land-use-view/:id",component: LandCoverComponent}
 ];
 
 @NgModule({

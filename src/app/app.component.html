@@ -11,33 +11,55 @@
       </div>
 
       <!-- <div *ngIf="checkSelection('/start')" class="collapse navbar-collapse" id="navbarToggler"> -->
-        <div  class="collapse navbar-collapse" id="WvnavbarToggler"> 
+      <div class="collapse navbar-collapse" id="WvnavbarToggler">
         <ul class="navbar-nav mr-auto ">
           <li routerLinkActive="active" class="nav-item wv" data-toggle="collapse" data-target=".navbar-collapse.show">
             <a routerLink='/start' class="nav-link">Home</a>
           </li>
           <!-- <li routerLinkActive="active" class="nav-item wv" data-toggle="collapse" data-target=".navbar-collapse.show"> -->
-            <!-- [routerLinkActiveOptions]="{exact: true}" -->
-            <!-- <a routerLink='/selection-category'></a>
+          <!-- [routerLinkActiveOptions]="{exact: true}" -->
+          <!-- <a routerLink='/selection-category'></a>
             <a routerLink='/selection-phenomenon'></a>
             <a routerLink='/selection-station'></a>
             <a routerLink='/selection-map' class="nav-link">Zeitreihendiagramm</a>
             <a routerLink='/timeseries-diagram'></a>
           </li> -->
           <li routerLinkActive="active" class="nav-item wv" data-toggle="collapse" data-target=".navbar-collapse.show">
-              <div class="dropdown ">
-                  <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
-                      aria-expanded="false" style="font-size: 13px;">
-                      Fernerkundungsprodukte
-                  </button>
-                  <div class="dropdown-menu btn wv-menu-drop" aria-labelledby="dropdownMenuButton">
-                      <a class="dropdown-item  wv-drop" routerLink="/land-use-view" role="button">Landbedeckung</a>
-                      <a class="dropdown-item wv-drop" routerLink="/vitality-view" role="button">Vitalität</a>
-                      <a class="dropdown-item  wv-drop" routerLink="/mowing-view" role="button">Mahdereignisse</a>
-                      <a class="dropdown-item wv-drop" routerLink="/chlorophyll-view" role="button">Chlorophyll in Stauseen</a>
-                      <a class="dropdown-item  wv-drop" routerLink="/soilTemperature-view" role="button">Oberflächentemperatur</a>
-                  </div>
-              </div>
+            <div class="dropdown ">
+              <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false" style="font-size: 13px;">
+                Fernerkundungsproduktbericht
+              </button>
+              <ul class="dropdown-menu btn wv-menu-drop" aria-labelledby="dropdownMenuButton">
+                <!-- <div class="btn-group dropright">
+                      <button type="button" style="color: #2C333F;" class="btn dropdown-toggle wv-drop" id="dropdownLandCover" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Landbedeckung
+                      </button> -->
+                <li class="dropdown-submenu">
+                  <a class="dropdown-item  wv-drop" tabindex="-1" href="#">
+                    Berichte Landbedeckung
+                  </a>
+                  <ul class="dropdown-menu btn wv-menu-drop" aria-labelledby="dropSubMenuButton" id="subMenu">
+                    <li><a class="dropdown-item  wv-drop" [routerLink]="['/land-use-view','uW']" role="button">Landbedeckung Untere
+                        Wupper</a></li>
+                    <li><a class="dropdown-item  wv-drop" [routerLink]="['/land-use-view', 'oW']" role="button">Landbedeckung Obere
+                        Wupper</a></li>
+                    <li><a class="dropdown-item  wv-drop" [routerLink]="['/land-use-view', 'dH']" role="button">Landbedeckung
+                        Dhuenn</a></li>
+                        <li><a class="dropdown-item  wv-drop" [routerLink]="['/land-use-view']" role="button">Landbedeckung
+                          Individuell</a></li>
+                  </ul>
+                </li>
+
+                <!-- </div>   -->
+                <li><a class="dropdown-item wv-drop" routerLink="/vitality-view" role="button">Vitalität</a></li>
+                <li><a class="dropdown-item wv-drop" routerLink="/mowing-view" role="button">Mahdereignisse</a></li>
+                <li><a class="dropdown-item wv-drop" routerLink="/chlorophyll-view" role="button">Chlorophyll in
+                    Stauseen</a></li>
+                <li><a class="dropdown-item wv-drop" routerLink="/soilTemperature-view"
+                    role="button">Oberflächentemperatur</a></li>
+              </ul>
+            </div>
           </li>
           <li routerLinkActive="active" class="nav-item wv" data-toggle="collapse" data-target=".navbar-collapse.show">
             <a routerLink='/substrance-entries-view' class="nav-link">Modellierungsergebnisse</a>
@@ -50,28 +72,30 @@
             <a routerLink='/reports' class="nav-link">Wasserwirtschaftsbericht</a>
           </li>
           <li routerLinkActive="active" class="nav-item wv" data-toggle="collapse" data-target=".navbar-collapse.show">
-              <div class="dropdown">
-                  <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
-                      aria-expanded="false" style="font-size: 13px;">
-                      Weitere Visualisierungen
-                  </button>
-                  <div class="dropdown-menu btn wv-menu-drop" aria-labelledby="dropdownMenuButton">
-                      <a class="dropdown-item wv-drop" routerLink="/selection-map" role="button">Zeitreihendiagramm</a>
-                      <a class="dropdown-item wv-drop" routerLink="/profiles-selection" role="button">Profildiagramm</a>
-                      <a class="dropdown-item wv-drop" routerLink="/map-view" role="button">Karteneditor</a>
-                      <a class="dropdown-item wv-drop" routerLink="/change-detection" role="button">Änderungsdetektion</a>
-                  </div>
+            <div class="dropdown">
+              <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false" style="font-size: 13px;">
+                Weitere Visualisierungen
+              </button>
+              <div class="dropdown-menu btn wv-menu-drop" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item wv-drop" routerLink="/selection-map" role="button">Zeitreihendiagramm</a>
+                <a class="dropdown-item wv-drop" routerLink="/profiles-selection" role="button">Profildiagramm</a>
+                <a class="dropdown-item wv-drop" routerLink="/map-view" role="button">Karteneditor</a>
+                <a class="dropdown-item wv-drop" routerLink="/change-detection" role="button">Änderungsdetektion</a>
               </div>
+            </div>
           </li>
         </ul>
         <!-- <img src="assets/images/logo_komplett_blau-grau_35mm.jpg" alt="Wupperverband" width="99" height="77" > -->
-    
+
         <!-- <form class="form-inline my-2 my-lg-0">
             <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
         </form> -->
       </div>
-      <img src="https://fluggs.wupperverband.de/fluggs-theme/images/custom/background_images/logo_wupperverband_grau.png" alt="Wupperverband" width="200" height="25" >
+      <img
+        src="https://fluggs.wupperverband.de/fluggs-theme/images/custom/background_images/logo_wupperverband_grau.png"
+        alt="Wupperverband" width="200" height="25">
     </div>
   </nav>
   <h1>{{id}}</h1>
