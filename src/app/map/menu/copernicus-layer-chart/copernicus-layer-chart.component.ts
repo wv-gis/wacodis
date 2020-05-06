@@ -2,7 +2,7 @@ import { Component, OnInit, Input, OnChanges } from '@angular/core';
 import Plotly from 'plotly.js-dist';
 import * as esri from 'esri-leaflet';
 import { locale } from 'src/environments/environment.prod';
-import { LatLngBounds } from 'leaflet';
+import { LatLngBounds, LatLng, polygon } from 'leaflet';
 
 
 
@@ -12,21 +12,22 @@ export class StatisticData {
   value: number;
 }
 
-const categoryVal = ["no Data", "Acker - Mais", "Acker - sonstige Ackerfruch", "Gewaesser","unbekanntGF",
-   "Siedlung - Gewerbe", "Gruenland - unbestimmt", "Gruenland - Gestruepp",
-  "Offenboden", "Siedlung geschlossen", "Siedlung offen", "Verkehrsflaeche", "Laubbaeume",
-  "unbekanntM", "Nadelbaeume", "Acker - Raps", "Acker - unbewachsen", "Acker - Zwischenfrucht",
-  "unbekanntA", "unbekanntAs", "Acker-sonstiges-Offenboden", "Acker-Mais-Offenboden",
-  "Acker-Mais-Zwischenfrucht", "Acker-Raps-Offenboden", "Acker-Raps-Zwischenfrucht"];
-  const colors = ["rgb(0,0,0)","rgb(255,215,0)","rgb(184,134,11)","rgb(65,105,225)","rgb(30,144,255)","rgb(190,190,190)","rgb(192,255,62)",
-  "rgb(189,183,107)","rgb(139,69,19)","rgb(205,92,92)","rgb(250,128,144)","rgb(186,85,211)","rgb(60,179,113)","rgb(0,0,0)","rgb(49,139,87)",
-  "rgb(255,255,0)","rgb(205,133,63)","rgb(210,180,140)","rgb(0,0,0)","rgb(0,0,0)","rgb(255,218,185)","rgb(255,250,205)",
-  "rgb(255,246,143)","rgb(205,205,0)","rgb(238,238,0)" ];
+
 @Component({
   selector: 'wv-copernicus-layer-chart',
   templateUrl: './copernicus-layer-chart.component.html',
   styleUrls: ['./copernicus-layer-chart.component.css']
 })
+/**
+ *  component to draw PieChart for percentage values of selected Layers histogram
+ * @Input parameters:
+ *            selectedTimeIndex: the selected Index of the layer to query
+ *            chartID: the id of the chart to be drawn
+ *            bounds: bounds of Map View to calculate the histogram for
+ *            service: Service url to request the histogram from
+ *            categoryValues: Catgeory Labels for Chart
+ *            colors: Colors for Chart
+ */
 export class CopernicusLayerChartComponent implements OnInit,OnChanges {
   public headers: string[] = [];
   public entries = [];
@@ -38,45 +39,94 @@ export class CopernicusLayerChartComponent implements OnInit,OnChanges {
   public colorRgb: string[] = [];
   public selectedTime: Date = new Date();
   public selectedIndex: number = 1;
+
   @Input() drawChart: boolean = false;
   @Input() selectedTimeIndex: number;
   @Input() chartId: string;
-  @Input() bounds: LatLngBounds;
+  @Input() bounds: LatLngBounds|LatLng[];
+  @Input() service: string;
+  @Input() colors: string[];
+  @Input() categoryValues: string[];
   
   constructor() { }
+
+  /**
+   * 
+   * @param changes 
+   * if bounds or selected layer change redraw the chart based on new calculated values
+   */
   ngOnChanges(changes: import("@angular/core").SimpleChanges): void {
    if(changes.selectedTimeIndex){
     if(changes.selectedTimeIndex.firstChange){
-
     }else{
-      this.createPieChart();
+      if(this.bounds instanceof LatLngBounds){
+        let geometryType ='esriGeometryEnvelope';
+        let geometry ={"xmin":this.bounds.toBBoxString().split(',')[0],
+        "ymin": this.bounds.toBBoxString().split(',')[1],
+        "xmax":this.bounds.toBBoxString().split(',')[2],
+        "ymax":this.bounds.toBBoxString().split(',')[3],"spatialReference":{"wkid":4326}};
+        this.createPieChart(geometryType,geometry);
+      }else{
+        let geometryType ='esriGeometryEnvelope';
+        let geometry ={"xmin":polygon(this.bounds).getBounds().toBBoxString().split(',')[1],
+        "ymin": polygon(this.bounds).getBounds().toBBoxString().split(',')[0],
+        "xmax":polygon(this.bounds).getBounds().toBBoxString().split(',')[3],
+        "ymax":polygon(this.bounds).getBounds().toBBoxString().split(',')[2],"spatialReference":{"wkid":4326}};
+        this.createPieChart(geometryType,geometry);
+      }
     }
    }else{
      if(!changes.bounds.firstChange){
-       this.createPieChart();
+      if(this.bounds instanceof LatLngBounds){
+        let geometryType ='esriGeometryEnvelope';
+        let geometry ={"xmin":this.bounds.toBBoxString().split(',')[0],
+        "ymin": this.bounds.toBBoxString().split(',')[1],
+        "xmax":this.bounds.toBBoxString().split(',')[2],
+        "ymax":this.bounds.toBBoxString().split(',')[3],"spatialReference":{"wkid":4326}};
+        this.createPieChart(geometryType,geometry);
+      }else{
+        let geometryType ='esriGeometryEnvelope';
+        let geometry ={"xmin":polygon(this.bounds).getBounds().toBBoxString().split(',')[1],
+        "ymin": polygon(this.bounds).getBounds().toBBoxString().split(',')[0],
+        "xmax":polygon(this.bounds).getBounds().toBBoxString().split(',')[3],
+        "ymax":polygon(this.bounds).getBounds().toBBoxString().split(',')[2],"spatialReference":{"wkid":4326}};
+        this.createPieChart(geometryType,geometry);
+      }
      }
    }
-    
-   
   }
 
   ngOnInit() {
-    this.createPieChart();
+
+    if(this.bounds instanceof LatLngBounds){
+      let geometryType ='esriGeometryEnvelope';
+      let geometry ={"xmin":this.bounds.toBBoxString().split(',')[0],
+      "ymin": this.bounds.toBBoxString().split(',')[1],
+      "xmax":this.bounds.toBBoxString().split(',')[2],
+      "ymax":this.bounds.toBBoxString().split(',')[3],"spatialReference":{"wkid":4326}};
+      this.createPieChart(geometryType,geometry);
+    }else{
+      let geometryType ='esriGeometryEnvelope';
+      let geometry ={"xmin":polygon(this.bounds).getBounds().toBBoxString().split(',')[1],
+      "ymin": polygon(this.bounds).getBounds().toBBoxString().split(',')[0],
+      "xmax":polygon(this.bounds).getBounds().toBBoxString().split(',')[3],
+      "ymax":polygon(this.bounds).getBounds().toBBoxString().split(',')[2],"spatialReference":{"wkid":4326}};
+      this.createPieChart(geometryType,geometry);
+    }
+   
   }
 
   /**
    * method creates a pie chart with percentage Values for the defined classes
    */
-  public createPieChart() {
+  public createPieChart(geomType: string, geom: Object) {
     Plotly.register(locale);
 
-    esri.imageService({ url: 'https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/EO_WACODIS_DAT_INTRA_LAND_COVER_CLASSIFICATION_Service/ImageServer' })
+    esri.imageService({ url: this.service })
        .get('computeHistograms',
-      {geometryType:'esriGeometryEnvelope', 
-      geometry:{"xmin":this.bounds.toBBoxString().split(',')[0],
-      "ymin": this.bounds.toBBoxString().split(',')[1],
-      "xmax":this.bounds.toBBoxString().split(',')[2],
-      "ymax":this.bounds.toBBoxString().split(',')[3],"spatialReference":{"wkid":4326}},
+      {geometryType:geomType, 
+      geometry:geom,
+      outSR: 4326,
       mosaicRule:{"mosaicMethod":"esriMosaicNorthwest","where":"OBJECTID="+this.selectedTimeIndex}},(error,response)=>{ 
    // .get((this.selectedTimeIndex) +"/info/histograms",{},(error,response)=>{
 
@@ -86,8 +136,8 @@ export class CopernicusLayerChartComponent implements OnInit,OnChanges {
         let val = [];
         for (let p = 1; p < response.histograms[0].counts.length; p++) {
           val.push(response.histograms[0].counts[p]);
-          this.labels.push(categoryVal[p]);
-          this.colorRgb.push(colors[p]);
+          this.labels.push(this.categoryValues[p]);
+          this.colorRgb.push(this.colors[p]);
         }
         this.values = val;
         var data = [{
@@ -104,10 +154,9 @@ export class CopernicusLayerChartComponent implements OnInit,OnChanges {
 
         var layout = {
           width: 240,
-          height: 230,
+          height: 195,
           margin: { "t": 0, "b": 20, "l": 40, "r": 40 },
           showlegend: false,
-          // title: 'Landbedeckung ' + this.selectedTime.toDateString(),
         }
         var config={
           locale: 'de',
@@ -122,7 +171,7 @@ export class CopernicusLayerChartComponent implements OnInit,OnChanges {
 
   /**
    * method to define wether or not the percentage label is shown
-   * @param values  which define the parts of the pie
+   * @param values  percentage values which define the parts of the pie
    */
   public calculateTextpositions(values: number[]):string[]{
     let total=0;
