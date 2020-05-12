@@ -136,7 +136,7 @@ export class WvDataViewComponent implements OnInit, OnDestroy {
     
     this.baseLayer = L.tileLayer.wms('http://ows.terrestris.de/osm/service?',
     {
-       layers: 'OSM-WMS',format: 'image/png', transparent: true, maxZoom: 16, 
+       layers: 'OSM-WMS',format: 'image/png', transparent: true, maxZoom: 15, 
        attribution: '&copy; 2019 &middot; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, <div>Icons made by <a href="https://www.flaticon.com/authors/simpleicon" title="SimpleIcon">SimpleIcon</a> from <a href="https://www.flaticon.com/"title="Flaticon">www.flaticon.com</a></div>'
        , className: 'OSM'
     });
@@ -145,10 +145,10 @@ export class WvDataViewComponent implements OnInit, OnDestroy {
     //    format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; 2019 &middot; <a href="https://maps.omniscale.com/">Omniscale</a>', className: 'OSM'
     // });
 
-    this.baseMaps.set('timeMap',
-      {
-        label: 'Open Street Map', visible: true, layer: this.baseLayer
-  });
+  //   this.baseMaps.set('timeMap',
+  //     {
+  //       label: 'Open Street Map', visible: true, layer: this.baseLayer
+  // });
     
   this.overlayMaps.set('wv-area',
   {

@@ -451,7 +451,7 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
       L.DomEvent.off(this.range._container, 'mouseout', this.uncancelMapDrag, this);
     }
     if (map) {
-      console.log("RemoveMapEvents");
+     
       map.off('layeradd layerremove', this.updateLayers, this);
       map.off('zoom', this.addSplitScreenNew, this);
       map.off('move', this.addSplitScreenNew, this);
@@ -563,7 +563,8 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
     // this.compMap = this.mapCache.getMap('comparisonMap');
     // this.compMap = this.mainMap;
     this.syncedMap = L.map(newMap).setView([51.161, 7.482], 13);
-    if (!this.mainMap) {
+    if (!this.mainMap.hasLayer(this.wmsLayer)) {
+     
       this.mainMap = L.map('main').setView([51.161, 7.482], 13);
       // this.mapCache.getMap('comparisonMap').setView([51.161, 7.482], 13);
       this.mainMap.addLayer(this.wmsLayer);
@@ -583,6 +584,7 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
     if (this.leftLayer.options.pane === 'imagePane' + this.selectedIdL) {
       // this.mapCache.getMap('comparisonMap').createPane('imagePane' + this.selectedIdL);
       this.mainMap.createPane('imagePane' + this.selectedIdL);
+    
     } else if (this.leftLayer.options.pane === 'overlayPane' + this.selectedIdL) {
       // this.mapCache.getMap('comparisonMap').createPane('overlayPane' + 1);
       this.mainMap.createPane('overlayPane' + this.selectedIdL);
