@@ -1,16 +1,150 @@
-<div style="height: 900px;">
-    <div id="map" style="width: 82%; height: 90%; padding: 5px; position:absolute;">
-        <!-- <n52-ol-map class="map mapHeight" [mapId]="mapId" [zoom]="zoom" [lat]="lat" [lon]="lon" [showZoomControl]="showZoomControl"
+<!-- <div style="height: 900px;"> -->
+<!-- <div id="map" style="width: 82%; height: 90%; padding: 5px; position:absolute;"> -->
+<!-- <n52-ol-map class="map mapHeight" [mapId]="mapId" [zoom]="zoom" [lat]="lat" [lon]="lon" [showZoomControl]="showZoomControl"
             [showAttributionControl]="showAttributionControl">
             <n52-ol-layer *ngFor="let layer of baselayers" [layer]="layer"></n52-ol-layer>
             <n52-ol-overview-map [collapsible]="true" [layers]="overviewMapLayers" position="bottomright"></n52-ol-overview-map>
         </n52-ol-map> -->
-        <div class="map-wrapper" style="height: 100%;">
-            <div id="vitality-map" class="map-viewer"></div>
-          </div>
-    </div>
-    <div style="width: 20%;padding: 5px;">
+<!-- <div class="map-wrapper" style="height: 100%;"> -->
+<!-- <div id="vitality-map" class="map-viewer"></div> -->
+<!-- </div> -->
+<!-- </div> -->
+<!-- <div style="width: 20%;padding: 5px;">
         <wv-layer-tree style="height: 20%;" id="vitalityTree" [baselayers]="baselayers" [mapId]="mapId"></wv-layer-tree> 
     </div>
-    <div id="vitalityChart" style="height: 80%"></div>  
-</div>
+    <div id="vitalityChart" style="height: 80%"></div>   -->
+<!-- </div> -->
+
+
+<div class="container-fluid dashboard">
+  <div class="row">
+    <div class="col-xl-8 col-md-6 mb-2">
+      <div class="card border-left-primary shadow h-100 ">
+        <div class="card-header wv-bold-header">
+          Fernerkundungsprodukt: Vitalitätsänderung
+        </div>
+        <div class="card-body">
+          Vitalitätsänderungen werden über die Differenz von Normalized Difference Vegetation Index-Werten
+          einer vorliegenden Sentinel-2 Szene T1 zu einem Referenzzeitpunkt T0, z.B. aus dem jeweiligen Vorjahr
+          (T0 = T1 - 365 Tage) berechnet.
+          Negative Indexdifferenzwerte entsprechen Vitalitätsverlusten, positive Werte entsprechen Vitalitätszugewinnen.
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-2 col-md-3 mb-2">
+      <div class="card border-left-primary shadow h-100 ">
+        <div class="card-header wv-bold-header">
+          Nächster Generierungsdurchlauf:
+        </div>
+        <div class="card-body">
+          24.04.2020
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-2 col-md-3 mb-2">
+      <div class="card border-left-primary shadow h-100 ">
+        <div class="card-header wv-bold-header">
+          Aktuell verfügbare Anzahl an Bildern
+        </div>
+        <div class="card-body">
+          <!-- {{}} -->
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row" style="height: 740px">
+    <div class="col-xl-4 col-md-4 mb-2" style="height: 100%;">
+      <div class="row" style="max-height: 72%;">
+        <div class="col-xl-6">
+          <div class="card border-left-primary shadow h-100 ">
+            <div class="card-header wv-bold-header">
+              O
+            </div>
+            <div class="card-body h-100" style="padding: 0rem;">
+
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-6">
+          <div class="card border-left-primary shadow h-100 ">
+            <div class="card-header wv-bold-header">
+              Legende
+            </div>
+            <div class="card-body h-100" style="padding: 0rem;">
+              <div class="wv-legend" style="width: 100%;">
+                <wv-layer-legend-card [layer]="baselayers[0]"></wv-layer-legend-card>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xl-12 mb-2">
+          <div class="card border-left-primary shadow h-100">
+
+            <div class="card-body h-100">
+              <!-- <div style="width: 100%;" *ngIf="showDiagram">
+                  <wv-copernicus-layer-chart [drawChart]='true' [selectedTimeIndex]='selectedTime' [chartId]="'PEchart'"
+                    [bounds]='polyBounds' [service]='service' [categoryValues]='categoryVal' [colors]='colors'>
+                  </wv-copernicus-layer-chart>
+                </div> -->
+
+              <n52-d3-timeseries-graph [datasetIds]="datasetIdsMultiple" [selectedDatasetIds]="selectedIds"
+                [datasetOptions]="datasetOptionsMultiple" [timeInterval]="timespan"
+                (onTimespanChanged)="timespanChanged($event)" [presenterOptions]="diagramOptionsD3">
+              </n52-d3-timeseries-graph>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="col-xl-4 col-md-4">
+      <div class='row' style="height: 85%;">
+        <div class="col-xl-12 col-md-12 mb-2">
+          <div id="map">
+            <div class="map-wrapper" id='map-wrapper'>
+              <div id="vitality-map" class="map-viewer"></div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+      <div class="row" style="top: 0rem;">
+        <div class="col-xl-12 col-md-12 mb-2">
+          <div class="card border-left-primary shadow ">
+            <div class="card-body" style="padding: 0rem;">
+              <div style="width: 100%;">
+                <wv-layer-card style="height: 50%;" id="layerLegendCard" [baselayers]="baselayers" [mapId]="mapId"
+                  (timeIndex)="setSelectedTime($event)" (curTimeIndex)="setSelectedCurrentTimeLeft($event)"
+                  [defTimeIndex]="defTimeL">
+                </wv-layer-card>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-4">
+      <div class="card border-left-primary shadow ">
+        <div class="card-header wv-bold-header">
+          Prozentuale Veränderung im Vergleich zum letzten Jahr vom {{currentSelectedTimeL | date:'longDate':'':'de'}}
+        </div>
+        <div class="card-body" style="padding: 0px;">
+          <!-- <div style="width: 100%;" *ngIf="showDiagram; else indBarChart">
+              <wv-copernicus-bar-chart-card [selIndices]="[selectedTime]"
+                [barChartIds]="['perChange','absChange']" [bounds]='polyBounds' [service]='service'
+                [categoryValues]='categoryVal' [colors]='colors'></wv-copernicus-bar-chart-card>
+            </div>
+            <ng-template #indBarChart>
+            <div style="width: 100%;">
+              <wv-copernicus-bar-chart-card [selIndices]="[selectedTime]"
+                [barChartIds]="['perChange','absChange']" [bounds]='mapBounds' [service]='service'
+                [categoryValues]='categoryVal' [colors]='colors'></wv-copernicus-bar-chart-card>
+            </div>
+          </ng-template> -->
+        </div>
+      </div>
+    </div>
+  </div>

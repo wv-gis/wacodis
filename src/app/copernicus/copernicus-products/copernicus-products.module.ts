@@ -12,6 +12,7 @@ import { WvMapModule } from 'src/app/map/map.module';
 import { SensorwappToolboxModule } from '@sensorwapp-toolbox/core';
 import { LayerLegendCardComponent } from '../cards/layer-legend-card/layer-legend-card.component';
 import { CopernicusBarChartCardComponent } from '../cards/copernicus-bar-chart-card/copernicus-bar-chart-card.component';
+import { HelgolandD3Module } from '@helgoland/d3';
 
 
 
@@ -26,6 +27,7 @@ import { CopernicusBarChartCardComponent } from '../cards/copernicus-bar-chart-c
     HelgolandMapSelectorModule,
     HelgolandMapViewModule,
     HelgolandOpenLayersModule,
+    HelgolandD3Module,
     SensorwappToolboxModule,
     WvMapModule
   ],exports:[LandCoverComponent, ChlorophyllViewComponent, MowingViewComponent, SoilTemperatureViewComponent,
