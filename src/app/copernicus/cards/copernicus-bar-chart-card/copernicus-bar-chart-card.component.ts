@@ -69,12 +69,9 @@ export class CopernicusBarChartCardComponent implements OnInit, OnChanges {
           }
           this.createBarChart(geometryType, geometry);
         } else {
-          let geometryType = 'esriGeometryEnvelope';
+          let geometryType = 'esriGeometryPolygon';
           let geometry = {
-            "xmin": polygon(this.bounds).getBounds().toBBoxString().split(',')[1],
-            "ymin": polygon(this.bounds).getBounds().toBBoxString().split(',')[0],
-            "xmax": polygon(this.bounds).getBounds().toBBoxString().split(',')[3],
-            "ymax": polygon(this.bounds).getBounds().toBBoxString().split(',')[2], "spatialReference": { "wkid": 4326 }
+            "rings": this.bounds, "spatialReference": { "wkid": 4326 }
           };
           this.createBarChart(geometryType, geometry);
         }
@@ -92,13 +89,10 @@ export class CopernicusBarChartCardComponent implements OnInit, OnChanges {
           }
           this.createBarChart(geometryType, geometry);
         } else {
-          console.log(this.bounds);
-          let geometryType = 'esriGeometryEnvelope';
+         
+          let geometryType = 'esriGeometryPolygon';
           let geometry = {
-            "xmin": polygon(this.bounds).getBounds().toBBoxString().split(',')[1],
-            "ymin": polygon(this.bounds).getBounds().toBBoxString().split(',')[0],
-            "xmax": polygon(this.bounds).getBounds().toBBoxString().split(',')[3],
-            "ymax": polygon(this.bounds).getBounds().toBBoxString().split(',')[2], "spatialReference": { "wkid": 4326 }
+            "rings": this.bounds, "spatialReference": { "wkid": 4326 }
           };
           this.createBarChart(geometryType, geometry);
         }
@@ -118,12 +112,9 @@ export class CopernicusBarChartCardComponent implements OnInit, OnChanges {
       this.createBarChart(geometryType, geometry);
     }
     else {
-      let geometryType = 'esriGeometryEnvelope';
+      let geometryType = 'esriGeometryPolygon';
       let geometry = {
-        "xmin": polygon(this.bounds).getBounds().toBBoxString().split(',')[1],
-        "ymin": polygon(this.bounds).getBounds().toBBoxString().split(',')[0],
-        "xmax": polygon(this.bounds).getBounds().toBBoxString().split(',')[3],
-        "ymax": polygon(this.bounds).getBounds().toBBoxString().split(',')[2], "spatialReference": { "wkid": 4326 }
+        "rings": this.bounds, "spatialReference": { "wkid": 4326 }
       };
       this.createBarChart(geometryType, geometry);
     }
@@ -187,39 +178,44 @@ export class CopernicusBarChartCardComponent implements OnInit, OnChanges {
             let val = [];
             let names = [];
             let color = [];
+            let diff =[];
 
             for (let p = 0; p < secresponse.histograms[0].counts.length; p++) {
               histCounts.push(secresponse.histograms[0].counts[p]);
               this.sum = this.sum + secresponse.histograms[0].counts[p];
             }
-
+      
             // calculate growth and decrease depending on selected Time
             if (this.selIndices[0] < this.selIndices[1]) {
 
               if (firstIndexvalues.length > histCounts.length) {
                 for (let i = 1; i < histCounts.length; i++) {
                   if (((firstIndexvalues[i] - histCounts[i]) / this.sum) * 100 != 0 && ((firstIndexvalues[i] - histCounts[i]) / this.sum) * 100 != NaN) {
-                    val.push(Math.fround(((firstIndexvalues[i] - histCounts[i]) / (this.sum))) * 100);
+                    val.push(Math.fround(((-firstIndexvalues[i] + histCounts[i]) / (firstIndexvalues[i]))) * 100);
+                    diff.push((-firstIndexvalues[i] + histCounts[i]));
                     names.push(this.categoryValues[i]);
                     color.push(this.colors[i]);
                     this.noDataValues.push(i.toString());
                   }
                 }
                 for (let t = histCounts.length; t < firstIndexvalues.length; t++) {
-                  val.push(Math.fround(((firstIndexvalues[t]) / (this.sum))) * 100);
+                  val.push(Math.fround(((firstIndexvalues[t]) / (firstIndexvalues[t]))) * 100);
+                  diff.push(firstIndexvalues[t]);
                   names.push(this.categoryValues[t]);
                   color.push(this.colors[t]);
                 }
               } else {
                 for (let i = 1; i < firstIndexvalues.length; i++) {
                   if (((firstIndexvalues[i] - histCounts[i]) / this.sum) * 100 != 0 && ((firstIndexvalues[i] - histCounts[i]) / this.sum) * 100 != NaN) {
-                    val.push(Math.fround(((firstIndexvalues[i] - histCounts[i]) / (this.sum))) * 100);
+                    val.push(Math.fround(((-firstIndexvalues[i] + histCounts[i]) / (firstIndexvalues[i]))) * 100);
+                    diff.push((-firstIndexvalues[i] + histCounts[i]));
                     names.push(this.categoryValues[i]);
                     color.push(this.colors[i]);
                   }
                 }
                 for (let t = firstIndexvalues.length; t < histCounts.length; t++) {
-                  val.push(Math.fround(((-histCounts[t]) / (this.sum))) * 100);
+                  val.push(Math.fround(((-histCounts[t]) / (histCounts[t]))) * 100);
+                  diff.push(-histCounts[t]);
                   names.push(this.categoryValues[t]);
                   color.push(this.colors[t]);
                 }
@@ -230,12 +226,14 @@ export class CopernicusBarChartCardComponent implements OnInit, OnChanges {
               if (this.firstIndexvalues.length > histCounts.length) {
                 for (let i = 1; i < histCounts.length; i++) {
                   if (((-firstIndexvalues[i] + histCounts[i]) / this.sum) * 100 != 0 && ((-firstIndexvalues[i] + histCounts[i]) / this.sum) * 100 != NaN) {
-                    val.push(Math.fround(((histCounts[i] - firstIndexvalues[i]) / (this.sum))) * 100);
+                    val.push(Math.fround(((-histCounts[i] + firstIndexvalues[i]) / (histCounts[i]))) * 100);
+                    diff.push((-histCounts[i] + firstIndexvalues[i]));
                     names.push(this.categoryValues[i]);
                     color.push(this.colors[i]);
                   }
                   for (let t = histCounts.length; t < firstIndexvalues.length; t++) {
-                    val.push(Math.fround(((-firstIndexvalues[t]) / (this.sum))) * 100);
+                    val.push(Math.fround(((-firstIndexvalues[t]) / (firstIndexvalues[t]))) * 100);
+                    diff.push(-firstIndexvalues);
                     names.push(this.categoryValues[t]);
                     color.push(this.colors[t]);
                   }
@@ -243,14 +241,16 @@ export class CopernicusBarChartCardComponent implements OnInit, OnChanges {
               } else {
                 for (let i = 1; i < firstIndexvalues.length; i++) {
                   if (((-firstIndexvalues[i] + histCounts[i]) / this.sum) * 100 != 0 && ((-firstIndexvalues[i] + histCounts[i]) / this.sum) * 100 != NaN) {
-                    val.push(Math.fround(((histCounts[i] - firstIndexvalues[i]) / (this.sum)))
+                    val.push(Math.fround(((-histCounts[i] + firstIndexvalues[i]) / (histCounts[i])))
                       * 100);
+                      diff.push((-histCounts[i] + firstIndexvalues[i]));
                     names.push(this.categoryValues[i]);
                     color.push(this.colors[i]);
                   }
                 }
                 for (let t = firstIndexvalues.length; t < histCounts.length; t++) {
-                  val.push(Math.fround(((histCounts[t]) / (this.sum))) * 100);
+                  val.push(Math.fround(((histCounts[t]) / (histCounts[t]))) * 100);
+                  diff.push(histCounts[t]);
                   names.push(this.categoryValues[t]);
                   color.push(this.colors[t]);
                 }
@@ -260,7 +260,7 @@ export class CopernicusBarChartCardComponent implements OnInit, OnChanges {
             this.labels = names;
             this.colorRgb = color;
             this.maskData.emit(this.noDataValues);
-            this.calculateChange(this.values, this.labels, this.colorRgb);
+            this.calculateChange(diff, this.labels, this.colorRgb);
           }
 
           var data = [{
@@ -270,7 +270,7 @@ export class CopernicusBarChartCardComponent implements OnInit, OnChanges {
             orientation: 'h',
             marker: {
               color: this.colorRgb
-            }
+            },
           }];
 
           var layout = {
@@ -297,24 +297,29 @@ export class CopernicusBarChartCardComponent implements OnInit, OnChanges {
    * @param colors colors to draw
    * calculate the absolute change values in km² and draw a pie chart
    */
-  public calculateChange(val: number[], names: string[], colors: string[]) {
+  public calculateChange(val: number[],names: string[], colors: string[]) {
 
+   
     this.absValues = val;
     this.absValues.forEach((val, i, arr) => {
-      val / 1000000;
+      arr[i]=Math.fround((val*100)/1000000);
     });
     this.absLabels = names;
     this.absColorRgb = colors;
 
+   
     var data = [{
       type: "pie",
       values: this.absValues,
       labels: this.absLabels,
-      textinfo: 'percent',
+      textinfo: "value",
+      texttemplate: "%{value:.2f}",
+  
       marker: {
         colors: this.colorRgb
       },
-      title: 'Anteil an absoluter Veränderung (km²)'
+      position:'inside',
+      title: 'Absolute Veränderung (km²)'
     }];
 
     var layout = {

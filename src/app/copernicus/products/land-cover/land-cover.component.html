@@ -3,7 +3,7 @@
     <div class="col-xl-8 col-md-6 mb-2">
       <div class="card border-left-primary shadow h-100 ">
         <div class="card-header wv-bold-header">
-          Fernerkundungsprodukt: Landbedeckungsklassifikation
+          Fernerkundungsprodukt: Landbedeckungsklassifikation für {{selPE_name[selPE_id]}}
         </div>
         <div class="card-body">
           Synthetisches Bild - berechnet durch Kombination mehrerer Einzelszenen aus der Gesamtheit einer
@@ -54,11 +54,7 @@
           <div class="card border-left-primary shadow h-100">
 
             <div class="card-body h-100">
-              <!-- <div style="width: 100%;" *ngIf="showDiagram">
-                <wv-copernicus-layer-chart [drawChart]='true' [selectedTimeIndex]='selectedTime' [chartId]="'PEchart'"
-                  [bounds]='polyBounds' [service]='service' [categoryValues]='categoryVal' [colors]='colors'>
-                </wv-copernicus-layer-chart>
-              </div> -->
+           
             </div>
           </div>
         </div>
@@ -162,7 +158,7 @@
     <div class="col-xl-4">
       <div class="card border-left-primary shadow ">
         <div class="card-header wv-bold-header">
-          Prozentuale Veränderung vom {{currentSelectedTimeL | date:'longDate':'':'de'}} auf den
+          Relative prozentuale Veränderung vom {{currentSelectedTimeL | date:'longDate':'':'de'}} auf den
           {{currentSelectedTimeR | date:'longDate':'':'de'}}
           im Planungsgebiet/Kartenausschnitt
         </div>
@@ -185,21 +181,4 @@
     </div>
   </div>
 
-  <!-- <div class="row">
-  <div class="card-header">
-    Pixelverlauf
-  </div>
-  <div class="col-xl-6 col-md-4 mb-2">
-        <div style="width: 100%;">
-          <div *ngIf="!showDiagram">In die Karte klicken um ein Verlaufsdiagramm der Pixelwerte anzeigen zu können</div>
-          <div class="loader">
-            <div *ngIf="loading">
-                <div class="spinner-border text-dark" role="status">
-                    <i class="fa fa-spinner fa-spin" style="font-size:24px;"></i>
-                </div>
-            </div>
-        </div>
-          <div *ngIf="showDiagram" class="" id="pixelChart" style="width: 100%;" #pixelChart></div>
-        </div>
-  </div>
-</div> -->
+  

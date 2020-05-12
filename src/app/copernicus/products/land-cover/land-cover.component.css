@@ -1,23 +1,12 @@
 div #map{
     height: 100% ;
 }
-n52-station-map-selector{
-    width: 100%;
-    height: 100%;
-    position: relative;
-}
-/* #pieChart{
-    position: absolute;
-    top:250px;
-    right: 0px;
-    display: inline;
-} */
+
 .legend{
     position: fixed; top: 130px; float: left;
     background-color: rgba(255, 255, 255, 0.85);
 }
 #map {
-    /* height: 100%; */
     width: 100%;
     padding: 5px;
 }
@@ -27,7 +16,6 @@ n52-station-map-selector{
 }  
   #pixelChart {
     position: relative;
-    /* top: 10px; */
     right: 10px;
     z-index: 1000
   }
@@ -43,7 +31,6 @@ n52-station-map-selector{
    
 }
 .dashboard{
-    /* background-color: #718296; */
     font-family: Arial, Helvetica, sans-serif;
     font-size: small;
 }

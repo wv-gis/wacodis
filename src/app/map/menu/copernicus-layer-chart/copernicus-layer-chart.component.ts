@@ -67,11 +67,12 @@ export class CopernicusLayerChartComponent implements OnInit,OnChanges {
         "ymax":this.bounds.toBBoxString().split(',')[3],"spatialReference":{"wkid":4326}};
         this.createPieChart(geometryType,geometry);
       }else{
-        let geometryType ='esriGeometryEnvelope';
-        let geometry ={"xmin":polygon(this.bounds).getBounds().toBBoxString().split(',')[1],
-        "ymin": polygon(this.bounds).getBounds().toBBoxString().split(',')[0],
-        "xmax":polygon(this.bounds).getBounds().toBBoxString().split(',')[3],
-        "ymax":polygon(this.bounds).getBounds().toBBoxString().split(',')[2],"spatialReference":{"wkid":4326}};
+        let geometryType ='esriGeometryPolygon';
+        let geometry ={"rings": this.bounds,"spatialReference":{"wkid":4326}};
+        // let geometry ={"xmin":polygon(this.bounds).getBounds().toBBoxString().split(',')[1],
+        // "ymin": polygon(this.bounds).getBounds().toBBoxString().split(',')[0],
+        // "xmax":polygon(this.bounds).getBounds().toBBoxString().split(',')[3],
+        // "ymax":polygon(this.bounds).getBounds().toBBoxString().split(',')[2],"spatialReference":{"wkid":4326}};
         this.createPieChart(geometryType,geometry);
       }
     }
@@ -85,11 +86,12 @@ export class CopernicusLayerChartComponent implements OnInit,OnChanges {
         "ymax":this.bounds.toBBoxString().split(',')[3],"spatialReference":{"wkid":4326}};
         this.createPieChart(geometryType,geometry);
       }else{
-        let geometryType ='esriGeometryEnvelope';
-        let geometry ={"xmin":polygon(this.bounds).getBounds().toBBoxString().split(',')[1],
-        "ymin": polygon(this.bounds).getBounds().toBBoxString().split(',')[0],
-        "xmax":polygon(this.bounds).getBounds().toBBoxString().split(',')[3],
-        "ymax":polygon(this.bounds).getBounds().toBBoxString().split(',')[2],"spatialReference":{"wkid":4326}};
+        let geometryType ='esriGeometryPolygon';
+        let geometry ={"rings": this.bounds,"spatialReference":{"wkid":4326}};
+        // let geometry ={"xmin":polygon(this.bounds).getBounds().toBBoxString().split(',')[1],
+        // "ymin": polygon(this.bounds).getBounds().toBBoxString().split(',')[0],
+        // "xmax":polygon(this.bounds).getBounds().toBBoxString().split(',')[3],
+        // "ymax":polygon(this.bounds).getBounds().toBBoxString().split(',')[2],"spatialReference":{"wkid":4326}};
         this.createPieChart(geometryType,geometry);
       }
      }
@@ -106,11 +108,14 @@ export class CopernicusLayerChartComponent implements OnInit,OnChanges {
       "ymax":this.bounds.toBBoxString().split(',')[3],"spatialReference":{"wkid":4326}};
       this.createPieChart(geometryType,geometry);
     }else{
-      let geometryType ='esriGeometryEnvelope';
-      let geometry ={"xmin":polygon(this.bounds).getBounds().toBBoxString().split(',')[1],
-      "ymin": polygon(this.bounds).getBounds().toBBoxString().split(',')[0],
-      "xmax":polygon(this.bounds).getBounds().toBBoxString().split(',')[3],
-      "ymax":polygon(this.bounds).getBounds().toBBoxString().split(',')[2],"spatialReference":{"wkid":4326}};
+      let geometryType ='esriGeometryPolygon';
+      // let geometry ={"xmin":polygon(this.bounds).getBounds().toBBoxString().split(',')[1],
+      // "ymin": polygon(this.bounds).getBounds().toBBoxString().split(',')[0],
+      // "xmax":polygon(this.bounds).getBounds().toBBoxString().split(',')[3],
+      // "ymax":polygon(this.bounds).getBounds().toBBoxString().split(',')[2],"spatialReference":{"wkid":4326}};
+
+        let geometry ={"rings": this.bounds,"spatialReference":{"wkid":4326}};
+      
       this.createPieChart(geometryType,geometry);
     }
    

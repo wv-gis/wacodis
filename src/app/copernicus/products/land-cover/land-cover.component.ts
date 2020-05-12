@@ -57,6 +57,7 @@ export class LandCoverComponent implements OnInit, AfterViewInit {
   public defTimeR = 5;
   public mapBounds: L.LatLngBounds;
   public selPE = ['wv', 'uW', 'oW', 'dH'];
+  public selPE_name = ['nutzerspezifisch', 'PE untere Wupper', ' PE obere Wupper', 'PE Dhuenn'];
   public selPE_id: number;
   public maskLayer: esri.DynamicMapLayer;
   public syncMaskLayer: esri.DynamicMapLayer;
@@ -89,19 +90,25 @@ export class LandCoverComponent implements OnInit, AfterViewInit {
 
     this.activatedRoute.params.subscribe(params => {
       if (!this.mainMap && this.selPE.indexOf(params['id'])!=-1){
-        console.log(this.selPE.indexOf(params['id']));
+        this.selPE_id= this.selPE.indexOf(params['id']);
         this.queryMapBoundary(this.selPE.indexOf(params['id']));
       }   
       else if(this.selPE.indexOf(params['id'])!=-1&& this.mainMap){
+        this.selPE_id= this.selPE.indexOf(params['id']);
         this.updateMap(this.selPE.indexOf(params['id']));
       }
       else{
-        console.log('CreateMap');
+       this.selPE_id=0;
         this.createMap();
       }
     });
   }
 
+  /**
+   * 
+   * @param selPE_id : selected ID of planning unit
+   * query polygon bounds and update map Bounds and View
+   */
   public updateMap(selPE_id: number) {
 
     esri.mapService({ url: maskService + '/' + selPE_id }).get('query', {
@@ -115,12 +122,15 @@ export class LandCoverComponent implements OnInit, AfterViewInit {
         }
       },
       geometryType: 'esriGeometryEnvelope',
+      maxAllowableOffset: 0.002,
+      geometryPrecision: 5,
       outSR: 4326
     }, (err, resp) => {
       if (err) {
         console.log(err);
       } else {
         this.polyBounds = resp.features[0].geometry.rings;
+      
         this.view = L.polygon(this.polyBounds).getBounds().getCenter();
         this.mainMap.setView([this.view.lng,this.view.lat], 11)
         this.syncMap.setView([this.view.lng,this.view.lat], 11);
@@ -161,6 +171,8 @@ export class LandCoverComponent implements OnInit, AfterViewInit {
         }
       },
       geometryType: 'esriGeometryEnvelope',
+      maxAllowableOffset: 0.002,
+      geometryPrecision: 5,
       outSR: 4326
     }, (err, resp) => {
       if (err) {
@@ -180,6 +192,13 @@ export class LandCoverComponent implements OnInit, AfterViewInit {
     this.createMap(Pe_id);
 
   }
+
+  /**
+   * 
+   * @param maskId : ID of the planning Unit Layer
+   * 
+   * create Map Component and its Layers
+   */
   public createMap(maskId?: number) {
     this.wmsLayer = L.tileLayer.wms('http://ows.terrestris.de/osm/service?',
       {
