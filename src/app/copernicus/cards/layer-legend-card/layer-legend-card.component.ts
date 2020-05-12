@@ -7,6 +7,10 @@ import { WmsCapabilitiesService } from '@helgoland/open-layers';
   templateUrl: './layer-legend-card.component.html',
   styleUrls: ['./layer-legend-card.component.css']
 })
+
+/**
+ * component extends LayerLegendURL Component to draw Legend for Layers within card-body
+ */
 export class LayerLegendCardComponent extends ExtendedOlLayerLegendUrlComponent implements OnInit {
 
   

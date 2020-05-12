@@ -10,6 +10,9 @@ const watermask_Srvc ="https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/arcgis/rest
   templateUrl: './chlorophyll-view.component.html',
   styleUrls: ['./chlorophyll-view.component.css']
 })
+/**
+ * component for depiction of Chlorophyll with Isoplethen diagram and RasterImage Results
+ */
 export class ChlorophyllViewComponent implements OnInit {
   public samplingStationLabels = [];
   public dam_label = 'Dhünn-Talsperre';
@@ -33,9 +36,19 @@ export class ChlorophyllViewComponent implements OnInit {
   ngOnInit() {
     
   }
+
+  /**
+   * 
+   * @param fromDate 
+   */
   public changeFromDate(fromDate: Date) {
     this.defaultDate = fromDate;
   }
+  /**
+   * 
+   * @param stat 
+   * @param index 
+   */
   public changeSamplingStation(stat: string, index: number) {
     this.dam_label = this.samplingStationLabels[index];
     this.samplingId =  this.samplingIds[index];

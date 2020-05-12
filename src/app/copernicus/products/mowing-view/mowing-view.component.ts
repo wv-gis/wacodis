@@ -5,6 +5,9 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './mowing-view.component.html',
   styleUrls: ['./mowing-view.component.css']
 })
+/**
+ * component to depict the results for the mowing View
+ */
 export class MowingViewComponent implements OnInit {
 
 
