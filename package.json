@@ -45,7 +45,7 @@
     "leaflet.markercluster": "^1.4.1",
     "leaflet.sync": "^0.2.4",
     "ol": "^6.0.1",
-    "plotly.js-dist": "^1.49.1",
+    "plotly.js-dist": "^1.54.1",
     "popper.js": "^1.15.0",
     "rxjs": "^6.5.2",
     "web-animations-js": "^2.3.2",
