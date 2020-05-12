@@ -17,19 +17,18 @@ export class ExtendedOlLayerTimeSelectorComponent implements OnInit { //extends 
 
   @Input() layer: any | esri.ImageMapLayer;
   @Input() mapId?: string;
+  @Input() defTimeIndex: number = 1;
+  @Output() selIndexTime: EventEmitter<number> = new EventEmitter<number>();
+  @Output() currentIndexTime: EventEmitter<Date> = new EventEmitter<Date>();
+ 
   public timeAttribute = true;
-
   public currentTime: Date;
-
   public timeDimensions: Date[];
-
   public loading: boolean;
-
   protected layerSource: L.TileLayer.WMS;
   protected layerid: string;
   protected url: string;
-  // @Output() selTime:  EventEmitter<Date> = new EventEmitter<Date>();
-  @Output() selIndexTime: EventEmitter<number> = new EventEmitter<number>();
+
 
   constructor(private wmsCap: WmsCapabilitiesService, private mapCache: MapCache) {
     // super(wmsCap);
@@ -52,8 +51,11 @@ export class ExtendedOlLayerTimeSelectorComponent implements OnInit { //extends 
           .subscribe(
             res => this.timeDimensions = res,
             error => { this.timeAttribute = false },
-            () => { this.loading = false; this.timeAttribute = true; }
-          );
+            () => {
+              this.loading = false;
+              this.timeAttribute = true;
+              this.currentIndexTime.emit(this.currentTime);
+            });
 
         if (!this.timeDimensions) { this.timeAttribute = false, this.loading = false }
         // this.determineCurrentTimeParameter();
@@ -76,18 +78,26 @@ export class ExtendedOlLayerTimeSelectorComponent implements OnInit { //extends 
               });
             }
             this.timeDimensions = times;
-            if (this.timeDimensions) {
-              this.currentTime = this.timeDimensions[this.timeDimensions.length - 1];
+            if (this.timeDimensions && this.defTimeIndex< this.timeDimensions.length) {
+              this.currentTime = this.timeDimensions[this.defTimeIndex];
+              this.extendedDetermineCurrentTimeParameter();
+            }else if(!this.timeDimensions){
+              this.timeAttribute = false;
+            }
+            else {
+              this.currentTime = this.timeDimensions[this.timeDimensions.length-1];
+              this.extendedDetermineCurrentTimeParameter();
             }
           }
           // this.selTime.emit(this.currentTime);
-          if (this.timeDimensions) {
-            this.selIndexTime.emit(this.timeDimensions.indexOf(this.currentTime));
-          }
-          else {
-            this.timeAttribute = false;
-          }
-          this.loading = false
+          // if (this.timeDimensions) {
+          //   this.selIndexTime.emit(this.timeDimensions.indexOf(this.currentTime));
+          //   this.currentIndexTime.emit(this.currentTime);
+          // }
+          // else {
+          //   this.timeAttribute = false;
+          // }
+          this.loading = false;
         });
       }
     }
@@ -122,6 +132,7 @@ export class ExtendedOlLayerTimeSelectorComponent implements OnInit { //extends 
     else if (this.layer instanceof L.TimeDimension.Layer) {
       this.mapCache.getMap(this.mapId).timeDimension.setCurrentTimeIndex(this.timeDimensions.indexOf(this.currentTime));
       this.selIndexTime.emit(this.timeDimensions.indexOf(this.currentTime));
+      this.currentIndexTime.emit(this.currentTime);
     }
     // else if (source instanceof ImageArcGISRest) {
     else if (this.layer instanceof esri.ImageMapLayer) {
@@ -132,6 +143,7 @@ export class ExtendedOlLayerTimeSelectorComponent implements OnInit { //extends 
       this.layer.setTimeRange(new Date((new Date(time.getFullYear(), time.getMonth(), time.getDate() + 2).getTime() - 2628000000))
         , new Date(time.getFullYear(), time.getMonth(), time.getDate() + 2))
       this.selIndexTime.emit(this.timeDimensions.indexOf(time));
+      this.currentIndexTime.emit(this.currentTime);
     }
   }
   public compareFn(option1: Date, option2: Date) {
@@ -147,16 +159,25 @@ export class ExtendedOlLayerTimeSelectorComponent implements OnInit { //extends 
 
     // if (source instanceof ImageArcGISRest) {
     if (this.layer instanceof esri.ImageMapLayer) {
-      esri.imageService({ url: this.url }).query().where("1=1").fields(["startTime", "endTime", "OBJECTID"]).returnGeometry(true).run((error, featureCollection, feature) => {
+      // esri.imageService({ url: this.url }).query().where("1=1").fields(["startTime", "endTime", "OBJECTID"]).returnGeometry(true).run((error, featureCollection, feature) => {
 
-        let times: Date[] = [];
-        feature["features"].forEach((element, i, arr) => {
-          this.currentTime = new Date(arr[i]["attributes"].startTime);
-        });
-      }, (error) => console.log('Error on Image Service request: ' + error));
+      //   let times: Date[] = [];
+      //   feature["features"].forEach((element, i, arr) => {
+      //     this.currentTime = new Date(arr[i]["attributes"].startTime);
+      //     console.log('ExtendedDetermineCurrentTime');
+      //   });
+      // }, (error) => console.log('Error on Image Service request: ' + error));
+      this.layer.setTimeRange(new Date((new Date(this.currentTime.getFullYear(), this.currentTime.getMonth(),
+       this.currentTime.getDate() + 2).getTime() - 2628000000)), 
+      new Date(this.currentTime.getFullYear(), this.currentTime.getMonth(), this.currentTime.getDate() + 2))
+      this.currentIndexTime.emit(this.currentTime);
     }
     else {
-      this.wmsCap.getDefaultTimeDimension(this.layerid, this.url).subscribe(time => this.currentTime = time);
+      this.wmsCap.getDefaultTimeDimension(this.layerid, this.url).subscribe(time => {
+        this.currentTime = time;
+        this.currentIndexTime.emit(this.currentTime);
+      });
+
     }
     // }
   }

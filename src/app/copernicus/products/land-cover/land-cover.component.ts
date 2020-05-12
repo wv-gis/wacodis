@@ -1,187 +1,417 @@
-import { Component, OnInit } from '@angular/core';
-import Map from 'ol/Map.js';
-import BaseLayer from 'ol/layer/Base';
-import Layer from 'ol/layer/Layer';
-import { Tile } from 'ol/layer';
-import { OSM, TileWMS, ImageWMS, ImageArcGISRest } from 'ol/source';
+declare var require;
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import * as esri from 'esri-leaflet';
-import { RequestTokenService } from 'src/app/services/request-token.service';
-import { OlMapService } from '@helgoland/open-layers';
-import ImageLayer from 'ol/layer/Image';
-import Plotly from 'plotly.js-dist';
-import { StatisticData } from 'src/app/map/menu/layer-tree/layer-tree.component';
-import { ScaleLine } from 'ol/control';
 import * as L from 'leaflet';
 import { MapCache } from '@helgoland/map';
+require('leaflet-timedimension');
+require('leaflet.sync');
+import 'src/assets/js/leaflet.timedimension.layer.imagemap';
+import { ActivatedRoute } from '@angular/router';
 
 
-
-const categoryVal = ["no Data", "Acker - Mais", "Acker - sonstige Ackerfrucht", "Gewaesser",
-  "Gewaesser stehend", "Siedlung - Gewerbe", "Gruenland - unbestimmt", "Gruenland - Gestruepp",
-  "Offenboden", "Siedlung geschlossen", "Siedlung offen", "Verkehrsflaeche", "Laubbaeume",
-  "Mischwald", "Nadelbaeume", "Acker - Raps", "Acker - unbewachsen", "Acker - Zwischenfrucht",
-  "unbekannt", "unbekannt", "Acker-sonstiges-Offenboden", "Acker-Mais-Offenboden",
-  "Acker-Mais-Zwischenfrucht", "Acker-Raps-Offenboden", "Acker-Raps-Zwischenfrucht"];
-const colors = ["rgb(0,0,0)", "rgb(255,215,0)", "rgb(184,134,11)", "rgb(65,105,225)", "rgb(30,144,255)", "rgb(190,190,190)", "rgb(192,255,62)",
-  "rgb(189,183,107)", "rgb(139,69,19)", "rgb(205,92,92)", "rgb(250,128,144)", "rgb(186,85,211)", "rgb(60,179,113)", "rgb(0,0,0)", "rgb(49,139,87)",
-  "rgb(255,255,0)", "rgb(205,133,63)", "rgb(210,180,140)", "rgb(0,0,0)", "rgb(0,0,0)", "rgb(255,218,185)", "rgb(255,250,205)",
-  "rgb(255,246,143)", "rgb(205,205,0)", "rgb(238,238,0)"];
-const intraLandService = 'https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/EO_WACODIS_DAT_INTRA_LAND_COVER_CLASSIFICATION_Service/ImageServer';
-const vitalityService = 'https://www.wms.nrw.de/umwelt/waldNRW';
+const intraLandService = 'https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/WACODIS_LAND_COVER_CLASSIFICATION/ImageServer';
+const maskService = 'https://fluggs.wupperverband.de/arcgis/rest/services/offen/Schablonen/MapServer';
 
 @Component({
   selector: 'wv-land-cover',
   templateUrl: './land-cover.component.html',
   styleUrls: ['./land-cover.component.css']
 })
-export class LandCoverComponent implements OnInit {
+
+/**
+ * ComponentDashboard for Visualisation of LandCover Satellite Product
+ * supports  2 different types of diagrams, syncedmaps and legendCard
+ * the product Service and maskLayer must be defined
+ */
+export class LandCoverComponent implements OnInit, AfterViewInit {
 
   public showZoomControl = true;
   public showAttributionControl = true;
-  public map: Map;
+  public syncMap: L.Map;
 
   public baselayers: L.Layer[] = [];
-  public overviewMapLayers: Layer[] = [new Tile({
-    source: new OSM()
-  })];
-  public zoom = 11;
-  public lat = 51.15;
-  public lon = 7.22;
+  public syncBaselayers: L.Layer[] = [];
 
-  public token: string = '';
   public sentinelLayer: esri.ImageMapLayer;
+  public syncSentinelLayer: esri.ImageMapLayer;
   public mapId = 'landcover-map';
+  public syncMapId = 'landcover-sync-map';
+  public chartId = 'chartPie';
+  public syncChartId = 'syncChartPie'
 
-  public headers: string[] = [];
-  public entries = [];
-  public dataArr: string[];
-  public responseInterp: string;
-  public stats: StatisticData[] = [];
-  public values: number[] = [];
-  public labels: string[] = [];
-  public colorRgb: string[] = [];
-  public selectedTime: Date = new Date();
+  public selectedTime: number = 1;
+  public selectedSyncTime: number = 1;
+  public currentSelectedTimeL: Date = new Date();
+  public currentSelectedTimeR: Date = new Date();
 
-  public mapOptions: L.MapOptions = { dragging: true, zoomControl: true, boxZoom: false };
+  public syncmapOptions: L.MapOptions = { dragging: true, zoomControl: true, boxZoom: false };
+  public mapOptions: L.TimeDimensionMapOptions = {
+    dragging: true, zoomControl: true, boxZoom: false, timeDimension: true, timeDimensionControl: false,
+    timeDimensionControlOptions: { timeZones: ['Local'], position: 'bottomleft' }
+  };
   public wmsLayer: any;
   public mainMap: L.Map;
+  public showDiagram: boolean = false;
+  public loading: boolean = false;
+  public defTimeL = 2;
+  public defTimeR = 5;
+  public mapBounds: L.LatLngBounds;
+  public selPE = ['wv', 'uW', 'oW', 'dH'];
+  public selPE_name = ['nutzerspezifisch', 'PE untere Wupper', ' PE obere Wupper', 'PE Dhuenn'];
+  public selPE_id: number;
+  public maskLayer: esri.DynamicMapLayer;
+  public syncMaskLayer: esri.DynamicMapLayer;
+  public polyBounds: L.LatLng[];
+  public service: string;
+  public view: L.LatLng;
+  public categoryVal = ["no Data", "Acker - Mais", "Acker - sonstige Ackerfrucht", "Gewaesser", "unbekanntGF",
+    "Siedlung - Gewerbe", "Gruenland - unbestimmt", "Gruenland - Gestruepp",
+    "Offenboden", "Siedlung geschlossen", "Siedlung offen", "Verkehrsflaeche", "Laubbaeume",
+    "unbekanntM", "Nadelbaeume", "Acker - Raps", "Acker - unbewachsen", "Acker - Zwischenfrucht",
+    "unbekanntA", "unbekanntAs", "Acker-sonstiges-Offenboden", "Acker-Mais-Offenboden",
+    "Acker-Mais-Zwischenfrucht", "Acker-Raps-Offenboden", "Acker-Raps-Zwischenfrucht"];
+  public colors = ["rgb(0,0,0)", "rgb(255,215,0)", "rgb(184,134,11)", "rgb(65,105,225)", "rgb(30,144,255)", "rgb(190,190,190)", "rgb(192,255,62)",
+    "rgb(189,183,107)", "rgb(139,69,19)", "rgb(205,92,92)", "rgb(250,128,144)", "rgb(186,85,211)", "rgb(60,179,113)", "rgb(0,0,0)", "rgb(49,139,87)",
+    "rgb(255,255,0)", "rgb(205,133,63)", "rgb(210,180,140)", "rgb(0,0,0)", "rgb(0,0,0)", "rgb(255,218,185)", "rgb(255,250,205)",
+    "rgb(255,246,143)", "rgb(205,205,0)", "rgb(238,238,0)"];
 
-  constructor(private mapService: OlMapService, private requestTokenSrvc: RequestTokenService, private mapCache: MapCache) {
-  
+  constructor(private activatedRoute: ActivatedRoute, private mapCache: MapCache) {
+    this.service = intraLandService;
+
+  }
+
+  ngAfterViewInit(): void {
+    //on Bounds change reload the diagrams
+    this.mainMap.on('moveend', this.changeBounds, this);
+
   }
 
   ngOnInit() {
 
-    this.wmsLayer = L.tileLayer.wms('http://ows.terrestris.de/osm/service?',
-    {
-      layers: 'OSM-WMS', format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-      className: 'OSM'
+    this.activatedRoute.params.subscribe(params => {
+      if (!this.mainMap && this.selPE.indexOf(params['id'])!=-1){
+        this.selPE_id= this.selPE.indexOf(params['id']);
+        this.queryMapBoundary(this.selPE.indexOf(params['id']));
+      }   
+      else if(this.selPE.indexOf(params['id'])!=-1&& this.mainMap){
+        this.selPE_id= this.selPE.indexOf(params['id']);
+        this.updateMap(this.selPE.indexOf(params['id']));
+      }
+      else{
+       this.selPE_id=0;
+        this.createMap();
+      }
     });
+  }
 
-  this.mainMap = L.map(this.mapId, this.mapOptions).setView([51.161, 7.482], 10);
+  /**
+   * 
+   * @param selPE_id : selected ID of planning unit
+   * query polygon bounds and update map Bounds and View
+   */
+  public updateMap(selPE_id: number) {
 
-  this.mainMap.addLayer(this.wmsLayer);
-  L.control.scale().addTo(this.mainMap);
-  this.mapCache.setMap(this.mapId,this.mainMap);
-    // var mousePosition = [];
-    this.sentinelLayer = esri.imageMapLayer({url: intraLandService, opacity: 0.8, maxZoom: 16});
-    this.mainMap.addLayer(this.sentinelLayer);
-    
-    // this.mapService.getMap(this.mapId).subscribe((map) => {
-    //   map.getLayers().clear();
-    //   map.addControl(new ScaleLine({ units: "metric" }));
-    //   map.addLayer(new Tile({
-    //     source: new OSM()
-    //   }));
+    esri.mapService({ url: maskService + '/' + selPE_id }).get('query', {
+      geometry: {
+        "xmin": 355826.312924539,
+        "ymin": 5650214.457977539,
+        "xmax": 402251.9127736615,
+        "ymax": 5686235.283377186,
+        "spatialReference": {
+          "wkid": 25832
+        }
+      },
+      geometryType: 'esriGeometryEnvelope',
+      maxAllowableOffset: 0.002,
+      geometryPrecision: 5,
+      outSR: 4326
+    }, (err, resp) => {
+      if (err) {
+        console.log(err);
+      } else {
+        this.polyBounds = resp.features[0].geometry.rings;
+      
+        this.view = L.polygon(this.polyBounds).getBounds().getCenter();
+        this.mainMap.setView([this.view.lng,this.view.lat], 11)
+        this.syncMap.setView([this.view.lng,this.view.lat], 11);
+        this.mainMap.removeLayer(this.maskLayer);
+        this.syncMap.removeLayer(this.syncMaskLayer);
 
-    //   map.on('click', function (evt) {
-    //     mousePosition = evt.coordinate;
-    //     map.forEachLayerAtPixel(evt.pixel,(layer,arr)=>{
+        this.maskLayer = esri.dynamicMapLayer({
+          url: maskService, layers: [selPE_id],
+          maxZoom: 16, position: 'front', pane: 'imagePane'
+        });
+        this.syncMaskLayer = esri.dynamicMapLayer({
+          url: maskService, layers: [selPE_id],
+          maxZoom: 16, position: 'front', pane: 'imagePane'
+        });;
+        this.mainMap.addLayer(this.maskLayer);
+        this.syncMap.addLayer(this.syncMaskLayer);
 
-    //       let identifiedPixel;
-    //       let dateVal: { date: Date, value: number }[] = [];
-    //       let dates: Date[]=[];
-    //       let values: number[]=[];
-    //         imageMap.bindPopup(function (error, identifyResults, response) {
-    //           if (error) {
-    //             console.error(error);
-    //             return;
-    //           }
-             
-    //           identifiedPixel = identifyResults.pixel.properties.values.reverse();
-    //           console.log(identifiedPixel);
-    //           identifyResults.catalogItems.features.forEach((f, i, arr) => {
-    //             dateVal.push({ date: new Date(f.properties.startTime), value: identifiedPixel[i] });
-    //           });
-    //           dateVal.sort(function (a, b) { return a.date.getTime() - b.date.getTime(); });
-    //           dateVal.forEach((v, i, arr) => {
-    //             dates.push(v.date);
-    //             values.push(v.value);
-    //           });
-    
-    //           let data = {
-    //             x: dates,
-    //             y: values,
-    //             mode: 'lines+markers',
-    //             type: 'scatter'
-    //           };
-    //           let layout = {
-    //             title: "Pixelverlauf",
-    //             yaxis: {
-    //               title: 'Pixelwert',
-    //               showline: true,
-    //             },
-    //             xaxis: { showline: true },
-    //             height: 390,
-    //           };
-    //           let config = {
-    //             toImageButtonOptions: {
-    //               format: 'png'
-    //             },
-    //             responsive: true,
-    //             displaylogo: false,
-    //             modeBarButtonsToRemove: ['select2d', 'lasso2d', 'hoverClosestCartesian',
-    //               'hoverCompareCartesian', 'toggleSpikelines', 'pan2d', 'zoomOut2d', 'zoomIn2d', 'autoScale2d', 'resetScale2d'],
-    //           };
-    //            Plotly.newPlot("pixelPlot", [data], layout, config);
-    //         });
-        
-    //     });
-    //   });
-    // });
-
-    // let imageSource = new ImageArcGISRest({
-    //   ratio: 1,
-    //   params: {
-    //     'LAYERS': 'Wacodis/EO_WACODIS_DAT_INTRA_LAND_COVER_CLASSIFICATION_Service',
-    //   },
-    //   url: intraLandService
-    // });
-    // this.baselayers.push(
-    //   new ImageLayer({
-    //     visible: true,
-    //     source: imageSource
-    //   })
-    // );
-    // this.baselayers.push(this.wmsLayer);
-    this.baselayers.push(this.sentinelLayer);
-
-    // let forestSource = new ImageWMS({
-    //   attributions: "Datenlizenz Deutschland – Namensnennung – Version 2.0",
-    //   params: {
-    //     'LAYERS': 'waldbedeckung_Sentinel2',
-    //   },
-    //   url: vitalityService
-    // });
-
-    // this.baselayers.push(
-    //   new ImageLayer({
-    //     visible: false,
-    //     source: forestSource
-    //   })
-    // );
+        this.mainMap.invalidateSize();
+        this.syncMap.invalidateSize();
+      }
+    });
 
   }
 
+  /**
+   * get Polygon Boundary of MaskService and create MainMap and diagrams
+   */
+  public queryMapBoundary(Pe_id: number) {
 
+    esri.mapService({ url: maskService + '/' + Pe_id }).get('query', {
+      geometry: {
+        "xmin": 355826.312924539,
+        "ymin": 5650214.457977539,
+        "xmax": 402251.9127736615,
+        "ymax": 5686235.283377186,
+        "spatialReference": {
+          "wkid": 25832
+        }
+      },
+      geometryType: 'esriGeometryEnvelope',
+      maxAllowableOffset: 0.002,
+      geometryPrecision: 5,
+      outSR: 4326
+    }, (err, resp) => {
+      if (err) {
+        console.log(err);
+      } else {
+        this.polyBounds =resp.features[0].geometry.rings ;
+        this.view = L.polygon(this.polyBounds).getBounds().getCenter();
+        this.mainMap.setView([this.view.lng,this.view.lat],11);
+        this.syncMap.setView([this.view.lng,this.view.lat],11);
+
+        this.mainMap.invalidateSize();
+        this.syncMap.invalidateSize();
+
+        this.showDiagram = !this.showDiagram;
+      }
+    });
+    this.createMap(Pe_id);
+
+  }
+
+  /**
+   * 
+   * @param maskId : ID of the planning Unit Layer
+   * 
+   * create Map Component and its Layers
+   */
+  public createMap(maskId?: number) {
+    this.wmsLayer = L.tileLayer.wms('http://ows.terrestris.de/osm/service?',
+      {
+        layers: 'OSM-WMS', format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        className: 'OSM'
+      });
+
+    this.mainMap = L.map(this.mapId, this.mapOptions).setView([51.178, 7.133], 11);
+    this.mapBounds = this.mainMap.getBounds();
+    this.mainMap.timeDimension.setCurrentTime(new Date().getTime());
+    this.syncMap = L.map(this.syncMapId, this.syncmapOptions).setView([51.178, 7.133], 11);
+
+ 
+
+    this.mainMap.addLayer(this.wmsLayer);
+    L.tileLayer.wms('http://ows.terrestris.de/osm/service?',
+      {
+        layers: 'OSM-WMS', format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        className: 'OSM'
+      }).addTo(this.syncMap);
+
+
+    L.control.scale().addTo(this.mainMap);
+    L.control.scale().addTo(this.syncMap);
+
+    this.mapCache.setMap(this.mapId, this.mainMap);
+    this.mapCache.setMap(this.syncMapId, this.syncMap);
+
+    this.sentinelLayer = esri.imageMapLayer({ url: intraLandService, opacity: 0.6, maxZoom: 16 });
+
+    // let testTimeLayer = new ExtendedOlLayerAnimateTimeComponent(esri.imageMapLayer(
+    // {
+    //   url: intraLandService, opacity: 0.8, maxZoom: 16
+    // }),{});
+
+    this.syncSentinelLayer = esri.imageMapLayer({ url: intraLandService, opacity: 0.6, maxZoom: 16 })
+    this.syncMap.createPane('imagePane');
+    this.mainMap.createPane('imagePane');
+
+    this.mainMap.addLayer(this.sentinelLayer);
+    // this.mainMap.addLayer(testTimeLayer);
+    this.syncMap.addLayer(this.syncSentinelLayer);
+
+      if(maskId){
+        this.maskLayer = esri.dynamicMapLayer({
+          url: maskService, layers: [maskId],
+          maxZoom: 16, position: 'front', pane: 'imagePane'
+        });
+        this.syncMaskLayer = esri.dynamicMapLayer({
+          url: maskService, layers: [maskId],
+          maxZoom: 16, position: 'front', pane: 'imagePane'
+        });;
+        this.mainMap.addLayer(this.maskLayer);
+        this.syncMap.addLayer(this.syncMaskLayer);
+      }
+ 
+
+    this.mainMap.sync(this.syncMap);
+    this.syncMap.sync(this.mainMap);
+
+    this.baselayers.push(this.sentinelLayer);
+    this.syncBaselayers.push(this.syncSentinelLayer);
+
+
+    this.mainMap.invalidateSize();
+    this.syncMap.invalidateSize();
+
+  }
+
+  /**
+   * 
+   * @param num 
+   * define the selected index of dates of the sentinellayer on Selection
+   * in MainMap
+   */
+  public setSelectedTime(num: number) {
+    this.selectedTime = num;
+  }
+  /**
+ * 
+ * @param num 
+ * define the selected index of dates of the synclayer on Selection
+ * in SyncedMap
+ */
+  public setSelectedSyncTime(num: number) {
+    this.selectedSyncTime = num;
+  }
+
+  /**
+   * 
+   * @param date selected date of layer in mainMap
+   * date to visualize for diagram text
+   */
+  public setSelectedCurrentTimeLeft(date: Date) {
+    this.currentSelectedTimeL = date;
+  }
+  /**
+ * 
+ * @param date selected date of layer in syncedMap
+ * date to visualize for diagram text
+ */
+  public setSelectedCurrentTimeRight(date: Date) {
+    this.currentSelectedTimeR = date;
+  }
+
+  /**
+   * set MapBounds depending on scroll and drag Movements
+   */
+  public changeBounds() {
+    this.mapBounds = this.mainMap.getBounds();
+  }
+
+  // public identifyPixel(e) {
+  //   // this.loading = true;
+
+  //   let identifiedPixel;
+  //   let dateVal: { date: Date, value: number }[] = [];
+  //   let dates: Date[] = [];
+  //   let values: number[] = [];
+  //   // let plotPane = this.plotlydiv.nativeElement;
+
+  //   if (this.sentinelLayer) {
+  //     // this.showDiagram = true;
+  //     // Plotly.register(locale);
+
+  //     this.sentinelLayer.metadata((err, metadata) => {
+  //       console.log(JSON.stringify(metadata));
+  //     })
+  //     this.sentinelLayer.bindPopup(function (error, identifyResults, response) {
+  //       if (error) {
+  //         console.log('Error: ' + error);
+  //         return;
+  //       } else {
+
+  //         // console.log('IdentifiedResults: '+ JSON.stringify(identifyResults));
+  //         // console.log('Response: ' + JSON.stringify(response));  
+
+  //         // this.loading = false;
+  //         // identifiedPixel = identifyResults.pixel.properties.values.reverse();
+  //         // identifyResults.catalogItems.features.forEach((f, i, arr) => {
+  //         //   dateVal.push({ date: new Date(f.properties.startTime), value: identifiedPixel[i] });
+  //         // });
+  //         // dateVal.sort(function (a, b) { return a.date.getTime() - b.date.getTime(); });
+  //         // dateVal.forEach((v, i, arr) => {
+  //         //   dates.push(v.date);
+  //         //   values.push(v.value);
+  //         // });
+
+  //         // let data = {
+  //         //   x: dates,
+  //         //   y: values,
+  //         //   mode: 'lines+markers',
+  //         //   type: 'scatter'
+  //         // };
+  //         // let layout = {
+  //         //   yaxis: {
+  //         //     title: {
+  //         //       text: 'Pixelwert',
+
+  //         //     },
+  //         //     showline: true,
+
+  //         //   },
+  //         //   xaxis: { showline: true },
+  //         //   height: 125,
+  //         //   // width: 800,
+  //         //   margin: { "t": 0, "b": 15, "l": 45, "r": 0 },
+  //         // };
+  //         // let config = {
+  //         //   toImageButtonOptions: {
+  //         //     format: 'png'
+  //         //   },
+  //         //   responsive: true,
+  //         //   locale: 'de',
+  //         //   displaylogo: false,
+  //         //   modeBarButtonsToRemove: ['select2d', 'lasso2d', 'hoverClosestCartesian',
+  //         //     'hoverCompareCartesian', 'toggleSpikelines', 'pan2d', 'zoomOut2d', 'zoomIn2d', 'autoScale2d', 'resetScale2d'],
+  //         // };
+
+  //         // Plotly.newPlot('pixelChart', [data], layout, config);
+  //       }
+  //     });
+  //     esri.imageService({ url: intraLandService }).identify().at(e.latlng)
+  //       .between(this.currentSelectedTimeL, this.currentSelectedTimeR).returnCatalogItems(true).returnGeometry(true).run((er, featureCo, resp) => {
+  //         console.log('FetaureCollectionIdentify: ' + JSON.stringify(featureCo));
+  //         console.log('FeatureCollectionIdentifyResp: ' + JSON.stringify(resp));
+  //       });
+
+
+  //   }
+  // }
+
+  // public addMaskLayer(noDataMask: string[]) {
+  //   // if(this.mapCache.getMap(this.mapId).hasLayer(esri.imageMapLayer(
+  //   //   {url: intraLandService,opacity: 0.4}
+  //   // ))){
+  //   //       this.mapCache.getMap(this.mapId).removeLayer(esri.imageMapLayer(
+  //   //         {url: intraLandService,opacity: 0.4}
+  //   //       ));
+  //   //     }
+
+  //   //   this.mapCache.getMap(this.mapId).addLayer(esri.imageMapLayer(
+  //   //     {url: intraLandService,opacity: 0.4,
+  //   //      renderingRule: {
+  //   //       "rasterFunction": "Mask",
+  //   //         "rasterFunctionArguments": {
+  //   //           "NoDataValues": ['1'],
+  //   //           "IncludedRanges": [0,24],
+  //   //           "NoDataInterpretation": 0
+  //   //         }, "variableName": "SelectedMask"
+  //   //       }}).bringToFront().setTimeRange(new Date((new Date(this.currentSelectedTimeL.getFullYear(),
+  //   //        this.currentSelectedTimeL.getMonth(), this.currentSelectedTimeL.getDate() + 2).getTime() - 2628000000))
+  //   //       , new Date(this.currentSelectedTimeL.getFullYear(), this.currentSelectedTimeL.getMonth(), this.currentSelectedTimeL.getDate() + 2)));
+
+  // }
 }

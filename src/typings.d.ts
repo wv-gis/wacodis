@@ -6,8 +6,8 @@ interface NodeModule {
 
 import * as L from 'leaflet'
 
-import { RasterLayerOptions } from 'esri-leaflet';
-import { Time } from '@angular/common';
+import { RasterLayerOptions, RasterLayer, imageMapLayer, ImageMapLayer } from 'esri-leaflet';
+
 
 
 declare module 'leaflet' {
@@ -90,52 +90,52 @@ declare module 'leaflet' {
   }
   // var timeDimension: any;
   interface TimeDimensionOptions extends L.LayerOptions {
-       /**
-     * @default null
-     */
+    /**
+  * @default null
+  */
     times?: any
-   /**
-    * @default "'P1M/'+today"
-    */
-    timeInterval?: string;
-      /**
-     * @default "P1D"
+    /**
+     * @default "'P1M/'+today"
      */
+    timeInterval?: string;
+    /**
+   * @default "P1D"
+   */
     period?: string;
 
     validTimeRange?: string;
     currentTime?: number;
-        /**
-     * @default 3000
-     */
+    /**
+ * @default 3000
+ */
     loadingTimeout?: number;
 
     lowerLimitTime?: number;
     upperLimitTime?: number;
   }
 
- 
-  
+
+
 
   namespace TimeDimension {
 
     abstract class Layer extends L.Layer {
       options: TimeDimensionLayerOptions
-      constructor(layer: L.TileLayer, options: TimeDimensionLayerOptions);
+      constructor(layer: L.Layer, options: TimeDimensionLayerOptions);
       addTo(map: Map): this;
       eachLayer(method: (layer: Layer) => void, context?: any): this;
       setZIndex(zIndex: number): this;
       setOpacity(opacity: number): this;
       bringToBack(): this;
       bringtoFront(): this;
-      protected _onNewTimeLoading(ev: Event): this;
+      protected _onNewTimeLoading(ev: any): void;
       isReady(time: number): boolean;
-      protected _update():this;
+      protected _update(): void;
       getBaseLayer(): L.TimeDimension.Layer;
       getBounds(): L.LatLngBounds;
 
-      onAdd(map:Map):this;
-      onRemove(map: Map):this;
+      onAdd(map: Map): this;
+      onRemove(map: Map): this;
     }
 
     class Player extends L.Layer {
@@ -148,6 +148,19 @@ declare module 'leaflet' {
       isLooped(): boolean;
       setTransitionTime(transitionTime: number): void;
       setLooped(looped: boolean): void;
+    }
+    class Util {
+      static parseTimesExpression(times: number[], _period: string): number[];
+      getTimeDuration(ISOdur: string): number[];
+      addTimeDuration(date: Date, duration: string, utc: boolean): void;
+      substractTimeDuration(date: Date, duration: String, utc: boolean): void;
+      parseAndExplodeTimeRange(timeRange: string, overwritePeriod: boolean): number[];
+      explodeTimeRange(startTime: Date, endTime: Date, ISOdur: string, validTimeRange: string): number[];
+      parseTimeInterval(timeInterval: string): Date[];
+      parseTimesExpression(times: string, overwritePeriod: boolean): number[];
+      intersect_arrays(arrayA: [], aaryB: []): [];
+      union_arrays(arrayA: [], arrayB: []): [];
+      sort_and_deduplicate(arr: []): [];
     }
 
     namespace Layer {
@@ -162,27 +175,28 @@ declare module 'leaflet' {
         setParams(params: L.WMSParams, noRedraw: boolean): this;
         setMinimumForwardCache(value: number): void;
         setAvailableTimes(times: number[]): void;
-        protected _requestTimeDimensionFromCapabilities():this;
-        protected _update():this;
+        protected _requestTimeDimensionFromCapabilities(): this;
+        protected _update(): void;
         protected _unvalidateCache(): void;
-        protected _showLayer(layer: L.TileLayer, time: number):void;
-        protected _evictCachedTimes(keepforward:number, keepbachward:number):void;
+        protected _showLayer(layer: L.TileLayer, time: number): void;
+        protected _evictCachedTimes(keepforward: number, keepbachward: number): void;
         protected _getLayerForTime(time: number): L.Layer;
-        protected _onNewTimeLoading(ev: Event): this;
-        protected _createLayerForTime(time:number):L.Layer;
-        protected _getLoadedTimes():any[];
-        protected _removeLayers(times:number[]):void;
+        protected _onNewTimeLoading(ev: any): void;
+        protected _createLayerForTime(time: number): L.Layer;
+        protected _getLoadedTimes(): any[];
+        protected _removeLayers(times: number[]): void;
         protected _getCapabilitiesUrl(): string;
-        protected _parseTimeDimensionFromCapabilities(xml: any):number[];
-        protected _getDefaultTimeFromCapabilities(xml:any): number;
+        protected _parseTimeDimensionFromCapabilities(xml: any): number[];
+        protected _getDefaultTimeFromCapabilities(xml: any): number;
         protected _getDefaultTimeFromLayerCapabilities(layer: L.TileLayer): number;
         protected _updateTimeDimensionAvailableTimes();
-        protected _getNearestTime(time: number):number;
+        protected _getNearestTime(time: number): number;
         options: TimeDimensionLayerWMSOptions;
       }
       class ImageMapLayer extends L.TimeDimension.Layer {
         constructor(layer: esri.ImageMapLayer, options?: TimeDimensionLayerImageOptions)
-        
+
+
         eachLayer(method: (layer: Layer) => void, context?: any): this;
         isReady(time: number): boolean;
         onAdd(map: Map): this;
@@ -191,88 +205,103 @@ declare module 'leaflet' {
         setMinimumForwardCache(value: number): void;
         setAvailableTimes(times: number[]): void;
 
-        protected _update():this;
-        protected _onNewTimeLoading(ev: Event): this;   
+        protected _update(): void;
+        protected _onNewTimeLoading(ev: any): void;
         protected _getLayerForTime(time: number): L.Layer;
-        protected _getLoadedTimes():any[];
-        protected _removeLayers(times:number[]):void;
-        protected _showLayer(layer: L.TileLayer, time: number):void;
+        protected _getLoadedTimes(): any[];
+        protected _removeLayers(times: number[]): void;
+        protected _showLayer(layer: RasterLayer, time: number): void;
         options: TimeDimensionLayerImageOptions;
       }
     }
   }
-interface TimeDimensionLayerImageOptions extends ImageMapLayerOptions{
-   /**
-     * @default false
-     * 
-     */
-    updateTimeDimension?: boolean;
-       /**
-     * @default "intersect"
-     * 
-     */
-    updateTimeDimensionMode?: string;
-    /**
-     * @default false
-     * 
-     */
-    setDefaultTime?: boolean;
-    period?:string;
-    timeCachBackward:number;
-    timeCachForward: number;
-}
-  interface TimeDimensionPlayerOptions extends L.LayerOptions {
-        /**
-     * @default 1000
-     */
-    transitionTime: number;
-
-        /**
-      * @default 5
-      */
-    buffer: number;
-
-         /**
-      * @default 1
-      */
-    minBufferReady: number;
-
-         /**
-      * @default false
-      */
-    loop: boolean;
-
-        /**
-    * @default false
-    */
-      startOver: boolean;
-
-  }
-  interface TimeDimensionLayerWMSOptions extends L.WMSOptions,L.TimeDimensionLayerOptions {
+  interface TimeDimensionLayerImageOptions extends TimeDimensionLayerOptions {
     /**
      * @default 0
      * 
      */
     cache?: number;
-   /**
-     * @default cache||0
-     * 
-     */
+    /**
+      * @default cache||0
+      * 
+      */
     cacheBackward?: number;
     /**
      * @default cache||0
      * 
      */
     cacheForward?: number;
-     /**
+    /**
+       * @default false
+       * 
+       */
+    updateTimeDimension?: boolean;
+    /**
+  * @default "intersect"
+  * 
+  */
+    updateTimeDimensionMode?: string;
+    /**
      * @default false
      * 
      */
-    updateTimeDimension?: boolean;
-       /**
-     * @default "intersect"
+    setDefaultTime?: boolean;
+    period?: string;
+    timeCachBackward?: number;
+    timeCachForward?: number;
+  }
+  interface TimeDimensionPlayerOptions extends L.LayerOptions {
+    /**
+ * @default 1000
+ */
+    transitionTime: number;
+
+    /**
+  * @default 5
+  */
+    buffer: number;
+
+    /**
+ * @default 1
+ */
+    minBufferReady: number;
+
+    /**
+ * @default false
+ */
+    loop: boolean;
+
+    /**
+* @default false
+*/
+    startOver: boolean;
+
+  }
+  interface TimeDimensionLayerWMSOptions extends L.WMSOptions, L.TimeDimensionLayerOptions {
+    /**
+     * @default 0
      * 
      */
+    cache?: number;
+    /**
+      * @default cache||0
+      * 
+      */
+    cacheBackward?: number;
+    /**
+     * @default cache||0
+     * 
+     */
+    cacheForward?: number;
+    /**
+    * @default false
+    * 
+    */
+    updateTimeDimension?: boolean;
+    /**
+  * @default "intersect"
+  * 
+  */
     updateTimeDimensionMode?: string;
     /**
      * @default false
@@ -298,9 +327,9 @@ interface TimeDimensionLayerImageOptions extends ImageMapLayerOptions{
   }
   interface TimeDimensionLayerOptions extends L.LayerOptions {
     timeDimension?: L.TimeDimension;
-        /**
-     * @default 1
-     */
+    /**
+ * @default 1
+ */
     opacity?: number;
     /**
      * @default 1
@@ -308,13 +337,13 @@ interface TimeDimensionLayerImageOptions extends ImageMapLayerOptions{
     zIndex?: number;
 
   }
-   namespace timeDimension {
+  namespace timeDimension {
     export function layer(layer: L.Layer, options?: TimeDimensionLayerOptions): TimeDimension.Layer;
-     namespace layer{
+    namespace layer {
       export function wms(layer: L.TileLayer.WMS, options?: TimeDimensionLayerWMSOptions): TimeDimension.Layer.WMS;
       export function imageMapLayer(layer: esri.ImageMapLayer, options?: TimeDimensionLayerImageOptions): TimeDimension.Layer.ImageMapLayer;
     }
-   
+
   }
   export function timeDimension(options?: TimeDimensionOptions): L.TimeDimension;
   class TimeDimension extends L.Layer {
@@ -325,7 +354,7 @@ interface TimeDimensionLayerImageOptions extends ImageMapLayerOptions{
     isLoading(): boolean;
 
     setCurrentTimeIndex(newIndex: number): void;
-    protected _newTimeIndexLoaded():void;
+    protected _newTimeIndexLoaded(): void;
     protected _checkSyncedLayersReady(time: number): boolean;
     setCurrentTime(time: number): void;
     seekNearestTime(time: Date): Date;
@@ -335,11 +364,11 @@ interface TimeDimensionLayerImageOptions extends ImageMapLayerOptions{
     previousTime(numSteps: number, loop: boolean): void;
     registerSyncedLayer(layer: L.TimeDimension.Layer): void;
     unregisterSyncedLayer(layer: L.TimeDimension.Layer): void;
-    protected _onSyncedLayerLoaded(e: Event):void;
+    protected _onSyncedLayerLoaded(e: Event): void;
     protected _generateAvailableTimes(): string[];
     protected _getDefaultCurrentTime(): number;
     protected _seekNearestTimeIndex(time: number): number;
-    
+
     setAvailableTimes(times: number[], mode: string): void;
     getLowerLimit(): number;
     getUpperLimit(): number;
@@ -352,17 +381,17 @@ interface TimeDimensionLayerImageOptions extends ImageMapLayerOptions{
     options: TimeDimensionOptions;
   }
   interface KnobOptions {
-       /**
-    * @default 'knob'
-    */
+    /**
+ * @default 'knob'
+ */
     className: string;
-   /**
-    * @default 1
-    */
+    /**
+     * @default 1
+     */
     step: number;
-     /**
-    * @default 0
-    */
+    /**
+   * @default 0
+   */
     rangeMin: number;
     /**
     * @default 10
@@ -394,7 +423,7 @@ interface TimeDimensionLayerImageOptions extends ImageMapLayerOptions{
     timeDimensionControl?: boolean;
     timeDimensionControlOptions?: L.TimedimensionControlOptions;
   }
-  interface TimedimensionControlOptions extends L.ControlOptions{
+  interface TimedimensionControlOptions extends L.ControlOptions {
     /**
      * @default 'leaflet-control-timecontrol'
      *  */
@@ -423,13 +452,13 @@ interface TimeDimensionLayerImageOptions extends ImageMapLayerOptions{
     * @default false
     */
     playReverseButton?: boolean;
-   /**
-    * @default false
-    */
+    /**
+     * @default false
+     */
     loopButton?: boolean;
-     /**
-    * @default true
-    */
+    /**
+   * @default true
+   */
     displayDate?: boolean;
     /**
     * @default true
@@ -472,10 +501,10 @@ interface TimeDimensionLayerImageOptions extends ImageMapLayerOptions{
     */
     autoPlay?: boolean;
 
-    playerOptions?: {   
-    /**
-      * @default 1000
-      */
+    playerOptions?: {
+      /**
+        * @default 1000
+        */
       transitionTime: number;
 
     },
@@ -491,7 +520,7 @@ interface TimeDimensionLayerImageOptions extends ImageMapLayerOptions{
 
       addTo(map: Map): this;
       onRemove?(map: Map): void;
-  
+
       options: TimedimensionControlOptions;
     }
   }
@@ -501,9 +530,52 @@ interface TimeDimensionLayerImageOptions extends ImageMapLayerOptions{
 
 
 
-
   namespace esri {
+
+    interface IdentifyImageOptions extends ServiceOptions { }
+
+    /**
+     * `L.esri.IdentifyImage` is an abstraction for the Identify API found in Image Services. It provides a
+     * chainable API for building request parameters and executing the request.
+     */
+    class IdentifyImage extends Task {
+      constructor(options: IdentifyImageOptions | ImageService);
+
+      /**
+       * Identifies pixel value at a given LatLng geometry.
+       */
+      at(geometry: LatLng): this;
+      /**
+       * Identifies pixel values within a given time range.
+       */
+      between(from: Date, to: Date): this;
+      getRenderingRule(): Object;
+      setRenderingRule(renderingRule: Object): this;
+      getMoasicRule(): Object;
+      setMosaicRule(mosaicRule: Object): this;
+      setPixelSize(pixelSize: number[] | string): this;
+      getPixelsize(): Object;
+      returnCatalogItems(returnCatalogItems: boolean): this;
+      returnGeometry(returnGeomery: boolean): this;
+      token(token: string): this;
+      run(callback: FeatureCallbackHandler, context?: any): this;
+    }
+
+    /**
+     * `L.esri.IdentifyImage` is an abstraction for the Identify API found in Image Services. It provides a
+     * chainable API for building request parameters and executing the request.
+     */
+    export function identifyImage(options: IdentifyImageOptions | ImageService): IdentifyImage;
+
+    interface ImageService {
+      identify(): IdentifyImage;
+    }
+
+
     class ImageMapLayer extends RasterLayer {
+      _visible: true;
+      _loaded: false;
+
       constructor(options: ImageMapLayerOptions)
       /**
       * Redraws this layer below all other overlay layers.
@@ -540,11 +612,17 @@ interface TimeDimensionLayerImageOptions extends ImageMapLayerOptions{
       authenticate(token: string): this;
       metadata(callback: CallbackHandler, context?: object): this;
       query(): this;
+      identify(): this;
       getRenderingRule(): object;
       setRenderingRule(renderingRule: object): this;
       getMosaicRule(): object;
       setMosaicRule(mosaicRule: object): this;
       redraw(): this;
+      show(): void;
+      hide(): void;
+      isLoaded(): boolean;
+      setLoaded(loaded: boolean): void;
+      protected _update(): void;
     }
     export function imageMapLayer(options: ImageMapLayerOptions): ImageMapLayer;
   }

@@ -37,12 +37,8 @@ import { CsvDataService } from 'src/app/settings/csvData.service';
 import { RequestTokenService } from 'src/app/services/request-token.service';
 import { HelgolandOpenLayersModule } from '@helgoland/open-layers';
 import { SelectedProviderService } from './services/selected-provider.service';
-import { LandCoverComponent } from './copernicus/products/land-cover/land-cover.component';
-import { VitalityViewComponent } from './copernicus/products/vitality-view/vitality-view.component';
-import { ChlorophyllViewComponent } from './copernicus/products/chlorophyll-view/chlorophyll-view.component';
-import { SoilTemperatureViewComponent } from './copernicus/products/soil-temperature-view/soil-temperature-view.component';
-import { MowingViewComponent } from './copernicus/products/mowing-view/mowing-view.component';
 import { CopernicusProductsModule } from './copernicus/copernicus-products/copernicus-products.module';
+
 
 
 
@@ -52,6 +48,7 @@ import { CopernicusProductsModule } from './copernicus/copernicus-products/coper
     AppComponent,
     LandingpageComponent,
     WeatherForecastComponent,
+  
   ],
   imports: [
     BrowserModule,
