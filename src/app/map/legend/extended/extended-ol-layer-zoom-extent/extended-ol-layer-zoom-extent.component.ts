@@ -103,7 +103,7 @@ export class ExtendedOlLayerZoomExtentComponent implements OnInit {
         // });
       }
     }
-    else if (this.layer._baseLayer._url) {
+    else if (this.layer._baseLayer) {
       this.imageurl = this.layer._baseLayer._url;
 
       if (this.layer instanceof L.TimeDimension.Layer.WMS) {
@@ -119,7 +119,10 @@ export class ExtendedOlLayerZoomExtentComponent implements OnInit {
           this.imageExtent = new L.LatLngBounds([res.extent[1], res.extent[0]], [res.extent[3], res.extent[2]]);
           });
       }
-    }
+     }
+    //else{
+
+    // }
     // }
     // }
   }

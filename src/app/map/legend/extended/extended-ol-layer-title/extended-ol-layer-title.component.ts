@@ -61,7 +61,7 @@ export class ExtendedOlLayerTitleComponent implements OnInit {
             this.title = res;
           });
         }
-        else{       
+        else if(this.layer._url){       
           const wmsUrl = this.layer._url;
         
           if(this.layer instanceof L.TileLayer.WMS ){
@@ -72,6 +72,8 @@ export class ExtendedOlLayerTitleComponent implements OnInit {
           }
          
           
+         }else{
+           
          }
   }
 }

@@ -38,7 +38,7 @@ export class ExtendedLayerAbstractComponent implements OnInit {
           }          
         });
       }
-     else if (this.layer._baseLayer._url) {
+     else if (this.layer._baseLayer) {
         const url = this.layer._baseLayer._url;
   
         if (this.layer instanceof L.TimeDimension.Layer.WMS) {
@@ -46,7 +46,9 @@ export class ExtendedLayerAbstractComponent implements OnInit {
           this.wmsCaps.getAbstract(layerid, url).subscribe(res => this.abstract = res);
         }
       }
-    
+    else{
+
+    }
   }
 
 }
