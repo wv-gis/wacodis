@@ -36,6 +36,9 @@ export class ExtendedVisibilityTogglerComponent {
         this.layer.setOpacity(0);
       }
     }
+    else{
+      
+    }
   }
   
 }

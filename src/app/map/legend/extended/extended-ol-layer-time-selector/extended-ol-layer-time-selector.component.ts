@@ -115,6 +115,9 @@ export class ExtendedOlLayerTimeSelectorComponent implements OnInit { //extends 
       if (!this.timeDimensions) { this.timeAttribute = false, this.loading = false }
       this.extendedDetermineCurrentTimeParameter();
     }
+    else{
+      
+    }
   }
 
   public onSelection(time: Date) {

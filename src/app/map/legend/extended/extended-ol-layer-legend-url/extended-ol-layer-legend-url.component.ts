@@ -81,7 +81,7 @@ export class ExtendedOlLayerLegendUrlComponent {//extends OlLayerLegendUrlCompon
               this.urls =[{ url: res, label: "", layer: res.split('layer=')[1] }]});
         }
       }
-     
+     else{}
     }
   }
 }
