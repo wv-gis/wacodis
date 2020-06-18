@@ -16,6 +16,10 @@ import { SoilTemperatureViewComponent } from './copernicus/products/soil-tempera
 import { ChlorophyllViewComponent } from './copernicus/products/chlorophyll-view/chlorophyll-view.component';
 import { VitalityViewComponent } from './copernicus/products/vitality-view/vitality-view.component';
 import { LandCoverComponent } from './copernicus/products/land-cover/land-cover.component';
+import { SingleResultViewComponent } from './swat/views/sediment/single-result-view/single-result-view.component';
+import { SingleNitrogenResultViewComponent } from './swat/views/nitrogen/single-nitrogen-result-view/single-nitrogen-result-view.component';
+import { ScenarioComparisonNitrogenViewComponent } from './swat/views/nitrogen/scenario-comparison-nitrogen-view/scenario-comparison-nitrogen-view.component';
+import { ScenarioComparisonViewComponent } from './swat/views/sediment/scenario-comparison-view/scenario-comparison-view.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'start', pathMatch: 'full' },
@@ -34,14 +38,19 @@ const routes: Routes = [
   { path: 'profiles-selection', component: ProfileDataViewSelectionComponent, data: { title: 'WaCoDiS Web Client' } },
   { path: 'profiles-diagram', component: ProfileEntryGraphComponent, data: { title: 'WaCoDiS Web Client' } },
   { path: 'weather-forecast', component: WeatherForecastComponent, data: { title: 'WaCoDiS Web Client' } },
-  // {path: "substrance-entries-view",component: },
-  {path: "mowing-view",component: MowingViewComponent},
-  {path: "isoplethen-view",component: IsoplethenViewComponent},
-  {path: "soilTemperature-view",component: SoilTemperatureViewComponent},
-  {path: "chlorophyll-view",component: ChlorophyllViewComponent},
-  {path: "vitality-view",component: VitalityViewComponent},
-  {path: "land-use-view", component: LandCoverComponent},
-  {path: "land-use-view/:id",component: LandCoverComponent}
+  { path: "substrance-entries-sediment", component: SingleResultViewComponent },
+  { path: "substrance-entries-sediment/sV", component: SingleResultViewComponent },
+  { path: "substrance-entries-sediment/cV", component: ScenarioComparisonViewComponent },
+  { path: "substrance-entries-nitrogen", component: SingleNitrogenResultViewComponent },
+  { path: "substrance-entries-nitrogen/sV", component: SingleNitrogenResultViewComponent },
+  { path: "substrance-entries-nitrogen/cV", component: ScenarioComparisonNitrogenViewComponent },
+  { path: "mowing-view", component: MowingViewComponent },
+  { path: "isoplethen-view", component: IsoplethenViewComponent },
+  { path: "soilTemperature-view", component: SoilTemperatureViewComponent },
+  { path: "chlorophyll-view", component: ChlorophyllViewComponent },
+  { path: "vitality-view", component: VitalityViewComponent },
+  { path: "land-use-view", component: LandCoverComponent },
+  { path: "land-use-view/:id", component: LandCoverComponent }
 ];
 
 @NgModule({

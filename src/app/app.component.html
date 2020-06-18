@@ -62,7 +62,33 @@
             </div>
           </li>
           <li routerLinkActive="active" class="nav-item wv" data-toggle="collapse" data-target=".navbar-collapse.show">
-            <a routerLink='/substrance-entries-view' class="nav-link">Modellierungsergebnisse</a>
+            <div class="dropdown ">
+              <button class="btn dropdown-toggle" type="button" id="dropdownSwatMenuButton" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false" style="font-size: 13px;">
+                Modellierungsergebnisse
+              </button>
+              <ul class="dropdown-menu btn wv-menu-drop" aria-labelledby="dropdownSwatMenuButton">
+                <li class="dropdown-submenu">
+                  <a class="dropdown-item  wv-drop" tabindex="-1" href="#">
+                    Sedimente
+                  </a>
+                  <ul class="dropdown-menu btn wv-menu-drop" aria-labelledby="dropSwatSubMenuButton" id="subSwatMenu1">
+                    <li><a class="dropdown-item  wv-drop" [routerLink]="['/substrance-entries-sediment','sV']" role="button"> Einzelanalyse</a></li>
+                    <li><a class="dropdown-item  wv-drop" [routerLink]="['/substrance-entries-sediment', 'cV']" role="button"> Szenarienvergleich</a></li>                  
+                  </ul>
+                </li>
+                <li class="dropdown-submenu">
+                  <a class="dropdown-item  wv-drop" tabindex="-1" href="#">
+                    Stickstoff
+                  </a>
+                  <ul class="dropdown-menu btn wv-menu-drop" aria-labelledby="dropSwatSubMenuButton2" id="subSwatMenu2">
+                    <li><a class="dropdown-item  wv-drop" [routerLink]="['/substrance-entries-nitrogen','sV']" role="button"> Einzelanalyse</a></li>
+                    <li><a class="dropdown-item  wv-drop" [routerLink]="['/substrance-entries-nitrogen', 'cV']" role="button"> Szenarienvergleich</a></li>                  
+                  </ul>
+                </li>
+                      
+              </ul>
+            </div>
           </li>
           <li routerLinkActive="active" class="nav-item wv" data-toggle="collapse" data-target=".navbar-collapse.show">
             <!-- <a routerLink='/comparison-selection' class="nav-link">ChangeDetection</a> -->

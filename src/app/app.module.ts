@@ -38,6 +38,7 @@ import { RequestTokenService } from 'src/app/services/request-token.service';
 import { HelgolandOpenLayersModule } from '@helgoland/open-layers';
 import { SelectedProviderService } from './services/selected-provider.service';
 import { CopernicusProductsModule } from './copernicus/copernicus-products/copernicus-products.module';
+import { SwatResultsModule } from './swat/views/swat-results/swat-results.module';
 
 
 
@@ -48,6 +49,7 @@ import { CopernicusProductsModule } from './copernicus/copernicus-products/coper
     AppComponent,
     LandingpageComponent,
     WeatherForecastComponent,
+
   
   ],
   imports: [
@@ -80,6 +82,7 @@ import { CopernicusProductsModule } from './copernicus/copernicus-products/coper
     WvProfilesModule,
     WvReportsModule,
     WvChangeDetectionModule,
+    SwatResultsModule,
     CopernicusProductsModule,
     AppRoutingModule,
   ],
