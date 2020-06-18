@@ -4,6 +4,7 @@ import { MapCache } from '@helgoland/map';
 import * as esri from "esri-leaflet";
 declare var require;
 require('esri-leaflet-renderers');
+require('leaflet.sync');
 
 @Component({
   selector: 'wv-scenario-comparison-view',
@@ -48,35 +49,33 @@ export class ScenarioComparisonViewComponent implements OnInit {
     // console.log("Response: " + JSON.stringify(response));
   })
   this.mainMap.addLayer(this.wmsLayer);
-  this.mainMap.createPane('reservoir_output')
-
-  this.mainMap.addLayer(esri.featureLayer({
-    url: "https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/ArcGIS/rest/services/SWATimClient/FeatureServer/2",
-
-  }));
-  var szenariofeatureLayer = esri.featureLayer({
-    url: "https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/ArcGIS/rest/services/SWATimClient/FeatureServer/1",
-    fields: ["OBJECTID", "rsv_yearavg_csv_SED_OUT", "rsv_yearavg_csv_SED_IN", "rsv_yearavg_csv_SED_CONC",
-      "rsv_yearavg_csv_Name", "rsv_yearavg_csv_ResID"]
-  })
-  this.mainMap.addLayer(szenariofeatureLayer);
-  
-  // szenariofeatureLayer.bindPopup(function (layer) {
-  //   console.log(layer);
-  //   return L.Util.template('<p>{rsv_yearavg_csv_Name} hat einen Sedimenteintrag von {rsv_yearavg_csv_SED_IN}'+ 
-  //   'und einen Austrag von {rsv_yearavg_csv_SED_OUT}.</p>',
-  //    layer);
-  // });
-
-
   this.szenarioMap.addLayer(L.tileLayer.wms('http://ows.terrestris.de/osm/service?',
   {
     layers: 'OSM-WMS', format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    className: 'OSM'
+    className: 'OSM2'
   }));
-  this.szenarioMap.addLayer(esri.featureLayer({
-    url: "https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/ArcGIS/rest/services/SWATimClient/FeatureServer/7",
 
+  this.mainMap.addLayer(esri.featureLayer({
+    url: "https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/ArcGIS/rest/services/SWATimClient/FeatureServer/2"
+  }));
+  
+  this.mainMap.addLayer(esri.featureLayer({
+    url: "https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/ArcGIS/rest/services/SWATimClient/FeatureServer/1",
+    fields: ["OBJECTID", "rsv_yearavg_csv_SED_OUT", "rsv_yearavg_csv_SED_IN", "rsv_yearavg_csv_SED_CONC",
+      "rsv_yearavg_csv_Name", "rsv_yearavg_csv_ResID"]
+  }));
+  
+  // .bindPopup(function (featureCollection) {
+  //   console.log(featureCollection);
+  //   return L.Util.template('<p>{rsv_yearavg_csv_Name} hat einen Sedimenteintrag von {rsv_yearavg_csv_SED_IN}'+ 
+  //   'und einen Austrag von {rsv_yearavg_csv_SED_OUT}.</p>',
+  //   featureCollection.features[0].properties);
+  // });
+
+
+ 
+  this.szenarioMap.addLayer(esri.featureLayer({
+    url: "https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/ArcGIS/rest/services/SWATimClient/FeatureServer/7"
   }));
   this.szenarioMap.addLayer(esri.featureLayer({
     url: "https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/ArcGIS/rest/services/SWATimClient/FeatureServer/5",
@@ -87,6 +86,9 @@ export class ScenarioComparisonViewComponent implements OnInit {
 
   this.mainMap.sync(this.szenarioMap);
   this.szenarioMap.sync(this.mainMap);
+
+  this.mainMap.invalidateSize();
+  this.szenarioMap.invalidateSize();
   }
 
 }

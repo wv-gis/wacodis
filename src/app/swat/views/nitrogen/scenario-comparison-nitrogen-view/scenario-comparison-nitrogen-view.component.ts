@@ -4,6 +4,7 @@ import { MapCache } from '@helgoland/map';
 import * as esri from "esri-leaflet";
 declare var require;
 require('esri-leaflet-renderers');
+require('leaflet.sync');
 
 @Component({
   selector: 'wv-scenario-comparison-nitrogen-view',
@@ -40,13 +41,6 @@ export class ScenarioComparisonNitrogenViewComponent implements OnInit {
   this.mapCache.setMap(this.mapId, this.mainMap);
   this.mapCache.setMap(this.szenario2Id, this.szenarioMap);
 
-  this.featureService = esri.featureLayerService({
-    url: 'https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/ArcGIS/rest/services/SWATimClient/FeatureServer/1'
-  });
-  this.featureService.query().where("rsv_yearavg_csv_SED_IN>0").run((error, featureCollection, response) => {
-    // console.log("FeatureCollection: " + JSON.stringify(featureCollection));
-    // console.log("Response: " + JSON.stringify(response));
-  })
   this.mainMap.addLayer(this.wmsLayer);
 
   this.mainMap.addLayer(esri.featureLayer({
