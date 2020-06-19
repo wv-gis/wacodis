@@ -1,20 +1,20 @@
 import { Injectable } from '@angular/core';
-import {  tempData } from '../../environments/environment';
+import {  tempData, tempDataDh } from '../../environments/environment';
 
 
 @Injectable()
 export class CsvDataService {
 private headers;
-private datasets;
-private text;
+private datasets: string;
+private text: string;
 private interpText;
     constructor() {
         // this.headers = headerArray;
-        // this.datasets = data;
+        this.datasets = tempDataDh;
         this.text = tempData;
         // this.interpText = statData;
     }
-    public getCsvDatasets(){
+    public getCsvDataset(){
         return this.datasets;
     }
     public getHeaders(){

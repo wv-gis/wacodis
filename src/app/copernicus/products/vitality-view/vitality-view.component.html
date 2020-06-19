@@ -54,34 +54,12 @@
   </div>
   <div class="row" style="height: 740px">
     <div class="col-xl-4 col-md-4 mb-2" style="height: 100%;">
-      <div class="row" style="max-height: 72%;">
-        <div class="col-xl-6">
-          <div class="card border-left-primary shadow h-100 ">
-            <div class="card-header wv-bold-header">
-              O
-            </div>
-            <div class="card-body h-100" style="padding: 0rem;">
-
-            </div>
-          </div>
-        </div>
-        <div class="col-xl-6">
-          <div class="card border-left-primary shadow h-100 ">
-            <div class="card-header wv-bold-header">
-              Legende
-            </div>
-            <div class="card-body h-100" style="padding: 0rem;">
-              <div class="wv-legend" style="width: 100%;">
-                <wv-layer-legend-card [layer]="baselayers[0]"></wv-layer-legend-card>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="row">
+      <div class="row" style="height: 50%;">
         <div class="col-xl-12 mb-2">
-          <div class="card border-left-primary shadow h-100">
-
+          <div class="card border-left-primary shadow" style="height: 100%;">
+            <div class="card-header wv-bold-header">
+              Monatliche Temperaturabweichungen vom jährlichen Mittel
+            </div>
             <div class="card-body ">
               <!-- <div style="width: 100%;" *ngIf="showDiagram">
                   <wv-copernicus-layer-chart [drawChart]='true' [selectedTimeIndex]='selectedTime' [chartId]="'PEchart'"
@@ -89,18 +67,34 @@
                   </wv-copernicus-layer-chart>
                 </div> -->
 
-              <n52-d3-timeseries-graph [datasetIds]="datasetIdsMultiple" [selectedDatasetIds]="selectedIds"
-                [datasetOptions]="datasetOptionsMultiple" [timeInterval]="timespan"
-                (onTimespanChanged)="timespanChanged($event)" [presenterOptions]="diagramOptionsD3">
-              </n52-d3-timeseries-graph>
+              <n52-extended-data-d3-timeseries-graph [datasetIds]="datasetIdsMultiple" [additionalData]="additionalDataTemp"
+              [selectedDatasetIds]="selectedIds" [datasetOptions]="datasetOptionsMultiple" [timeInterval]="timespan"
+              [presenterOptions]="diagramOptionsD3" (onTimespanChanged)="timespanChanged($event)"
+               #diagram></n52-extended-data-d3-timeseries-graph>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row" style="height: 50%;">
+        <div class="col-xl-12 mb-2">
+          <div class="card border-left-primary shadow " style="height: 100%;">
+            <div class="card-header wv-bold-header">
+             Monatliche Niederschlagsbweichungen vom jährlichen Mittel
+            </div>
+            <div class="card-body ">
+     
+              <n52-extended-data-d3-timeseries-graph [datasetIds]="datasetIds" [additionalData]="additionalDataRain"
+              [selectedDatasetIds]="selectedIds" [datasetOptions]="datasetOptionsMultiple2" [timeInterval]="timespan"
+              [presenterOptions]="diagramOptionsD3" (onTimespanChanged)="timespanChanged($event)"
+               #diagram></n52-extended-data-d3-timeseries-graph>
             </div>
           </div>
         </div>
       </div>
 
     </div>
-    <div class="col-xl-4 col-md-4">
-      <div class='row' style="height: 85%;">
+    <div class="col-xl-6 col-md-4">
+      <div class='row' style="height: 55%;">
         <div class="col-xl-12 col-md-12 mb-2">
           <div id="map">
             <div class="map-wrapper" id='map-wrapper'>
@@ -124,13 +118,47 @@
           </div>
         </div>
       </div>
+      <div class="row" style="top: 0rem;">
+        <div class="col-xl-12 col-md-12 mb-2">
+          <div class="card border-left-primary shadow ">
+            <div class="card-header wv-bold-header">
+              Prozentualer Zuwachs/Verlust des Waldes an den Talsperren
+             </div>
+            <div class="card-body" style="padding: 0rem;">
+              <div style="width: 100%;">
+                <wv-vitality-bar-chart [barChartIds]="['percentBar']" [service]="test" ></wv-vitality-bar-chart>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="col-xl-4">
+    <div class="col-xl-2">
       <div class="card border-left-primary shadow ">
         <div class="card-header wv-bold-header">
-          Prozentuale Veränderung im Vergleich zum letzten Jahr vom {{currentSelectedTimeL | date:'longDate':'':'de'}}
+         Legende
         </div>
-        <div class="card-body" style="padding: 0px;">
+        <div class="card-body h-100" style="padding: 0px;">
+              <div class="wv-legend" style="width: 100%;">
+                <wv-layer-legend-card [layer]="baselayers[0]"></wv-layer-legend-card>
+              </div>
+            </div>
+            <div class="card-header wv-bold-header">
+              Zuwachs
+             </div>
+             <div class="card-body h-100" style="padding: 0px;">
+                   <div class="wv-legend" style="width: 100%;">
+                     <wv-layer-legend-card [layer]="baselayers[0]"></wv-layer-legend-card>
+                   </div>
+                 </div>
+                 <div class="card-header wv-bold-header">
+                  Verlust
+                 </div>
+                 <div class="card-body h-100" style="padding: 0px;">
+                       <div class="wv-legend" style="width: 100%;">
+                         <wv-layer-legend-card [layer]="baselayers[0]"></wv-layer-legend-card>
+                       </div>
+                     </div>
           <!-- <div style="width: 100%;" *ngIf="showDiagram; else indBarChart">
               <wv-copernicus-bar-chart-card [selIndices]="[selectedTime]"
                 [barChartIds]="['perChange','absChange']" [bounds]='polyBounds' [service]='service'
@@ -147,4 +175,3 @@
       </div>
     </div>
   </div>
-</div>

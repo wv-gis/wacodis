@@ -37,7 +37,7 @@ export const settingsPromise = new Promise<Settings>((resolve, reject) => {
 export let tempData: string = '';
 export const tempDataPromise = new Promise((resolve, reject)=>{
  const input_n = new XMLHttpRequest();
- input_n.open('GET', './assets/Be_Sauerst_2013.csv');
+ input_n.open('GET', './assets/niederschlag_langMonatsmittel_Bever.csv');
   input_n.onload = (e)=>{
     if(input_n.status === 200){
       tempData = input_n.responseText;
@@ -51,6 +51,26 @@ export const tempDataPromise = new Promise((resolve, reject)=>{
   };
   input_n.send();
 });
+
+
+export let tempDataDh: string = '';
+export const tempDataDhPromise = new Promise((resolve, reject)=>{
+ const input_dh = new XMLHttpRequest();
+ input_dh.open('GET', './assets/niederschlag_langMonatsmittel_Neumuehle.csv');
+  input_dh.onload = (e)=>{
+    if(input_dh.status === 200){
+      tempDataDh = input_dh.responseText;
+
+      resolve(tempDataDh);
+      
+    }
+    else{
+      reject('Cannot load csv file');
+    }
+  };
+  input_dh.send();
+});
+
 export var locale={moduleType:"locale",name:"de",dictionary:{Autoscale:"Automatische Skalierung","Box Select":"Rechteckauswahl","Click to enter Colorscale title":
 "Klicken, um den Farbskalatitel einzugeben","Click to enter Component A title":"Klicken, um den Titel der Komponente A einzugeben","Click to enter Component B title":
 "Klicken, um den Titel der Komponente B einzugeben","Click to enter Component C title":"Klicken, um den Titel der Komponente C einzugeben","Click to enter Plot title":
