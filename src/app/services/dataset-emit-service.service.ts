@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { DatasetService, DatasetOptions, LocalStorage, DatasetApiInterface, LineRenderingHints, BarRenderingHints} from '@helgoland/core';
+import { DatasetService, DatasetOptions, LocalStorage, LineRenderingHints, BarRenderingHints, HelgolandServicesConnector, DatasetType} from '@helgoland/core';
 
 
 @Injectable({
@@ -11,14 +11,14 @@ import { DatasetService, DatasetOptions, LocalStorage, DatasetApiInterface, Line
   internID: string;
   // colorPromise: Promise<boolean>;
 
-  constructor(protected localStorage: LocalStorage, protected api: DatasetApiInterface) {
+  constructor(protected localStorage: LocalStorage, protected api: HelgolandServicesConnector) {
     super();
   }
 
   protected createStyles(internalId: string): DatasetOptions {
     let option = new DatasetOptions(internalId, "rgb(" + Math.floor(Math.random() * 255) + "," + Math.floor(Math.random() * 255) + "," + Math.floor(Math.random() * 255) + ")");
   
-    this.api.getSingleTimeseriesByInternalId(internalId).subscribe(
+    this.api.getDataset(internalId,{type: DatasetType.Timeseries}).subscribe(
     
       (timeseries) => {
         // option = new DatasetOptions(internalId, "rgb(" + Math.floor(Math.random() * 255) + "," + Math.floor(Math.random() * 255) + "," + Math.floor(Math.random() * 255) + ")");
@@ -44,7 +44,7 @@ import { DatasetService, DatasetOptions, LocalStorage, DatasetApiInterface, Line
       // return option as T;
       },
       (error) => {
-        this.api.getDatasetByInternalId(internalId).subscribe(
+        this.api.getDataset(internalId,{type: DatasetType.Timeseries}).subscribe(
           (dataset) => {
             if (dataset.renderingHints) {
               if (dataset.renderingHints.properties && dataset.renderingHints.properties.color) {

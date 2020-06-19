@@ -1,6 +1,6 @@
 import { Component, OnInit, SimpleChanges } from '@angular/core';
 import { ListSelectorComponent, FilteredParameter, ListSelectorService } from '@helgoland/selector';
-import { DatasetApiMapping, DatasetApiInterface } from '@helgoland/core';
+import {  HelgolandServicesConnector } from '@helgoland/core';
 import { Router } from '@angular/router';
 import { SelectedProviderService } from 'src/app/services/selected-provider.service';
 
@@ -16,9 +16,9 @@ export class WvExtendedListSelectorComponent extends ListSelectorComponent imple
   public datasetSelected: boolean = false;
   public selectedProviderUrl: string = '';
 
-  constructor(protected listSelectorService: ListSelectorService, protected apiInterface: DatasetApiInterface,
-    protected apiMapping: DatasetApiMapping, protected router: Router, private selProv: SelectedProviderService) {
-    super(listSelectorService, apiInterface, apiMapping);
+  constructor(protected listSelectorService: ListSelectorService, protected apiInterface: HelgolandServicesConnector,
+     protected router: Router, private selProv: SelectedProviderService) {
+    super(listSelectorService, apiInterface);
     // this.listSelectorService.cache.clear();
 
   }

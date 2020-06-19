@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Service, Provider, SettingsService, Settings, DatasetApiInterface } from '@helgoland/core';
-import { BehaviorSubject, ReplaySubject, Observable } from 'rxjs';
+import {  Provider, SettingsService, Settings } from '@helgoland/core';
+import {  ReplaySubject, Observable } from 'rxjs';
+
 
 
 @Injectable({
@@ -13,7 +14,7 @@ export class SelectedProviderService {
   private selectedService: ReplaySubject<Provider> = new ReplaySubject();
   // service$ = this.observableService.asObservable();
 
- constructor(private settingService: SettingsService<Settings>, private api: DatasetApiInterface) { 
+ constructor(private settingService: SettingsService<Settings> ) { 
    const defaultSrvc = this.settingService.getSettings().datasetApis[1];
    if(defaultSrvc){
    this.setProvider({id: '1', url: defaultSrvc.url})

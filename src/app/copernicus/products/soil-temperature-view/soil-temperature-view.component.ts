@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import Plotly from 'plotly.js-dist';
 import { MapCache, LayerOptions } from '@helgoland/map';
-import { ParameterFilter, Station } from '@helgoland/core';
+import { HelgolandPlatform, HelgolandParameterFilter } from '@helgoland/core';
 import * as L from 'leaflet';
 import * as esri from 'esri-leaflet';
 const waterTempService = 'https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/EO_WACODIS_DAT_WATER_SURFACE_TEMPERATURE_Service/ImageServer';
@@ -61,7 +61,7 @@ export class SoilTemperatureViewComponent implements OnInit, AfterViewInit {
   public cluster = true;
   public loadingStations: boolean;
   public baselayers: L.Layer[] = [];
-  public stationFilter: ParameterFilter = {
+  public stationFilter: HelgolandParameterFilter = {
     phenomenon: '7'
   };
   public statusIntervals = false;
@@ -123,8 +123,8 @@ export class SoilTemperatureViewComponent implements OnInit, AfterViewInit {
    * @param station : selected station in map
    * on station selected in map open up popo up with selected station name
    */
-  public onStationSelected(station: Station) {
-    alert(station.properties.label);
+  public onStationSelected(station: HelgolandPlatform) {
+    alert(station.label);
     console.log(station);
 
   }

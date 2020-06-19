@@ -1,7 +1,8 @@
 import { Component, OnInit, EventEmitter, Input, Output } from '@angular/core';
-import { DatasetOptions, Timespan, DatasetService, ColorService, ReferenceValueOption, DatasetApiInterface, Timeseries, MinMaxRange } from '@helgoland/core';
+import { DatasetOptions, Timespan, DatasetService, ColorService,HelgolandServicesConnector, DatasetType } from '@helgoland/core';
 import { HoveringStyle, D3PlotOptions } from '@helgoland/d3';
 import * as L from 'leaflet';
+import { SelectedProviderService } from 'src/app/services/selected-provider.service';
 export var STYLE_DATA: DatasetOptions;
 @Component({
     selector: 'wv-timeseries-legend',
@@ -43,8 +44,13 @@ export class TimeseriesLegendComponent {
     public stationGeometries: GeoJSON.GeoJsonObject[] = [];
     public stationLabels: string[] = [];
     public editOptions: DatasetOptions;
+    public selectedProviderUrl: string = '';
 
-    constructor(private dataEmitService: DatasetService<DatasetOptions>, private color: ColorService, private datasetapi: DatasetApiInterface) {
+    constructor(private dataEmitService: DatasetService<DatasetOptions>,private selProv: SelectedProviderService, private color: ColorService, private datasetapi: HelgolandServicesConnector) {
+        this.selProv.getSelectedProvider().subscribe((res) => {
+            this.selectedProviderUrl = res.url;
+        });
+       
         if (dataEmitService !== undefined && dataEmitService.hasDatasets()) {
 
             for (let k = 0; k < dataEmitService.datasetIds.length; k++) {
@@ -125,7 +131,7 @@ export class TimeseriesLegendComponent {
         //     this.refreshData();
         // } else {
             if(option.showReferenceValues.length>0){
-                this.datasetapi.getSingleTimeseriesByInternalId(id).subscribe((res) => {
+                this.datasetapi.getDataset(id, {type: DatasetType.Timeseries}).subscribe((res) => {
                     res.referenceValues.forEach((re) => {
     
                         option.yAxisRange = { min: 0, max: re.lastValue.value + 10 };
@@ -209,11 +215,11 @@ export class TimeseriesLegendComponent {
         }).addTo(this.mymap);
 
         for (let k = 0; k < this.datasetIdsMultiple.length; k++) {
-            this.datasetapi.getSingleTimeseriesByInternalId(this.datasetIdsMultiple[k]).subscribe((dataset) => {
-                if (dataset instanceof Timeseries) {
-                    this.stationGeometries.push(dataset.station.geometry);
-                    this.stationLabels.push(dataset.station.properties.label)
-                }
+            this.datasetapi.getPlatform(this.datasetIdsMultiple[k],this.selectedProviderUrl).subscribe((dataset) => {
+  
+                    this.stationGeometries.push(dataset.geometry);
+                    this.stationLabels.push(dataset.label)
+                
 
                 for (let i = 0; i < this.stationGeometries.length; i++) {
                     L.marker([this.stationGeometries[i]['coordinates'][1], this.stationGeometries[i]['coordinates'][0]]).addTo(this.mymap);
