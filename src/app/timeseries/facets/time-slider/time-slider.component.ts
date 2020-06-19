@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { FacetSearch } from '@helgoland/facet-search';
+import { FacetSearchService } from '@helgoland/facet-search';
 import { Timespan } from '@helgoland/core';
 
 import moment, { Duration } from 'moment';
@@ -15,7 +15,7 @@ export interface StepDefinition{
 })
 export class WvTimeSliderComponent implements OnInit {
 
-  @Input() public facetSearchService: FacetSearch;
+  @Input() public facetSearchService: FacetSearchService;
   public minVal: number;
   public maxVal: number;
   public slider: HTMLInputElement;

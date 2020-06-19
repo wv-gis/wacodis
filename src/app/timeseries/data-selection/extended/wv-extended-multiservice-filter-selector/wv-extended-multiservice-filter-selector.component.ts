@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, SimpleChanges } from '@angular/core';
 import { MultiServiceFilterSelectorComponent, FilteredParameter, MultiServiceFilterEndpoint, ListSelectorService } from '@helgoland/selector';
-import { DatasetApiInterface } from '@helgoland/core';
+import {  HelgolandServicesConnector, DatasetType } from '@helgoland/core';
 import { TranslateService } from '@ngx-translate/core';
 import { SelectedProviderService } from 'src/app/services/selected-provider.service';
 
@@ -22,7 +22,7 @@ export class WvExtendedMultiserviceFilterSelectorComponent extends MultiServiceF
   public selectedProviderUrl: string = '';
 
 
-  constructor(protected datasetApiInterface: DatasetApiInterface, protected translate: TranslateService,
+  constructor(protected datasetApiInterface: HelgolandServicesConnector, protected translate: TranslateService,
     private selProv: SelectedProviderService, private listSelService: ListSelectorService) {
     super(datasetApiInterface, translate);
     this.uoms = [];
@@ -40,14 +40,24 @@ export class WvExtendedMultiserviceFilterSelectorComponent extends MultiServiceF
     this.selectedItems = [];
     this.selectedItems.push(item.label);
   }
-  ngOnChanges() {
-    super.ngOnChanges();
+  ngOnChanges(changes: SimpleChanges) {
+    super.ngOnChanges(changes);
 
     this.uoms = [];
     if (this.filterList[0] != undefined) {
       this.filterList[0].url = this.selectedProviderUrl;
+      
 
-      this.apiInterface.getTimeseries(this.filterList[0].url, this.filterList[0].filter).subscribe((res) => {
+      this.datasetApiInterface.getDatasets(this.filterList[0].url, 
+        {category: this.filterList[0].filter.category, 
+          phenomenon: this.filterList[0].filter.phenomenon,
+          procedure: this.filterList[0].filter.procedure,
+          feature: this.filterList[0].filter.feature,
+          offering: this.filterList[0].filter.offering,
+          service: this.filterList[0].filter.service,
+          expanded: this.filterList[0].filter.expanded,
+          lang: this.filterList[0].filter.lang,
+          type:DatasetType.Timeseries}).subscribe((res) => {
         res.forEach((ts) => {
           // console.log(ts.uom + ' Filter: ' + JSON.stringify(this.filterList[0].filter));
           if (ts.uom != 'mNHN') {

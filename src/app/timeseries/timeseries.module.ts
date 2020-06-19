@@ -56,7 +56,7 @@ import { HelgolandFacetSearchModule, FacetSearchService } from '@helgoland/facet
      StyleModificationComponent, WvExtendedExportImageButtonComponent, FacetsComponent,
       WvParameterFacetComponent, WvResultListComponent, WvTimeSliderComponent
     ],
-  providers:[DatasetEmitServiceService, ExtendedSettingsService, SelectedProviderService, FacetSearchService]
+  providers:[DatasetEmitServiceService, ExtendedSettingsService, SelectedProviderService]
 
 })
 export class WvTimeseriesModule { }

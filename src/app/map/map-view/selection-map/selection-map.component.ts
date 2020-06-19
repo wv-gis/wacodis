@@ -1,12 +1,12 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import * as esri from 'esri-leaflet';
 import { GeoSearchOptions, LayerOptions, MapCache } from '@helgoland/map';
-import { Station, Phenomenon, SettingsService, Settings, ParameterFilter } from '@helgoland/core';
+import { Phenomenon, SettingsService, Settings, HelgolandPlatform, HelgolandParameterFilter } from '@helgoland/core';
 // import { RequestTokenService } from 'src/app/services/request-token.service';
 // import BaseLayer from 'ol/layer/Base';
 // import Layer from 'ol/layer/Layer';
 // import TileLayer from 'ol/layer/Tile';
-import { OlMapService } from '@helgoland/open-layers';
+// import { OlMapService } from '@helgoland/open-layers';
 // import { OSM, TileWMS, ImageArcGISRest } from 'ol/source';
 // import ImageLayer from 'ol/layer/Image';
 // import Map from 'ol/Map.js';
@@ -15,6 +15,19 @@ import { OlMapService } from '@helgoland/open-layers';
 // import ImageWMS from 'ol/source/ImageWMS';
 
 import * as L from 'leaflet';
+import * as geojson from 'geojson';
+import { HttpClient } from '@angular/common/http';
+
+export interface WFSObject{
+  crs: L.CRS,
+  bbox: L.LatLngBounds,
+  features:GeoJSON.Feature<geojson.Geometry,{[name:string]:any;}>[],
+  numberMatched: number,
+  numberReturned: number,
+  timeStamp: string,
+  totalFeatures: number,
+  type: geojson.GeoJsonTypes,
+}
 
 
 const senLayer = 'https://sentinel.arcgis.com/arcgis/rest/services/Sentinel2/ImageServer';
@@ -57,13 +70,13 @@ export class SelectionMapComponent implements OnInit,AfterViewInit {
   public cluster = true;
   public loadingStations: boolean;
   public baselayers: L.Layer[] = [];
-  public stationFilter: ParameterFilter = {
+  public stationFilter: HelgolandParameterFilter = {
     // phenomenon: '8'
   };
   public statusIntervals = false;
   public mapOptions: L.MapOptions = { dragging: true, zoomControl: false };
 
-  constructor(private mapService: OlMapService, private settingsService: SettingsService<Settings>, private mapCache: MapCache) {
+  constructor(private settingsService: SettingsService<Settings>, private mapCache: MapCache, private http: HttpClient) {
     if (this.settingsService.getSettings().datasetApis) {
       this.providerUrl = this.settingsService.getSettings().defaultService.apiUrl;
     }
@@ -74,6 +87,9 @@ export class SelectionMapComponent implements OnInit,AfterViewInit {
        layers: '0', format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; Wupperverband'
      })
    );
+   this.mapCache.getMap(this.mapId).eachLayer(layer=>{
+     console.log(layer);
+   })
   }
 
 
@@ -92,7 +108,62 @@ export class SelectionMapComponent implements OnInit,AfterViewInit {
         )
     }
 );
-    // this.mapService.getMap(this.mapId).subscribe((map) => {
+
+var owsrootUrl ='https://maps.dwd.de/geoserver/ows'
+var defaultParameters = {
+  service : 'WFS',
+  version : '1.0.0',
+  request : 'GetFeature',
+  typeName : 'dwd:Warngebiete_Gemeinden',
+  outputFormat : 'json',
+
+  SrsName : 'EPSG:4326',
+  bbox: [6.931480768257253 ,50.985442631315017, 7.6070891893169446 ,51.319011561985782],
+};
+
+var parameters = L.Util.extend(defaultParameters);
+var URL = owsrootUrl + L.Util.getParamString(parameters);
+
+let resp = this.http.get(URL);
+resp.subscribe((re: WFSObject)=>{
+  console.log(re.features);
+ let selected;
+  let featurecollection: GeoJSON.FeatureCollection ={
+    type: 'FeatureCollection',
+    features: re.features,
+  } 
+   this.baselayers.push( L.geoJSON(featurecollection,{
+     onEachFeature: function (feature, layer) {
+		layer.bindPopup("<b>" + feature.properties.NAME + '</b><br />'
+      + feature.properties.STATE);
+    
+  }, 'style': function () {
+    return {
+      'color': 'yellow',
+    }
+  }
+}).on('click', function (e) {
+  // Check for selected
+  if (selected) {
+    // Reset selected to default style
+    e.target.resetStyle(selected)
+  }
+  // Assign new selected
+  selected = e.target;
+  console.log(e.target);
+  // Bring selected to front
+  selected.bringToFront()
+  // Style selected
+  selected.setStyle({
+    'color': 'red'
+  })
+}).bringToFront());
+  // });
+  
+
+});   
+
+// this.mapService.getMap(this.mapId).subscribe((map) => {
     //   map.getLayers().clear();
     //   map.addControl(new ScaleLine({ units: "metric" }));
     //   map.addLayer(new Tile({
@@ -219,8 +290,8 @@ export class SelectionMapComponent implements OnInit,AfterViewInit {
 
   }
 
-  public onStationSelected(station: Station) {
-    alert(station.properties.label);
+  public onStationSelected(station: HelgolandPlatform) {
+    alert(station.label);
     console.log(station);
 
   }

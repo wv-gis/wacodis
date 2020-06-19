@@ -5,33 +5,40 @@
     "datasetApis": [
         {
             "name": "Wupperverband Timeseries GIS intern",
-            "url": "https://fluggs.wupperverband.de/sos2-intern-gis/api/v1/"
+            "url": "https://fluggs.wupperverband.de/sos2-intern-gis/api/v1/",
+            "connector": "DatasetApiV1Connector"
         },
         {
             "name": "Wupperverband Timeseries",
-            "url": "https://fluggs.wupperverband.de/sos2/api/v1/"
+            "url": "https://fluggs.wupperverband.de/sos2/api/v1/",
+            "connector": "DatasetApiV1Connector"
         },
         {
             "name": "52north - Sensorwebtestbed",
-            "url": "https://sensorweb.demo.52north.org/sensorwebtestbed/api/v1/"
+            "url": "https://sensorweb.demo.52north.org/sensorwebtestbed/api/v1/",
+            "connector": "DatasetApiV1Connector"
         },
         {
             "name":"Wupperverband Timeseries intern",
-            "url": "https://fluggs.wupperverband.de/sos2-intern/api/v1/"
+            "url": "https://fluggs.wupperverband.de/sos2-intern/api/v1/",
+            "connector": "DatasetApiV1Connector"
         },
         {
             "name":"Nexos Profiles",
-            "url": "http://nexos.demo.52north.org/52n-sos-nexos-test/api/"
+            "url": "http://nexos.demo.52north.org/52n-sos-nexos-test/api/",
+            "connector": "DatasetApiV1Connector"
         },
         {
             "name":"SOS 3 Wupperverband",
-            "url": "http://192.168.101.105/sos3/api/"
+            "url": "http://192.168.101.105/sos3/api/",
+            "connector": "DatasetApiV3Connector"
         }
 
     ],
     "defaultService": {
         "serviceId": "1",
-        "apiUrl": "https://fluggs.wupperverband.de/sos2-intern/api/v1/"
+        "apiUrl": "https://fluggs.wupperverband.de/sos2/api/v1/",
+        "connector": "DatasetApiV1Connector"
     },
     "reservoirs": [
         {
@@ -60,7 +67,7 @@
             "label": "Große Dhünn-Talsperre",
             "graph": {
                 "seriesId": "sos2/api/v1/__42",
-                "compSeriesId": "sos2-intern-gis/api/v1/__745",
+                "compSeriesId": "sos2/api/v1/__745",
                 "referenceValues": [
                     {
                         "referenceId": "sos2/api/v1/__736",
@@ -100,11 +107,11 @@
             "id": "KT",
             "label": "Kerspe-Talsperre",
             "graph": {
-                "seriesId": "sos2-intern/api/v1/__1002",
-                "compSeriesId": "sos2-intern/api/v1/__741",
+                "seriesId": "sos2/api/v1/__1002",
+                "compSeriesId": "sos2/api/v1/__741",
                 "referenceValues": [
                     {
-                        "referenceId": "sos2-intern/api/v1/__2377",
+                        "referenceId": "sos2/api/v1/__2377",
                         "label": "Vollstau"
                     }
                 ],
@@ -115,11 +122,11 @@
             "id": "HT",
             "label": "Herbringhauser Talsperre",
             "graph": {
-                "seriesId": "sos2-intern/api/v1/__1003",
-                "compSeriesId": "sos2-intern/api/v1/__742",
+                "seriesId": "sos2/api/v1/__1003",
+                "compSeriesId": "sos2/api/v1/__742",
                 "referenceValues": [
                     {
-                        "referenceId": "sos2-intern/api/v1/__2376",
+                        "referenceId": "sos2/api/v1/__2376",
                         "label": "Vollstau"
                     }
                 ],

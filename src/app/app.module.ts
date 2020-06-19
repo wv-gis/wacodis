@@ -7,7 +7,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { HelgolandD3Module } from '@helgoland/d3';
-import { HelgolandCoreModule, SettingsService, SplittedDataDatasetApiInterface, DatasetApiInterface, DatasetService} from '@helgoland/core';
+import { HelgolandCoreModule, SettingsService, SplittedDataDatasetApiInterface, DatasetApiInterface, DatasetService, DatasetApiV1ConnectorProvider, DatasetApiV2ConnectorProvider, DatasetApiV3ConnectorProvider} from '@helgoland/core';
 import { HelgolandDatasetlistModule } from '@helgoland/depiction';
 import { HelgolandSelectorModule, ListSelectorService } from '@helgoland/selector';
 import { HelgolandModificationModule } from '@helgoland/modification';
@@ -44,12 +44,13 @@ import { SwatResultsModule } from './swat/views/swat-results/swat-results.module
 
 
 
+
 @NgModule({
   declarations: [
     AppComponent,
     LandingpageComponent,
     WeatherForecastComponent,
-
+    
   
   ],
   imports: [
@@ -105,6 +106,7 @@ import { SwatResultsModule } from './swat/views/swat-results/swat-results.module
     }, 
   
     CsvDataService, RequestTokenService,SelectedProviderService,
+    DatasetApiV1ConnectorProvider, DatasetApiV2ConnectorProvider, DatasetApiV3ConnectorProvider
     // {provide: APP_INITIALIZER,
     //   useFactory: HttpLoaderFactory,
     //   deps:[SelectedProviderService]  

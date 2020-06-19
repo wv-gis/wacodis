@@ -1,6 +1,6 @@
 declare var require;
 import { Component, OnInit,  OnDestroy } from '@angular/core';
-import { Provider, DatasetService, DatasetOptions,  SettingsService, Settings, Station, DatasetApiInterface, Timeseries } from '@helgoland/core';
+import { Provider, DatasetService, DatasetOptions,  SettingsService, Settings, Timeseries, HelgolandServicesConnector, HelgolandPlatform, DatasetType } from '@helgoland/core';
 import { Router } from '@angular/router';
 import { LayerOptions, MapCache } from '@helgoland/map';
 import * as L from 'leaflet';
@@ -8,6 +8,7 @@ import { SelectedProviderService } from 'src/app/services/selected-provider.serv
 import * as esri from 'esri-leaflet';
 import { FacetSearchService } from '@helgoland/facet-search';
 import { Subscription } from 'rxjs';
+import { SelectableDataset } from '@helgoland/selector';
 
 
  delete L.Icon.Default.prototype['_getIconUrl'];
@@ -103,11 +104,11 @@ export class WvDataViewComponent implements OnInit, OnDestroy {
   public resultCount: number;
   public resultSubs: Subscription;
   public markerFeatureGroup: L.FeatureGroup;
-  public timeseries: Timeseries[];
+  public timeseries: string[]=[];
   
 
   constructor(private datasetService: DatasetService<DatasetOptions>, private settings: SettingsService<Settings>, private router: Router,
-    private mapCache: MapCache,public datasetApi: DatasetApiInterface, private selProv: SelectedProviderService, public facetSearch: FacetSearchService) {
+    private mapCache: MapCache,public datasetApi: HelgolandServicesConnector, private selProv: SelectedProviderService, public facetSearch: FacetSearchService) {
 
 
     this.badgeNumber = this.datasetService.datasetIds.length;
@@ -128,6 +129,8 @@ export class WvDataViewComponent implements OnInit, OnDestroy {
         }
       });
     }
+
+    this.timeseries = datasetService.datasetIds;
   }
 
   ngOnInit(): void {
@@ -197,32 +200,48 @@ export class WvDataViewComponent implements OnInit, OnDestroy {
     }
   }
 
-  public onStationSelected(elem: { station: Station, url: string }) {
+  public onStationSelected(elem: { station: HelgolandPlatform, url: string }) {
     this._map = this.mapCache.getMap('timeMap');
     const point = elem.station.geometry as GeoJSON.Point;
     
     this.stationPopup = L.popup().setLatLng([point.coordinates[1], point.coordinates[0]])
-    .setContent(`<div> ID:  ${elem.station.id} </div><div> ${elem.station.properties.label} </div>`);
+    .setContent(`<div> ID:  ${elem.station.id} </div><div> ${elem.station.label} </div>`);
 
     this.display = 'block';
-    this.stationLabel = elem.station.properties.label;
+    this.stationLabel = elem.station.label;
 
-      this.datasetApi.getStation(elem.station.id, this.selectedProviderList[0].url)
+      this.datasetApi.getPlatform(elem.station.id, this.selectedProviderUrl)
         .subscribe(station => {
-          const additionalTsIDs = [];
-          for (const key in station.properties.timeseries) {
-            if (station.properties.timeseries.hasOwnProperty(key)) {
+          // const additionalTsIDs = [];
+          // for (const key in station.datasetIds) {
+            // if (station.properties.timeseries.hasOwnProperty(key)) {
               // const filtered = this.timeseries.find(e => e.id === key);
               // if (!filtered) {
-                this.datasetApi.getSingleTimeseries(key, elem.url)
-                  .subscribe(
-                    result => this.entryLabel.push(result),
-                    error => console.error(error),
-                    () =>   this.display = 'block'
-                  );
+                // this.datasetApi.getDataset(key)
+                //   .subscribe(
+                //     result => this.entryLabel.push(result),
+                //     error => console.error(error),
+                //     () =>   this.display = 'block'
+                //   );
               // }
+            // }
+          // }
+         
+          let additionalTsCount = 0;
+          let counter = 0;
+          station.datasetIds.forEach(id => {
+            const filtered = this.timeseries.find(e => e === id);
+            if (!filtered) {
+              counter++;
+              additionalTsCount++;
+              this.datasetApi.getDataset({ id, url: this.selectedProviderUrl }, { type: DatasetType.Timeseries })
+                .subscribe(
+                  result => this.entryLabel.push(result as SelectableDataset),
+                  error => console.error(error),
+                  () => {counter--; this.display = 'block'}
+                );
             }
-          }
+          });
         });
   
     // this.facetSearch.getFilteredResults().filter(e => e.url === elem.url && e.station.id === elem.station.id);

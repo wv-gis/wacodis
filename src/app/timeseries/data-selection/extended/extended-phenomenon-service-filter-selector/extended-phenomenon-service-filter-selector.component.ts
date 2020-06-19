@@ -1,7 +1,7 @@
-import { Component, OnInit, Output, EventEmitter,SimpleChanges } from '@angular/core';
-import { MultiServiceFilterSelectorComponent, FilteredParameter, ServiceFilterSelectorComponent } from '@helgoland/selector';
+import { Component,  Output, EventEmitter,SimpleChanges } from '@angular/core';
+import {  FilteredParameter, ServiceFilterSelectorComponent } from '@helgoland/selector';
 import { TranslateService } from '@ngx-translate/core';
-import { DatasetApiInterface } from '@helgoland/core';
+import {  HelgolandServicesConnector } from '@helgoland/core';
 import { SelectedProviderService } from 'src/app/services/selected-provider.service';
 
 @Component({
@@ -16,7 +16,7 @@ export class ExtendedPhenomenonServiceFilterSelectorComponent extends ServiceFil
   stationFilter = new EventEmitter();
 
   public selectionID: string = null;
-  constructor(protected datasetApiInterface: DatasetApiInterface, protected translate: TranslateService, private selProv: SelectedProviderService) {
+  constructor(protected datasetApiInterface: HelgolandServicesConnector, protected translate: TranslateService, private selProv: SelectedProviderService) {
     super(translate, datasetApiInterface);
   }
 
@@ -35,7 +35,7 @@ export class ExtendedPhenomenonServiceFilterSelectorComponent extends ServiceFil
     this.selProv.getSelectedProvider().subscribe((res)=>{
       this.serviceUrl = res.url;
     });
-    this.apiInterface.getPhenomena(this.serviceUrl, this.filter)
+    this.datasetApiInterface.getPhenomena(this.serviceUrl, this.filter)
       .subscribe((res) => {
         if (res instanceof Array) {
           this.items = res;

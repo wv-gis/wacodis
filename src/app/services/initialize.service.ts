@@ -1,5 +1,5 @@
 import { FacetSearchService } from "@helgoland/facet-search";
-import { DatasetApiInterface, Service } from "@helgoland/core";
+import {   HelgolandService, HelgolandServicesConnector, DatasetType } from "@helgoland/core";
 import { Injectable, EventEmitter } from "@angular/core";
 import { SelectedProviderService } from "./selected-provider.service";
 import { Observable } from "rxjs";
@@ -13,13 +13,13 @@ export class InitializeService {
 
     constructor(
         private facetSearch: FacetSearchService,
-        private api: DatasetApiInterface,
-        private providerService: SelectedProviderService,
+        private api: HelgolandServicesConnector,
+        private provider: SelectedProviderService,
       ) { 
 
-    this.providerService.getSelectedProvider().subscribe((service)=>{
+    this.provider.getSelectedProvider().subscribe((service)=>{
             if (service) {
-                this.api.getService(service.id, service.url).subscribe(s => this.init(s));
+                this.api.getServices( service.url).subscribe(s => s.forEach(ser=>{if(service.id == ser.id){this.init(ser);}}));
               } else {
                 console.error(`No 'defaultService' is defined in the settings.`);
               }
@@ -27,10 +27,10 @@ export class InitializeService {
         });
      
       }
-    init(service: Service) {    
+    init(service: HelgolandService) {    
    
         this.loading.next(true);
-            this.api.getTimeseries(service.apiUrl, { expanded: true, service: service.id }).subscribe(
+            this.api.getDatasets(service.apiUrl, { expanded: true, service: service.id, type: DatasetType.Timeseries }).subscribe(
                 res =>{
                     this.facetSearch.resetAllFacets();
                     this.facetSearch.setTimeseries(res);
