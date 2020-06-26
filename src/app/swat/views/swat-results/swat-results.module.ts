@@ -7,12 +7,16 @@ import { HelgolandCoreModule } from '@helgoland/core';
 import { WvMapModule } from 'src/app/map/map.module';
 import { ScenarioComparisonViewComponent } from '../sediment/scenario-comparison-view/scenario-comparison-view.component';
 import { ScenarioComparisonNitrogenViewComponent } from '../nitrogen/scenario-comparison-nitrogen-view/scenario-comparison-nitrogen-view.component';
+import { TSBarChartComponent } from './tsbar-chart/tsbar-chart.component';
+import { CopernicusProductsModule } from 'src/app/copernicus/copernicus-products/copernicus-products.module';
+import { HelgolandOpenLayersModule } from '@helgoland/open-layers';
 
 
 
 @NgModule({
   declarations: [SingleNitrogenResultViewComponent, SingleResultViewComponent,    ScenarioComparisonViewComponent,
-    ScenarioComparisonNitrogenViewComponent],
+    ScenarioComparisonNitrogenViewComponent,
+    TSBarChartComponent],
   imports: [
     CommonModule,
     HelgolandCoreModule,
@@ -20,7 +24,9 @@ import { ScenarioComparisonNitrogenViewComponent } from '../nitrogen/scenario-co
     HelgolandMapControlModule,
     HelgolandMapSelectorModule,
     HelgolandMapViewModule,
-    WvMapModule
+    HelgolandOpenLayersModule,
+    WvMapModule,
+    CopernicusProductsModule
 
   ],
   exports: [ SingleNitrogenResultViewComponent, SingleResultViewComponent,    ScenarioComparisonViewComponent,
