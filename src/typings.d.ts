@@ -533,7 +533,18 @@ declare module 'leaflet' {
   namespace esri {
 
     interface IdentifyImageOptions extends ServiceOptions { }
-
+    interface FeatureLayer {
+      bringToFront(): this;
+      bringToBack(): this;
+   
+    }
+    interface FeatureLayerOptions{
+      pane?: string;
+    }
+    //   interface FeatureLayerOptionsNew extends FeatureLayerOptions{
+    //     pane?: string;
+    //   }
+    //  export function featureLayerPane(options: FeatureLayerOptionsNew): FeatureLayerPane;
     /**
      * `L.esri.IdentifyImage` is an abstraction for the Identify API found in Image Services. It provides a
      * chainable API for building request parameters and executing the request.
