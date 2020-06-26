@@ -33,11 +33,10 @@ export const settingsPromise = new Promise<Settings>((resolve, reject) => {
 });
 
 
-
 export let tempData: string = '';
 export const tempDataPromise = new Promise((resolve, reject)=>{
  const input_n = new XMLHttpRequest();
- input_n.open('GET', './assets/niederschlag_langMonatsmittel_Bever.csv');
+ input_n.open('GET', './assets/bever_temp_langMittel_2002-18.csv');
   input_n.onload = (e)=>{
     if(input_n.status === 200){
       tempData = input_n.responseText;
@@ -52,11 +51,10 @@ export const tempDataPromise = new Promise((resolve, reject)=>{
   input_n.send();
 });
 
-
 export let tempDataDh: string = '';
 export const tempDataDhPromise = new Promise((resolve, reject)=>{
  const input_dh = new XMLHttpRequest();
- input_dh.open('GET', './assets/niederschlag_langMonatsmittel_Neumuehle.csv');
+ input_dh.open('GET', './assets/lindscheid_temp_langMittel_2002-18.csv');
   input_dh.onload = (e)=>{
     if(input_dh.status === 200){
       tempDataDh = input_dh.responseText;
@@ -70,6 +68,43 @@ export const tempDataDhPromise = new Promise((resolve, reject)=>{
   };
   input_dh.send();
 });
+
+export let rainDataDh: string = '';
+export const rainDataDhPromise = new Promise((resolve, reject)=>{
+ const input_dhr = new XMLHttpRequest();
+ input_dhr.open('GET', './assets/niederschlag_langMonatsmittel_Neumuehle.csv');
+  input_dhr.onload = (e)=>{
+    if(input_dhr.status === 200){
+      rainDataDh = input_dhr.responseText;
+
+      resolve(rainDataDh);
+      
+    }
+    else{
+      reject('Cannot load csv file');
+    }
+  };
+  input_dhr.send();
+});
+
+export let rainDataBe: string = '';
+export const rainDataBePromise = new Promise((resolve, reject)=>{
+ const input_ber = new XMLHttpRequest();
+ input_ber.open('GET', './assets/niederschlag_langMonatsmittel_Bever.csv');
+ input_ber.onload = (e)=>{
+    if(input_ber.status === 200){
+      rainDataBe = input_ber.responseText;
+
+      resolve(rainDataBe);
+      
+    }
+    else{
+      reject('Cannot load csv file');
+    }
+  };
+  input_ber.send();
+});
+
 
 export var locale={moduleType:"locale",name:"de",dictionary:{Autoscale:"Automatische Skalierung","Box Select":"Rechteckauswahl","Click to enter Colorscale title":
 "Klicken, um den Farbskalatitel einzugeben","Click to enter Component A title":"Klicken, um den Titel der Komponente A einzugeben","Click to enter Component B title":

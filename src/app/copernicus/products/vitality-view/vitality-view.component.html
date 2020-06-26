@@ -58,7 +58,7 @@
         <div class="col-xl-12 mb-2">
           <div class="card border-left-primary shadow" style="height: 100%;">
             <div class="card-header wv-bold-header">
-              Monatliche Temperaturabweichungen vom jährlichen Mittel
+              Monatliche Temperaturabweichungen vom langjährigen Mittel
             </div>
             <div class="card-body ">
               <!-- <div style="width: 100%;" *ngIf="showDiagram">
@@ -79,7 +79,7 @@
         <div class="col-xl-12 mb-2">
           <div class="card border-left-primary shadow " style="height: 100%;">
             <div class="card-header wv-bold-header">
-             Monatliche Niederschlagsbweichungen vom jährlichen Mittel
+             Monatliche Niederschlagsbweichungen vom langjährigen Mittel
             </div>
             <div class="card-body ">
      
@@ -126,7 +126,7 @@
              </div>
             <div class="card-body" style="padding: 0rem;">
               <div style="width: 100%;">
-                <wv-vitality-bar-chart [barChartIds]="['percentBar']" [service]="test" ></wv-vitality-bar-chart>
+                <wv-vitality-bar-chart [barChartIds]="['percentBar']" [service]="'test'" ></wv-vitality-bar-chart>
               </div>
             </div>
           </div>
@@ -148,7 +148,9 @@
              </div>
              <div class="card-body h-100" style="padding: 0px;">
                    <div class="wv-legend" style="width: 100%;">
-                     <wv-layer-legend-card [layer]="baselayers[0]"></wv-layer-legend-card>
+                   <wv-vitality-pie-chart [bounds]="mapBounds" 
+                   [colors]="['rgb(145,250,143)','rgb(67,250,67)','rgb(0,180,0)']"
+                    [chartId]="'growthChart'"></wv-vitality-pie-chart>
                    </div>
                  </div>
                  <div class="card-header wv-bold-header">
@@ -156,7 +158,9 @@
                  </div>
                  <div class="card-body h-100" style="padding: 0px;">
                        <div class="wv-legend" style="width: 100%;">
-                         <wv-layer-legend-card [layer]="baselayers[0]"></wv-layer-legend-card>
+                        <wv-vitality-pie-chart [bounds]="mapBounds" 
+                        [colors]="['rgb(250,204,204)','rgb(250,81,81)','rgb(130,50,50)']" 
+                        [chartId]="'lossChart'"></wv-vitality-pie-chart>
                        </div>
                      </div>
           <!-- <div style="width: 100%;" *ngIf="showDiagram; else indBarChart">

@@ -4,10 +4,10 @@ import { Component, OnInit, AfterViewInit } from '@angular/core';
 
 import * as L from 'leaflet';
 require('leaflet-timedimension');
-import { MapCache, LayerOptions } from '@helgoland/map';
+import { MapCache } from '@helgoland/map';
 import { ActivatedRoute } from '@angular/router';
-import { D3PlotOptions, D3GeneralDataset, DataEntry, AdditionalData } from '@helgoland/d3';
-import { Timespan, DatasetOptions, FirstLastValue, DatasetService, IDataEntry, IDataset, TimeseriesData } from '@helgoland/core';
+import { D3PlotOptions,  AdditionalData } from '@helgoland/d3';
+import { Timespan, DatasetOptions,  DatasetService } from '@helgoland/core';
 import { CsvDataService } from 'src/app/settings/csvData.service';
 import { AdditionalDataEntry } from '@helgoland/d3/lib/extended-data-d3-timeseries-graph/extended-data-d3-timeseries-graph.component';
 
@@ -112,16 +112,18 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
     this.datasetIdsMultiple.forEach((entry, i) => {
       let options = new DatasetOptions(entry, this.d3Colors[1]);
       options.type = 'line';
+      options.yAxisRange={ max: 40, min:0};
       this.datasetOptionsMultiple.set(entry, options);
     });
     this.datasetIds.forEach((entry, i) => {
       let options = new DatasetOptions(entry, this.d3Colors[i]);
       options.type = 'line';
+      options.yAxisRange={ max: 200, min:0};
       this.datasetOptionsMultiple2.set(entry, options);
     });
 
-    this.responseInterp = dataService.getCsvText();
-    this.responseInterpDh = dataService.getCsvDataset();
+    this.responseInterp = dataService.getTempDhDataset();
+    this.responseInterpDh = dataService.getRainDhDataset();
     this.getCsvData();
   }
 
@@ -152,7 +154,7 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
       }
       const options = new DatasetOptions('addData', 'green');
       options.pointRadius = 3;
-     options.autoRangeSelection = true;
+      options.yAxisRange={ max: 200, min:0};
       options.lineWidth = 1;
       options.type = 'line';
       options.visible = true;
@@ -161,7 +163,8 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
        
           this.avgMonthRain_B.push(
             {
-              timestamp: new Date(this.entries[p][0].split('.')[2], this.entries[p][0].split('.')[1] - 1, this.entries[p][0].split('.')[0]).getTime(),
+              // timestamp: new Date(this.entries[p][0].split('.')[2], this.entries[p][0].split('.')[1] - 1, this.entries[p][0].split('.')[0]).getTime(),
+              timestamp: new Date(new Date().getFullYear()-1, 0 +p, 1).getTime(),
               value:  parseFloat(this.entries[p][1])
             });  
       }
@@ -185,7 +188,7 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
       }
       const optionsDh = new DatasetOptions('addData', 'green');
       optionsDh.pointRadius = 3;
-      optionsDh.autoRangeSelection = true;
+      options.yAxisRange={ max: 40, min:0};
       optionsDh.lineWidth = 1;
       optionsDh.type = 'line';
       optionsDh.visible = true;
