@@ -13,12 +13,14 @@ import { SensorwappToolboxModule } from '@sensorwapp-toolbox/core';
 import { LayerLegendCardComponent } from '../cards/layer-legend-card/layer-legend-card.component';
 import { CopernicusBarChartCardComponent } from '../cards/copernicus-bar-chart-card/copernicus-bar-chart-card.component';
 import { HelgolandD3Module } from '@helgoland/d3';
+import { VitalityBarChartComponent } from '../cards/vitality-bar-chart/vitality-bar-chart.component';
+import { VitalityPieChartComponent } from '../cards/vitality-pie-chart/vitality-pie-chart.component';
 
 
 
 @NgModule({
   declarations: [LandCoverComponent, ChlorophyllViewComponent, MowingViewComponent, SoilTemperatureViewComponent,
-    VitalityViewComponent, LayerLegendCardComponent,CopernicusBarChartCardComponent],
+    VitalityViewComponent, LayerLegendCardComponent,CopernicusBarChartCardComponent,VitalityBarChartComponent,VitalityPieChartComponent],
   imports: [
     CommonModule,
     HelgolandCoreModule,
@@ -31,6 +33,6 @@ import { HelgolandD3Module } from '@helgoland/d3';
     SensorwappToolboxModule,
     WvMapModule
   ],exports:[LandCoverComponent, ChlorophyllViewComponent, MowingViewComponent, SoilTemperatureViewComponent,
-    VitalityViewComponent,  CopernicusBarChartCardComponent]
+    VitalityViewComponent,  CopernicusBarChartCardComponent,VitalityBarChartComponent,VitalityPieChartComponent,LayerLegendCardComponent]
 })
 export class CopernicusProductsModule { }
