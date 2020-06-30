@@ -1,90 +1,200 @@
-import { Component, OnInit, Input, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Input, AfterViewInit, OnChanges, SimpleChanges } from '@angular/core';
 import Plotly from 'plotly.js-dist';
 import * as esri from "esri-leaflet";
+import { locale } from 'src/environments/environment';
 
 @Component({
   selector: 'wv-tsbar-chart',
   templateUrl: './tsbar-chart.component.html',
   styleUrls: ['./tsbar-chart.component.css']
 })
-export class TSBarChartComponent implements OnInit, AfterViewInit {
+export class TSBarChartComponent implements OnInit, AfterViewInit, OnChanges {
 
   @Input() barChartId: string;
   @Input() service: string;
-  @Input() selIndices?: number;
-
+  @Input() selIndices?: number[];
+  @Input() input: number;
+  @Input() comparison?: boolean = false;
 
   public values: number[] = [];
   public labels: string[] = [];
-  public colorRgb: string[] = [];
+  public valuesSz: number[] = [];
+  public labelsSz: string[] = [];
+  public colorRgb: string[] = ["rgb(255,215,0)", "rgb(184,134,11)", "rgb(65,105,225)",
+    "rgb(30,144,255)", "rgb(190,190,190)", "rgb(192,255,62)", "rgb(189,183,107)", "rgb(139,69,19)"];
+
+  public title: string[] = ["Sedimenteintrag pro Jahr [t]", "Stickstoffeintrag pro Jahr []"];
 
   constructor() { }
-  ngAfterViewInit(): void {
 
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (!changes.selIndices.firstChange) {
+      this.plotBarChart();
+    }
+  }
+  ngAfterViewInit(): void {
+    Plotly.register(locale);
     this.plotBarChart();
   }
 
   ngOnInit() {
-    // this.values = [10, 15, 8, 20];
-    // this.labels = ['Dhuenn', 'Wupper', 'Kerspe', 'Herbringhauser'];
+
 
   }
 
 
   public plotBarChart() {
-    // console.log(this.selIndices);
-    // esri.featureLayer({ url: this.service + '/' + this.selIndices }).eachFeature((layer) => {
-    //   console.log(layer.feature.properties);
 
-    // });
 
-    esri.featureLayer({ url: this.service + '/' + this.selIndices }).query().run((e, fCol, resp) => {
-      if (e) {
-        console.log(e);
-      }
-      else {
-        console.log(fCol);
-        fCol.features.forEach((a, i, arr) => {
-          this.labels.push(arr[i].properties.Name);
-          this.values.push(arr[i].properties.rsv_yearavg_csv_SED_IN);
-        });
-        var data = [{
-          type: "bar",
-          x: this.labels,
-          y: this.values,
-        
-          name: 'Sedimenteintrag'
-        },
-        ];
-    
-        var layout = {
-          width: 700,
-          height: 250,
-          margin: { "t": 30, "b": 60, "l": 60, "r": 10 },
-          showlegend: true,
-          barmode: 'group',
-          title: {
-            text: 'Sedimenteintrag pro Jahr [t]',
-          font: {
-            family: 'Arial',
-            size: 14
+    if (!this.comparison) {
+      esri.featureLayer({ url: this.service + '/' + this.selIndices[0] }).query().run((e, fCol, resp) => {
+        if (e) {
+          console.log(e);
+        }
+        else {
+          let val = [];
+          if (this.input == 0) {
+            fCol.features.forEach((a, i, arr) => {
+              this.labels.push(arr[i].properties.Name);
+              val.push(parseFloat(arr[i].properties.rsv_yearavg_csv_SED_IN));
+            });
+            this.values = val;
+          } else {
+            let vals =[]
+            fCol.features.forEach((a, i, arr) => {
+              this.labels.push(arr[i].properties.Name);
+              vals.push(parseFloat(arr[i].properties.rsv_yearavg_csv_NO3_IN) + parseFloat(arr[i].properties.rsv_yearavg_csv_NH3_IN) +
+                parseFloat(arr[i].properties.rsv_yearavg_csv_NO2_IN) + parseFloat(arr[i].properties.rsv_yearavg_csv_ORGP_IN) +
+                parseFloat(arr[i].properties.rsv_yearavg_csv_ORGN_IN));
+
+            });
+            this.values=vals;
           }
-        }
-        }
-        var config = {
-          locale: 'de',
-          responsive: true,
-          displaylogo: false,
-          modeBarButtonsToRemove: ['select2d', 'lasso2d', 'hoverClosestCartesian',
-            'hoverCompareCartesian', 'toggleSpikelines', 'pan2d', 'zoomOut2d', 'zoomIn2d', 'autoScale2d', 'resetScale2d'],
-        }
-    
-        Plotly.newPlot(this.barChartId, data, layout, config)
-      }
 
-    });
+          var data = [{
+            type: "bar",
+            x: this.labels,
+            y: this.values,
+            marker: {
+              color: this.colorRgb
+            },
+            name: this.title[this.input]
+          },
+          ];
 
-    
+          var layout = {
+            width: 800,
+            height: 250,
+            margin: { "t": 30, "b": 60, "l": 60, "r": 10 },
+            showlegend: true,
+
+            title: {
+              text: this.title[this.input],
+              font: {
+                family: 'Arial',
+                size: 14
+              }
+            }
+          }
+          var config = {
+            locale: 'de',
+            responsive: true,
+            displaylogo: false,
+            modeBarButtonsToRemove: ['select2d', 'lasso2d', 'hoverClosestCartesian',
+              'hoverCompareCartesian', 'toggleSpikelines', 'pan2d', 'zoomOut2d', 'zoomIn2d', 'autoScale2d', 'resetScale2d'],
+          }
+
+          Plotly.newPlot(this.barChartId, data, layout, config)
+        }
+
+      });
+
+    }
+    else {
+
+      esri.featureLayer({ url: this.service + '/' + this.selIndices[0] }).query().run((e, fCol, resp) => {
+        if (e) {
+          console.log(e);
+        }
+        else {
+          esri.featureLayer({ url: this.service + '/' + this.selIndices[1] }).query().run((err, featCol, resp) => {
+           let val =[];
+           let valSz =[];
+            if (this.input == 0) {
+              fCol.features.forEach((a, i, arr) => {
+                this.labels.push(arr[i].properties.Name);
+                val.push(parseFloat(arr[i].properties.rsv_yearavg_csv_SED_IN));
+              });
+              this.values = val;
+              featCol.features.forEach((a, i, arr) => {
+                this.labelsSz.push(arr[i].properties.Name);
+                valSz.push(parseFloat(arr[i].properties.rsv_yearavg_csv_SED_IN));
+              });
+              this.valuesSz = valSz;
+            } else {
+              fCol.features.forEach((a, i, arr) => {
+                this.labels.push(arr[i].properties.Name);
+                val.push(parseFloat(arr[i].properties.rsv_yearavg_csv_NO3_IN) + parseFloat(arr[i].properties.rsv_yearavg_csv_NH3_IN) +
+                  parseFloat(arr[i].properties.rsv_yearavg_csv_NO2_IN) + parseFloat(arr[i].properties.rsv_yearavg_csv_ORGP_IN) +
+                  parseFloat(arr[i].properties.rsv_yearavg_csv_ORGN_IN));
+              });
+              this.values = val;
+              featCol.features.forEach((a, i, arr) => {
+                this.labelsSz.push(arr[i].properties.Name);
+                valSz.push(parseFloat(arr[i].properties.rsv_yearavg_csv_NO3_IN) + parseFloat(arr[i].properties.rsv_yearavg_csv_NH3_IN) +
+                  parseFloat(arr[i].properties.rsv_yearavg_csv_NO2_IN) + parseFloat(arr[i].properties.rsv_yearavg_csv_ORGP_IN) +
+                  parseFloat(arr[i].properties.rsv_yearavg_csv_ORGN_IN));
+              });
+              this.valuesSz = valSz;
+            }
+
+            var data = [{
+              type: "bar",
+              x: this.labels,
+              y: this.values,
+
+              name: 'Szenario 1 ' + this.title[this.input]
+            },
+            {
+              type: "bar",
+              x: this.labelsSz,
+              y: this.valuesSz,
+
+              name: 'Szenario 2 ' + this.title[this.input]
+            }
+            ];
+
+            var layout = {
+              width: 800,
+              height: 250,
+              margin: { "t": 30, "b": 60, "l": 60, "r": 10 },
+              showlegend: true,
+              barmode: 'group',
+              title: {
+                text: this.title[this.input],
+                font: {
+                  family: 'Arial',
+                  size: 14
+                }
+              }
+            }
+            var config = {
+              locale: 'de',
+              responsive: true,
+              displaylogo: false,
+              modeBarButtonsToRemove: ['select2d', 'lasso2d', 'hoverClosestCartesian',
+                'hoverCompareCartesian', 'toggleSpikelines', 'pan2d', 'zoomOut2d', 'zoomIn2d', 'autoScale2d', 'resetScale2d'],
+            }
+
+            Plotly.newPlot(this.barChartId, data, layout, config);
+          });
+        }
+
+      });
+    }
+
+
   }
 
 }
