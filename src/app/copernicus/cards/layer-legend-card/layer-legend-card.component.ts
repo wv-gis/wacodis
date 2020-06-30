@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ExtendedOlLayerLegendUrlComponent } from 'src/app/map/legend/extended/extended-ol-layer-legend-url/extended-ol-layer-legend-url.component';
 import { WmsCapabilitiesService } from '@helgoland/open-layers';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'wv-layer-legend-card',
@@ -14,7 +15,7 @@ import { WmsCapabilitiesService } from '@helgoland/open-layers';
 export class LayerLegendCardComponent extends ExtendedOlLayerLegendUrlComponent implements OnInit {
 
   
-  constructor(private wmsCaps: WmsCapabilitiesService) {super(wmsCaps); }
+  constructor(private wmsCaps: WmsCapabilitiesService,private https: HttpClient) {super(wmsCaps, https); }
 
   ngOnInit() {
     this.deliverLegendUrl();
