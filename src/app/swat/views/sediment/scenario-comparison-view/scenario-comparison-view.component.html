@@ -11,38 +11,64 @@
             </div>
         </div>
     </div>
-    <div class="row" >
+    <div class="row">
         <div class="col-xl-6 col-md-4 mb-2" style="height: 100%;">
             <div class="card border-left-primary shadow h-100 ">
                 <div class="card-body">
-                    SzenarioWahl 1 <select><option>Test</option></select>
+                    SzenarioWahl 1 <select>
+                        <option>Test</option>
+                    </select>
                 </div>
             </div>
         </div>
         <div class="col-xl-6 col-md-4 mb-2" style="height: 100%;">
             <div class="card border-left-primary shadow h-100 ">
                 <div class="card-body">
-                    SzenarioWahl 2 <select><option>Test</option></select>
+                    SzenarioWahl 2 <select>
+                        <option>Test</option>
+                    </select>
                 </div>
             </div>
         </div>
     </div>
     <div class="row" style="height: 350px;">
-        <div class="col-xl-6 col-md-6 mb-2" >
-            <div id="map" style="height: 100%;">
-                <div class="map-wrapper" id='map-wrapper' >
-                  <div id="szOne-map" class="map-viewer" ></div>
-                </div>
-    
-              </div>
-        </div>
-        <div class="col-xl-6 col-md-6 mb-2" >
+        <div class="col-xl-6 col-md-6 mb-2">
             <div id="map" style="height: 100%;">
                 <div class="map-wrapper" id='map-wrapper'>
-                  <div id="szTwo-map" class="map-viewer"></div>
+                    <div id="szOne-CompMap" class="map-viewer"></div>
                 </div>
-    
-              </div>
+
+            </div>
+        </div>
+        <div class="col-xl-6 col-md-6 mb-2">
+            <div id="map" style="height: 100%;">
+                <div class="map-wrapper" id='map-wrapper'>
+                    <div id="szTwo-CompMap" class="map-viewer"></div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="row">
+
+        <div class="col-xl-6 col-md-6 mb-2">
+            <div class="card border-left-primary shadow h-100 ">
+                <div class="card-body" *ngIf="showBarChart">
+                    <wv-tsbar-chart [service]="featureTSLayerUrl"
+                        [selIndices]='[szenarioTS_ID[selSzenario_id_l],szenarioTS_ID[selSzenario_id_r]]'
+                        [barChartId]="'compTSInput'" [input]="0" [comparison]="true">
+                    </wv-tsbar-chart>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-6 col-md-6 mb-2">
+            <div class="card border-left-primary shadow h-100 ">
+                <div class="card-body" *ngIf="showBarChart">
+                    <wv-percentage-change-bar-chart [service]="featureTSLayerUrl"
+                    [selIndices]='[szenarioTS_ID[selSzenario_id_l],szenarioTS_ID[selSzenario_id_r]]'
+                    [barChartId]="'PercCompInput'" [input]="0"></wv-percentage-change-bar-chart>
+                </div>
+            </div>
         </div>
     </div>
 </div>

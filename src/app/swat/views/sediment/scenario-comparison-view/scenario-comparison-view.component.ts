@@ -19,13 +19,22 @@ export class ScenarioComparisonViewComponent implements OnInit {
   };
   public wmsLayer: any;
   public mainMap: L.Map;
-  public mapId = 'szOne-map';
-  public szenario2Id = 'szTwo-map';
+  public mapId = 'szOne-CompMap';
+  public szenario2Id = 'szTwo-CompMap';
   public szenarioMap: L.Map;
   public featureService: esri.FeatureLayerService;
+  public szenarioTS_ID=[1,5];
+  public szenarioSub_ID=[2,7];
+  public selSzenario_id_l= 0;
+  public selSzenario_id_r = 1;
+  public showBarChart : boolean = false;
+  public featureTSLayerUrl = "https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/ArcGIS/rest/services/SWATimClient/FeatureServer";
+
+
   constructor(private mapCache: MapCache) { }
 
   ngOnInit() {
+    this.showBarChart = true;
     this.wmsLayer = L.tileLayer.wms('http://ows.terrestris.de/osm/service?',
     {
       layers: 'OSM-WMS', format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
@@ -41,46 +50,39 @@ export class ScenarioComparisonViewComponent implements OnInit {
   this.mapCache.setMap(this.mapId, this.mainMap);
   this.mapCache.setMap(this.szenario2Id, this.szenarioMap);
 
-  this.featureService = esri.featureLayerService({
-    url: 'https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/ArcGIS/rest/services/SWATimClient/FeatureServer/1'
-  });
-  this.featureService.query().where("rsv_yearavg_csv_SED_IN>0").run((error, featureCollection, response) => {
-    // console.log("FeatureCollection: " + JSON.stringify(featureCollection));
-    // console.log("Response: " + JSON.stringify(response));
-  })
+  
   this.mainMap.addLayer(this.wmsLayer);
+  this.mainMap.createPane('FirstLayer');
+ 
+
   this.szenarioMap.addLayer(L.tileLayer.wms('http://ows.terrestris.de/osm/service?',
   {
     layers: 'OSM-WMS', format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     className: 'OSM2'
   }));
+  this.szenarioMap.createPane('TopLayer');
 
   this.mainMap.addLayer(esri.featureLayer({
-    url: "https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/ArcGIS/rest/services/SWATimClient/FeatureServer/2"
+    url: "https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/ArcGIS/rest/services/SWATimClient/FeatureServer/"+ this.szenarioSub_ID[this.selSzenario_id_l]
   }));
   
   this.mainMap.addLayer(esri.featureLayer({
-    url: "https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/ArcGIS/rest/services/SWATimClient/FeatureServer/1",
+    url: "https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/ArcGIS/rest/services/SWATimClient/FeatureServer/" + this.szenarioTS_ID[this.selSzenario_id_l],
     fields: ["OBJECTID", "rsv_yearavg_csv_SED_OUT", "rsv_yearavg_csv_SED_IN", "rsv_yearavg_csv_SED_CONC",
-      "rsv_yearavg_csv_Name", "rsv_yearavg_csv_ResID"]
+      "rsv_yearavg_csv_Name", "rsv_yearavg_csv_ResID"],pane: 'FirstLayer'
   }));
   
-  // .bindPopup(function (featureCollection) {
-  //   console.log(featureCollection);
-  //   return L.Util.template('<p>{rsv_yearavg_csv_Name} hat einen Sedimenteintrag von {rsv_yearavg_csv_SED_IN}'+ 
-  //   'und einen Austrag von {rsv_yearavg_csv_SED_OUT}.</p>',
-  //   featureCollection.features[0].properties);
-  // });
+  
 
 
  
   this.szenarioMap.addLayer(esri.featureLayer({
-    url: "https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/ArcGIS/rest/services/SWATimClient/FeatureServer/7"
+    url: "https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/ArcGIS/rest/services/SWATimClient/FeatureServer/"+ this.szenarioSub_ID[this.selSzenario_id_r]
   }));
   this.szenarioMap.addLayer(esri.featureLayer({
-    url: "https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/ArcGIS/rest/services/SWATimClient/FeatureServer/5",
+    url: "https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/ArcGIS/rest/services/SWATimClient/FeatureServer/" + this.szenarioTS_ID[this.selSzenario_id_r],
     fields: ["OBJECTID", "rsv_yearavg_csv_SED_OUT", "rsv_yearavg_csv_SED_IN", "rsv_yearavg_csv_SED_CONC",
-      "rsv_yearavg_csv_Name", "rsv_yearavg_csv_ResID"]
+      "rsv_yearavg_csv_Name", "rsv_yearavg_csv_ResID"],pane: 'TopLayer'
   }));
 
 

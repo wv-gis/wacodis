@@ -10,13 +10,15 @@ import { ScenarioComparisonNitrogenViewComponent } from '../nitrogen/scenario-co
 import { TSBarChartComponent } from './tsbar-chart/tsbar-chart.component';
 import { CopernicusProductsModule } from 'src/app/copernicus/copernicus-products/copernicus-products.module';
 import { HelgolandOpenLayersModule } from '@helgoland/open-layers';
+import { PercentageChangeBarChartComponent } from './percentage-change-bar-chart/percentage-change-bar-chart.component';
 
 
 
 @NgModule({
   declarations: [SingleNitrogenResultViewComponent, SingleResultViewComponent,    ScenarioComparisonViewComponent,
     ScenarioComparisonNitrogenViewComponent,
-    TSBarChartComponent],
+    TSBarChartComponent,
+    PercentageChangeBarChartComponent],
   imports: [
     CommonModule,
     HelgolandCoreModule,
