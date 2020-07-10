@@ -24,6 +24,7 @@ import {
   NominatimGeoSearchService
 } from '@helgoland/map';
 import {SensorwappToolboxModule} from "@sensorwapp-toolbox/core";
+import {SwappToolboxModule} from "swapp-toolbox";
 import { ExtendedSettingsService } from './settings/settings.service';
 import { WvMapModule } from 'src/app/map/map.module';
 import { LandingpageComponent } from './landingpage/landingpage.component';
@@ -45,11 +46,13 @@ import { SwatResultsModule } from './swat/views/swat-results/swat-results.module
 
 
 
+
 @NgModule({
   declarations: [
     AppComponent,
     LandingpageComponent,
     WeatherForecastComponent,
+    
     
   
   ],
@@ -77,6 +80,7 @@ import { SwatResultsModule } from './swat/views/swat-results/swat-results.module
     HelgolandOpenLayersModule,
     HelgolandFacetSearchModule,
     SensorwappToolboxModule,
+    SwappToolboxModule,
     FormsModule,
     WvMapModule,
     WvTimeseriesModule,
