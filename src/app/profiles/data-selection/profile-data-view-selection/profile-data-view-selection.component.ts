@@ -9,6 +9,9 @@ import { Router } from '@angular/router';
   templateUrl: './profile-data-view-selection.component.html',
   styleUrls: ['./profile-data-view-selection.component.css']
 })
+/**
+ * dataset selection view with listSelector
+ */
 export class ProfileDataViewSelectionComponent implements OnInit {
 
   public categoryParams: ListSelectorParameter[] = [{
@@ -45,6 +48,11 @@ public selectedProviderList: Provider[] = [];
   ngOnInit() {
   }
 
+  /**
+   * show diagram on Dataset selected 
+   * @param data  selected platform
+   * @param options options
+   */
   public onDatasetSelected(data: Platform, options?: TimedDatasetOptions[]){
     console.log(data.datasets + ' ID: ' + data.id);
     // this.profileDataService.addDataset(data.internalId, options);

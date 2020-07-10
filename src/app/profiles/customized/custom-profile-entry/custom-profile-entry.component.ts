@@ -6,6 +6,9 @@ import { ProfileEntryComponent } from '@helgoland/depiction';
   templateUrl: './custom-profile-entry.component.html',
   styleUrls: ['./custom-profile-entry.component.css']
 })
+/**
+ * styling Wrapper for ProfileEntryComponent
+ */
 export class CustomProfileEntryComponent extends ProfileEntryComponent  {
 
 
