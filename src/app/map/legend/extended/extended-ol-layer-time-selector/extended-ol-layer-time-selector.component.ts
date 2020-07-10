@@ -1,8 +1,6 @@
 declare var require;
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
-import { OlLayerTimeSelectorComponent, WmsCapabilitiesService } from '@helgoland/open-layers';
-// import { ImageWMS, ImageArcGISRest } from 'ol/source';
-// import Layer from 'ol/layer/Layer';
+import {  WmsCapabilitiesService } from '@helgoland/open-layers';
 import * as esri from "esri-leaflet";
 import * as L from 'leaflet';
 import { MapCache } from '@helgoland/map';
@@ -13,13 +11,13 @@ require('leaflet-timedimension');
   templateUrl: './extended-ol-layer-time-selector.component.html',
   styleUrls: ['./extended-ol-layer-time-selector.component.css']
 })
-export class ExtendedOlLayerTimeSelectorComponent implements OnInit { //extends OlLayerTimeSelectorComponent implements OnInit {
+export class ExtendedOlLayerTimeSelectorComponent implements OnInit { 
 
-  @Input() layer: any | esri.ImageMapLayer;
+  @Input() layer: any | esri.ImageMapLayer; // selected Layer/Service
   @Input() mapId?: string;
   @Input() defTimeIndex: number = 1;
-  @Output() selIndexTime: EventEmitter<number> = new EventEmitter<number>();
-  @Output() currentIndexTime: EventEmitter<Date> = new EventEmitter<Date>();
+  @Output() selIndexTime: EventEmitter<number> = new EventEmitter<number>(); // selected Index of Layer
+  @Output() currentIndexTime: EventEmitter<Date> = new EventEmitter<Date>(); // current selected time Index
  
   public timeAttribute = true;
   public currentTime: Date;
@@ -33,19 +31,16 @@ export class ExtendedOlLayerTimeSelectorComponent implements OnInit { //extends 
   constructor(private wmsCap: WmsCapabilitiesService, private mapCache: MapCache) {
     // super(wmsCap);
   }
-
+/**
+ * get all time stamps and set the selected time Index of the different Layer types
+ */
   ngOnInit() {
-    // super.ngOnInit();
-
-    // const imageSource = this.layer.getSource();
-    // if (imageSource instanceof ImageWMS) {
-    // this.loading = true;
+  
     if (this.layer._url) {
       this.url = this.layer._url;
 
       if (this.layer instanceof L.TileLayer.WMS) {
         this.loading = true;
-        // this.layerid = imageSource.getParams()['layers'] || imageSource.getParams()['LAYERS'];
         this.layerid = this.layer.wmsParams.layers;
         this.wmsCap.getTimeDimensionArray(this.layerid, this.url)
           .subscribe(
@@ -58,15 +53,13 @@ export class ExtendedOlLayerTimeSelectorComponent implements OnInit { //extends 
             });
 
         if (!this.timeDimensions) { this.timeAttribute = false, this.loading = false }
-        // this.determineCurrentTimeParameter();
+       
       }
     } else if (this.layer.options.url) {
       this.url = this.layer.options.url;
-      if (this.layer instanceof esri.ImageMapLayer) {
-        // else if (imageSource instanceof ImageArcGISRest) {
+      if (this.layer instanceof esri.ImageMapLayer) {    
         this.loading = true;
-        // this.url = imageSource.getUrl();
-        esri.imageService({ url: this.url }).query().where("1=1").fields(["startTime", "endTime", "OBJECTID"]).returnGeometry(true).run((error, featureCollection, feature) => {
+         esri.imageService({ url: this.url }).query().where("1=1").fields(["startTime", "endTime", "OBJECTID"]).returnGeometry(true).run((error, featureCollection, feature) => {
           if (error) {
             console.log('Error on Image Service request');
             this.timeAttribute = false;
@@ -89,14 +82,7 @@ export class ExtendedOlLayerTimeSelectorComponent implements OnInit { //extends 
               this.extendedDetermineCurrentTimeParameter();
             }
           }
-          // this.selTime.emit(this.currentTime);
-          // if (this.timeDimensions) {
-          //   this.selIndexTime.emit(this.timeDimensions.indexOf(this.currentTime));
-          //   this.currentIndexTime.emit(this.currentTime);
-          // }
-          // else {
-          //   this.timeAttribute = false;
-          // }
+   
           this.loading = false;
         });
       }
@@ -120,30 +106,26 @@ export class ExtendedOlLayerTimeSelectorComponent implements OnInit { //extends 
     }
   }
 
+  /**
+   * change the time range of the layer depending on selected time
+   * @param time selected time Range
+   */
   public onSelection(time: Date) {
     this.playTime(time);
   }
 
   public playTime(time: Date) {
     this.currentTime = time;
-    // let source = this.layer.getSource();
-    // if (this.layerSource) {
     if (this.layer instanceof L.TileLayer.WMS) {
-      // this.layerSource.updateParams({ time: time.toISOString()});
-      // this.layer.wmsParams.time = time.toISOString();    
+      // Do nothing
     }
     else if (this.layer instanceof L.TimeDimension.Layer) {
       this.mapCache.getMap(this.mapId).timeDimension.setCurrentTimeIndex(this.timeDimensions.indexOf(this.currentTime));
       this.selIndexTime.emit(this.timeDimensions.indexOf(this.currentTime));
       this.currentIndexTime.emit(this.currentTime);
     }
-    // else if (source instanceof ImageArcGISRest) {
     else if (this.layer instanceof esri.ImageMapLayer) {
-      // source.updateParams({
-      //   time: (new Date(time.getFullYear(), time.getMonth(), time.getDate() + 2).getTime() - 2628000000) +
-      //     "," + new Date(time.getFullYear(), time.getMonth(), time.getDate() + 2).getTime()
-      // });
-      this.layer.setTimeRange(new Date((new Date(time.getFullYear(), time.getMonth(), time.getDate() + 2).getTime() - 2628000000))
+      this.layer.setTimeRange(new Date((new Date(time.getFullYear(), time.getMonth(), time.getDate()).getTime() - 86400000))
         , new Date(time.getFullYear(), time.getMonth(), time.getDate() + 2))
       this.selIndexTime.emit(this.timeDimensions.indexOf(time));
       this.currentIndexTime.emit(this.currentTime);
@@ -154,24 +136,11 @@ export class ExtendedOlLayerTimeSelectorComponent implements OnInit { //extends 
   }
 
   public extendedDetermineCurrentTimeParameter() {
-    // if (this.layerSource) {
-    //   this.determineCurrentTimeParameter();
-    // }
-    // else {
-    // let source = this.layer.getSource();
 
-    // if (source instanceof ImageArcGISRest) {
     if (this.layer instanceof esri.ImageMapLayer) {
-      // esri.imageService({ url: this.url }).query().where("1=1").fields(["startTime", "endTime", "OBJECTID"]).returnGeometry(true).run((error, featureCollection, feature) => {
-
-      //   let times: Date[] = [];
-      //   feature["features"].forEach((element, i, arr) => {
-      //     this.currentTime = new Date(arr[i]["attributes"].startTime);
-      //     console.log('ExtendedDetermineCurrentTime');
-      //   });
-      // }, (error) => console.log('Error on Image Service request: ' + error));
+ 
       this.layer.setTimeRange(new Date((new Date(this.currentTime.getFullYear(), this.currentTime.getMonth(),
-       this.currentTime.getDate() + 2).getTime() - 2628000000)), 
+       this.currentTime.getDate()).getTime() - 86400000)),
       new Date(this.currentTime.getFullYear(), this.currentTime.getMonth(), this.currentTime.getDate() + 2))
       this.currentIndexTime.emit(this.currentTime);
     }
@@ -182,6 +151,6 @@ export class ExtendedOlLayerTimeSelectorComponent implements OnInit { //extends 
       });
 
     }
-    // }
+  
   }
 }

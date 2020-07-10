@@ -1,12 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { OlLayerZoomExtentComponent, OlMapService, WmsCapabilitiesService } from '@helgoland/open-layers';
-// import BaseLayer from 'ol/layer/Base';
-// import { View } from 'ol';
-// import Layer from 'ol/layer/Layer';
-// import ImageWMS from 'ol/source/ImageWMS';
-// import ImageArcGISRest from 'ol/source/ImageArcGISRest';
+import { WmsCapabilitiesService } from '@helgoland/open-layers';
 import * as esri from "esri-leaflet";
-// import { transformExtent } from 'ol/proj';
 import { MapCache } from '@helgoland/map';
 import L, { LatLngBoundsExpression, LatLngBounds } from 'leaflet';
 
@@ -38,14 +32,14 @@ export class ExtendedOlLayerZoomExtentComponent implements OnInit {
 
   constructor(private wmsCap: WmsCapabilitiesService,
     private mapCache: MapCache) {
-    // super(wmsCap, mapService);
+  
   }
 
+  /**
+   * receive and set the depending Bounbds of the Layer by using the method for the specific type and setting the bounds of the map
+   * to the corresponding LayerBounds Full Extent
+   */
   ngOnInit() {
-    // super.ngOnInit();
-    // else
-    //  if (this.layer instanceof Layer) {
-    //   const imageSource = this.layer.getSource();
 
     if (this.layer._url) {
       this.imageurl = this.layer._url;
@@ -57,7 +51,6 @@ export class ExtendedOlLayerZoomExtentComponent implements OnInit {
           if (this.layer instanceof L.TileLayer.WMS) {
             let epsgCode;
             epsgCode = this.layer.options.crs;
-            // this.imageid = imageSource.getParams()['layers'] || imageSource.getParams()['LAYERS'];
             this.imageid = this.layer.wmsParams.layers;
             this.wmsCap.getExtent(this.imageid, this.imageurl, epsgCode).subscribe(res => {
               this.imageExtent = new L.LatLngBounds([res.extent[1], res.extent[0]], [res.extent[3], res.extent[2]]);
@@ -65,16 +58,11 @@ export class ExtendedOlLayerZoomExtentComponent implements OnInit {
             });
           }
         }
-        // this.imageurl = imageSource.getUrl();
-        // this.mapService.getMap(this.mapId).subscribe(map => {
-        // this.imageView = this.mapCache.getMap(this.mapId).getBounds();    
-        // });
+
       }
     } else if (this.layer.options.url) {
       this.imageurl = this.layer.options.url;
       if (this.layer instanceof esri.ImageMapLayer) {
-        // this.mapService.getMap(this.mapId).subscribe(map => {    
-        // this.imageView = this.mapCache.getMap(this.mapId).getBounds();
         esri.imageService({ url: this.imageurl }).query().returnGeometry(true).run((error, featureCollection, feature) => {
           if (error) {
             console.log('Error on imageService Query');
@@ -120,27 +108,18 @@ export class ExtendedOlLayerZoomExtentComponent implements OnInit {
           });
       }
      }
-    //else{
-
-    // }
-    // }
-    // }
+ 
   }
 
-
+/**
+ * zoom to Extent of selected Layer
+ */
   public zoomToExtent() {
-    // super.zoomToExtent();
     if (this.imageExtent) {
       if (!this.imageCrs) {
         this.mapCache.getMap(this.mapId).fitBounds(this.imageExtent);
       } else {
-        // const transformation = transformExtent(this.imageExtent, this.imageCrs, this.mapCache.getMap(this.mapId).options.crs.code);     
-        // this.mapCache.getMap(this.mapId).fitBounds(
-        //   [[this.mapCache.getMap(this.mapId).project([this.imageExtent[0], this.imageExtent[1]], this.mapCache.getMap(this.mapId).getZoom()).x,
-        //   this.mapCache.getMap(this.mapId).project([this.imageExtent[0], this.imageExtent[1]], this.mapCache.getMap(this.mapId).getZoom()).y], [
-        //     this.mapCache.getMap(this.mapId).project([this.imageExtent[2], this.imageExtent[3]], this.mapCache.getMap(this.mapId).getZoom()).x,
-        //     this.mapCache.getMap(this.mapId).project([this.imageExtent[2], this.imageExtent[3]], this.mapCache.getMap(this.mapId).getZoom()).y
-        //   ]]);
+
         this.mapCache.getMap(this.mapId).fitBounds(this.imageExtent);
       }
     }

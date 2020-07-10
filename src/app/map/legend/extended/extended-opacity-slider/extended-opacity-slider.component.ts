@@ -7,6 +7,9 @@ import * as esri from 'esri-leaflet';
   templateUrl: './extended-opacity-slider.component.html',
   styleUrls: ['./extended-opacity-slider.component.css']
 })
+/**
+ * set and check for changes of the Layer Opacity
+ */
 export class ExtendedOpacitySliderComponent implements OnInit,DoCheck {
 
   @Input() layer: any |esri.ImageMapLayer;

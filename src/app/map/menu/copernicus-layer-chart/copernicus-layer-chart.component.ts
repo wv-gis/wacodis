@@ -2,7 +2,7 @@ import { Component, OnInit, Input, OnChanges } from '@angular/core';
 import Plotly from 'plotly.js-dist';
 import * as esri from 'esri-leaflet';
 import { locale } from 'src/environments/environment.prod';
-import { LatLngBounds, LatLng, polygon } from 'leaflet';
+import { LatLngBounds, LatLng } from 'leaflet';
 
 
 
@@ -69,10 +69,7 @@ export class CopernicusLayerChartComponent implements OnInit,OnChanges {
       }else{
         let geometryType ='esriGeometryPolygon';
         let geometry ={"rings": this.bounds,"spatialReference":{"wkid":4326}};
-        // let geometry ={"xmin":polygon(this.bounds).getBounds().toBBoxString().split(',')[1],
-        // "ymin": polygon(this.bounds).getBounds().toBBoxString().split(',')[0],
-        // "xmax":polygon(this.bounds).getBounds().toBBoxString().split(',')[3],
-        // "ymax":polygon(this.bounds).getBounds().toBBoxString().split(',')[2],"spatialReference":{"wkid":4326}};
+
         this.createPieChart(geometryType,geometry);
       }
     }
@@ -88,10 +85,6 @@ export class CopernicusLayerChartComponent implements OnInit,OnChanges {
       }else{
         let geometryType ='esriGeometryPolygon';
         let geometry ={"rings": this.bounds,"spatialReference":{"wkid":4326}};
-        // let geometry ={"xmin":polygon(this.bounds).getBounds().toBBoxString().split(',')[1],
-        // "ymin": polygon(this.bounds).getBounds().toBBoxString().split(',')[0],
-        // "xmax":polygon(this.bounds).getBounds().toBBoxString().split(',')[3],
-        // "ymax":polygon(this.bounds).getBounds().toBBoxString().split(',')[2],"spatialReference":{"wkid":4326}};
         this.createPieChart(geometryType,geometry);
       }
      }
@@ -109,11 +102,6 @@ export class CopernicusLayerChartComponent implements OnInit,OnChanges {
       this.createPieChart(geometryType,geometry);
     }else{
       let geometryType ='esriGeometryPolygon';
-      // let geometry ={"xmin":polygon(this.bounds).getBounds().toBBoxString().split(',')[1],
-      // "ymin": polygon(this.bounds).getBounds().toBBoxString().split(',')[0],
-      // "xmax":polygon(this.bounds).getBounds().toBBoxString().split(',')[3],
-      // "ymax":polygon(this.bounds).getBounds().toBBoxString().split(',')[2],"spatialReference":{"wkid":4326}};
-
         let geometry ={"rings": this.bounds,"spatialReference":{"wkid":4326}};
       
       this.createPieChart(geometryType,geometry);

@@ -18,6 +18,8 @@ export class ExtendedLayerAbstractComponent implements OnInit {
     private wmsCaps: WmsCapabilitiesService,
   ) { }
 
+// set Abstract of Layer based on the Layer/Service type
+
   ngOnInit() {
     if (this.layer._url) {
       const url = this.layer._url;
