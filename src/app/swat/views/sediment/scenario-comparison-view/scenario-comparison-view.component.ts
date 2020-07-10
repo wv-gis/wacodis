@@ -11,6 +11,9 @@ require('leaflet.sync');
   templateUrl: './scenario-comparison-view.component.html',
   styleUrls: ['./scenario-comparison-view.component.css']
 })
+/**
+ * component to depict the model outputs for sediment values for sceanrio comparison
+ */
 export class ScenarioComparisonViewComponent implements OnInit {
 
   public mapOptions: L.TimeDimensionMapOptions = {
@@ -33,6 +36,7 @@ export class ScenarioComparisonViewComponent implements OnInit {
 
   constructor(private mapCache: MapCache) { }
 
+  // set default maps with layout and configuration and ad  Layers, finally sync both maps
   ngOnInit() {
     this.showBarChart = true;
     this.wmsLayer = L.tileLayer.wms('http://ows.terrestris.de/osm/service?',

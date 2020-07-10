@@ -64,14 +64,12 @@ export class PercentageChangeBarChartComponent implements AfterViewInit, OnChang
               fCol.features.forEach((a, i, arr) => {
                 this.labels.push(arr[i].properties.Name);
                 this.values.push(parseFloat(arr[i].properties.rsv_yearavg_csv_NO3_IN) + parseFloat(arr[i].properties.rsv_yearavg_csv_NH3_IN) +
-                  parseFloat(arr[i].properties.rsv_yearavg_csv_NO2_IN) + parseFloat(arr[i].properties.rsv_yearavg_csv_ORGP_IN) +
-                  parseFloat(arr[i].properties.rsv_yearavg_csv_ORGN_IN));   
+                  parseFloat(arr[i].properties.rsv_yearavg_csv_NO2_IN) + parseFloat(arr[i].properties.rsv_yearavg_csv_ORGN_IN));   
               });
               featCol.features.forEach((a, i, arr) => {
                 this.labelsSz.push(arr[i].properties.Name);
                 this.valuesSz.push(parseFloat(arr[i].properties.rsv_yearavg_csv_NO3_IN) + parseFloat(arr[i].properties.rsv_yearavg_csv_NH3_IN) +
-                  parseFloat(arr[i].properties.rsv_yearavg_csv_NO2_IN) + parseFloat(arr[i].properties.rsv_yearavg_csv_ORGP_IN) +
-                  parseFloat(arr[i].properties.rsv_yearavg_csv_ORGN_IN));
+                  parseFloat(arr[i].properties.rsv_yearavg_csv_NO2_IN) + parseFloat(arr[i].properties.rsv_yearavg_csv_ORGN_IN));
               });
 
 

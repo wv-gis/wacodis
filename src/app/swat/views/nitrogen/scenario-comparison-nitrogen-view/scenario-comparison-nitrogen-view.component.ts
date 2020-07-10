@@ -11,6 +11,9 @@ require('leaflet.sync');
   templateUrl: './scenario-comparison-nitrogen-view.component.html',
   styleUrls: ['./scenario-comparison-nitrogen-view.component.css']
 })
+/**
+ * component to depict the model outputs for nitrogen values for scenario comparison
+ */
 export class ScenarioComparisonNitrogenViewComponent implements OnInit {
 
   public mapOptions: L.TimeDimensionMapOptions = {
@@ -32,6 +35,10 @@ export class ScenarioComparisonNitrogenViewComponent implements OnInit {
 
   constructor(private mapCache: MapCache) { }
 
+
+  /**
+   * create Basemaps and add Layers to the map depending on the selected scenario
+   */
   ngOnInit() {
     this.showBarChart = true;
     this.wmsLayer = L.tileLayer.wms('http://ows.terrestris.de/osm/service?',

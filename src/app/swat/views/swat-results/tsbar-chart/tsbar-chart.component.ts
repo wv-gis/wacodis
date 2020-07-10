@@ -23,7 +23,7 @@ export class TSBarChartComponent implements OnInit, AfterViewInit, OnChanges {
   public colorRgb: string[] = ["rgb(255,215,0)", "rgb(184,134,11)", "rgb(65,105,225)",
     "rgb(30,144,255)", "rgb(190,190,190)", "rgb(192,255,62)", "rgb(189,183,107)", "rgb(139,69,19)"];
 
-  public title: string[] = ["Sedimenteintrag pro Jahr [t]", "Stickstoffeintrag pro Jahr []"];
+  public title: string[] = ["Sedimenteintrag pro Jahr [t]", "Stickstoffeintrag pro Jahr [kg N]"];
 
   constructor() { }
 
@@ -65,11 +65,12 @@ export class TSBarChartComponent implements OnInit, AfterViewInit, OnChanges {
             fCol.features.forEach((a, i, arr) => {
               this.labels.push(arr[i].properties.Name);
               vals.push(parseFloat(arr[i].properties.rsv_yearavg_csv_NO3_IN) + parseFloat(arr[i].properties.rsv_yearavg_csv_NH3_IN) +
-                parseFloat(arr[i].properties.rsv_yearavg_csv_NO2_IN) + parseFloat(arr[i].properties.rsv_yearavg_csv_ORGP_IN) +
-                parseFloat(arr[i].properties.rsv_yearavg_csv_ORGN_IN));
-
+                parseFloat(arr[i].properties.rsv_yearavg_csv_NO2_IN) + parseFloat(arr[i].properties.rsv_yearavg_csv_ORGN_IN));
+   
             });
             this.values=vals;
+        
+         
           }
 
           var data = [{
@@ -136,15 +137,13 @@ export class TSBarChartComponent implements OnInit, AfterViewInit, OnChanges {
               fCol.features.forEach((a, i, arr) => {
                 this.labels.push(arr[i].properties.Name);
                 val.push(parseFloat(arr[i].properties.rsv_yearavg_csv_NO3_IN) + parseFloat(arr[i].properties.rsv_yearavg_csv_NH3_IN) +
-                  parseFloat(arr[i].properties.rsv_yearavg_csv_NO2_IN) + parseFloat(arr[i].properties.rsv_yearavg_csv_ORGP_IN) +
-                  parseFloat(arr[i].properties.rsv_yearavg_csv_ORGN_IN));
+                  parseFloat(arr[i].properties.rsv_yearavg_csv_NO2_IN) + parseFloat(arr[i].properties.rsv_yearavg_csv_ORGN_IN));
               });
               this.values = val;
               featCol.features.forEach((a, i, arr) => {
                 this.labelsSz.push(arr[i].properties.Name);
                 valSz.push(parseFloat(arr[i].properties.rsv_yearavg_csv_NO3_IN) + parseFloat(arr[i].properties.rsv_yearavg_csv_NH3_IN) +
-                  parseFloat(arr[i].properties.rsv_yearavg_csv_NO2_IN) + parseFloat(arr[i].properties.rsv_yearavg_csv_ORGP_IN) +
-                  parseFloat(arr[i].properties.rsv_yearavg_csv_ORGN_IN));
+                  parseFloat(arr[i].properties.rsv_yearavg_csv_NO2_IN) + parseFloat(arr[i].properties.rsv_yearavg_csv_ORGN_IN));
               });
               this.valuesSz = valSz;
             }

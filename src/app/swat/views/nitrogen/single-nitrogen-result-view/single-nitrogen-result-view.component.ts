@@ -10,6 +10,10 @@ require('esri-leaflet-renderers');
   templateUrl: './single-nitrogen-result-view.component.html',
   styleUrls: ['./single-nitrogen-result-view.component.css']
 })
+
+/**
+ * component to depict the model outputs for nitrogen values for single analysis
+ */
 export class SingleNitrogenResultViewComponent implements OnInit {
 
   public mapOptions: L.TimeDimensionMapOptions = {
@@ -50,6 +54,9 @@ export class SingleNitrogenResultViewComponent implements OnInit {
     this.mapCache.deleteMap(this.szenarioSoilId);
   }
 
+  /**
+   * create BaseMaps and set the Layout and configuration
+   */
   ngOnInit() {
     this.showBarChart = true;
     this.wmsLayer = L.tileLayer.wms('http://ows.terrestris.de/osm/service?',
@@ -71,6 +78,10 @@ export class SingleNitrogenResultViewComponent implements OnInit {
 
 
   }
+
+  /**
+   * add baseLayer and feature Layers to the map
+   */
   public addLayer() {
     this.szenarioMap.addLayer(L.tileLayer.wms('http://ows.terrestris.de/osm/service?',
       {
@@ -90,13 +101,12 @@ export class SingleNitrogenResultViewComponent implements OnInit {
 
     this.featureTSLayer = esri.featureLayer({
       url: "https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/ArcGIS/rest/services/SWATimClient/FeatureServer/" + this.selSzenarioTS[this.selSzen_Id],
-      fields: ["OBJECTID", "rsv_yearavg_csv_ORGN_OUT", "rsv_yearavg_csv_ORGN_IN", "rsv_yearavg_csv_ORGP_IN",
-      "rsv_yearavg_csv_ORGP_OUT", "rsv_yearavg_csv_NO3_IN", "rsv_yearavg_csv_NO2_IN", "rsv_yearavg_csv_NO3_OUT",
+      fields: ["OBJECTID", "rsv_yearavg_csv_ORGN_OUT", "rsv_yearavg_csv_ORGN_IN", "rsv_yearavg_csv_NO3_IN", "rsv_yearavg_csv_NO2_IN", "rsv_yearavg_csv_NO3_OUT",
       "rsv_yearavg_csv_NO2_OUT", "rsv_yearavg_csv_NH3_IN", "rsv_yearavg_csv_NH3_OUT",
         "rsv_yearavg_csv_Name", "rsv_yearavg_csv_ResID"], onEachFeature: (feature, layer) => {
 
           layer.bindPopup(function (l) {
-            return L.Util.template('<p>Organischer Stickstoff-Austrag <strong>{rsv_yearavg_csv_ORGN_OUT}</strong> an der  {rsv_yearavg_csv_Name}-Talsperre.</p>', feature.properties);
+            return L.Util.template('<p>Organischer Stickstoff-Austrag [kg/m³] <strong>{rsv_yearavg_csv_ORGN_OUT}</strong> pro Jahr an der  {rsv_yearavg_csv_Name}-Talsperre.</p>', feature.properties);
           });
 
         }, pane: 'TopLayer'
@@ -106,7 +116,7 @@ export class SingleNitrogenResultViewComponent implements OnInit {
 
   public plotTest(e) {
     let t = e.target;
-
+   
     this.showSingleMaps = true;
     if (!this.mapCache.hasMap(this.szenarioSlopeId)) {
 
@@ -193,11 +203,11 @@ export class SingleNitrogenResultViewComponent implements OnInit {
       where: 'Subbasin=' + t.feature.id, onEachFeature: (feature, layer) => {
 
         layer.bindPopup(function (l) {
-          return L.Util.template('<p>Landnutzungsklasse <strong>{Name}</strong>.</p>', feature.properties);
+          return L.Util.template('<p>Landnutzungsklasse: <strong>{Name}</strong>.</p>', feature.properties);
         });
 
       }
-    })).flyToBounds(t._bounds);
+    })).fitBounds(t._bounds);
 
     this.soilMap.addLayer(esri.featureLayer({
       url: 'https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/ArcGIS/rest/services/SWATimClient_SubbasinInfo/FeatureServer/64',
@@ -208,51 +218,56 @@ export class SingleNitrogenResultViewComponent implements OnInit {
         });
 
       }
-    })).flyToBounds(t._bounds);
+    })).fitBounds(t._bounds);
 
-    this.slopeMap.addLayer(esri.tiledMapLayer({
-      url: 'https://tiles.arcgis.com/tiles/GVrcJ5O2vy6xbu2e/arcgis/rest/services/SWATimClient_SubbasinInfo/MapServer',
-      opacity: 0.8, minNativeZoom: 12, bounds: t._bounds, maxNativeZoom: 17, subdomains: '1'
+    // this.slopeMap.addLayer(esri.tiledMapLayer({
+    //   url: 'https://tiles.arcgis.com/tiles/GVrcJ5O2vy6xbu2e/arcgis/rest/services/SWATimClient_SubbasinInfo/MapServer',
+    //   opacity: 0.8, minNativeZoom: 12, bounds: t._bounds, maxNativeZoom: 17, subdomains: '1'
 
-    })).flyToBounds(t._bounds);
+    // })).flyToBounds(t._bounds);
 
-
+    this.slopeMap.addLayer(esri.dynamicMapLayer({
+      url: "https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/SWATimClient_Slope/MapServer",
+      layers: [t.feature.id]
+    })).fitBounds(t._bounds);
 
 
     this.sedOutputMap.addLayer(esri.featureLayer({
       url: 'https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/ArcGIS/rest/services/SWATimClient/FeatureServer/' + this.selSzenarioHRU[this.selSzen_Id],
-      // fields: ['hru_yearavg_csv_N_STRS','OBJECTID','hru_yearavg_csv_P_STRS','hru_yearavg_csv_BIOM','hru_yearavg_csv_SYLD'],
+   
       where: 'hru_yearavg_csv_SUBBASIN=' + t.feature.id, onEachFeature: (feature, layer) => {
 
         layer.bindPopup(function (l) {
-          return L.Util.template('<p>Austrag von <strong>{hru_yearavg_csv_YLD} [t/ha/a]</strong>.</p>', feature.properties);
+          return L.Util.template('<p>Stoffaustrag von <strong>{hru_yearavg_csv_SYLD} [t/ha/a]</strong>.</p>', feature.properties);
         });
 
       }
-    })).flyToBounds(t._bounds);
+    })).fitBounds(t._bounds);
 
 
   }
 
-
+/**
+ * When the user selects another scenario update the view and its maps
+ * @param customerData selected number of scenario
+ */
   onSubmit(customerData: number) {
     this.selSzen_Id = customerData;
     this.showSingleMaps = false;
     this.szenarioMap.eachLayer(layer => {
       layer.remove();
     });
-    this.landUseMap.eachLayer(layer => {
-      layer.remove();
-    });
-    this.soilMap.eachLayer(layer => {
-      layer.remove();
-    });
-    this.sedOutputMap.eachLayer(layer => {
-      layer.remove();
-    });
-    this.slopeMap.eachLayer(layer => {
-      layer.remove();
-    });
+    if (this.mapCache.hasMap(this.szenarioSlopeId)) {
+      this.landUseMap.remove();
+      this.soilMap.remove();
+      this.sedOutputMap.remove();
+      this.slopeMap.remove();
+      this.mapCache.deleteMap(this.szenarioSlopeId);
+      this.mapCache.deleteMap(this.szenarioSoilId);
+      this.mapCache.deleteMap(this.szenarioLUId);
+      this.mapCache.deleteMap(this.szenarioOutputId);
+    }
+  
     this.addLayer();
 
   }
