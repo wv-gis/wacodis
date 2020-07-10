@@ -7,6 +7,16 @@ import { LatLngBounds, LatLng } from 'leaflet';
   templateUrl: './vitality-bar-chart.component.html',
   styleUrls: ['./vitality-bar-chart.component.css']
 })
+/**
+ * component for Visualization of Decraes and Increase in Vitality of forest areas for the specified regions
+ * as a bar chart
+ * @Input
+ * chartID --> Dom ID for the diagram
+ * service --> which dataset is the basis
+ * selIndices --> selected Layer indices to receive data from
+ * bounds --> bounds of the selected layer to calculate the dataset for
+ * 
+ */
 export class VitalityBarChartComponent implements OnInit {
 
   @Input() barChartIds: string[];
@@ -27,6 +37,9 @@ export class VitalityBarChartComponent implements OnInit {
     this.plotBarChart();
   }
 
+  /**
+   * define type and values for the chart and add styling and config informations
+   */
 
   public plotBarChart(){
     var data = [{

@@ -139,6 +139,10 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
 
   }
 
+
+  /**
+   * receive datasets from csv and put it into the data format
+   */
   private getCsvData() {
     // this.responseInterp.forEach(resp =>{
 
