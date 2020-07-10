@@ -11,6 +11,9 @@ require('leaflet.sync');
   templateUrl: './scenario-comparison-nitrogen-view.component.html',
   styleUrls: ['./scenario-comparison-nitrogen-view.component.css']
 })
+/**
+ * component to depict the model outputs for nitrogen values for scenario comparison
+ */
 export class ScenarioComparisonNitrogenViewComponent implements OnInit {
 
   public mapOptions: L.TimeDimensionMapOptions = {
@@ -23,9 +26,21 @@ export class ScenarioComparisonNitrogenViewComponent implements OnInit {
   public szenario2Id = 'szTwo-nitro-map';
   public szenarioMap: L.Map;
   public featureService: esri.FeatureLayerService;
+  public szenarioTS_ID=[1,5];
+  public szenarioSub_ID=[2,7];
+  public selSzenario_id_l= 0;
+  public selSzenario_id_r = 1;
+  public showBarChart : boolean = false;
+  public featureTSLayerUrl = "https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/ArcGIS/rest/services/SWATimClient/FeatureServer";
+
   constructor(private mapCache: MapCache) { }
 
+
+  /**
+   * create Basemaps and add Layers to the map depending on the selected scenario
+   */
   ngOnInit() {
+    this.showBarChart = true;
     this.wmsLayer = L.tileLayer.wms('http://ows.terrestris.de/osm/service?',
     {
       layers: 'OSM-WMS', format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
@@ -40,20 +55,22 @@ export class ScenarioComparisonNitrogenViewComponent implements OnInit {
 
   this.mapCache.setMap(this.mapId, this.mainMap);
   this.mapCache.setMap(this.szenario2Id, this.szenarioMap);
+  this.mainMap.createPane('UpperLayer');
+  this.szenarioMap.createPane('TopFeatureLayer');
 
   this.mainMap.addLayer(this.wmsLayer);
 
   this.mainMap.addLayer(esri.featureLayer({
-    url: "https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/ArcGIS/rest/services/SWATimClient/FeatureServer/2",
+    url: "https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/ArcGIS/rest/services/SWATimClient/FeatureServer/"+ this.szenarioSub_ID[this.selSzenario_id_l],
 
   }));
   this.mainMap.addLayer(esri.featureLayer({
-    url: "https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/ArcGIS/rest/services/SWATimClient/FeatureServer/1",
+    url: "https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/ArcGIS/rest/services/SWATimClient/FeatureServer/"+ this.szenarioTS_ID[this.selSzenario_id_l],
     fields: ["OBJECTID", "rsv_yearavg_csv_ORGN_OUT", "rsv_yearavg_csv_ORGN_IN", "rsv_yearavg_csv_ORGP_IN",
     "rsv_yearavg_csv_ORGP_OUT","rsv_yearavg_csv_RES_ORGP","rsv_yearavg_csv_NO3_IN","rsv_yearavg_csv_NO3_OUT",
     "rsv_yearavg_csv_RES_NO3","rsv_yearavg_csv_NO2_IN","rsv_yearavg_csv_NO2_OUT","rsv_yearavg_csv_RES_NO2",
     "rsv_yearavg_csv_NH3_IN","rsv_yearavg_csv_NH3_OUT","rsv_yearavg_csv_RES_NH3",
-      "rsv_yearavg_csv_Name", "rsv_yearavg_csv_ResID"]
+      "rsv_yearavg_csv_Name", "rsv_yearavg_csv_ResID"],pane: 'UpperLayer'
   }));
 
 
@@ -64,16 +81,16 @@ export class ScenarioComparisonNitrogenViewComponent implements OnInit {
     className: 'OSM'
   }));
   this.szenarioMap.addLayer(esri.featureLayer({
-    url: "https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/ArcGIS/rest/services/SWATimClient/FeatureServer/7",
+    url: "https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/ArcGIS/rest/services/SWATimClient/FeatureServer/" + this.szenarioSub_ID[this.selSzenario_id_r],
 
   }));
   this.szenarioMap.addLayer(esri.featureLayer({
-    url: "https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/ArcGIS/rest/services/SWATimClient/FeatureServer/5",
+    url: "https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/ArcGIS/rest/services/SWATimClient/FeatureServer/"+ this.szenarioTS_ID[this.selSzenario_id_r],
     fields: ["OBJECTID", "rsv_yearavg_csv_ORGN_OUT", "rsv_yearavg_csv_ORGN_IN", "rsv_yearavg_csv_ORGP_IN",
     "rsv_yearavg_csv_ORGP_OUT","rsv_yearavg_csv_RES_ORGP","rsv_yearavg_csv_NO3_IN","rsv_yearavg_csv_NO3_OUT",
     "rsv_yearavg_csv_RES_NO3","rsv_yearavg_csv_NO2_IN","rsv_yearavg_csv_NO2_OUT","rsv_yearavg_csv_RES_NO2",
     "rsv_yearavg_csv_NH3_IN","rsv_yearavg_csv_NH3_OUT","rsv_yearavg_csv_RES_NH3",
-      "rsv_yearavg_csv_Name", "rsv_yearavg_csv_ResID"]
+      "rsv_yearavg_csv_Name", "rsv_yearavg_csv_ResID"],pane: 'TopFeatureLayer'
   }));
 
 

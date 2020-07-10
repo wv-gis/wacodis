@@ -11,6 +11,9 @@ require('esri-leaflet-renderers');
   templateUrl: './single-result-view.component.html',
   styleUrls: ['./single-result-view.component.css']
 })
+/**
+ * component to depict the model outputs for sediment values for single analysis
+ */
 export class SingleResultViewComponent implements OnInit, OnDestroy {
 
   public mapOptions: L.TimeDimensionMapOptions = {
@@ -105,11 +108,12 @@ this.featureTSLayer = esri.featureLayer({
     "rsv_yearavg_csv_Name", "rsv_yearavg_csv_ResID"], onEachFeature: (feature, layer) => {
 
       layer.bindPopup(function (l) {
-        return L.Util.template('<p>Sediment-Austrag <strong>{rsv_yearavg_csv_SED_OUT}</strong> an der  {rsv_yearavg_csv_Name}-Talsperre.</p>', feature.properties);
+        return L.Util.template('<p>Sediment Konzentration <strong>{rsv_yearavg_csv_SED_CONC}</strong> [mg/L] pro Zeitschritt in der  {rsv_yearavg_csv_Name}-Talsperre.</p>', feature.properties);
       });
 
     }, pane: 'TopLayer'
 }).addTo(this.szenarioMap);
+
 this.featureTSLayer.bringToFront();
 }
 
@@ -205,11 +209,11 @@ this.featureTSLayer.bringToFront();
       where: 'Subbasin=' + t.feature.id,  onEachFeature: (feature, layer) => {
 
         layer.bindPopup(function (l) {
-          return L.Util.template('<p>Landnutzungsklasse <strong>{Name}</strong>.</p>', feature.properties);
+          return L.Util.template('<p>Landnutzungsklasse: <strong>{Name}</strong>.</p>', feature.properties);
         });
 
       }
-    })).flyToBounds(t._bounds);
+    })).fitBounds(t._bounds);
 
     this.soilMap.addLayer(esri.featureLayer({
       url: 'https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/ArcGIS/rest/services/SWATimClient_SubbasinInfo/FeatureServer/64',
@@ -220,14 +224,12 @@ this.featureTSLayer.bringToFront();
         });
 
       }
-    })).flyToBounds(t._bounds);
+    })).fitBounds(t._bounds);
 
-    this.slopeMap.addLayer(esri.tiledMapLayer({
-      url: 'https://tiles.arcgis.com/tiles/GVrcJ5O2vy6xbu2e/arcgis/rest/services/SWATimClient_SubbasinInfo/MapServer',
-      opacity: 0.8, minNativeZoom: 12, bounds: t._bounds, maxNativeZoom: 17, subdomains: '1'
-
-    })).flyToBounds(t._bounds);
-
+    this.slopeMap.addLayer(esri.dynamicMapLayer({
+      url: "https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/SWATimClient_Slope/MapServer",
+      layers: [t.feature.id]
+    })).fitBounds(t._bounds);
   
 
 
@@ -241,7 +243,7 @@ this.featureTSLayer.bringToFront();
         });
 
       }
-    })).flyToBounds(t._bounds);
+    })).fitBounds(t._bounds);
 
  
   }
@@ -251,18 +253,18 @@ this.featureTSLayer.bringToFront();
     this.szenarioMap.eachLayer(layer => {
       layer.remove();
     });
-    this.landUseMap.eachLayer(layer => {
-      layer.remove();
-    });
-    this.soilMap.eachLayer(layer => {
-      layer.remove();
-    });
-    this.sedOutputMap.eachLayer(layer => {
-      layer.remove();
-    });
-    this.slopeMap.eachLayer(layer => {
-      layer.remove();
-    });
+    if (this.mapCache.hasMap(this.szenarioSlopeId)){
+  
+      this.landUseMap.remove();
+      this.soilMap.remove();
+      this.sedOutputMap.remove();
+      this.slopeMap.remove();
+      this.mapCache.deleteMap(this.szenarioSlopeId);
+      this.mapCache.deleteMap(this.szenarioSoilId);
+      this.mapCache.deleteMap(this.szenarioLUId);
+      this.mapCache.deleteMap(this.szenarioOutputId);
+    }
+ 
     this.addLayer();
 
   }
