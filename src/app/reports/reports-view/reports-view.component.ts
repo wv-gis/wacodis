@@ -3,8 +3,10 @@ import {  Timespan,    SettingsService,   DatasetType, HelgolandServicesConnecto
 import { ExtendedSettings } from 'src/app/settings/settings.service';
 import { locale } from '../../../environments/environment';
 import Plotly from 'plotly.js-dist';
-import { D3TimeFormatLocaleService } from '@helgoland/d3';
 
+/**
+ * definition for lineLayout of timeseries
+ */
 export interface LineLayout {
   color: string;
   width: number;
@@ -23,6 +25,13 @@ const height = 750;
   templateUrl: './reports-view.component.html',
   styleUrls: ['./reports-view.component.css']
 })
+/**
+ * water management report for selected reservoir
+ * @Input serviceUrl --> Api to receive datasets
+ * @Input timespans --> years of timeseries for comparison
+ * @Input reservoirId --> Id of reservoir
+ * @Input damLabel --> Label of reservoir
+ */
 export class ReportsViewComponent implements OnInit, OnDestroy {
 
   @ViewChild('d3Graph', { static: false })
@@ -50,12 +59,15 @@ export class ReportsViewComponent implements OnInit, OnDestroy {
   public index: number = -1;
   public sortValues: [number,number][] = [];
 
-  constructor(private datasetApi: HelgolandServicesConnector, private configService: SettingsService<ExtendedSettings>, private d3translate: D3TimeFormatLocaleService) {
+  constructor(private datasetApi: HelgolandServicesConnector, private configService: SettingsService<ExtendedSettings>) {
     // this.reservoirs = WvSettingsConfigService.WV_CONFIG_SETTINGS.reservoirs;
     this.reservoirs = this.configService.getSettings().reservoirs;
 
   }
 
+  /**
+   * set datasetIDs for selected reservoir for comparison datasets, reference values and rainseries
+   */
   ngOnInit() {
 
     this.timeseriesId = this.reservoirs[this.reservoirId].graph.seriesId;
@@ -80,12 +92,20 @@ export class ReportsViewComponent implements OnInit, OnDestroy {
     this.plotGraph();
   }
 
-
+/**
+ * log the error amd reduce the counter
+ * @param error 
+ */
   public errorOnLoading(error: any) {
     this.loadingCounter--;
     console.error(error);
   }
 
+/**
+ * if every timeseries request is finished (loadingCounter =0)
+ * set the type of diagram its values, config and layout
+ * finally plot the graph
+ */
   public getLoading(): void {
     Plotly.register(locale);
 
@@ -158,14 +178,11 @@ export class ReportsViewComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * make request for the defined datasetIDs for refeenceValues, timeseries, rainseries and timeseries to compare
+   */
   public plotGraph() {
     if (this.loadingCounter === 0) { this.loading = !this.loading; };
-
-    // if (this.timeseriesId) {
-    //   this.loadingCounter++;
-      // this.datasetApi.getTimeseriesData(this.serviceUrl, [this.timeseriesId.split('__')[1]], this.timespans[0]).subscribe((data) => {
-      //   this.defineData(data, this.timeseriesId, this.timespans[0]);
-      // }, (err) => this.errorOnLoading(err), () => this.getLoading());
 
       this.datasetApi.getDatasets(this.serviceUrl, { type: DatasetType.Timeseries ,
         expanded: true}).subscribe((data) => {
@@ -217,50 +234,14 @@ export class ReportsViewComponent implements OnInit, OnDestroy {
           }     
         });
       });
-    // }
-    // if (this.compSeriesId != '') {
-    //   for (let j = 1; j < this.timespans.length; j++) {
-    //     this.loadingCounter++;
-    //     this.datasetApi.getTimeseriesData(this.serviceUrl, [this.compSeriesId.split('__')[1]], this.timespans[j]).subscribe((data) => {
-    //       this.defineData(data, this.compSeriesId, this.timespans[j], j - 1);
-    //     }, (err) => this.errorOnLoading(err), () => this.getLoading());
-    //   }
-    // }
-
-    // if (this.refValues != undefined) {
-    //   for (let b = 0; b < this.refValues.length; b++) {
-    //     this.loadingCounter++;
-    //     this.datasetApi.getTimeseriesData(this.serviceUrl, [this.refValues[b].referenceId.split('__')[1]], this.timespans[0]).subscribe((refVal) => {
-    //       this.defineData(refVal, this.refValues[b].referenceId, this.timespans[0], b, this.refValues[b]);
-    //     }, (err) => this.errorOnLoading(err), () => this.getLoading());
-    //   }
-    // }
-
-    // if (this.rainSeriesId != '') {
-    //   this.loadingCounter++;
-    //   this.datasetApi.getTimeseriesData(this.serviceUrl, [this.rainSeriesId.split('__')[1]], this.timespans[0]).subscribe((res) => {
-    //     this.defineData(res, this.rainSeriesId, this.timespans[0]);
-    //   }, (err) => this.errorOnLoading(err), () => this.getLoading());
-    // }
-
-    // this.datasetApi.getSingleTimeseries(this.timeseriesId.split('__')[1], this.serviceUrl).subscribe(ts=>{
-    //   for (let p = 0; p < 31; p++) {
-    //     this.loadingCounter ++;
-    //     this.datasetApi.getTimeseriesData(this.serviceUrl, [this.timeseriesId.split('__')[1]], new Timespan(new Date(new Date(ts.lastValue.timestamp).getFullYear() - p,
-    //     new Date(ts.lastValue.timestamp).getMonth(), new Date(ts.lastValue.timestamp).getDate(), new Date(ts.lastValue.timestamp).getHours()),
-    //     new Date(new Date(ts.lastValue.timestamp).getFullYear() - p, new Date(ts.lastValue.timestamp).getMonth(), new Date(ts.lastValue.timestamp).getDate(), 
-    //     new Date(ts.lastValue.timestamp).getHours()))
-    //       ).subscribe((res) => {
-    //         res.forEach((dat) => {
-    //           if (dat.data[0] != undefined) {
-    //             this.defineLevel(dat.data[0], ts.lastValue.timestamp);
-    //           }
-    //         });
-    //       }, (err) => this.errorOnLoading(err), () => this.getLoading());
-    //   }
-    // });
+  
   }
 
+  /**
+   * define the rank of the latest value in comparison to the last 30 years
+   * @param values timeseries values for the specific date of the last 30 years
+   * @param lastTime timestamp to calculate the rank for
+   */
   public defineLevel(values: [number,number], lastTime: number) {
     this.sortValues.push(values);
     this.sortValues.sort(function (a, b) { return b[1] - a[1]; });
@@ -270,12 +251,20 @@ export class ReportsViewComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * remap the baseTimespan for comparison and referenceValues values and define visualization of timeseries
+   * @param data requested values 
+   * @param id datasetID
+   * @param timespan timespan
+   * @param counter counter to define which comparison Time the dataset is for
+   * @param referValues if the tinmeseries is a referenceValue set the belonging referenceValue with id and Label
+   */
   public defineData(data: [number,number][], id: string, timespan: Timespan, counter?: number, referValues?: ReferenceValues) {
     if (id == this.timeseriesId) {
       let intervals = [];
       let values = [];
       for (let i = 0; i < data.length; i++) {
-        // for (let k = 0; k < data[i].data.length; k++) {
+       
           if (new Date(data[i][0]).getFullYear() === new Date(timespan.from).getFullYear()) {
             intervals.push(new Date(new Date().getFullYear() - 1, new Date(data[i][0]).getMonth(), new Date(data[i][0]).getDate()));
           }
@@ -287,7 +276,7 @@ export class ReportsViewComponent implements OnInit, OnDestroy {
             intervals.push(new Date(new Date().getFullYear(), new Date(data[i][0]).getMonth(), new Date(data[i][0]).getDate()));
           }
           values.push(data[i][1]);
-        // }
+    
       }
       this.addDataToPlot(intervals, values, timespan, { color: 'darkblue', width: 3, dash: 'solid', mode: 'scatter' });
     }
@@ -298,7 +287,7 @@ export class ReportsViewComponent implements OnInit, OnDestroy {
       let color = '';
 
       for (let k = 0; k < data.length; k++) {
-        // for (let i = 0; i < data[k].data.length; i++) {
+    
           if (referValues.label === 'Vollstau') {
             if (k === 0 ) {
               refInterval.push(new Date(new Date().getFullYear() - 1, new Date(timespan.from).getMonth(), new Date(timespan.from).getDate()));
@@ -324,7 +313,7 @@ export class ReportsViewComponent implements OnInit, OnDestroy {
             color = this.refColors[counter]
           }
           currentRefValues.push(data[k][1]);
-        // }
+      
       }
       this.addDataToPlot(refInterval, currentRefValues, timespan, { color: color, width: 1, dash: 'solid', mode: 'scatter' }, referValues.label);
     }
@@ -334,7 +323,7 @@ export class ReportsViewComponent implements OnInit, OnDestroy {
       let compValues = [];
 
       for (let i = 0; i < data.length; i++) {
-        // for (let k = 0; k < data[i].data.length; k++) {
+  
           if (new Date(data[i][0]).getFullYear() === new Date(timespan.from).getFullYear()) {
             compIntervals.push(new Date(new Date().getFullYear() - 1, new Date(data[i][0]).getMonth(), new Date(data[i][0]).getDate()));
           }
@@ -350,34 +339,16 @@ export class ReportsViewComponent implements OnInit, OnDestroy {
           }
           compValues.push(data[i][1]);
         }
-      // }
+   
       this.addDataToPlot(compIntervals, compValues, timespan, { color: this.compSerColors[counter], width: 2, dash: 'dashdot', mode: 'scatter' });
     }
 
-    // if (id == this.rainSeriesId) {
-    //   let rainInterval = [];
-    //   let rainValues = [];
-    //   for (let k = 0; k < data.length; k++) {
-    //     for (let l = 0; l < data[k].data.length; l++) {
-    //       if (new Date(data[k].data[l].timestamp).getFullYear() === new Date(timespan.from).getFullYear()) {
-    //         rainInterval.push(new Date(new Date().getFullYear() - 1, new Date(data[k].data[l].timestamp).getMonth(), new Date(data[k].data[l].timestamp).getDate()));
-    //       }
-    //       else if (new Date(data[k].data[l].timestamp).getFullYear() === new Date(timespan.to).getFullYear()) {
-    //         rainInterval.push(new Date(new Date().getFullYear() + 1, new Date(data[k].data[l].timestamp).getMonth(), new Date(data[k].data[l].timestamp).getDate()));
-    //       }
-    //       else {
-    //         rainInterval.push(new Date(new Date().getFullYear(), new Date(data[k].data[l].timestamp).getMonth(), new Date(data[k].data[l].timestamp).getDate()));
-    //       }
-    //       rainValues.push(data[k].data[l].value);
-    //     }
-    //   }
-    //   this.addDataToPlot(rainInterval, rainValues, timespan, { width: 1, color: 'lightblue', dash: 'solid', mode: 'bar' }, 'Niederschlag');
-    // }
+
       if (id == this.rainSeriesId) {
       let rainInterval = [];
       let rainValues = [];
       for (let k = 0; k < data.length; k++) {
-        // for (let l = 0; l < data[k].data.length; l++) {
+    
           if (new Date(data[k][0]).getFullYear() === new Date(timespan.from).getFullYear()) {
             rainInterval.push(new Date(new Date().getFullYear() - 1, new Date(data[k][0]).getMonth(), new Date(data[k][0]).getDate()));
           }
@@ -388,12 +359,19 @@ export class ReportsViewComponent implements OnInit, OnDestroy {
             rainInterval.push(new Date(new Date().getFullYear(), new Date(data[k][0]).getMonth(), new Date(data[k][0]).getDate()));
           }
           rainValues.push(data[k][1]);
-        // }
+      
       }
       this.addDataToPlot(rainInterval, rainValues, timespan, { width: 1, color: 'lightblue', dash: 'solid', mode: 'bar' }, 'Niederschlag');
     }
   }
-
+/**
+ * set layout of timeseries based on the definition
+ * @param interval timestamps for timeseries values
+ * @param values values of the timeseries to plot
+ * @param time timespan
+ * @param lineLayout layout for the timeseries
+ * @param label label of the timeseries to plot
+ */
   public addDataToPlot(interval: Date[], values: number[], time: Timespan, lineLayout: LineLayout, label?: string) {
 
     if (lineLayout.color != 'lightblue') {
@@ -420,8 +398,7 @@ export class ReportsViewComponent implements OnInit, OnDestroy {
           textTo = 'heute';
         }
         else {
-          // textTo =new Date(interval[interval.length-1]).getDate()+'.'+ (new Date(interval[interval.length-1]).getMonth()+1) + '.' + 
-          // new Date(interval[interval.length-1]).getFullYear();
+   
           textTo = "letzter akt. Wert";
         }
         let currentTimeseries = {
@@ -457,7 +434,9 @@ export class ReportsViewComponent implements OnInit, OnDestroy {
     }
   }
 
-
+/**
+ * on Destroy remove the plot
+ */
   public ngOnDestroy() {
     this.plotData = [];
 
