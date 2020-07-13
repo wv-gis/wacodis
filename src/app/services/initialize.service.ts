@@ -4,6 +4,9 @@ import { Injectable, EventEmitter } from "@angular/core";
 import { SelectedProviderService } from "./selected-provider.service";
 import { Observable } from "rxjs";
 
+/**
+ * Service for initializing the settings on start
+ */
 @Injectable({
     providedIn: 'root'
 })

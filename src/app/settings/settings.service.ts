@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Settings, SettingsService } from '@helgoland/core';
-
 import { settings } from '../../environments/environment';
 
 export interface ExtendedSettings extends Settings {
@@ -21,6 +20,9 @@ export declare class ReportReferenceValues {
     label: string;
 }
 
+/**
+ * Extended Settings Definition
+ */
 @Injectable()
 export class ExtendedSettingsService extends SettingsService<Settings> {
     constructor() {
