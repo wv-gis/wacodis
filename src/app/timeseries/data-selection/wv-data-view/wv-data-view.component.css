@@ -1,14 +1,8 @@
 .selectContent {
-    /* right: 0; */
-    /* left: 0; */
-    /* top: 48px; */
-    /* bottom: 0; */
-    /* padding: 2.5%; */
     overflow: auto;
     max-height: 850px;
     width: 100%;
     height: 100%;
-    /* position: fixed; */
 }
 .entry+.entry {
     border-left: solid 1px #dfe4e6;
@@ -17,7 +11,6 @@
 .center {
     margin-left: auto;
     margin-right: auto;
-    /* width: 523px; */
     height: 48px;
     border-right: solid 1px #dfe4e6;
     border-left: solid 1px #dfe4e6;
@@ -33,7 +26,6 @@ button{
 }
 #selectionBar{
         padding: 0;
-        /* position: absolute; */
         width: 100%;
         background-color: #718296;
         color: #fff;
@@ -69,8 +61,6 @@ button{
 
 .backgroundImage {
     width: 100%;
-    /* top: 48px; */
-    /* height: 95%; */
     display: block;
     position: relative;
      
@@ -90,9 +80,7 @@ button{
      background-size: cover; 
      background-position: center;
  }
- /* wv-menu-bar div.selectionsMenu{
-    position: relative;
- } */
+
  .mapContent {
     position: absolute;
     left: 400px;
@@ -156,7 +144,6 @@ n52-station-map-selector{
     width: 400px;
 }
 .phenomena .phenomenonSelector {
-    /* overflow: auto; */
     display: none;
 }
 

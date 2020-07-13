@@ -4,16 +4,15 @@ import {  HelgolandServicesConnector, DatasetType } from '@helgoland/core';
 import { TranslateService } from '@ngx-translate/core';
 import { SelectedProviderService } from 'src/app/services/selected-provider.service';
 
-
+/**
+ * Extended MultiServiceFilterSelectorComponent to add styling informations and missing uoms
+ */
 @Component({
   selector: 'wv-extended-multiservice-filter-selector',
   templateUrl: './wv-extended-multiservice-filter-selector.component.html',
   styleUrls: ['./wv-extended-multiservice-filter-selector.component.css']
 })
 export class WvExtendedMultiserviceFilterSelectorComponent extends MultiServiceFilterSelectorComponent implements OnInit {
-
-
-
 
   public selectedItems = [];
   public endpoint: MultiServiceFilterEndpoint = this.endpoint;
@@ -35,11 +34,21 @@ export class WvExtendedMultiserviceFilterSelectorComponent extends MultiServiceF
  
   }
 
+  /**
+   * set the items selected to style it based on selection
+   * @param item selected item
+   */
   onSelectItem(item: FilteredParameter) {
     super.onSelectItem(item);
     this.selectedItems = [];
     this.selectedItems.push(item.label);
   }
+
+  /**
+   * when a new parameter is selected in list add selection to filter lIst
+   * add uom to shown parameters
+   * @param changes 
+   */
   ngOnChanges(changes: SimpleChanges) {
     super.ngOnChanges(changes);
 
@@ -59,7 +68,6 @@ export class WvExtendedMultiserviceFilterSelectorComponent extends MultiServiceF
           lang: this.filterList[0].filter.lang,
           type:DatasetType.Timeseries}).subscribe((res) => {
         res.forEach((ts) => {
-          // console.log(ts.uom + ' Filter: ' + JSON.stringify(this.filterList[0].filter));
           if (ts.uom != 'mNHN') {
             this.uoms.push(ts.uom);
             this.uoms = this.uoms.filter((value, i, self) => self.indexOf(value) === i);

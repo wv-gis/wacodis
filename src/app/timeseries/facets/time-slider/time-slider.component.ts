@@ -1,13 +1,16 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FacetSearchService } from '@helgoland/facet-search';
 import { Timespan } from '@helgoland/core';
-
 import moment, { Duration } from 'moment';
 
 
 export interface StepDefinition{
   value:number,
 }
+
+/**
+ * Component to select timeseries data by time
+ */
 @Component({
   selector: 'wv-time-slider',
   templateUrl: './time-slider.component.html',
@@ -23,18 +26,27 @@ export class WvTimeSliderComponent implements OnInit {
 
   constructor() { }
 
+
+  /**
+   * set selected timespan and parameters based on default selection
+   */
   ngOnInit() {
     this.slider = <HTMLInputElement>document.getElementById("myRange");
     this.facetSearchService.getResults().subscribe(() => this.fetchTime());
- 
- 
+   }
 
-  }
+  /**
+   * update time values based on selection to update parameter list
+   */
   public updateTime() {
     const timespan = new Timespan(this.minVal, this.maxVal);
     this.facetSearchService.setSelectedTimespan(timespan);
   }
 
+
+  /**
+   * get selected timespan
+   */
   private fetchTime() {
     // this.supportsTimefilter = false;
     const completeTs = this.facetSearchService.getCompleteTimespan();
@@ -57,6 +69,11 @@ export class WvTimeSliderComponent implements OnInit {
     }
   }
 
+  /**
+   * receive the timestops within the time filter which define the timespan to plot
+   * @param timespan 
+   * @param duration 
+   */
   private getTimeStops(timespan: Timespan, duration: Duration): StepDefinition[] {
     if (timespan) {
       const startTime = moment(timespan.from);
@@ -76,6 +93,10 @@ export class WvTimeSliderComponent implements OnInit {
     }
   }
 
+  /**
+   * find Duration of selected timespan
+   * @param timespan 
+   */
   private findDuration(timespan: Timespan) {
     if (timespan) {
       const diff = timespan.to - timespan.from;

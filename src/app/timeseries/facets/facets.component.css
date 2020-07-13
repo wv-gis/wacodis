@@ -1,6 +1,5 @@
 .facet{
     overflow: hidden;
-    /* max-height: 250px; */
     display: flex;
     flex-direction: column;
     flex: 1;

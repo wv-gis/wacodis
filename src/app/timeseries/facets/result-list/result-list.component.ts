@@ -1,9 +1,13 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ResultListComponent } from '@helgoland/facet-search';
 import { Timeseries, DatasetService, DatasetOptions } from '@helgoland/core';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 
+
+/**
+ * Component to show the selected timeseries in a layer list
+ */
 @Component({
   selector: 'wv-result-list',
   templateUrl: './result-list.component.html',
@@ -22,6 +26,10 @@ export class WvResultListComponent extends ResultListComponent implements OnInit
     this.subscribe = this.facetSearchService.getResults().subscribe(ts => this.timeseries = ts);
   }
 
+  /**
+   * add or rmove timeseries based on containing value
+   * @param ts 
+   */
   toggleTs(ts: Timeseries) {
     if (this.timeseriesService.hasDataset(ts.internalId)) {
       this.timeseriesService.removeDataset(ts.internalId);
@@ -32,6 +40,10 @@ export class WvResultListComponent extends ResultListComponent implements OnInit
     }
     this.router.navigateByUrl('/timeseries-diagram');
   }
+
+  /**
+   * unsubscribe on leaving of page
+   */
   ngOnDestroy() {
     this.subscribe.unsubscribe();
   }
