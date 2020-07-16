@@ -17,8 +17,6 @@ import { ChlorophyllViewComponent } from './copernicus/products/chlorophyll-view
 import { VitalityViewComponent } from './copernicus/products/vitality-view/vitality-view.component';
 import { LandCoverComponent } from './copernicus/products/land-cover/land-cover.component';
 import { SingleResultViewComponent } from './swat/views/sediment/single-result-view/single-result-view.component';
-import { SingleNitrogenResultViewComponent } from './swat/views/nitrogen/single-nitrogen-result-view/single-nitrogen-result-view.component';
-import { ScenarioComparisonNitrogenViewComponent } from './swat/views/nitrogen/scenario-comparison-nitrogen-view/scenario-comparison-nitrogen-view.component';
 import { ScenarioComparisonViewComponent } from './swat/views/sediment/scenario-comparison-view/scenario-comparison-view.component';
 
 const routes: Routes = [
