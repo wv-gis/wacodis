@@ -2,9 +2,19 @@ import { Component, OnInit } from '@angular/core';
 import * as L from "leaflet";
 import { MapCache } from '@helgoland/map';
 import * as esri from "esri-leaflet";
+import { ActivatedRoute } from '@angular/router';
 declare var require;
 require('esri-leaflet-renderers');
 require('leaflet.sync');
+
+const sedParam: string[]=  ["OBJECTID", "rsv_yearavg_csv_SED_OUT", "rsv_yearavg_csv_SED_IN", "rsv_yearavg_csv_SED_CONC",
+"rsv_yearavg_csv_Name", "rsv_yearavg_csv_ResID"];
+
+const nitroParam: string[]= ["OBJECTID", "rsv_yearavg_csv_ORGN_OUT", "rsv_yearavg_csv_ORGN_IN", "rsv_yearavg_csv_ORGP_IN",
+"rsv_yearavg_csv_ORGP_OUT","rsv_yearavg_csv_RES_ORGP","rsv_yearavg_csv_NO3_IN","rsv_yearavg_csv_NO3_OUT",
+"rsv_yearavg_csv_RES_NO3","rsv_yearavg_csv_NO2_IN","rsv_yearavg_csv_NO2_OUT","rsv_yearavg_csv_RES_NO2",
+"rsv_yearavg_csv_NH3_IN","rsv_yearavg_csv_NH3_OUT","rsv_yearavg_csv_RES_NH3",
+  "rsv_yearavg_csv_Name", "rsv_yearavg_csv_ResID"];
 
 @Component({
   selector: 'wv-scenario-comparison-view',
@@ -32,12 +42,33 @@ export class ScenarioComparisonViewComponent implements OnInit {
   public selSzenario_id_r = 1;
   public showBarChart : boolean = false;
   public featureTSLayerUrl = "https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/ArcGIS/rest/services/SWATimClient/FeatureServer";
+  public params: string[];
+  public param: string;
+  public idInfo: number;
 
-
-  constructor(private mapCache: MapCache) { }
+  constructor(private mapCache: MapCache, private router: ActivatedRoute) { }
 
   // set default maps with layout and configuration and ad  Layers, finally sync both maps
   ngOnInit() {
+
+    this.router.url.subscribe((obs)=>{
+      switch(obs[0].path){
+        case 'substrance-entries-sediment':{
+          this.params = sedParam;
+          this.param = 'Sedimente';
+          this.idInfo = 0;
+          break;
+        }
+        case 'substrance-entries-nitrogen':{
+          this.params = nitroParam;
+          this.param = 'Stickstoff';
+          this.idInfo = 1;    
+          break;
+        }
+      }
+    });
+
+
     this.showBarChart = true;
     this.wmsLayer = L.tileLayer.wms('http://ows.terrestris.de/osm/service?',
     {
@@ -72,8 +103,7 @@ export class ScenarioComparisonViewComponent implements OnInit {
   
   this.mainMap.addLayer(esri.featureLayer({
     url: "https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/ArcGIS/rest/services/SWATimClient/FeatureServer/" + this.szenarioTS_ID[this.selSzenario_id_l],
-    fields: ["OBJECTID", "rsv_yearavg_csv_SED_OUT", "rsv_yearavg_csv_SED_IN", "rsv_yearavg_csv_SED_CONC",
-      "rsv_yearavg_csv_Name", "rsv_yearavg_csv_ResID"],pane: 'FirstLayer'
+    fields:this.params,pane: 'FirstLayer'
   }));
   
   
@@ -85,8 +115,7 @@ export class ScenarioComparisonViewComponent implements OnInit {
   }));
   this.szenarioMap.addLayer(esri.featureLayer({
     url: "https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/ArcGIS/rest/services/SWATimClient/FeatureServer/" + this.szenarioTS_ID[this.selSzenario_id_r],
-    fields: ["OBJECTID", "rsv_yearavg_csv_SED_OUT", "rsv_yearavg_csv_SED_IN", "rsv_yearavg_csv_SED_CONC",
-      "rsv_yearavg_csv_Name", "rsv_yearavg_csv_ResID"],pane: 'TopLayer'
+    fields:this.params,pane: 'TopLayer'
   }));
 
 

@@ -2,9 +2,16 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import * as L from "leaflet";
 import { MapCache } from '@helgoland/map';
 import * as esri from "esri-leaflet";
+import { ActivatedRoute } from '@angular/router';
 declare var require;
 require('esri-leaflet-renderers');
+require('leaflet.sync');
 
+const materialParam: string[] = ["OBJECTID", "rsv_yearavg_csv_ORGN_OUT", "rsv_yearavg_csv_ORGN_IN", "rsv_yearavg_csv_NO3_IN", "rsv_yearavg_csv_NO2_IN", "rsv_yearavg_csv_NO3_OUT",
+  "rsv_yearavg_csv_NO2_OUT", "rsv_yearavg_csv_NH3_IN", "rsv_yearavg_csv_NH3_OUT",
+  "rsv_yearavg_csv_Name", "rsv_yearavg_csv_ResID"];
+const sedimentParam: string[] = ["OBJECTID", "rsv_yearavg_csv_SED_OUT", "rsv_yearavg_csv_SED_IN", "rsv_yearavg_csv_SED_CONC",
+  "rsv_yearavg_csv_Name", "rsv_yearavg_csv_ResID"];
 
 @Component({
   selector: 'wv-single-result-view',
@@ -43,19 +50,42 @@ export class SingleResultViewComponent implements OnInit, OnDestroy {
   public selSzenarioHRU: number[] = [3, 6];
   public selSzen_Id: number = 0;
   public baseLayers: L.Layer[] = [];
+  public params: string[];
+  public barId: number ;
+  public param: string = '';
 
-  constructor(private mapCache: MapCache) { }
+  constructor(private mapCache: MapCache, private router: ActivatedRoute) { 
+ 
+  }
   ngOnDestroy(): void {
     this.mapCache.deleteMap(this.szenario2Id);
     this.mapCache.deleteMap(this.szenarioLUId);
     this.mapCache.deleteMap(this.szenarioOutputId);
     this.mapCache.deleteMap(this.szenarioSlopeId);
     this.mapCache.deleteMap(this.szenarioSoilId);
+  
   }
 
   ngOnInit() {
-   this.createBaseMap();
 
+   this.router.url.subscribe((obs)=>{
+    console.log(obs[0].path);
+    switch(obs[0].path){
+      case 'substrance-entries-sediment':{
+        this.params = sedimentParam;
+        this.barId = 0;     
+        this.param = 'Sedimente';
+        break;
+      }
+      case 'substrance-entries-nitrogen':{
+        this.params = materialParam;    
+        this.barId = 1;
+        this.param = 'Stickstoff';
+        break;
+      }
+    }
+  });
+  this.createBaseMap();
   }
 
 /**
@@ -104,12 +134,17 @@ this.featureHRULayer = (esri.featureLayer({
 
 this.featureTSLayer = esri.featureLayer({
   url: "https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/ArcGIS/rest/services/SWATimClient/FeatureServer/" + this.selSzenarioTS[this.selSzen_Id],
-  fields: ["OBJECTID", "rsv_yearavg_csv_SED_OUT", "rsv_yearavg_csv_SED_IN", "rsv_yearavg_csv_SED_CONC",
-    "rsv_yearavg_csv_Name", "rsv_yearavg_csv_ResID"], onEachFeature: (feature, layer) => {
+  fields: this.params, onEachFeature: (feature, layer) => {
 
       layer.bindPopup(function (l) {
-        return L.Util.template('<p>Sediment Konzentration <strong>{rsv_yearavg_csv_SED_CONC}</strong> [mg/L] pro Zeitschritt in der  {rsv_yearavg_csv_Name}-Talsperre.</p>', feature.properties);
-      });
+        if(feature.properties.rsv_yearavg_csv_ORGN_OUT){
+          return L.Util.template('<p>Organischer Stickstoff-Austrag <strong>{rsv_yearavg_csv_ORGN_OUT}</strong> [kg/m³]  pro Jahr an der  {rsv_yearavg_csv_Name}-Talsperre.</p>',
+           feature.properties);
+        }else{
+          return L.Util.template('<p>Sediment Konzentration <strong>{rsv_yearavg_csv_SED_CONC}</strong> [mg/L] pro Zeitschritt in der  {rsv_yearavg_csv_Name}-Talsperre.</p>', 
+          feature.properties);
+        }
+       });
 
     }, pane: 'TopLayer'
 }).addTo(this.szenarioMap);
@@ -137,6 +172,19 @@ this.featureTSLayer.bringToFront();
       this.mapCache.setMap(this.szenarioSoilId, this.soilMap);
       this.mapCache.setMap(this.szenarioOutputId, this.sedOutputMap);
       this.mapCache.setMap(this.szenarioLUId, this.landUseMap);
+
+      this.slopeMap.sync(this.soilMap);
+      this.slopeMap.sync(this.landUseMap);
+      this.slopeMap.sync(this.sedOutputMap);
+      this.sedOutputMap.sync(this.slopeMap);
+      this.sedOutputMap.sync(this.landUseMap);
+      this.sedOutputMap.sync(this.soilMap);
+      this.landUseMap.sync(this.soilMap);
+      this.landUseMap.sync(this.sedOutputMap);
+      this.landUseMap.sync(this.slopeMap);
+      this.soilMap.sync(this.slopeMap);
+      this.soilMap.sync(this.sedOutputMap);
+      this.soilMap.sync(this.landUseMap);
 
       this.slopeMap.addLayer(this.wmsLayer);
       this.soilMap.addLayer(L.tileLayer.wms('http://ows.terrestris.de/osm/service?',
@@ -229,6 +277,26 @@ this.featureTSLayer.bringToFront();
     this.slopeMap.addLayer(esri.dynamicMapLayer({
       url: "https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/SWATimClient_Slope/MapServer",
       layers: [t.feature.id]
+    }).bindPopup((e, featureCol, res) => {
+      let prop = featureCol.features[0].properties.OID;
+      let val;
+      switch (prop) {
+        case '1': {
+          val = '0-3%';
+          return val ? val : false;
+
+        }
+        case '2': {
+          val = '3-12%';
+          return val ? val : false;
+
+        }
+        case '3': {
+          val = '>12%';
+          return val ? val : false;
+        }
+      }
+
     })).fitBounds(t._bounds);
   
 
@@ -239,7 +307,13 @@ this.featureTSLayer.bringToFront();
       where: 'hru_yearavg_csv_SUBBASIN=' + t.feature.id,  onEachFeature: (feature, layer) => {
 
         layer.bindPopup(function (l) {
-          return L.Util.template('<p>Sedimentaustrag von <strong>{hru_yearavg_csv_SYLD} [t/ha/a]</strong>.</p>', feature.properties);
+          if(feature.properties.hru_yearavg_csv_SYLD){
+            return L.Util.template('<p>Sedimentaustrag von <strong>{hru_yearavg_csv_SYLD} [t/ha/a]</strong>.</p>',
+             feature.properties);
+          }else{
+            return L.Util.template('<p>Stoffaustrag von <strong>{hru_yearavg_csv_SYLD} [t/ha/a]</strong>.</p>', 
+            feature.properties);
+          }
         });
 
       }
@@ -263,6 +337,19 @@ this.featureTSLayer.bringToFront();
       this.mapCache.deleteMap(this.szenarioSoilId);
       this.mapCache.deleteMap(this.szenarioLUId);
       this.mapCache.deleteMap(this.szenarioOutputId);
+
+      this.slopeMap.unsync(this.soilMap);
+      this.slopeMap.unsync(this.landUseMap);
+      this.slopeMap.unsync(this.sedOutputMap);
+      this.sedOutputMap.unsync(this.slopeMap);
+      this.sedOutputMap.unsync(this.landUseMap);
+      this.sedOutputMap.unsync(this.soilMap);
+      this.landUseMap.unsync(this.soilMap);
+      this.landUseMap.unsync(this.sedOutputMap);
+      this.landUseMap.unsync(this.slopeMap);
+      this.soilMap.unsync(this.slopeMap);
+      this.soilMap.unsync(this.sedOutputMap);
+      this.soilMap.unsync(this.landUseMap);
     }
  
     this.addLayer();
