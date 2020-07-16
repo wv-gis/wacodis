@@ -77,9 +77,9 @@ export class TSBarChartComponent implements OnInit, AfterViewInit, OnChanges {
             type: "bar",
             x: this.labels,
             y: this.values,
-            marker: {
-              color: this.colorRgb
-            },
+            // marker: {
+            //   color: this.colorRgb
+            // },
             name: this.title[this.input]
           },
           ];
