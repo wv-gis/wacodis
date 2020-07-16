@@ -1,27 +1,15 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import * as esri from 'esri-leaflet';
 import { GeoSearchOptions, LayerOptions, MapCache } from '@helgoland/map';
-import { Phenomenon, SettingsService, Settings, HelgolandPlatform, HelgolandParameterFilter } from '@helgoland/core';
-// import { RequestTokenService } from 'src/app/services/request-token.service';
-// import BaseLayer from 'ol/layer/Base';
-// import Layer from 'ol/layer/Layer';
-// import TileLayer from 'ol/layer/Tile';
-// import { OlMapService } from '@helgoland/open-layers';
-// import { OSM, TileWMS, ImageArcGISRest } from 'ol/source';
-// import ImageLayer from 'ol/layer/Image';
-// import Map from 'ol/Map.js';
-// import { ScaleLine } from 'ol/control';
-// import { Tile } from 'ol/layer';
-// import ImageWMS from 'ol/source/ImageWMS';
-
+import {  SettingsService, Settings, HelgolandPlatform, HelgolandParameterFilter } from '@helgoland/core';
 import * as L from 'leaflet';
 import * as geojson from 'geojson';
-import { HttpClient } from '@angular/common/http';
 
-export interface WFSObject{
+
+export interface WFSObject {
   crs: L.CRS,
   bbox: L.LatLngBounds,
-  features:GeoJSON.Feature<geojson.Geometry,{[name:string]:any;}>[],
+  features: GeoJSON.Feature<geojson.Geometry, { [name: string]: any; }>[],
   numberMatched: number,
   numberReturned: number,
   timeStamp: string,
@@ -30,7 +18,6 @@ export interface WFSObject{
 }
 
 
-const senLayer = 'https://sentinel.arcgis.com/arcgis/rest/services/Sentinel2/ImageServer';
 const WvG_URL = 'http://fluggs.wupperverband.de/secman_wss_v2/service/WMS_WV_Oberflaechengewaesser_EZG/guest?';
 const wacodisUrl = "https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS";
 
@@ -39,27 +26,16 @@ const wacodisUrl = "https://gis.wacodis.demo.52north.org:6443/arcgis/rest/servic
   templateUrl: './selection-map.component.html',
   styleUrls: ['./selection-map.component.css']
 })
-export class SelectionMapComponent implements OnInit,AfterViewInit {
+/**
+ * Component to depict all imageServices 
+ */
+export class SelectionMapComponent implements OnInit, AfterViewInit {
 
 
   public searchOptions: GeoSearchOptions = { countrycodes: [] };
 
   public providerUrl: string = 'https://www.fluggs.de/sos2-intern-gis/api/v1/';//"http://www.fluggs.de/sos2/api/v1/";
-  // public label = 'Wupperverband Zeitreihen Dienst';
-  // public showZoomControl = true;
-  // public showAttributionControl = true;
-  public map: L.Map;
 
-  // public baselayers: BaseLayer[] = [];
-  // public overviewMapLayers: Layer[] = [new Tile({
-  //   source: new OSM()
-  // })];
-  // public zoom = 11;
-  // public lat = 51.15;
-  // public lon = 7.22;
-
-  public token: string = '';
-  public sentinelLayer: esri.ImageMapLayer;
   public mapId = 'test-map';
   public fitBounds: L.LatLngBoundsExpression = [[50.985, 6.924], [51.319, 7.607]];
   public zoomControlOptions: L.Control.ZoomOptions = { position: 'topleft' };
@@ -76,232 +52,94 @@ export class SelectionMapComponent implements OnInit,AfterViewInit {
   public statusIntervals = false;
   public mapOptions: L.MapOptions = { dragging: true, zoomControl: false };
 
-  constructor(private settingsService: SettingsService<Settings>, private mapCache: MapCache, private http: HttpClient) {
+  constructor(private settingsService: SettingsService<Settings>, private mapCache: MapCache) {
     if (this.settingsService.getSettings().datasetApis) {
       this.providerUrl = this.settingsService.getSettings().defaultService.apiUrl;
     }
   }
+
+  /**
+   * add Layer of WV area to map
+   */
   ngAfterViewInit(): void {
-   this.mapCache.getMap(this.mapId).addLayer(
-     L.tileLayer.wms(WvG_URL,{
-       layers: '0', format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; Wupperverband'
-     })
-   );
-   this.mapCache.getMap(this.mapId).eachLayer(layer=>{
-     console.log(layer);
-   })
+    this.mapCache.getMap(this.mapId).addLayer(
+      L.tileLayer.wms(WvG_URL, {
+        layers: '0', format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; Wupperverband'
+      })
+    );
+
   }
 
-
+/**
+ * set Basemap and its layers to show
+ */
   ngOnInit() {
 
     this.baseMaps.set(this.mapId,
-    {
+      {
         label: 'OSM-WMS', // will be shown in layer control
         visible: true, // is layer by default visible
         layer: L.tileLayer.wms(
           'http://ows.terrestris.de/osm/service?',
-            {
-              layers: 'OSM-WMS', format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-              className: 'OSM'
-            }
+          {
+            layers: 'OSM-WMS', format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+            className: 'OSM'
+          }
         )
-    }
-);
+      }
+    );
 
-var owsrootUrl ='https://maps.dwd.de/geoserver/ows'
-var defaultParameters = {
-  service : 'WFS',
-  version : '1.0.0',
-  request : 'GetFeature',
-  typeName : 'dwd:Warngebiete_Gemeinden',
-  outputFormat : 'json',
-
-  SrsName : 'EPSG:4326',
-  bbox: [6.931480768257253 ,50.985442631315017, 7.6070891893169446 ,51.319011561985782],
-};
-
-var parameters = L.Util.extend(defaultParameters);
-var URL = owsrootUrl + L.Util.getParamString(parameters);
-
-let resp = this.http.get(URL);
-resp.subscribe((re: WFSObject)=>{
-  console.log(re.features);
- let selected;
-  let featurecollection: GeoJSON.FeatureCollection ={
-    type: 'FeatureCollection',
-    features: re.features,
-  } 
-   this.baselayers.push( L.geoJSON(featurecollection,{
-     onEachFeature: function (feature, layer) {
-		layer.bindPopup("<b>" + feature.properties.NAME + '</b><br />'
-      + feature.properties.STATE);
-    
-  }, 'style': function () {
-    return {
-      'color': 'yellow',
-    }
-  }
-}).on('click', function (e) {
-  // Check for selected
-  if (selected) {
-    // Reset selected to default style
-    e.target.resetStyle(selected)
-  }
-  // Assign new selected
-  selected = e.target;
-  console.log(e.target);
-  // Bring selected to front
-  selected.bringToFront()
-  // Style selected
-  selected.setStyle({
-    'color': 'red'
-  })
-}).bringToFront());
-  // });
-  
-
-});   
-
-// this.mapService.getMap(this.mapId).subscribe((map) => {
-    //   map.getLayers().clear();
-    //   map.addControl(new ScaleLine({ units: "metric" }));
-    //   map.addLayer(new Tile({
-    //     source: new OSM()
-    //   }));
-
-    //   map.addLayer(new ImageLayer({
-    //     visible: true,
-    //     opacity: 0.5,
-    //     source: new ImageWMS({
-    //       url: WvG_URL,
-    //       params: {
-    //         'LAYERS': '0',
-    //       },
-    //     })
-    //   }));
-    // });
-
-    // this.baselayers.push(new TileLayer({
-    //   visible: true,
-    //   source: new TileWMS({
-    //     url: 'https://maps.dwd.de/geoserver/ows',
-    //     params: {
-    //       'LAYERS': 'dwd:RX-Produkt',
-    //     }
-    //   })
-    // }));
-
-    // this.baselayers.push(new TileLayer({
-    //   visible: false,
-    //   source: new TileWMS({
-    //     url: 'https://maps.dwd.de/geoserver/ows',
-    //     params: {
-    //       'LAYERS': 'dwd:FX-Produkt',
-    //     }
-    //   })
-    // }));
-    // this.baselayers.push(new ImageLayer({
-    //   visible: false,
-    //   source: new ImageWMS({
-    //     url: ' https://www.wms.nrw.de/umwelt/waldNRW',
-    //     attributions: "Datenlizenz Deutschland – Namensnennung – Version 2.0",
-    //     params: {
-    //       'LAYERS': 'waldbedeckung_Sentinel2',
-    //     }
-    //   })
-    // }));
-
-
-    // let imgSource = new ImageWMS({
-    //   params: {
-    //     'LAYERS': "EO_WACODIS_DAT_INTRA_LAND_COVER_CLASSIFICATION_Service",
-    //   },
-    //   url: "https://gis.wacodis.demo.52north.org:6443/arcgis/services/WaCoDiS/EO_WACODIS_DAT_INTRA_LAND_COVER_CLASSIFICATION_Service/ImageServer/WMSServer",
-    //   crossOrigin: "anonymous"
-    // });
-
-
-    // this.baselayers.push(new ImageLayer({visible: false, source: imgSource}));
-
+   
     esri.imageMapLayer({ url: wacodisUrl }).metadata((error, metadata) => {
       if (error) {
         console.log("Error with image service: " + error)
       } else {
         metadata["services"].forEach(element => {
           if (element["type"] == 'ImageServer') {
-            // this.baselayers.push(
-            //   new ImageLayer({
-            //     visible: false,
-            //     source: new ImageArcGISRest({
-            //       ratio: 1,
-            //       params: {
-            //         'LAYERS': element["name"].split("/")[1],
-            //       },
-            //       url: wacodisUrl + "/" + element["name"].split("/")[1] + "/" + element["type"]
-            //     })
-            //   })
-            // );
-             this.baselayers.push(
+
+            this.baselayers.push(
               (esri.imageMapLayer({
                 url: wacodisUrl + "/" + element["name"].split("/")[1] + "/" + element["type"],
                 maxZoom: 16, opacity: 0, alt: element["name"].split("/")[1]
               }))
             );
-         
-            // this.overlayMaps.set(element["name"].split("/")[1],
-            //   {
-            //       label: element["name"].split("/")[1], // will be shown in layer control
-            //       visible: true, // is layer by default visible
-            //       layer: (esri.imageMapLayer({
-            //         url: wacodisUrl + "/" + element["name"].split("/")[1] + "/" + element["type"],
-            //         maxZoom: 16, opacity: 0.8, alt: element["name"].split("/")[1]
-            //       }))
-            //   });
+
           }
 
         });
-        this.baselayers.forEach((blayer,i,arr)=>{
+        this.baselayers.forEach((blayer, i, arr) => {
           this.mapCache.getMap(this.mapId).addLayer(blayer);
+          if (blayer instanceof esri.ImageMapLayer) {
+            if (blayer.options.alt == 'EO_WACODIS_DAT_VEGETATION_DENSITY_LAIService'){
+            
+              blayer.setRenderingRule(
+                {
+                  "rasterFunction" : "Mask",
+                  "rasterFunctionArguments" : {
+                     "NoDataValues" : ["2.2250738585072014e-308"],
+                     "IncludedRanges" : [0,1],
+                     "NoDataInterpretation" : 0
+                     },    "variableName" : "Raster"
+                }
+              );
+            }
+         
+      
+          }
         });
         L.control.scale().addTo(this.mapCache.getMap(this.mapId));
       }
     });
-
-
-
-
-    //   this.mapService.getMap(this.mapId).subscribe((map) => {
-    //   map.on('singleclick', function(evt) {
-    //     document.getElementById('info').innerHTML = '';
-    //     var viewResolution = /** @type {number} */ (map.getView().getResolution());
-    //     var url = imgSource.getGetFeatureInfoUrl(
-    //       evt.coordinate, viewResolution, 'EPSG:25832',
-    //       {'INFO_FORMAT': 'text/html'});
-    //     if (url) {
-    //       fetch(url)
-    //         .then(function (response) { return response.text(); })
-    //         .then(function (html) {
-    //           document.getElementById('info').innerHTML = html;
-    //         });
-    //     }
-    //   });
-    // });
-
   }
 
+  /**
+   * when station is selected in the map open an alert to show the label of the selected station
+   * @param station selected station
+   */
   public onStationSelected(station: HelgolandPlatform) {
     alert(station.label);
     console.log(station);
 
   }
-
-
-  public onSelectPhenomenon(phenomenon: Phenomenon) {
-    // this.stationFilter = {
-    //   phenomenon: phenomenon.id
-    // };
-  }
-
 
 }

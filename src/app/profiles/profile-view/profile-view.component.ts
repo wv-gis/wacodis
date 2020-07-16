@@ -1,10 +1,9 @@
-import { Component, OnInit, ViewChild, ElementRef, HostListener, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef,  AfterViewInit } from '@angular/core';
 import { CsvDataService } from 'src/app/settings/csvData.service';
 import * as d3 from 'd3';
 import Plotly from 'plotly.js-dist';
 
 
-const itemsPerPage = 10;
 const colorRgb = [
   'rgb(230,25,75)',
   'rgb(245,130,49)',
@@ -45,38 +44,27 @@ export interface InterDataset {
 
 }
 
-
 @Component({
   selector: 'wv-profile-view',
   templateUrl: './profile-view.component.html',
   styleUrls: ['./profile-view.component.css']
 })
-
+/**
+ * Component to plot isoplethen graph based on selected parameters such as measure Parameter, station and drawing of isolines
+ */
 export class ProfileViewComponent implements OnInit, AfterViewInit {
 
-  @HostListener('window:resize', ['$event'])
-  public onWindowResize(event: Event) {
-    this.onResize();
-  }
+  // @HostListener('window:resize', ['$event'])
+  // public onWindowResize(event: Event) {
+  //   this.onResize();
+  // }
 
   @ViewChild('depthGraph', {static: false})
   public d3Elem: ElementRef;
 
   @ViewChild('profileGraph', {static: false})
   public profileElem: ElementRef;
-
-  public headers: string[] = [];
-  public entries = [];
-  public entry;
-  public responseText: string;
-  public currentPage;
-  public dataArr: string[];
-  public bwlData: BwlDataset[] = [];
-  public svg: any;
-  public chart: any;
-  public pchart: any;
-  public profile: any;
-  public profileSvg: any;
+  
   public dataset: InterDataset[] = [];
   public responseInterp: string;
   public InterArr: string[];
@@ -86,8 +74,6 @@ export class ProfileViewComponent implements OnInit, AfterViewInit {
   public plot;
   public fixed: boolean = true;
   public even: boolean = false;
-
-
 
   //input parameters:
   private num_iso = 14;
@@ -107,9 +93,12 @@ export class ProfileViewComponent implements OnInit, AfterViewInit {
   public autocontourPara = false;
 
   constructor(protected csvService: CsvDataService) {
-    this.responseInterp = csvService.getCsvText();
+    // this.responseInterp = csvService.getCsvText();
   }
 
+  /**
+   * receive Data from csv file to plot profile dataset
+   */
   ngOnInit() {
     let csvInterArray = this.responseInterp.split(/\r\n|\n/);
 
@@ -148,17 +137,20 @@ export class ProfileViewComponent implements OnInit, AfterViewInit {
  
   }
 
+  /**
+   * set the input parameters based on the selected form
+   */
   ngAfterViewInit(): void {
-    this.svg = d3.select("#d3Graph").append("div")
-      .style('width', '100%')
-      .style('height', '100%')
-      .classed("svg-container", true)
-      .append("svg")
-      .attr('width', '100%')
-      .attr('height', '100%');
+    // this.svg = d3.select("#d3Graph").append("div")
+    //   .style('width', '100%')
+    //   .style('height', '100%')
+    //   .classed("svg-container", true)
+    //   .append("svg")
+    //   .attr('width', '100%')
+    //   .attr('height', '100%');
 
-    this.chart = this.svg.append('g')
-      .attr('transform', 'translate(' + margin.left + "," + margin.top + ")");
+    // this.chart = this.svg.append('g')
+    //   .attr('transform', 'translate(' + margin.left + "," + margin.top + ")");
 
 
     document.forms.item(0).addEventListener("click", listener => {
@@ -182,102 +174,33 @@ export class ProfileViewComponent implements OnInit, AfterViewInit {
 
       }
     });
-
-    // this.createDepthView();
+  
   }
+/**
+ * change the measure Param to be shown
+ * @param param  selected measure Param
+ */
   public changeMeasureParam(param: string) {
     this.selectMeasureParam = param;
   }
+  /**
+   * set Date based on selection
+   * @param fromDate selected/defined Date
+   */
   public changeFromDate(fromDate: Date) {
     this.defaultDate = fromDate;
   }
+  /**
+   * set selected Station to calculate the plot for
+   * @param stat selected station
+   * @param index selected Index of dropdown
+   */
   public changeSamplingStation(stat: string, index: number){
     this.dam_label = this.samplingStationLabels[index];
   }
 
-  protected onResize(): void {
-    // this.createDepthView();
-  }
-  public createDepthView() {
-
-    let data: InterDataset[] = [{
-      depth: 10,
-      value: 8.1
-    },
-    {
-      depth: 12,
-      value: 7.92
-    }, {
-      depth: 14,
-      value: 7.35
-    }, {
-      depth: 16,
-      value: 7.04
-    }, {
-      depth: 18,
-      value: 7.10
-    }, {
-      depth: 20,
-      value: 7.10
-    }, {
-      depth: 22,
-      value: 6.63
-    }, {
-      depth: 24,
-      value: 6.23
-    }, {
-      depth: 26,
-      value: 6.24
-    }, {
-      depth: 28,
-      value: 6.13
-    },
-    {
-      depth: 30,
-      value: 5.93
-    },
-    ];
-
-
-    let secData: InterDataset[] = [{
-      depth: 10,
-      value: 0.50
-    },
-    {
-      depth: 12,
-      value: 0.50
-    }, {
-      depth: 14,
-      value: 0.50
-    }, {
-      depth: 16,
-      value: 0.50
-    }, {
-      depth: 18,
-      value: 0.50
-    }, {
-      depth: 20,
-      value: 2.10
-    }, {
-      depth: 22,
-      value: 2.10
-    }, {
-      depth: 24,
-      value: 2.10
-    }, {
-      depth: 26,
-      value: 2.10
-    }, {
-      depth: 28,
-      value: 2.10
-    }, {
-      depth: 30,
-      value: 2.20
-    },
-    ];
-
+ 
   
-  }
 
   // set Definitions for Isoplethen diagram and create Graph
   public createIsoPlot() {

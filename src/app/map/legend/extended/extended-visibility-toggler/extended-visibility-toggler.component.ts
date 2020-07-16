@@ -14,7 +14,9 @@ export class ExtendedVisibilityTogglerComponent {
 
   constructor() { }
  
-
+/**
+ * when layers visibility is toggled set the reverse visibilty of layer
+ */
   public toggleVisibility() {
     if(this.layer instanceof L.TileLayer.WMS){
       if(this.layer.options.opacity == 0){

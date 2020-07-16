@@ -19,29 +19,11 @@ export class ExtendedOlLayerTitleComponent implements OnInit {
 
    }
 
+   /**
+    * receive and set the title of the selected Layer/Service Type
+    */
   ngOnInit() {
    
-    // const imageSource = this.layer.getSource();
-    // if(imageSource instanceof ImageWMS){
-    //   const imageUrl = imageSource.getUrl();
-    //   const layerId = imageSource.getParams()['layers'] || imageSource.getParams()['LAYERS'];
-    //   this.wmsCap.getTitle(layerId, imageUrl).subscribe(res => {       
-    //     this.title = res;
-    //   });
-    // }
-    // else if(imageSource instanceof ImageArcGISRest){
-    //   const restUrl = imageSource.getUrl();
-    //   esri.imageMapLayer({url: restUrl}).metadata((error, metadata)=>{
-    //     if(error){
-    //       console.log('Error on Image Service request')
-    //     }else{
-    //       if(metadata["name"])
-    //       this.title = metadata["name"].split("/")[1];
-    //     }
-       
-    //   });
-    // }
-        // let a;
      
          if(this.layer instanceof esri.ImageMapLayer){
           const restUrl = this.layer.options.alt;

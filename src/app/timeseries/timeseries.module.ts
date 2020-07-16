@@ -29,6 +29,7 @@ import { WvParameterFacetComponent } from './facets/parameter-facet/parameter-fa
 import { WvResultListComponent } from './facets/result-list/result-list.component';
 import { WvTimeSliderComponent } from './facets/time-slider/time-slider.component';
 import { HelgolandFacetSearchModule, FacetSearchService } from '@helgoland/facet-search';
+import { SwappToolboxModule } from 'swapp-toolbox';
 
 
 @NgModule({

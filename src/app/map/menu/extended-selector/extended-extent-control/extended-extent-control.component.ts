@@ -6,6 +6,9 @@ import { ExtentControlComponent } from '@helgoland/map';
   templateUrl: './extended-extent-control.component.html',
   styleUrls: ['./extended-extent-control.component.css']
 })
+/**
+ * Wrapper Component to set styling of ExtentControl Component
+ */
 export class ExtendedExtentControlComponent extends ExtentControlComponent {
 
 

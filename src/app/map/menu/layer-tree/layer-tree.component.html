@@ -13,15 +13,11 @@
           <wv-extended-ol-layer-title [layer]="layer"></wv-extended-ol-layer-title>
           <span class="fa fa-times" (click)="removeLayer(i)" style="float: right;"></span>
         </div>
-        <!-- <div>
-          <n52-ol-layer-abstract [layer]="layer"></n52-ol-layer-abstract>
-        </div> -->
          <div>
           <wv-extended-layer-abstract [layer]="layer"></wv-extended-layer-abstract>
         </div>
         <div class="legendicons">         
-          <!-- [ngClass]="{'fa-eye-slash': !layer?.getVisible(), 'fa-eye': layer?.getVisible()}" -->
-          <!-- <span style="margin: 5px;" class="fa"  (click)="toggleVisibility(layer)"></span> -->
+ 
           <wv-extended-visibility-toggler [layer]="layer"></wv-extended-visibility-toggler>
           <wv-extended-ol-layer-zoom-extent [layer]="layer" [mapId]="mapId"></wv-extended-ol-layer-zoom-extent>
           <wv-extended-ol-layer-legend-url [layer]="layer" (legendUrl)="getLegendUrl($event)" (legendUrls)="getLegendUrls($event)">
@@ -35,9 +31,6 @@
         <div>
           <wv-extended-ol-layer-time-selector [layer]="layer" [mapId]='mapId' (selIndexTime)="getSelectedTime($event)"></wv-extended-ol-layer-time-selector>
         </div>
-        <!-- <div class="legendicons">
-          <wv-extended-ol-layer-animate-time [layer]="layer"></wv-extended-ol-layer-animate-time>
-        </div> -->
       </div>
     </div>
   </div>

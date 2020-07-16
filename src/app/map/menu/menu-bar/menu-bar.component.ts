@@ -9,6 +9,10 @@ import { SelectedProviderService } from 'src/app/services/selected-provider.serv
   templateUrl: './menu-bar.component.html',
   styleUrls: ['./menu-bar.component.css']
 })
+/**
+ * Menu Component to select the provider used to receive timeseries data
+ * @Output send new selected provider to the belonging views to receive the data
+ */
 export class MenuBarComponent implements OnInit {
 
   public label = 'Wupperverband Zeitreihen Dienst';
@@ -24,6 +28,13 @@ export class MenuBarComponent implements OnInit {
   @Output()
   public onProviderSwitched: EventEmitter<String> = new EventEmitter<String>();
 
+  /**
+   * if a new service provider is selected from the list set it as the new data provider
+   * else set the default apiUrl of the settings as the data provider
+   * @param settingsService receive settings infos such as default API Url
+   * @param datasetApiInt receive all defined services and their informations
+   * @param selProv selected provider Service
+   */
   constructor(private settingsService: SettingsService<Settings>, private datasetApiInt: HelgolandServicesConnector, private selProv: SelectedProviderService) {
 
     if (settingsService.getSettings().datasetApis) {
@@ -52,6 +63,10 @@ export class MenuBarComponent implements OnInit {
   ngOnInit() {
   }
 
+  /**
+   * change the depicted label based on new selected provider and emit the change to the correspondening view components
+   * @param provider selected ServiceProvider
+   */
   switchProvider(provider: HelgolandService) {
     this.selectedService = provider;
     this.label = provider.label;

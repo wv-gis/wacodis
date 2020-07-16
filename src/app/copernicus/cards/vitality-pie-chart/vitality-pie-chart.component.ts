@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, OnChanges,  AfterViewInit } from '@angular/core';
 import { LatLngBounds, LatLng } from 'leaflet';
 import Plotly from 'plotly.js-dist';
-import * as esri from 'esri-leaflet';
 import { locale } from 'src/environments/environment.prod';
 
 @Component({
@@ -9,6 +8,17 @@ import { locale } from 'src/environments/environment.prod';
   templateUrl: './vitality-pie-chart.component.html',
   styleUrls: ['./vitality-pie-chart.component.css']
 })
+/**
+ * component for Visualization of Decreas or Increase in Vitality of forest for the specified reservoir
+ * as a pie chart
+ * @Input
+ * chartID --> Dom ID for the diagram
+ * service --> which dataset is the basis
+ * selectedTimeIndex --> 
+ * bounds --> bounds of the selected layer to calculate the dataset for
+ * categoryValues --> 
+ * colors -->
+ */
 export class VitalityPieChartComponent implements OnInit,OnChanges, AfterViewInit {
   @Input() selectedTimeIndex: number;
   @Input() chartId: string;
@@ -82,23 +92,15 @@ export class VitalityPieChartComponent implements OnInit,OnChanges, AfterViewIni
    }
  
    ngOnInit() {
-    // console.log(this.chartId);
-    //  if(this.bounds instanceof LatLngBounds){
-    //    let geometryType ='esriGeometryEnvelope';
-    //    let geometry ={"xmin":this.bounds.toBBoxString().split(',')[0],
-    //    "ymin": this.bounds.toBBoxString().split(',')[1],
-    //    "xmax":this.bounds.toBBoxString().split(',')[2],
-    //    "ymax":this.bounds.toBBoxString().split(',')[3],"spatialReference":{"wkid":4326}};
-    //    this.createPieChart(geometryType,geometry);
-    //  }else{
-    //    let geometryType ='esriGeometryPolygon';
-    //         let geometry ={"rings": this.bounds,"spatialReference":{"wkid":4326}};
-       
-    //    this.createPieChart(geometryType,geometry);
-    //  }
+  
     
    }
 
+
+   /***
+    * set Definition for pie chart,
+    * data, config and layout
+    */
    public createPieChart(geomType: string, geom: Object){
 
     Plotly.register(locale);

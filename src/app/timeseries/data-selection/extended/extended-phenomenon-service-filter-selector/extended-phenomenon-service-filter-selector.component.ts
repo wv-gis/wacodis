@@ -9,6 +9,9 @@ import { SelectedProviderService } from 'src/app/services/selected-provider.serv
   templateUrl: './extended-phenomenon-service-filter-selector.component.html',
   styleUrls: ['./extended-phenomenon-service-filter-selector.component.css']
 })
+/**
+ * Selection Component to filter the shown stations on map based on selection
+ */
 export class ExtendedPhenomenonServiceFilterSelectorComponent extends ServiceFilterSelectorComponent {
 
 
@@ -19,17 +22,28 @@ export class ExtendedPhenomenonServiceFilterSelectorComponent extends ServiceFil
   constructor(protected datasetApiInterface: HelgolandServicesConnector, protected translate: TranslateService, private selProv: SelectedProviderService) {
     super(translate, datasetApiInterface);
   }
-
+/**
+ * filter parameter list based on selected param
+ * @param item filtered Parameter selected
+ */
   onSelectItem(item: FilteredParameter) {
     super.onSelectItem(item);
     this.selectionID = item.id;
 
   }
+  /**
+   * remove filtered Parameter of phenomena list
+   */
   removeFilter() {
     this.onItemSelected.emit();
     this.selectionID = null;
     this.stationFilter.emit();
   }
+
+  /**
+   * set provider and phenomena list based on selected service
+   * @param changes changes to handle
+   */
   ngOnChanges(changes: SimpleChanges) {
     super.ngOnChanges(changes);
     this.selProv.getSelectedProvider().subscribe((res)=>{

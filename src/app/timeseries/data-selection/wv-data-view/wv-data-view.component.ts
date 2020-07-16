@@ -1,11 +1,9 @@
-declare var require;
 import { Component, OnInit,  OnDestroy } from '@angular/core';
 import { Provider, DatasetService, DatasetOptions,  SettingsService, Settings, Timeseries, HelgolandServicesConnector, HelgolandPlatform, DatasetType } from '@helgoland/core';
 import { Router } from '@angular/router';
 import { LayerOptions, MapCache } from '@helgoland/map';
 import * as L from 'leaflet';
 import { SelectedProviderService } from 'src/app/services/selected-provider.service';
-import * as esri from 'esri-leaflet';
 import { FacetSearchService } from '@helgoland/facet-search';
 import { Subscription } from 'rxjs';
 import { SelectableDataset } from '@helgoland/selector';
@@ -19,6 +17,9 @@ L.Icon.Default.mergeOptions({
 });
 
 
+/**
+ * FacetView with map for Dataset Selection to show in timeseries diagram
+ */
 @Component({
   selector: 'wv-data-view',
   templateUrl: './wv-data-view.component.html',
@@ -29,55 +30,7 @@ export class WvDataViewComponent implements OnInit, OnDestroy {
 
 
   public diagramEntry = false;
-  // public phenomenonParams: ListSelectorParameter[] = [
-  //   {
-  //     type: 'phenomenon',
-  //     header: 'Phänomen'
-  //   },
-  //   {
-  //     type: 'category',
-  //     header: 'Kategorie'
-  //   }, {
-  //     type: 'feature',
-  //     header: 'Station'
-  //   }, {
-  //     type: 'procedure',
-  //     header: 'Sensor'
-  //   }];
-
-  // public categoryParams: ListSelectorParameter[] = [{
-  //   type: 'category',
-  //   header: 'Kategorie',
-
-  // }, {
-  //   type: 'feature',
-  //   header: 'Station',
-
-  // }, {
-  //   type: 'phenomenon',
-  //   header: 'Phänomen',
-
-  // }, {
-  //   type: 'procedure',
-  //   header: 'Sensor',
-
-  // }];
-  // public stationParams: ListSelectorParameter[] = [
-  //   {
-  //     type: 'feature',
-  //     header: 'Station'
-  //   },
-  //   {
-  //     type: 'category',
-  //     header: 'Kategorie'
-  //   }, {
-  //     type: 'phenomenon',
-  //     header: 'Phänomen'
-  //   }, {
-  //     type: 'procedure',
-  //     header: 'Sensor'
-  //   }];
-
+  
   public isActive = true;
   public selectedProviderList: Provider[] = [];
   public baseMaps: Map<string, LayerOptions> = new Map<string, LayerOptions>();
@@ -86,9 +39,7 @@ export class WvDataViewComponent implements OnInit, OnDestroy {
   public zoomControlOptions: L.Control.ZoomOptions = { position: 'bottomleft' };
   public mapOptions: L.MapOptions = { dragging: true, zoomControl: true, boxZoom: false };
   public fitBounds: L.LatLngBoundsExpression = [[50.985, 6.924], [51.319, 7.607]];
-  // public cluster = true;
-  // public loadingStations: boolean;
-  // public stationFilter: ParameterFilter = {};
+
   public statusIntervals: boolean = true;
   public avoidZoomToSelection = false;
   public stationPopup: L.Popup;
@@ -99,7 +50,7 @@ export class WvDataViewComponent implements OnInit, OnDestroy {
   public selectedProviderUrl: string = '';
   public badgeNumber: number;
   public baseLayer: any;
-  // public testLayer: any;
+
   public _map: L.Map;
   public resultCount: number;
   public resultSubs: Subscription;
@@ -133,6 +84,9 @@ export class WvDataViewComponent implements OnInit, OnDestroy {
     this.timeseries = datasetService.datasetIds;
   }
 
+  /**
+   * set default Facet Search and MapView
+   */
   ngOnInit(): void {
 
     this.resultSubs = this.facetSearch.getResults().subscribe(ts => {this.resultCount = ts.length; });
@@ -143,15 +97,7 @@ export class WvDataViewComponent implements OnInit, OnDestroy {
        attribution: '&copy; 2019 &middot; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, <div>Icons made by <a href="https://www.flaticon.com/authors/simpleicon" title="SimpleIcon">SimpleIcon</a> from <a href="https://www.flaticon.com/"title="Flaticon">www.flaticon.com</a></div>'
        , className: 'OSM'
     });
-    // this.baseLayer = L.tileLayer.wms('https://maps.omniscale.net/v2/' + "fluggs-d9227d46" + '/style.default/{z}/{x}/{y}.png',
-    // {
-    //    format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; 2019 &middot; <a href="https://maps.omniscale.com/">Omniscale</a>', className: 'OSM'
-    // });
-
-  //   this.baseMaps.set('timeMap',
-  //     {
-  //       label: 'Open Street Map', visible: true, layer: this.baseLayer
-  // });
+  
     
   this.overlayMaps.set('wv-area',
   {
@@ -165,17 +111,12 @@ export class WvDataViewComponent implements OnInit, OnDestroy {
   }
 );
 
-
 }
-  // public onDatasetSelected(datasets: IDataset[]) {
-  
-  //   for(let i = 0; i<datasets.length; i++){
-  //     this.datasetService.addDataset(datasets[i].internalId);
-  //   }
-  //     this.diagramEntry = !this.diagramEntry;
-  //     this.router.navigateByUrl('/timeseries-diagram');
-  // }
 
+/**
+ * change the provider to receive data from
+ * @param providerUrl selected new providerUrl
+ */
   public changeProvider(providerUrl: string) {
     this.selectedProviderList = [];
     this.selectedProviderList.push({
@@ -185,11 +126,19 @@ export class WvDataViewComponent implements OnInit, OnDestroy {
     this.selectedProviderUrl = providerUrl;
   }
 
+  /**
+   * move to diagram view component
+   * @param url route Url to jump to
+   */
  public moveToDiagram(url: string) {
     this.router.navigateByUrl(url);
 
   }
 
+  /**
+   * check for active route
+   * @param route current route
+   */
   public checkSelection(route: string) {
     if (this.router.isActive(route, true)) {
       return true;
@@ -200,6 +149,10 @@ export class WvDataViewComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * open popup on staion selection 
+   * @param elem station and corresponding url
+   */
   public onStationSelected(elem: { station: HelgolandPlatform, url: string }) {
     this._map = this.mapCache.getMap('timeMap');
     const point = elem.station.geometry as GeoJSON.Point;
@@ -246,16 +199,12 @@ export class WvDataViewComponent implements OnInit, OnDestroy {
   
     // this.facetSearch.getFilteredResults().filter(e => e.url === elem.url && e.station.id === elem.station.id);
   }
+  /**
+   * add or remove dataset selected and jump to diagram view 
+   * @param ts 
+   */
   public addDataset(ts: Timeseries) {
-        // for (let i = 0; i < this.entryLabel.length; i++) {
-        //   if (this.entryLabel[i] == entry) {
 
-        //     this.datasetService.addDataset(this.internalIDs[i]);
-        //     this.diagramEntry = !this.diagramEntry;
-        //     this.onCloseHandled();
-        //     this.moveToDiagram('/timeseries-diagram');
-        //   }
-    // }
     if (this.datasetService.hasDataset(ts.internalId)) {
       this.datasetService.removeDataset(ts.internalId);
     } else {
@@ -266,21 +215,18 @@ export class WvDataViewComponent implements OnInit, OnDestroy {
   
 
   }
+  /**
+   * when closing the model handle the belonging items
+   */
   public onCloseHandled() {
     this.display = 'none';
     this.entryLabel = [];
     this.stationPopup.closePopup();
   }
-  // public onSelectPhenomenon(phenomenon: Phenomenon) {
-  //   this.stationFilter = {
-  //     phenomenon: phenomenon.id
-  //   };
-  // }
 
-  // removeStationFilter() {
-  //   this.stationFilter = {};
-  // }
-
+/**
+ * show or hide the layer tree based on selection
+ */
   public change() {
 
     if(this.checkSelection('/selection-map')){
@@ -307,6 +253,9 @@ export class WvDataViewComponent implements OnInit, OnDestroy {
 
   }
 
+  /**
+   * on Destroy unsubscribe Subscription
+   */
   ngOnDestroy(): void {
     this.resultSubs.unsubscribe();
 

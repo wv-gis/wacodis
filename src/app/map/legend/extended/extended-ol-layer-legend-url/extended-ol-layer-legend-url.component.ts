@@ -1,7 +1,5 @@
 import { Component, Output, EventEmitter, Input } from '@angular/core';
-import { OlLayerLegendUrlComponent, WmsCapabilitiesService } from '@helgoland/open-layers';
-// import { ImageWMS } from 'ol/source';
-// import ImageArcGISRest from 'ol/source/ImageArcGISRest';
+import { WmsCapabilitiesService } from '@helgoland/open-layers';
 import * as esri from "esri-leaflet";
 import L from 'leaflet';
 import { HttpClient } from '@angular/common/http';
@@ -40,8 +38,8 @@ export class ExtendedOlLayerLegendUrlComponent {//extends OlLayerLegendUrlCompon
   @Output()
   legendUrls: EventEmitter<legendParam[]> = new EventEmitter();
   @Output() legendUrl: EventEmitter<string> = new EventEmitter();
-  @Input() layer: any;
-  @Input() id?: number;
+  @Input() layer: any; // selected ServiceLayer
+  @Input() id?: number; // selected Layer of the service 
 
   public url: string;
   public legurl: string = '';
@@ -51,32 +49,29 @@ export class ExtendedOlLayerLegendUrlComponent {//extends OlLayerLegendUrlCompon
     // super(wmsCap);
   }
 
+  /**
+   * legend Url creation based on Layer type
+   */
   public deliverLegendUrl() {
-    // super.deliverLegendUrl();
-    // const source = this.layer.getSource();
-    // this.layer.getExtent();
-    // if (source instanceof ImageWMS) {
-    //   const url = source.getUrl();
-    //   const layerid = source.getParams()['layers'] || source.getParams()['LAYERS'];
-    //   this.wmsCap.getLegendUrl(layerid, url).subscribe(res => this.legendUrl.emit(res));
-    // }
-
-    if ((this.layer != undefined)) {
+      if ((this.layer != undefined)) {
       if (this.layer.options.url) {
         this.imageUrl = this.layer.options.url;
 
 
-        // else if (source instanceof ImageArcGISRest) {
+        //if (source instanceof ImageMapLayer) receive legend Url for specific rusterfunction {
         if (this.layer instanceof esri.ImageMapLayer) {
-          // const layerid = source.getParams()['layers'] || source.getParams()['LAYERS'];
+        
           this.layer.metadata((error, metadata) => {
             let legendurl = this.imageUrl + "legend?bandIds=&renderingRule=rasterfunction:" + metadata["rasterFunctionInfos"][0].name + "&f=pjson";
             let legendResp: legendParam[] = [];
             esri.imageMapLayer({ url: legendurl }).metadata((error, legendData) => {
               legendData["layers"][0].legend.forEach((dat, i, arr) => {
-                if (arr[i].label.split('-').length > 1)
+                if (arr[i].label.split(' ').length > 1){
                   legendResp.push({ url: "data:image/png;base64," + arr[i].imageData, label: arr[i].label, layer: metadata["description"] });
 
+                }else{
+                 }
+              
               });
               this.legendUrls.emit(legendResp);
               this.urls = legendResp;
@@ -84,6 +79,7 @@ export class ExtendedOlLayerLegendUrlComponent {//extends OlLayerLegendUrlCompon
           });
         }
         else {
+            //if (source instanceof TiledMapLayer) receive legend Url for Layer
           if (this.layer instanceof esri.TiledMapLayer) {
             let legendurl = this.imageUrl + "legend?f=pjson";
             let legendResp: legendParam[] = [];
@@ -103,11 +99,13 @@ export class ExtendedOlLayerLegendUrlComponent {//extends OlLayerLegendUrlCompon
           }
 
           else {
+                //if (source instanceof FeatureLayer) create LegendUrl Parameters by Renderer Specification of Service
             esri.featureLayer({
               url: 'https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/ArcGIS/rest/services/SWATimClient/FeatureServer/' + this.id
             }).metadata((err, meta) => {
               let featureResp: legendParam[] = [];
   
+               // set size of pixel and canvas 
               const arr = new Uint8ClampedArray(1600);
               const canvas = document.createElement('canvas')  ;
               canvas.width = 20;
@@ -126,7 +124,8 @@ export class ExtendedOlLayerLegendUrlComponent {//extends OlLayerLegendUrlCompon
                 // Initialize a new ImageData object
                 imageData.push(new ImageData(arr, 20, 20));
                 ctx.putImageData(imageData[i],0,0);
-              ctx.scale(0.5,0.5)
+              ctx.scale(0.5,0.5);
+              // set canvas specification as DataUrl 
                 featureResp.push({
                   url: canvas.toDataURL('image/png'),
                   label: meta.drawingInfo.renderer.classBreakInfos[i].label,
@@ -140,7 +139,8 @@ export class ExtendedOlLayerLegendUrlComponent {//extends OlLayerLegendUrlCompon
           }
 
         }
-      } else if (this.layer instanceof L.TimeDimension.Layer.WMS) {
+      } //if (source instanceof TimeDimension WMS) receive legend Url from Capabilities 
+      else if (this.layer instanceof L.TimeDimension.Layer.WMS) {
         this.url = this.layer.options.getCapabilitiesUrl;
         const layerid = this.layer.options.getCapabilitiesLayerName;
         this.wmsCap.getLegendUrl(layerid, this.url).subscribe(res => {
@@ -152,7 +152,7 @@ export class ExtendedOlLayerLegendUrlComponent {//extends OlLayerLegendUrlCompon
       else {
         if (this.layer._url) {
           this.url = this.layer._url;
-
+//if (source instanceof TileLayer WMS) receive legend Url from Capabilities 
           if (this.layer instanceof L.TileLayer.WMS) {
             const layerid = this.layer.wmsParams.layers;
             this.wmsCap.getLegendUrl(layerid, this.url).subscribe(res => {

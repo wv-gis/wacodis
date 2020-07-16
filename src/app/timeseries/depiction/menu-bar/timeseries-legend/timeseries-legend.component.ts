@@ -3,6 +3,7 @@ import { DatasetOptions, Timespan, DatasetService, ColorService,HelgolandService
 import { HoveringStyle, D3PlotOptions } from '@helgoland/d3';
 import * as L from 'leaflet';
 import { SelectedProviderService } from 'src/app/services/selected-provider.service';
+import { SwappDatasetOptions } from 'swapp-toolbox';
 export var STYLE_DATA: DatasetOptions;
 @Component({
     selector: 'wv-timeseries-legend',
@@ -45,6 +46,19 @@ export class TimeseriesLegendComponent {
     public stationLabels: string[] = [];
     public editOptions: DatasetOptions;
     public selectedProviderUrl: string = '';
+    // public options: SwappDatasetOptions= {roundTo: 1,internalId: 'https://www.fluggs.de/sos2/api/v1/__426',
+    // shortLabel: 'TEst',
+    //     color: '#46824B',
+    //     type: 'bar',
+    //     barPeriod: '',
+    //     barStartOf: '',
+    //     visible: true,
+    //     showReferenceValues: [],
+    //     lineDashArray: [],
+    //     pointRadius: 0,
+    //     pointBorderColor: '',
+    //     pointBorderWidth: 0,
+    //     lineWidth: 2,zeroBasedYAxis: true};
 
     constructor(private dataEmitService: DatasetService<DatasetOptions>,private selProv: SelectedProviderService, private color: ColorService, private datasetapi: HelgolandServicesConnector) {
         this.selProv.getSelectedProvider().subscribe((res) => {

@@ -62,6 +62,9 @@ export class AppComponent implements OnInit {
     });
   }
 
+  /**
+   * 
+   */
   ngOnInit(): void {
     this.reservoirs = this.settingsService.getSettings().reservoirs;
     this.router.events.subscribe((val) => {
@@ -89,6 +92,11 @@ export class AppComponent implements OnInit {
 
   }
 
+
+  /**
+   * check wether the current route is active
+   * @param route 
+   */
   checkSelection(route: string) {
     if (this.router.isActive(route, true)) {
       return false;

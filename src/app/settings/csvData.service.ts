@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import {  tempData, tempDataDh, rainDataBe, rainDataDh } from '../../environments/environment';
 
-
+/**
+ * receive Data from external csv files
+ */
 @Injectable()
 export class CsvDataService {
 private rainData;

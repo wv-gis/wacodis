@@ -1,15 +1,17 @@
 import { Injectable } from '@angular/core';
 import { DatasetService, DatasetOptions, LocalStorage, LineRenderingHints, BarRenderingHints, HelgolandServicesConnector, DatasetType} from '@helgoland/core';
 
-
+/**
+ * Extends DatasetService
+ * service to set the styling of reference Values of selected Datasets
+ */
 @Injectable({
   providedIn: 'root'
 })
-// export class DatasetEmitServiceService<T extends DatasetOptions | DatasetOptions[]> extends DatasetService<T> {
    export class DatasetEmitServiceService extends DatasetService<DatasetOptions> {
   dataOptions: DatasetOptions[];
   internID: string;
-  // colorPromise: Promise<boolean>;
+ 
 
   constructor(protected localStorage: LocalStorage, protected api: HelgolandServicesConnector) {
     super();
@@ -37,11 +39,9 @@ import { DatasetService, DatasetOptions, LocalStorage, LineRenderingHints, BarRe
             default:
                 break;
         }
-          // console.log(option.color + ' ChartType: ' + timeseries.renderingHints.chartType);
-          // console.log('InternalID ' + internalId);
+    
         }
-      //  this.colorPromise =Promise.resolve(true);
-      // return option as T;
+   
       },
       (error) => {
         this.api.getDataset(internalId,{type: DatasetType.Timeseries}).subscribe(
@@ -62,13 +62,13 @@ import { DatasetService, DatasetOptions, LocalStorage, LineRenderingHints, BarRe
             }
               console.log(option.color + ' ChartType: ' + dataset.renderingHints.chartType);
             }
-            // this.colorPromise =Promise.resolve(true);
+          
           },
         );
-        // return option as T;
+     
       } 
     ); 
-    // if(this.colorPromise)
+   
     return option ;
   }
 

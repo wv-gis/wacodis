@@ -3,7 +3,7 @@ import Plotly from 'plotly.js-dist';
 import * as esri from 'esri-leaflet';
 import { locale } from 'src/environments/environment.prod';
 import { MapCache } from '@helgoland/map';
-import { LatLngBounds, polygon, LatLng } from 'leaflet';
+import { LatLngBounds, LatLng } from 'leaflet';
 
 @Component({
   selector: 'wv-copernicus-bar-chart-card',
@@ -286,7 +286,7 @@ export class CopernicusBarChartCardComponent implements OnInit, OnChanges {
               'hoverCompareCartesian', 'toggleSpikelines', 'pan2d', 'zoomOut2d', 'zoomIn2d', 'autoScale2d', 'resetScale2d'],
           }
 
-          Plotly.newPlot(this.barChartIds[0], data, layout, config)
+          Plotly.newPlot(this.barChartIds[0], data, layout, config);
         });
   }
 

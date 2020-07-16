@@ -6,6 +6,10 @@ import { legendParam } from '../../legend/extended/extended-ol-layer-legend-url/
   templateUrl: './layer-legend-table.component.html',
   styleUrls: ['./layer-legend-table.component.css']
 })
+/**
+ * component to depict the legend of the selected layer as a Toast
+ * based on the input parameters
+ */
 export class LayerLegendTableComponent implements OnInit {
 
   @Input()
