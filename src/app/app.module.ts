@@ -7,7 +7,9 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { HelgolandD3Module } from '@helgoland/d3';
-import { HelgolandCoreModule, SettingsService, SplittedDataDatasetApiInterface, DatasetApiInterface, DatasetService, DatasetApiV1ConnectorProvider, DatasetApiV2ConnectorProvider, DatasetApiV3ConnectorProvider} from '@helgoland/core';
+import { HelgolandCoreModule, SettingsService, SplittedDataDatasetApiInterface,
+   DatasetApiInterface, DatasetService, DatasetApiV1ConnectorProvider,
+    DatasetApiV2ConnectorProvider, DatasetApiV3ConnectorProvider} from '@helgoland/core';
 import { HelgolandDatasetlistModule } from '@helgoland/depiction';
 import { HelgolandSelectorModule, ListSelectorService } from '@helgoland/selector';
 import { HelgolandModificationModule } from '@helgoland/modification';

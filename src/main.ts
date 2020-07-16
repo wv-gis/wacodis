@@ -2,8 +2,8 @@ import { enableProdMode } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
 import { AppModule } from './app/app.module';
-import { environment, settingsPromise, tempDataPromise, rainDataDhPromise, rainDataBePromise} from './environments/environment';
-import { tempDataDhPromise } from './environments/environment.prod';
+import { environment, settingsPromise, tempDataPromise, rainDataDhPromise, rainDataBePromise, tempDataDhPromise} from './environments/environment';
+
 
 
 if (environment.production) {
