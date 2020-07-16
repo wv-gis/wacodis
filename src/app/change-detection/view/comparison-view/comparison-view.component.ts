@@ -176,39 +176,34 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
    * creates new Panes for Sentinel Layers and Divider and Range Symbol
    */
   setSplittedMap() {
-    // this._map = this.mapCache.getMap('comparisonMap');
+ 
     if (!this.mainMap) {
       this.mainMap = L.map('main', this.mapOptions).setView([51.161, 7.482], 10);
       this.mainMap.addLayer(this.wmsLayer);
     }
 
-    // if(!this._map.getPane('imagePane')){
+  
     if (this.rightLayer.options.pane === 'imagePane' + this.selectedIdR + 1) {
-      // this._map.createPane('imagePane' + this.selectedIdR + 1);
+ 
       this.mainMap.createPane('imagePane' + this.selectedIdR + 1);
     }
     else if (this.rightLayer.options.pane === 'overlayPane' + this.selectedIdR + 1) {
-      // this._map.createPane('overlayPane'+1);
+   
       this.mainMap.createPane('overlayPane' + this.selectedIdR + 1);
     }
     if (this.leftLayer.options.pane === 'imagePane' + this.selectedIdL) {
-      // this._map.createPane('imagePane' + this.selectedIdL);
+   
       this.mainMap.createPane('imagePane' + this.selectedIdL);
     }
     else if (this.leftLayer.options.pane === 'overlayPane' + this.selectedIdL) {
-      // this._map.createPane('overlayPane'+1);
-      // this.mainMap.createPane('overlayPane' + 1);
+    
       this.mainMap.createPane('overlayPane' + this.selectedIdL);
     }
-    // }
-
-    // this._map.addLayer(this.leftLayer);
-    // this._map.addLayer(this.rightLayer);
+   
 
     this.mainMap.addLayer(this.leftLayer);
     this.mainMap.addLayer(this.rightLayer);
 
-    // this.container = L.DomUtil.create('div', 'leaflet-sbs', this._map.getContainer().children['1']);
     this.container = L.DomUtil.create('div', 'leaflet-sbs', this.mainMap.getContainer().children['1']);
     let Divider = L.Control.extend({
       onAdd: function (map) {
@@ -236,8 +231,7 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
     });
     this.range = new ComparisonRange();
     this.divider = new Divider();
-    // this.mapCache.getMap('comparisonMap').addControl(this.divider);
-    // this.mapCache.getMap('comparisonMap').addControl(this.range);
+ 
     this.mainMap.addControl(this.divider);
     this.mainMap.addControl(this.range);
     this.container.appendChild(this.divider.getContainer());
@@ -252,7 +246,6 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
   addSplitScreenNew() {
 
     let _divider = this.divider;
-    // let map = this._map;
     let map = this.mainMap;
 
     if (!map || !_divider) {
@@ -288,7 +281,6 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     if (this.rightLayer) {
-      // this.rightLayer.bringToFront();
       if (this.rightLayer.options.pane === 'imagePane' + this.selectedIdR + 1) {
         document.getElementsByClassName('leaflet-pane leaflet-image' + this.selectedIdR + 1 + '-pane')[0].setAttribute('style', 'clip: ' + clipRight);
 
@@ -302,7 +294,6 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
         tileLayerPaneR[0].setAttribute('style', 'clip: ' + clipRight);
 
       }
-      // this.mapCache.getMap('comparisonMap').invalidateSize();
 
     }
     this.mainMap.invalidateSize();
@@ -315,7 +306,6 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
       Plotly.purge(this.plotlydiv.nativeElement);
       this.rightLayer.unbindPopup();
       this.remove();
-      // this.mainMap.remove();
       this.setsyncedMap();
       this.view = 'synced';
     } else {
@@ -330,7 +320,6 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
    */
   private addEvents() {
     let _range = this.range;
-    // let map = this._map;
     let map = this.mainMap;
     if (!map || !_range) {
       console.error('No map or range');
@@ -443,7 +432,6 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
    */
   private removeEvents() {
     let _range = this.range;
-    // let map = this._map;
     let map = this.mainMap;
     if (_range) {
       L.DomEvent.off(this.range._container, this.getRangeEvent(this.range._container), this.addSplitScreenNew, this);
@@ -463,9 +451,7 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
    * set new Layers to the splitted view and create the splitted view
    */
   private updateLayers() {
-    // if (!this._map) {
-    //   return this;
-    // }
+
     if (!this.mainMap) {
       return this;
     }
@@ -489,20 +475,18 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
    * remove the components of the splitted view
    */
   private remove() {
-    // if (!this._map) {
-    //   return this;
-    // }
+
     if (!this.mainMap) {
       return this;
     }
     if (this.leftLayer) {
 
       if (this.leftLayer.options.pane === 'imagePane' + this.selectedIdL) {
-        // this._map.getPane('imagePane' + this.selectedIdL).remove();
+   
         this.mainMap.getPane('imagePane' + this.selectedIdL).remove();
       }
       else if (this.leftLayer.options.pane === 'overlayPane' + this.selectedIdL) {
-        // this._map.getPane('overlayPane' + 1).remove();
+
         this.mainMap.getPane('overlayPane' + this.selectedIdL).remove();
         let tileLayerPane = document.getElementsByClassName('leaflet-pane leaflet-overlay' + this.selectedIdL + '-pane') as HTMLCollectionOf<HTMLElement>;
         for (let element in tileLayerPane => {
@@ -514,20 +498,20 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
         tileLayerPane[0].removeAttribute('style');
 
       }
-      // this._map.removeLayer(this.leftLayer);
+
       this.mainMap.removeLayer(this.leftLayer);
     }
     if (this.rightLayer) {
 
       if (this.rightLayer.options.pane === 'imagePane' + this.selectedIdR + 1) {
-        // this._map.getPane('imagePane' + this.selectedIdR + 1).remove();
+
         this.mainMap.getPane('imagePane' + this.selectedIdR + 1).remove();
       }
       else if (this.rightLayer.options.pane === 'overlayPane' + this.selectedIdR + 1) {
-        // this._map.getPane('overlayPane' + 1).remove();
+ 
         this.mainMap.getPane('overlayPane' + this.selectedIdR + 1).remove();
         let tileLayerPane = document.getElementsByClassName('leaflet-pane leaflet-overlay' + this.selectedIdR + 1 + '-pane') as HTMLCollectionOf<HTMLElement>;
-        // this.mainMap.getPane(tileLayerPane[0]).remove();
+
         for (let element in tileLayerPane => {
           this.mainMap.getPane(element).remove();
         });
@@ -537,15 +521,12 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
         tileLayerPane[0].removeAttribute('style');
 
       }
-      // this._map.removeLayer(this.rightLayer);
+  
       this.mainMap.removeLayer(this.rightLayer);
     }
     this.removeEvents();
     L.DomUtil.remove(this.container);
 
-    // this._map = null;
-    // this.mainMap.remove();
-    // this.mainMap = null;
   }
 
 
@@ -560,13 +541,11 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
     document.getElementById('mainMap').appendChild(newMap);
     document.getElementById('main').style.width = '50%';
 
-    // this.compMap = this.mapCache.getMap('comparisonMap');
-    // this.compMap = this.mainMap;
     this.syncedMap = L.map(newMap).setView([51.161, 7.482], 13);
     if (!this.mainMap.hasLayer(this.wmsLayer)) {
      
       this.mainMap = L.map('main').setView([51.161, 7.482], 13);
-      // this.mapCache.getMap('comparisonMap').setView([51.161, 7.482], 13);
+  
       this.mainMap.addLayer(this.wmsLayer);
     }
     L.tileLayer.wms('http://ows.terrestris.de/osm/service?',
@@ -574,7 +553,7 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
         layers: 'OSM-WMS', format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
         className: 'OSM'
       }).addTo(this.syncedMap);
-    // this.mapCache.setMap('map2', this.syncedMap);
+   
 
     if (this.rightLayer.options.pane === 'imagePane' + this.selectedIdR + 1) {
       this.syncedMap.createPane('imagePane' + this.selectedIdR + 1)
@@ -582,54 +561,45 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
       this.syncedMap.createPane('overlayPane' + this.selectedIdR + 1);
     }
     if (this.leftLayer.options.pane === 'imagePane' + this.selectedIdL) {
-      // this.mapCache.getMap('comparisonMap').createPane('imagePane' + this.selectedIdL);
+
       this.mainMap.createPane('imagePane' + this.selectedIdL);
     
     } else if (this.leftLayer.options.pane === 'overlayPane' + this.selectedIdL) {
-      // this.mapCache.getMap('comparisonMap').createPane('overlayPane' + 1);
+
       this.mainMap.createPane('overlayPane' + this.selectedIdL);
     }
 
-    // this.mapCache.getMap('map2').addControl(this.controlLegend);
     this.syncedMap.addLayer(this.rightLayer);
-    // this.mapCache.getMap('comparisonMap').addLayer(this.leftLayer);
     this.mainMap.addLayer(this.leftLayer);
-    // this.compMap.sync(this.syncedMap);
+  
     this.mainMap.sync(this.syncedMap);
-    // this.mapCache.getMap('comparisonMap').sync(this.syncedMap);
-    // this.syncedMap.sync(this.mapCache.getMap('comparisonMap'));
     this.syncedMap.sync(this.mainMap);
-    // this.mapCache.getMap('comparisonMap').invalidateSize();
+  
     this.mainMap.invalidateSize();
     this.syncedMap.invalidateSize();
   }
 
   private removeSync() {
-    // this.mapCache.getMap('comparisonMap').unsync(this.syncedMap);
-    // if (!this.syncedMap || !this.mapCache.getMap('comparisonMap')) {
-    //   return this;
-    // }
+  
     if (!this.syncedMap || !this.mainMap) {
       return this;
     }
-    // this.compMap.unsync(this.syncedMap);
+   
     this.mainMap.unsync(this.syncedMap);
-    // this.syncedMap.unsync(this.mapCache.getMap('comparisonMap'));
     this.syncedMap.unsync(this.mainMap);
 
     this.syncedMap.removeLayer(this.rightLayer);
     document.getElementById('map2').remove();
     document.getElementById('main').style.width = '100%';
-    // this.mapCache.getMap('comparisonMap').removeLayer(this.leftLayer);
+
     this.mainMap.removeLayer(this.leftLayer);
 
     if (this.leftLayer.options.pane === 'imagePane' + this.selectedIdL) {
-      // this.mapCache.getMap('comparisonMap').getPane('imagePane' + this.selectedIdL).remove();
       this.mainMap.getPane('imagePane' + this.selectedIdL).remove();
     } else {
       this.mainMap.getPane('overlayPane' + this.selectedIdL).remove();
     }
-    // this.mapCache.getMap('comparisonMap').invalidateSize();
+  
     this.mainMap.invalidateSize();
     this.syncedMap = null;
   }
@@ -799,7 +769,7 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
               var tempCurrentValue = this.acquisitionDates[0];
               if (tempValue !== tempCurrentValue) {
                 this.acquisitionDates.push(featureCollection.features[i]["properties"]['acquisitiondate']);
-                // console.log(this.acquisitionDates);
+        
               }
             }
           }
@@ -831,9 +801,9 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
   public checkLeftLayer(layerName: string, id: number) {
     this.selectLeftLayer = layerName;
     this.selectedIdL = id;
-    // this._leftLayer = this.senLayers[id];
+
     this._leftLayer = this.comparisonBaseLayers[id];
-    // console.log('Name: ' + layerName + ' Layer: ' + this._leftLayer + ' index:' + id);
+
     if (this._leftLayer.options.pane == 'imagePane' + id) {
       this.queryLayer('le');
     } else if (this._leftLayer.options.pane == 'overlayPane' + id) {
@@ -846,7 +816,7 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
     this.selectRightLayer = layerName;
     this.selectedIdR = id;
     this._rightLayer = this.comparisonBaseLayers[id];
-    // console.log('Name: ' + layerName + ' Layer: ' + this._rightLayer + ' index:' + id );
+   
     if (this._rightLayer.options.pane == 'imagePane' + id) {
       this._rightLayer = esri.imageMapLayer({
         url: this.comparisonBaseLayers[id].options.url, maxZoom: 16, alt: sentinelLayerOptions[id].toString(),
