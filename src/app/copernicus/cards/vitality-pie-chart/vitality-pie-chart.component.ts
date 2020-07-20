@@ -2,6 +2,8 @@ import { Component, OnInit, Input, OnChanges,  AfterViewInit } from '@angular/co
 import { LatLngBounds, LatLng } from 'leaflet';
 import Plotly from 'plotly.js-dist';
 import { locale } from 'src/environments/environment.prod';
+import * as esri from 'esri-leaflet';
+
 
 @Component({
   selector: 'wv-vitality-pie-chart',
@@ -33,7 +35,7 @@ export class VitalityPieChartComponent implements OnInit,OnChanges, AfterViewIni
   
   constructor() { }
   ngAfterViewInit(): void {
-    console.log(this.chartId);
+
      if(this.bounds instanceof LatLngBounds){
        let geometryType ='esriGeometryEnvelope';
        let geometry ={"xmin":this.bounds.toBBoxString().split(',')[0],
@@ -74,6 +76,7 @@ export class VitalityPieChartComponent implements OnInit,OnChanges, AfterViewIni
      }
     }else{
       if(!changes.bounds.firstChange){
+        console.log(changes);
        if(this.bounds instanceof LatLngBounds){
          let geometryType ='esriGeometryEnvelope';
          let geometry ={"xmin":this.bounds.toBBoxString().split(',')[0],
@@ -103,14 +106,30 @@ export class VitalityPieChartComponent implements OnInit,OnChanges, AfterViewIni
     */
    public createPieChart(geomType: string, geom: Object){
 
-    Plotly.register(locale);
+   Plotly.register(locale);
+
+  //  esri.imageService({ url: this.service })
+  //  .get('computeHistograms',
+  //    {
+  //      geometryType: geomType,
+  //      geometry: geom,
+  //    }, (error, response) => {
+  //      if (error) {
+  //        console.log(error);
+  //      } else {
+  //        let histCounts = [];
+  //        for (let p = 0; p < response.histograms[0].counts.length; p++) {
+  //          histCounts.push(response.histograms[0].counts[p]);
+  //        }
+  //      }
+  //    });
 
     this.values =[10,40,5];
     this.labels = ['gering', 'mittel','stark']
     
     
-    var data = [{
-      type: "pie",
+    var data =  [{
+      type: "pie" ,
       values: this.values,
       labels: this.labels,
       textinfo: 'none',
