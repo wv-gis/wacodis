@@ -53,25 +53,24 @@ export class ExtendedOlLayerLegendUrlComponent {//extends OlLayerLegendUrlCompon
    * legend Url creation based on Layer type
    */
   public deliverLegendUrl() {
-      if ((this.layer != undefined)) {
+    if ((this.layer != undefined)) {
       if (this.layer.options.url) {
         this.imageUrl = this.layer.options.url;
 
-
         //if (source instanceof ImageMapLayer) receive legend Url for specific rusterfunction {
         if (this.layer instanceof esri.ImageMapLayer) {
-        
+
           this.layer.metadata((error, metadata) => {
             let legendurl = this.imageUrl + "legend?bandIds=&renderingRule=rasterfunction:" + metadata["rasterFunctionInfos"][0].name + "&f=pjson";
             let legendResp: legendParam[] = [];
             esri.imageMapLayer({ url: legendurl }).metadata((error, legendData) => {
               legendData["layers"][0].legend.forEach((dat, i, arr) => {
-                if (arr[i].label.split(' ').length > 1){
+                if (arr[i].label.split(' ').length > 1) {
                   legendResp.push({ url: "data:image/png;base64," + arr[i].imageData, label: arr[i].label, layer: metadata["description"] });
 
-                }else{
-                 }
-              
+                } else {
+                }
+
               });
               this.legendUrls.emit(legendResp);
               this.urls = legendResp;
@@ -79,7 +78,7 @@ export class ExtendedOlLayerLegendUrlComponent {//extends OlLayerLegendUrlCompon
           });
         }
         else {
-            //if (source instanceof TiledMapLayer) receive legend Url for Layer
+          //if (source instanceof TiledMapLayer) receive legend Url for Layer
           if (this.layer instanceof esri.TiledMapLayer) {
             let legendurl = this.imageUrl + "legend?f=pjson";
             let legendResp: legendParam[] = [];
@@ -97,45 +96,65 @@ export class ExtendedOlLayerLegendUrlComponent {//extends OlLayerLegendUrlCompon
               this.urls = legendResp;
             });
           }
+          else if (this.layer instanceof esri.DynamicMapLayer) {
+            let legendurl = this.imageUrl + "legend?dynamicLayers=" + this.id + "&f=pjson";
+      
+            let legendResp: legendParam[] = [];
 
-          else {
-                //if (source instanceof FeatureLayer) create LegendUrl Parameters by Renderer Specification of Service
-            esri.featureLayer({
-              url: 'https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/ArcGIS/rest/services/SWATimClient/FeatureServer/' + this.id
-            }).metadata((err, meta) => {
-              let featureResp: legendParam[] = [];
-  
-               // set size of pixel and canvas 
-              const arr = new Uint8ClampedArray(1600);
-              const canvas = document.createElement('canvas')  ;
-              canvas.width = 20;
-              canvas.height = 20;
-              const ctx = canvas.getContext('2d');
-              let imageData: ImageData[] = [];
-              for (let i = 0; i < meta.drawingInfo.renderer.classBreakInfos.length; i++) {
-                             // Iterate through every pixel
-                for (let k = 0; k < arr.length; k += 4) {
-                  arr[k + 0] = meta.drawingInfo.renderer.classBreakInfos[i].symbol.color[0]   // R value
-                  arr[k + 1] = meta.drawingInfo.renderer.classBreakInfos[i].symbol.color[1];  // G value
-                  arr[k + 2] = meta.drawingInfo.renderer.classBreakInfos[i].symbol.color[2];    // B value
-                  arr[k + 3] = meta.drawingInfo.renderer.classBreakInfos[i].symbol.color[3];  // A value
-                }
-
-                // Initialize a new ImageData object
-                imageData.push(new ImageData(arr, 20, 20));
-                ctx.putImageData(imageData[i],0,0);
-              ctx.scale(0.5,0.5);
-              // set canvas specification as DataUrl 
-                featureResp.push({
-                  url: canvas.toDataURL('image/png'),
-                  label: meta.drawingInfo.renderer.classBreakInfos[i].label,
-                  layer: meta.drawingInfo.renderer.classBreakInfos[i].description
+            let resp = this.http.get(legendurl).subscribe((ob: TilelegendResp) => {
+              ob["layers"][this.id].legend.forEach((dat, i, ar) => {
+                legendResp.push({
+                  url: "data:image/png;base64," + ar[i].imageData,
+                  label: ar[i].label,
+                  layer: ob["layers"][this.id].layerName
                 });
+              });
 
-              }
-              this.legendUrls.emit(featureResp);
-              this.urls = featureResp;
+              this.legendUrls.emit(legendResp);
+              this.urls = legendResp;
             });
+          }
+          else {
+            //if (source instanceof FeatureLayer) create LegendUrl Parameters by Renderer Specification of Service
+            if (this.layer instanceof esri.featureLayer) {
+              esri.featureLayer({
+                url: 'https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/ArcGIS/rest/services/SWATimClient/FeatureServer/' + this.id
+              }).metadata((err, meta) => {
+                let featureResp: legendParam[] = [];
+
+                // set size of pixel and canvas 
+                const arr = new Uint8ClampedArray(1600);
+                const canvas = document.createElement('canvas');
+                canvas.width = 20;
+                canvas.height = 20;
+                const ctx = canvas.getContext('2d');
+                let imageData: ImageData[] = [];
+                for (let i = 0; i < meta.drawingInfo.renderer.classBreakInfos.length; i++) {
+                  // Iterate through every pixel
+                  for (let k = 0; k < arr.length; k += 4) {
+                    arr[k + 0] = meta.drawingInfo.renderer.classBreakInfos[i].symbol.color[0]   // R value
+                    arr[k + 1] = meta.drawingInfo.renderer.classBreakInfos[i].symbol.color[1];  // G value
+                    arr[k + 2] = meta.drawingInfo.renderer.classBreakInfos[i].symbol.color[2];    // B value
+                    arr[k + 3] = meta.drawingInfo.renderer.classBreakInfos[i].symbol.color[3];  // A value
+                  }
+
+                  // Initialize a new ImageData object
+                  imageData.push(new ImageData(arr, 20, 20));
+                  ctx.putImageData(imageData[i], 0, 0);
+                  ctx.scale(0.5, 0.5);
+                  // set canvas specification as DataUrl 
+                  featureResp.push({
+                    url: canvas.toDataURL('image/png'),
+                    label: meta.drawingInfo.renderer.classBreakInfos[i].label,
+                    layer: meta.drawingInfo.renderer.classBreakInfos[i].description
+                  });
+
+                }
+                this.legendUrls.emit(featureResp);
+                this.urls = featureResp;
+              });
+            }
+
           }
 
         }
@@ -152,7 +171,7 @@ export class ExtendedOlLayerLegendUrlComponent {//extends OlLayerLegendUrlCompon
       else {
         if (this.layer._url) {
           this.url = this.layer._url;
-//if (source instanceof TileLayer WMS) receive legend Url from Capabilities 
+          //if (source instanceof TileLayer WMS) receive legend Url from Capabilities 
           if (this.layer instanceof L.TileLayer.WMS) {
             const layerid = this.layer.wmsParams.layers;
             this.wmsCap.getLegendUrl(layerid, this.url).subscribe(res => {
