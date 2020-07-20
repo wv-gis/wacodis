@@ -3,7 +3,7 @@
         <div class="col-xl-12 col-md-6 mb-2">
             <div class="card border-left-primary shadow h-100 ">
                 <div class="card-header wv-bold-header">
-                    Stoffeintragsmodell: Szenarienvergleich Sedimente
+                    Stoffeintragsmodell: Szenarienvergleich {{param}}
                 </div>
                 <div class="card-body">
                     Information zum Modell und den Parametern
@@ -56,7 +56,7 @@
                 <div class="card-body" *ngIf="showBarChart">
                     <wv-tsbar-chart [service]="featureTSLayerUrl"
                         [selIndices]='[szenarioTS_ID[selSzenario_id_l],szenarioTS_ID[selSzenario_id_r]]'
-                        [barChartId]="'compTSInput'" [input]="0" [comparison]="true">
+                        [barChartId]="'compTSInput'" [input]="idInfo" [comparison]="true">
                     </wv-tsbar-chart>
                 </div>
             </div>
@@ -66,7 +66,7 @@
                 <div class="card-body" *ngIf="showBarChart">
                     <wv-percentage-change-bar-chart [service]="featureTSLayerUrl"
                     [selIndices]='[szenarioTS_ID[selSzenario_id_l],szenarioTS_ID[selSzenario_id_r]]'
-                    [barChartId]="'PercCompInput'" [input]="0"></wv-percentage-change-bar-chart>
+                    [barChartId]="'PercCompInput'" [input]="idInfo"></wv-percentage-change-bar-chart>
                 </div>
             </div>
         </div>

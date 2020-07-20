@@ -3,7 +3,7 @@
         <div class="col-xl-12 col-md-6 mb-2">
             <div class="card border-left-primary shadow h-100 ">
                 <div class="card-header wv-bold-header">
-                    Stoffeintragsmodell: Einzelanalyse Sedimente
+                    Stoffeintragsmodell: Einzelanalyse {{param}}
                 </div>
                 <div class="card-body">
                     Information zum Modell und den Parametern
@@ -33,7 +33,7 @@
                     <div class="col-xl-6 col-md-6 mb-2" >
                         <div *ngIf="showBarChart">
                             <wv-tsbar-chart [service]="featureTSLayerUrl" [selIndices]='[selSzenarioTS[selSzen_Id]]'
-                                [barChartId]="'tsInput'" [input]="0">
+                                [barChartId]="'tsInput'" [input]="barId">
                             </wv-tsbar-chart>
                         </div>
                     </div>
