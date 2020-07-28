@@ -76,9 +76,11 @@
         </div>
         <button type="button" (click)="createIsoPlot()">Graphik erstellen</button>
     </div>
-    <div id="isoplethen" style="margin-top: 20px;" *ngIf="showPlot">
-        <sensorwapp-toolbox-isoplethen style="margin: 5px;" [timespan]="timeSpan" [samplingId]="samplingId" [distIso]="size_iso"
-            [numIso]="num_iso"></sensorwapp-toolbox-isoplethen>
+    <div id="isoplethen" style="margin-top: 20px;height: 100%;" *ngIf="showPlot">
+        <!-- <sensorwapp-toolbox-isoplethen style="margin: 5px;" [timespan]="timeSpan" [samplingId]="samplingId" [distIso]="size_iso"
+            [numIso]="num_iso"></sensorwapp-toolbox-isoplethen> -->
+            <wv-isoplethen-graphic style="margin: 5px;" [timespan]="timeSpan"  [distIso]="size_iso"
+            [numIso]="num_iso"></wv-isoplethen-graphic>
     </div>
 
 </div>

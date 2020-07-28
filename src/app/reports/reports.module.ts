@@ -7,6 +7,7 @@ import { SelectionViewComponent } from './selection/selection-view/selection-vie
 import { WvProfilesModule } from '../profiles/profiles.module';
 import { IsoplethenViewComponent } from './isoplethen/isoplethen-view/isoplethen-view.component';
 import { SensorwappToolboxModule } from '@sensorwapp-toolbox/core';
+import { IsoplethenGraphicComponent } from './isoplethen/isoplethen-graphic/isoplethen-graphic.component';
 
 @NgModule({
   imports: [
@@ -15,6 +16,6 @@ import { SensorwappToolboxModule } from '@sensorwapp-toolbox/core';
     SensorwappToolboxModule,
     WvProfilesModule
   ],
-  declarations: [ReportsViewComponent, SelectionViewComponent, IsoplethenViewComponent], providers: [ExtendedSettingsService]
+  declarations: [ReportsViewComponent, SelectionViewComponent, IsoplethenViewComponent, IsoplethenGraphicComponent], providers: [ExtendedSettingsService]
 })
 export class WvReportsModule { }
