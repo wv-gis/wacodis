@@ -48,11 +48,18 @@
                     [bounds]='polyBounds' [service]='service' [categoryValues]='categoryVal' [colors]='colors'>
                   </wv-copernicus-layer-chart>
                 </div> -->
-
-              <n52-extended-data-d3-timeseries-graph [datasetIds]="datasetIdsMultiple" [additionalData]="additionalDataTemp"
+                <div *ngIf="showDiagram; else loadingSpinner">
+                  <wv-mixed-data-chart [barChartId]="'mixedTemp'" [lineData]="additionalDataTemp" [drawChart]='true' ></wv-mixed-data-chart>
+                </div>
+             <ng-template #loadingSpinner>
+              <div class="spinner-border text-dark" role="status">
+                <i class="fa fa-spinner fa-spin" style="font-size:24px;"></i>
+            </div>
+             </ng-template >
+              <!-- <n52-extended-data-d3-timeseries-graph  [additionalData]="additionalDataTemp"
               [selectedDatasetIds]="selectedIds" [datasetOptions]="datasetOptionsMultiple" [timeInterval]="timespan"
               [presenterOptions]="diagramOptionsD3" (onTimespanChanged)="timespanChanged($event)"
-               #diagram></n52-extended-data-d3-timeseries-graph>
+               #diagram></n52-extended-data-d3-timeseries-graph> -->
             </div>
           </div>
         </div>
@@ -64,11 +71,18 @@
              Monatliche Niederschlagsbweichungen vom langjährigen Mittel
             </div>
             <div class="card-body ">
-     
-              <n52-extended-data-d3-timeseries-graph [datasetIds]="datasetIds" [additionalData]="additionalDataRain"
+              <div *ngIf="showDiagramR; else loadingSpinnerR">
+                <wv-mixed-data-chart [barChartId]="'mixedRain'" [lineData]="additionalDataRain" [drawChart]='true' ></wv-mixed-data-chart>
+              </div>
+              <ng-template #loadingSpinnerR>
+                <div class="spinner-border text-dark" role="status">
+                  <i class="fa fa-spinner fa-spin" style="font-size:24px;"></i>
+              </div>
+               </ng-template >
+              <!-- <n52-extended-data-d3-timeseries-graph  [additionalData]="additionalDataRain"
               [selectedDatasetIds]="selectedIds" [datasetOptions]="datasetOptionsMultiple2" [timeInterval]="timespan"
               [presenterOptions]="diagramOptionsD3" (onTimespanChanged)="timespanChanged($event)"
-               #diagram></n52-extended-data-d3-timeseries-graph>
+               #diagram></n52-extended-data-d3-timeseries-graph> -->
             </div>
           </div>
         </div>
@@ -107,6 +121,7 @@
               Prozentualer Zuwachs/Verlust des Waldes an den Talsperren
              </div>
             <div class="card-body" style="padding: 0rem;">
+              Für die Auswahl der entsprechenden Talsperre im Diagramm klicken.
               <div style="width: 100%;">
                 <wv-vitality-bar-chart [barChartIds]="['percentBar']" [service]="'test'" (selTS)="resetMapView($event)"></wv-vitality-bar-chart>
               </div>

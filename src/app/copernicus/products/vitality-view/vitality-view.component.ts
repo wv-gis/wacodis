@@ -6,13 +6,16 @@ require('leaflet-timedimension');
 import { MapCache } from '@helgoland/map';
 import { ActivatedRoute } from '@angular/router';
 import { D3PlotOptions, AdditionalData } from '@helgoland/d3';
-import { Timespan, DatasetOptions, DatasetService } from '@helgoland/core';
+import { Timespan, DatasetOptions, DatasetType, HelgolandServicesConnector } from '@helgoland/core';
 import { CsvDataService } from 'src/app/settings/csvData.service';
 import { AdditionalDataEntry } from '@helgoland/d3/lib/extended-data-d3-timeseries-graph/extended-data-d3-timeseries-graph.component';
 
 
+
+
+
 const vitalityService = 'https://www.wms.nrw.de/umwelt/waldNRW';
-const viewCenters: L.LatLngExpression[] = [[51.07, 7.22],[51.18,7.31],[51.22,7.27],[51.14,7.51]]; // Dhuenn,Wupper, Herbring., Kerspe
+const viewCenters: L.LatLngExpression[] = [[51.07, 7.22], [51.18, 7.31], [51.22, 7.27], [51.14, 7.51]]; // Dhuenn,Wupper, Herbring., Kerspe
 
 @Component({
   selector: 'wv-vitality-view',
@@ -71,14 +74,14 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
   public datasetOptionsMultiple2: Map<string, DatasetOptions> = new Map();
   public showZoomControl = true;
   public showAttributionControl = true;
-
+  public id = '426';
   public baselayers: L.Layer[] = [];
   public categoryVal = ["no Data", "unverändert", "gering", "mittel",
     "stark", "Zuwachs gering", "Zuwachs mittel", "Zuwachs stark"];
   public colors = ["rgb(0,0,0)", "rgb(255,215,0)", "rgb(184,134,11)", "rgb(65,105,225)", "rgb(30,144,255)",
     "rgb(190,190,190)", "rgb(192,255,62)",
   ];
-
+  public loadingCounter = 0;
   public mainMap: L.Map;
   public mapId = 'vitality-map';
   public zoomControlOptions: L.Control.ZoomOptions = { position: 'topleft' };
@@ -108,22 +111,17 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
   public additionalDataRain: AdditionalData[] = [];
   public additionalDataTemp: AdditionalData[] = [];
   public dyn: esri.DynamicMapLayer;
+  public moSum: AdditionalDataEntry[] = [];
+  public divlongMo: AdditionalDataEntry[] = [];
+  public tempId: string = '682';
+  moSumTemp: AdditionalDataEntry[] = [];
+  countValue: number[] = [];
+  loadingCountT: number = 0;
+  showDiagramR: boolean = false;
 
-  constructor(private activatedRoute: ActivatedRoute, private mapCache: MapCache, private dataService: CsvDataService) {
+  constructor(private activatedRoute: ActivatedRoute, private mapCache: MapCache, private dataService: CsvDataService, private apiInterface: HelgolandServicesConnector) {
     this.service = vitalityService;
-    this.datasetIdsMultiple.forEach((entry, i) => {
-      let options = new DatasetOptions(entry, this.d3Colors[1]);
-      options.type = 'line';
-      options.yAxisRange = { max: 40, min: 0 };
-      this.datasetOptionsMultiple.set(entry, options);
-    });
-    this.datasetIds.forEach((entry, i) => {
-      let options = new DatasetOptions(entry, this.d3Colors[i]);
-      options.type = 'line';
-      options.yAxisRange = { max: 200, min: 0 };
-      this.datasetOptionsMultiple2.set(entry, options);
-    });
-
+  
     this.responseInterp = dataService.getTempDhDataset();
     this.responseInterpDh = dataService.getRainDhDataset();
     this.getCsvData();
@@ -156,38 +154,163 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
    * 
    * @param TS 
    */
-  public resetMapView(TS: string){
-    if(TS =='Dhuenn'){
-      this.mainMap.setView(viewCenters[0],13);
+  public resetMapView(TS: string) {
+    if (TS == 'Dhuenn') {
+      this.mainMap.setView(viewCenters[0], 13);
       this.mainMap.invalidateSize();
       this.mapBounds = this.mainMap.getBounds();
-    
+      this.id = '426';
+      this.tempId = '682';
     }
-    else if(TS == 'Kerspe'){
-      this.mainMap.setView(viewCenters[3],13);
+    else if (TS == 'Kerspe') {
+      this.mainMap.setView(viewCenters[3], 13);
       this.mainMap.invalidateSize();
       this.mapBounds = this.mainMap.getBounds();
+      this.id = '427';
+      this.tempId = '751';
     }
-    else if(TS == 'Herbringhauser'){
-      this.mainMap.setView(viewCenters[2],13);
+    else if (TS == 'Herbringhauser') {
+      this.mainMap.setView(viewCenters[2], 13);
       this.mainMap.invalidateSize();
       this.mapBounds = this.mainMap.getBounds();
-    }else if(TS =='Wupper'){
-      this.mainMap.setView(viewCenters[1],13);
+      this.id = '427';
+      this.tempId = '751';
+    } else if (TS == 'Wupper') {
+      this.mainMap.setView(viewCenters[1], 13);
       this.mainMap.invalidateSize();
       this.mapBounds = this.mainMap.getBounds();
-    }else{
-      console.log(TS);
+      this.id = '427';
+      this.tempId = '751';
+    } else {
+
     }
- 
+
   }
 
+  public calculateMeanData() {
+
+    this.apiInterface.getDatasets('https://fluggs.wupperverband.de/sos2-intern-gis/api/v1/', {
+      type: DatasetType.Timeseries,
+      expanded: true
+    }).subscribe((data) => {
+      data.forEach((val, i, arr) => {
+        if (val.id == this.id) {
+
+          for (let m = 0; m < 12; m++) {
+            let sum = 0;
+            let d = new Date(new Date(new Date().getFullYear() - 1, m + 1, 1).getTime() - 86400000).getDate();
+            this.apiInterface.getDatasetData(val, new Timespan(new Date(new Date().getFullYear() - 1, m, 1), new Date(new Date().getFullYear() - 1, m, d))
+            ).subscribe((dataset) => {
+              dataset.values.forEach((v, i, arr) => {
+                sum += v[1];
+              });
+            }, error => console.log(error), () => this.setMonthSum({ timestamp: new Date(new Date().getFullYear() - 1, m, 1).getTime(), value: sum }, m));
+          }
+        }
+        else if (val.id == this.tempId) {
+          for (let m = 0; m < 12; m++) {
+            let sum = 0;
+            let h;
+            let d = new Date(new Date(new Date().getFullYear() - 1, m + 1, 1).getTime() - 86400000).getDate();
+            this.apiInterface.getDatasetData(val, new Timespan(new Date(new Date().getFullYear() - 1, m, 1), new Date(new Date().getFullYear() - 1, m, d))
+            ).subscribe((dataset) => {
+              if (dataset.values.length) {
+                dataset.values.forEach((v, i, arr) => {
+                  sum += v[1];
+                });
+                h = dataset.values.length;
+              }
+            }, error => console.log(error), () => {
+              if (h != undefined) {
+                this.setMonthMeanTemp({ timestamp: new Date(new Date().getFullYear() - 1, m, 1).getTime(), value: sum }, m, h);
+              } else {
+                this.setMonthMeanTemp({ timestamp: new Date(new Date().getFullYear() - 1, m, 1).getTime(), value: undefined }, m, undefined);
+              }
+            }
+            );
+          }
+        }
+      });
+    }, error => console.log(error));
+  }
+
+  public calculateRainDiff(d: AdditionalDataEntry[]) {
+
+    d.forEach((dat, p, array) => {
+      array[p].value = (dat.value - this.avgMonthRain_D[p].value);
+      this.loadingCounter--;
+    });
+    const optionsDiff = new DatasetOptions('addData', 'blue');
+    optionsDiff.pointRadius = 3;
+    optionsDiff.yAxisRange = { max: 200, min: -100 };
+    optionsDiff.type = 'line';
+    optionsDiff.barStartOf = 'month';
+    optionsDiff.barPeriod = 'PT1M';
+    optionsDiff.visible = true;
+    optionsDiff.zeroBasedYAxis = false;
+    optionsDiff.lineWidth = 1;
+
+    this.additionalDataRain.push(
+      {
+        internalId: 'rainDiff',
+        yaxisLabel: 'Abw. v. Mittel mm',
+        datasetOptions: optionsDiff,
+        data: d
+      });
+      this.showDiagramR = true;
+  }
+
+ 
+
+  public setMonthSum(d: AdditionalDataEntry, t: number) {
+    this.moSum[t] = d;
+    this.loadingCounter++;
+    if (this.loadingCounter == 12) {
+      this.calculateRainDiff(this.moSum);
+    }
+  }
+
+  public setMonthMeanTemp(d: AdditionalDataEntry, t: number, x: number) {
+    this.moSumTemp[t] = d;
+    this.countValue[t] = x;
+    this.loadingCountT++;
+    let abwMonSum =[];
+    if (this.loadingCountT == 12) {
+      this.moSumTemp.forEach((a,b,c)=>{
+        if (c[b].value!==undefined && this.countValue[b]!== undefined) {
+          abwMonSum.push( {value: Math.round((c[b].value / (this.countValue[b]))) - this.avgMonthTemp_D[b].value , timestamp: c[b].timestamp});
+      } else {
+         
+        }
+        this.loadingCountT--;
+      });
+      const optionsDiff = new DatasetOptions('addData', 'blue');
+      // optionsDiff.pointRadius = 3;
+      optionsDiff.yAxisRange = { max: 40, min: -40 };
+      optionsDiff.type = 'bar';
+      optionsDiff.barStartOf = 'month';
+      optionsDiff.barPeriod = 'PT1M';
+      optionsDiff.visible = true;
+      optionsDiff.zeroBasedYAxis = false;
+      // optionsDiff.lineWidth = 1;
+  
+      this.additionalDataTemp.push(
+        {
+          internalId: 'tempDiff',
+          yaxisLabel: 'Abw. v. Mittel C°',
+          datasetOptions: optionsDiff,
+          data: abwMonSum
+        });
+
+        this.showDiagram = true;
+    }
+  }
   /**
    * receive datasets from csv and put it into the data format
    */
   private getCsvData() {
     // this.responseInterp.forEach(resp =>{
-
+      this.calculateMeanData();
     let csvInterArray = this.responseInterp.split(/\r\n|\n/);
 
     for (let k = 1; k < csvInterArray.length; k++) {
@@ -198,16 +321,16 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
       }
       this.entries.push(col);
     }
-    const options = new DatasetOptions('addData', 'green');
-    options.pointRadius = 3;
-    options.yAxisRange = { max: 200, min: 0 };
-    options.lineWidth = 1;
-    options.type = 'line';
-    options.visible = true;
-    options.zeroBasedYAxis = true;
+    const optionsT = new DatasetOptions('addData', 'orange');
+    optionsT.pointRadius = 3;
+    optionsT.yAxisRange = { max: 40, min: -40 };
+    optionsT.lineWidth = 1;
+    optionsT.type = 'line';
+    optionsT.visible = true;
+    optionsT.zeroBasedYAxis = true;
     for (let p = 0; p < this.entries.length; p++) {
 
-      this.avgMonthRain_B.push(
+      this.avgMonthTemp_D.push(
         {
           timestamp: new Date(new Date().getFullYear() - 1, 0 + p, 1).getTime(),
           value: parseFloat(this.entries[p][1])
@@ -217,10 +340,10 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
       {
         internalId: 'temp',
         yaxisLabel: 'Langj. Mittel °C',
-        datasetOptions: options,
-        data: this.avgMonthRain_B
+        datasetOptions: optionsT,
+        data: this.avgMonthTemp_D
       });
- 
+
     let csvArray = this.responseInterpDh.split(/\r\n|\n/);
 
     for (let k = 1; k < csvArray.length; k++) {
@@ -231,9 +354,9 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
       }
       this.entriesDh.push(col);
     }
-    const optionsDh = new DatasetOptions('addData', 'green');
+    const optionsDh = new DatasetOptions('addData', 'orange');
     optionsDh.pointRadius = 3;
-    options.yAxisRange = { max: 40, min: 0 };
+    optionsDh.yAxisRange = { max: 200, min: -100 };
     optionsDh.lineWidth = 1;
     optionsDh.type = 'line';
     optionsDh.visible = true;
@@ -253,7 +376,7 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
         datasetOptions: optionsDh,
         data: this.avgMonthRain_D
       });
-
+   
 
   }
   /**
@@ -289,6 +412,9 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
     this.baselayers.push(this.dyn);
 
 
+    let layer = esri.imageMapLayer({ url: "https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/EO_WACODIS_DAT_NDVIService/ImageServer" });
+
+
 
     // let testTimeLayer = L.timeDimension.layer.wms(L.tileLayer.wms("https://maps.dwd.de/geoserver/ows",
     //   {
@@ -296,7 +422,7 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
     //   }), {
     //   updateTimeDimension: true, getCapabilitiesLayerName: 'dwd:RX-Produkt', getCapabilitiesUrl: "https://maps.dwd.de/geoserver/ows"
     // });
-    
+
     //   let secTimeLayer = L.timeDimension.layer.wms(L.tileLayer.wms("https://gis.wacodis.demo.52north.org:6443/arcgis/services/WaCoDiS/EO_WACODIS_DAT_INTRA_LAND_COVER_CLASSIFICATION_Service/ImageServer/WMSServer",
     //   {
     //     layers: 'EO_WACODIS_DAT_INTRA_LAND_COVER_CLASSIFICATION_Service:None', format: 'image/png', transparent: true
@@ -330,7 +456,7 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
   public setSelectedCurrentTimeLeft(date: Date) {
     this.currentSelectedTimeL = date;
   }
-  
+
   /**
    * changes the timespan of the graph 
    * @param timespan timespan to change to
