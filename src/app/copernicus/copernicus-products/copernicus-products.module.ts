@@ -15,12 +15,12 @@ import { CopernicusBarChartCardComponent } from '../cards/copernicus-bar-chart-c
 import { HelgolandD3Module } from '@helgoland/d3';
 import { VitalityBarChartComponent } from '../cards/vitality-bar-chart/vitality-bar-chart.component';
 import { VitalityPieChartComponent } from '../cards/vitality-pie-chart/vitality-pie-chart.component';
-
+import { MixedDataChartComponent } from '../cards/mixed-data-chart/mixed-data-chart.component';
 
 
 @NgModule({
   declarations: [LandCoverComponent, ChlorophyllViewComponent, MowingViewComponent, SoilTemperatureViewComponent,
-    VitalityViewComponent, LayerLegendCardComponent,CopernicusBarChartCardComponent,VitalityBarChartComponent,VitalityPieChartComponent],
+    VitalityViewComponent, LayerLegendCardComponent,CopernicusBarChartCardComponent,VitalityBarChartComponent,VitalityPieChartComponent,MixedDataChartComponent],
   imports: [
     CommonModule,
     HelgolandCoreModule,
@@ -33,6 +33,6 @@ import { VitalityPieChartComponent } from '../cards/vitality-pie-chart/vitality-
     SensorwappToolboxModule,
     WvMapModule
   ],exports:[LandCoverComponent, ChlorophyllViewComponent, MowingViewComponent, SoilTemperatureViewComponent,
-    VitalityViewComponent,  CopernicusBarChartCardComponent,VitalityBarChartComponent,VitalityPieChartComponent,LayerLegendCardComponent]
+    VitalityViewComponent,  CopernicusBarChartCardComponent,VitalityBarChartComponent,VitalityPieChartComponent,LayerLegendCardComponent,MixedDataChartComponent]
 })
 export class CopernicusProductsModule { }
