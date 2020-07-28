@@ -66,10 +66,13 @@ export class VitalityBarChartComponent implements OnInit,AfterViewInit {
     }];
 
     var layout = {
-      width: 600,
+      // width: 600,
       height: 200,
       margin: { "t": 20, "b": 50, "l": 80, "r": 0 },
       showlegend: true,
+      yaxis:{
+        showline: true,
+      },
       barmode: 'group'
     }
     var config = {

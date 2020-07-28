@@ -76,7 +76,7 @@ export class VitalityPieChartComponent implements OnInit,OnChanges, AfterViewIni
      }
     }else{
       if(!changes.bounds.firstChange){
-        console.log(changes);
+
        if(this.bounds instanceof LatLngBounds){
          let geometryType ='esriGeometryEnvelope';
          let geometry ={"xmin":this.bounds.toBBoxString().split(',')[0],
