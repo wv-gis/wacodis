@@ -1,5 +1,5 @@
 <div>
-    <div id="selectionMenu" style="width: 500px; height: 250px; position: relative;">
+    <div id="selectionMenu" style=" position: relative;">
         <table>
             <thead>
                 <tr>
@@ -22,7 +22,7 @@
                             <button id="parameter" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true"
                                 aria-expanded="false">{{selectMeasureParam}}</button>
                             <div class="dropdown-menu" aria-labelledby="parameter">
-                                <button class="dropdown-item" *ngFor="let param of measureParams; let i = index" (click)="changeMeasureParam(param)">{{param}}</button>
+                                <button class="dropdown-item" *ngFor="let param of measureParams; let i = index" (click)="changeMeasureParam(param,i)">{{param}}</button>
                             </div>
                         </div>
                     </td>
@@ -76,9 +76,11 @@
         </div>
         <button type="button" (click)="createIsoPlot()">Graphik erstellen</button>
     </div>
-    <div id="isoplethen" style="margin-top: 20px;" *ngIf="showPlot">
-        <sensorwapp-toolbox-isoplethen style="margin: 5px;" [timespan]="timeSpan" [samplingId]="samplingId" [distIso]="size_iso"
-            [numIso]="num_iso"></sensorwapp-toolbox-isoplethen>
+    <div id="isoplethen"  *ngIf="showPlot">
+        <!-- <sensorwapp-toolbox-isoplethen style="margin: 5px;" [timespan]="timeSpan" [samplingId]="samplingId" [distIso]="size_iso"
+            [numIso]="num_iso"></sensorwapp-toolbox-isoplethen> -->
+            <wv-isoplethen-graphic [timespan]="timeSpan"  [distIso]="size_iso" [datasetID]='samplingId'
+            [numIso]="num_iso"></wv-isoplethen-graphic>
     </div>
 
 </div>
