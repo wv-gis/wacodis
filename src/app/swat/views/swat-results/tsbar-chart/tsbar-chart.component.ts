@@ -85,10 +85,10 @@ export class TSBarChartComponent implements OnInit, AfterViewInit, OnChanges {
           ];
 
           var layout = {
-            width: 800,
-            height: 250,
+            // width: 800,
+            height: 275,
             margin: { "t": 30, "b": 60, "l": 60, "r": 10 },
-            showlegend: true,
+            showlegend: false,
 
             title: {
               text: this.title[this.input],
@@ -96,7 +96,11 @@ export class TSBarChartComponent implements OnInit, AfterViewInit, OnChanges {
                 family: 'Arial',
                 size: 14
               }
-            }
+            },
+            yaxis:{
+              showline: true
+            },
+         
           }
           var config = {
             locale: 'de',
@@ -165,8 +169,8 @@ export class TSBarChartComponent implements OnInit, AfterViewInit, OnChanges {
             ];
 
             var layout = {
-              width: 800,
-              height: 250,
+              // width: 800,
+              height: 275,
               margin: { "t": 30, "b": 60, "l": 60, "r": 10 },
               showlegend: true,
               barmode: 'group',
@@ -176,7 +180,11 @@ export class TSBarChartComponent implements OnInit, AfterViewInit, OnChanges {
                   family: 'Arial',
                   size: 14
                 }
-              }
+              },
+              yaxis:{
+                showline: true
+              },
+              legend: {orientation: 'h'}
             }
             var config = {
               locale: 'de',
