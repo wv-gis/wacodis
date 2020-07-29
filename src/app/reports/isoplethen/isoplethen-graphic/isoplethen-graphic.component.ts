@@ -4,6 +4,7 @@ import { IsoplethenDatasetSchema } from '@sensorwapp-toolbox/core/lib/models/Iso
 
 import Plotly from 'plotly.js-dist';
 import * as d3 from 'd3';
+import { locale } from 'src/environments/environment';
 
 const width = 1040;
 const height = 750;
@@ -19,6 +20,7 @@ export class IsoplethenGraphicComponent implements OnInit, OnChanges {
   @Input() distIso: number = 1;// distance between isolines
   @Input() colorscale: any[] = this.setDefaultColorScale();
   @Input() timespan: Timespan;
+  @Input() datasetID: string;
   // @Input() dataset: ApiV3Dataset;
 
   @ViewChild('swappChart', { static: false }) swappChart: ElementRef;
@@ -46,9 +48,14 @@ export class IsoplethenGraphicComponent implements OnInit, OnChanges {
   ) { }
 
   ngOnInit(): void {
+    Plotly.register(locale);
     // const serviceId: string =" this.dsUtils.getServiceId(this.dataset);";
     // const timespan =" this.dsUtils.timespanToIsoPeriod(this.timespan);";
-    this.swappApi.getDataset("1223", "http://192.168.101.105/sos3/api/").subscribe((dataset) => {
+   this.receiveDatasets();
+  }
+
+  receiveDatasets(){
+    this.swappApi.getDataset(this.datasetID, "http://192.168.101.105/sos3/api/").subscribe((dataset) => {
       console.log(dataset);
       this.swappApi.getDatasetData(dataset.id, dataset.internalId.split('__')[0], { timespan: new Date(this.timespan.from).toISOString() + '/' + new Date(this.timespan.to).toISOString() })
         .subscribe(
@@ -56,33 +63,36 @@ export class IsoplethenGraphicComponent implements OnInit, OnChanges {
           (error: any) => console.log(error),
           () => this.createProfileViews());
 
-      this.measureParam = dataset.parameters.phenomenon.label;
-      this.damLabel = dataset.feature.label;
-      console.log(dataset.label);
+      this.measureParam = dataset.parameters.phenomenon.label + ' ' + dataset.uom;
+      this.damLabel = dataset.feature.properties.label;
       this.year = new Date(this.timespan.from).getFullYear();
     });
   }
 
-
   ngOnChanges(changes: import("@angular/core").SimpleChanges): void {
     if (changes.distIso) {
       if (!changes.distIso.firstChange) {
-        console.log(this.distIso);
         this.createProfileViews();
       }
 
     }
     else if (changes.numIso) {
       if (!changes.numIso.firstChange) {
-        console.log(this.numIso);
         this.createProfileViews();
+      }
+    }
+    else if (changes.datasetID) {
+      if (!changes.datasetID.firstChange) {
+        this.samplings_Dataset =[];
+        this.maxDepth =[];
+        this.measureDates =[];
+        this.receiveDatasets();
       }
     }
   }
 
 
   private prepareDatasets(observations: any) {
-    console.log(observations);
     for (let p = 0; p < observations.values.length; p++) {
       for (let k = 0; k < observations.values[p].value.length; k++) {
         this.samplings_Dataset.push({
@@ -172,7 +182,7 @@ export class IsoplethenGraphicComponent implements OnInit, OnChanges {
       coord4.push([x_dates[set3], y_depths[set3], z_value[set3]]);
     }
 
-    if (this.measureParam == "Sauerstoff") {
+    if (this.measureParam.startsWith("Sauerstoff")) {
       this.reversedColor = false;
     }
     else {
@@ -284,13 +294,15 @@ export class IsoplethenGraphicComponent implements OnInit, OnChanges {
       },
       font: {
         size: 14
-      }
+      },
+      height: 600
     };
 
     /**
      * set config parameters for plotly modeBar
      */
     var config = {
+      locale: 'de',
       toImageButtonOptions: {
         format: 'png',
         height: height,
@@ -298,7 +310,9 @@ export class IsoplethenGraphicComponent implements OnInit, OnChanges {
       },
       displayModeBar: true,
       responsive: true,
-      modeBarButtonsToRemove: ['select2d', 'lasso2d', 'hoverClosestCartesian', 'hoverCompareCartesian', 'toggleSpikelines']
+      displaylogo: false,
+            modeBarButtonsToRemove: ['select2d', 'lasso2d', 'hoverClosestCartesian',
+              'hoverCompareCartesian', 'toggleSpikelines', 'pan2d', 'zoomOut2d', 'zoomIn2d', 'autoScale2d', 'resetScale2d'],
     };
 
     /**

@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { Timespan, ApiV3Dataset, HelgolandServicesConnector, DatasetType, DatasetApiV3Connector, ApiV3InterfaceService } from '@helgoland/core';
+import { Timespan, ApiV3Dataset, HelgolandServicesConnector, DatasetType, DatasetApiV3Connector, ApiV3InterfaceService, ApiV3ObservationTypes } from '@helgoland/core';
 import { DatasetImplApiV3InterfaceService } from '@sensorwapp-toolbox/core';
 
 @Component({
@@ -36,13 +36,14 @@ export class IsoplethenViewComponent implements OnInit, AfterViewInit {
   public profileDataset: ApiV3Dataset;
 
   constructor(private datasetApi: DatasetImplApiV3InterfaceService, private api: ApiV3InterfaceService) {
-    //observationType="profile"
-    this.datasetApi.getTimeseries("http://192.168.101.105/sos2/api/v1/", { phenomenon: "6" }).subscribe((timeseries) => {
+    //observationType="profile", phenomenon = Sauerstoff
+    this.api.getDatasets("http://192.168.101.105/sos3/api/", { phenomenon: "174",observationTypes: [ApiV3ObservationTypes.Profil] }).subscribe((timeseries) => {
       timeseries.forEach((series) => {
-        this.measureParams.push(series.label);
-        this.samplingStationLabels.push(series.station.properties.label);
-        this.samplingIds.push(series.id);
-        console.log(this.samplingIds);
+        if(new Date(series.samplingTimeEnd).getTime()>= new Date(this.timeSpan.to).getTime()){
+          this.measureParams.push(series.label);
+          this.samplingStationLabels.push(series.feature.properties.label);
+          this.samplingIds.push(series.id);
+        }     
       });
     });
  
@@ -50,8 +51,7 @@ export class IsoplethenViewComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.api.getDataset(this.internalId.id,this.internalId.url,{}).subscribe((data)=>{
-      console.log(this.profileDataset);
-      this.profileDataset = data;
+         this.profileDataset = data;
     
     });
   }
@@ -100,9 +100,11 @@ export class IsoplethenViewComponent implements OnInit, AfterViewInit {
    * when the parameter is changed set new label. 
    * @param param new selected parameter from list
    */
-  public changeMeasureParam(param: string) {
+  public changeMeasureParam(param: string,index: number) {
     this.selectMeasureParam = param;
-    //TODO: replot graph
+    this.dam_label = this.samplingStationLabels[index];
+    this.samplingId =  this.samplingIds[index];
+    
   }
   /**
    * change start date of diagram based on input
@@ -119,7 +121,8 @@ export class IsoplethenViewComponent implements OnInit, AfterViewInit {
    */
   public changeSamplingStation(stat: string, index: number) {
     this.dam_label = this.samplingStationLabels[index];
-    // this.samplingId =  this.samplingIds[index];
-    // this.selectMeasureParam = this.measureParams[index];
+    this.samplingId =  this.samplingIds[index];
+    this.selectMeasureParam = this.measureParams[index];
+  
   }
 }
