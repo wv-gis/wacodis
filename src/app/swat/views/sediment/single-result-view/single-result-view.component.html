@@ -12,7 +12,7 @@
         </div>
     </div>
 
-    <div class="row" style="height: 350px;">
+    <div class="row">
         <div class="col-xl-6 col-md-6 mb-2">
             <div class="card border-left-primary shadow h-100 ">
                 <div class="row">
@@ -30,7 +30,7 @@
                     </div>
                 </div>
                 <div class="row" >
-                    <div class="col-xl-6 col-md-6 mb-2" >
+                    <div class="col-xl-12 col-md-12 mb-2" >
                         <div *ngIf="showBarChart">
                             <wv-tsbar-chart [service]="featureTSLayerUrl" [selIndices]='[selSzenarioTS[selSzen_Id]]'
                                 [barChartId]="'tsInput'" [input]="barId">
@@ -40,7 +40,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-xl-6 col-md-6 mb-2">
+        <div class="col-xl-6 col-md-6 mb-2" style="height: 350px;">
             <div id="map" style="height: 100%;">
                 <div class="map-wrapper" id='map-wrapper'>
                     <div id="szTwo-map" class="map-viewer"></div>
@@ -108,7 +108,7 @@
     <div class="row" *ngIf="showSingleMaps">
         <div class="col-xl-3 col-md-3 ">
             <div class="card border-left-primary shadow h-100 ">
-                <div class="card-body" style="overflow: auto;height: 175px;">
+                <div class="card-body" style="overflow: auto;height: 140px;">
                     <div class="wv-legend" style="width: 100%;">
                         <wv-layer-legend-card [layer]="baseLayers[1]" [id]="selSzenarioHRU[selSzen_Id]"></wv-layer-legend-card>
                     </div>
@@ -117,7 +117,7 @@
         </div>
         <div class="col-xl-3 col-md-3 ">
             <div class="card border-left-primary shadow h-100 ">
-                <div class="card-body" style="overflow: auto;height: 175px;">
+                <div class="card-body" style="overflow: auto;height: 140px;">
                     <div class="wv-legend" style="width: 100%;">
                         <wv-layer-legend-card [layer]="baseLayers[0]" [id]="64"></wv-layer-legend-card>
                     </div>
@@ -126,7 +126,7 @@
         </div>
         <div class="col-xl-3 col-md-3 ">
             <div class="card border-left-primary shadow h-100 ">
-                <div class="card-body" style="overflow: auto;height: 175px;">
+                <div class="card-body" style="overflow: auto;height: 140px;">
                     <div class="wv-legend" style="width: 100%;" *ngIf="showSingleMaps">
                         <wv-layer-legend-card [layer]="baseLayers[0]" [id]="63"></wv-layer-legend-card>
                     </div>
@@ -135,7 +135,7 @@
         </div>
         <div class="col-xl-3 col-md-3 ">
             <div class="card border-left-primary shadow h-100 ">
-                <div class="card-body" style="overflow: auto;height: 175px;">
+                <div class="card-body" style="overflow: auto;height: 140px;">
                     <div class="wv-legend" style="width: 100%;" *ngIf="showSingleMaps">
                         <wv-layer-legend-card [layer]="baseLayers[0]" [id]="1"></wv-layer-legend-card>
                     </div>
