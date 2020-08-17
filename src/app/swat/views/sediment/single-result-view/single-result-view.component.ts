@@ -69,8 +69,7 @@ export class SingleResultViewComponent implements OnInit, OnDestroy {
   ngOnInit() {
 
    this.router.url.subscribe((obs)=>{
-    console.log(obs[0].path);
-    switch(obs[0].path){
+      switch(obs[0].path){
       case 'substrance-entries-sediment':{
         this.params = sedimentParam;
         this.barId = 0;     
@@ -105,9 +104,6 @@ export class SingleResultViewComponent implements OnInit, OnDestroy {
   this.mapCache.setMap(this.szenario2Id, this.szenarioMap);
 
   this.addLayer();
-
-
- 
 
   this.szenarioMap.invalidateSize();
 }
