@@ -121,7 +121,7 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
 
   constructor(private activatedRoute: ActivatedRoute, private mapCache: MapCache, private dataService: CsvDataService, private apiInterface: HelgolandServicesConnector) {
     this.service = vitalityService;
-  
+
     this.responseInterp = dataService.getTempDhDataset();
     this.responseInterpDh = dataService.getRainDhDataset();
     this.getCsvData();
@@ -257,10 +257,10 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
         datasetOptions: optionsDiff,
         data: d
       });
-      this.showDiagramR = true;
+    this.showDiagramR = true;
   }
 
- 
+
 
   public setMonthSum(d: AdditionalDataEntry, t: number) {
     this.moSum[t] = d;
@@ -274,13 +274,13 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
     this.moSumTemp[t] = d;
     this.countValue[t] = x;
     this.loadingCountT++;
-    let abwMonSum =[];
+    let abwMonSum = [];
     if (this.loadingCountT == 12) {
-      this.moSumTemp.forEach((a,b,c)=>{
-        if (c[b].value!==undefined && this.countValue[b]!== undefined) {
-          abwMonSum.push( {value: Math.round((c[b].value / (this.countValue[b]))) - this.avgMonthTemp_D[b].value , timestamp: c[b].timestamp});
-      } else {
-         
+      this.moSumTemp.forEach((a, b, c) => {
+        if (c[b].value !== undefined && this.countValue[b] !== undefined) {
+          abwMonSum.push({ value: Math.round((c[b].value / (this.countValue[b]))) - this.avgMonthTemp_D[b].value, timestamp: c[b].timestamp });
+        } else {
+
         }
         this.loadingCountT--;
       });
@@ -293,7 +293,7 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
       optionsDiff.visible = true;
       optionsDiff.zeroBasedYAxis = false;
       // optionsDiff.lineWidth = 1;
-  
+
       this.additionalDataTemp.push(
         {
           internalId: 'tempDiff',
@@ -302,7 +302,7 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
           data: abwMonSum
         });
 
-        this.showDiagram = true;
+      this.showDiagram = true;
     }
   }
   /**
@@ -310,7 +310,7 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
    */
   private getCsvData() {
     // this.responseInterp.forEach(resp =>{
-      this.calculateMeanData();
+    this.calculateMeanData();
     let csvInterArray = this.responseInterp.split(/\r\n|\n/);
 
     for (let k = 1; k < csvInterArray.length; k++) {
@@ -376,7 +376,7 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
         datasetOptions: optionsDh,
         data: this.avgMonthRain_D
       });
-   
+
 
   }
   /**
@@ -413,8 +413,37 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
 
 
     let layer = esri.imageMapLayer({ url: "https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/EO_WACODIS_DAT_NDVIService/ImageServer" });
+    let diffLayer = esri.imageMapLayer({
+      url: 'https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/WACODIS_LAND_COVER_CLASSIFICATION/ImageServer',
+      maxZoom: 16, opacity: 1, alt: 'DiffLandUse'
+    });
+    // diffLayer.setRenderingRule(
+    //   {
+    //     "rasterFunction": "Colormap",
+    //     "rasterFunctionArguments": {
+    //       "ColormapName": "Random"
+    //     },
+    //     "variableName":
+    //     {
+    //       "rasterFunction": "Mask",
+    //       "rasterFunctionArguments": {
+    //         "NoDataValues": ["4"],
+    //         "IncludedRanges": [0, 25],
+    //         "NoDataInterpretation": 0
+    //       },
+    //       "variableName": {
+    //         "rasterFunction": "Arithmetic",
+    //         "rasterFunctionArguments": {
+    //           "Raster": "$5",
+    //           "Raster2": "$2",
+    //           "Operation": 3
+    //         }
+    //       }
+    //     }
+    //   }
 
-
+    // );
+    // this.baselayers.push(diffLayer);
 
     // let testTimeLayer = L.timeDimension.layer.wms(L.tileLayer.wms("https://maps.dwd.de/geoserver/ows",
     //   {
