@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import Plotly from 'plotly.js-dist';
 import { LatLngBounds, LatLng } from 'leaflet';
 
@@ -19,6 +19,8 @@ import { LatLngBounds, LatLng } from 'leaflet';
  * 
  */
 export class VitalityBarChartComponent implements OnInit,AfterViewInit {
+
+  @ViewChild("percentBar",{static: true}) public graphElem: ElementRef;
 
   @Output() selTS: EventEmitter<string> = new EventEmitter();
   @Input() barChartIds: string[];
@@ -87,7 +89,7 @@ export class VitalityBarChartComponent implements OnInit,AfterViewInit {
 
   }
   ngAfterViewInit(): void {
-    this.plot = document.getElementById(this.barChartIds[0]);
+    this.plot = this.graphElem.nativeElement;
 
     this.plot.on('plotly_click', this.getLabel);
   
