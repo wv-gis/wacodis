@@ -116,9 +116,10 @@ export class ExtendedOlLayerLegendUrlComponent {//extends OlLayerLegendUrlCompon
           }
           else {
             //if (source instanceof FeatureLayer) create LegendUrl Parameters by Renderer Specification of Service
-            if (this.layer instanceof esri.featureLayer) {
+            if (this.layer instanceof esri.FeatureLayer) {
+             
               esri.featureLayer({
-                url: 'https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/ArcGIS/rest/services/SWATimClient/FeatureServer/' + this.id
+                url: this.imageUrl + this.id
               }).metadata((err, meta) => {
                 let featureResp: legendParam[] = [];
 
