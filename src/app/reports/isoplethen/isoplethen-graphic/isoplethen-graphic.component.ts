@@ -21,6 +21,7 @@ export class IsoplethenGraphicComponent implements OnInit, OnChanges, AfterViewI
   @Input() colorscale: any[] = this.setDefaultColorScale();
   @Input() timespan: Timespan;
   @Input() datasetID: string;
+  @Input() interp: string = 'linear';
   // @Input() dataset: ApiV3Dataset;
 
   @ViewChild('swappChart', { static: false }) swappChart: ElementRef;
@@ -103,8 +104,8 @@ export class IsoplethenGraphicComponent implements OnInit, OnChanges, AfterViewI
 
   ngOnInit(): void {
     Plotly.register(locale);
-    // const serviceId: string =" this.dsUtils.getServiceId(this.dataset);";
-    // const timespan =" this.dsUtils.timespanToIsoPeriod(this.timespan);";
+    const serviceId: string =" this.dsUtils.getServiceId(this.dataset);";
+    const timespan =" this.dsUtils.timespanToIsoPeriod(this.timespan);";
      this.receiveDatasets();
 
 
@@ -149,6 +150,10 @@ export class IsoplethenGraphicComponent implements OnInit, OnChanges, AfterViewI
         this.measureDates = [];
         this.receiveDatasets();
       }
+    }else if(changes.interp){
+      if(!changes.interp.firstChange){
+        this.createProfileViews();
+      }
     }
   }
 
@@ -182,7 +187,7 @@ export class IsoplethenGraphicComponent implements OnInit, OnChanges, AfterViewI
     }
 
     let x_dates = [], y_depths = [], z_value = [];
-   
+
     for (let q = 0; q < this.samplings_Dataset.length; q++) {
       x_dates.push(this.samplings_Dataset[q].date);
       y_depths.push(this.samplings_Dataset[q].depth);
@@ -195,51 +200,56 @@ export class IsoplethenGraphicComponent implements OnInit, OnChanges, AfterViewI
     //   z_value.push(this.vals[q]);
 
     // }
-
-    
-    // let testDel = this.calculateDelaunayTriang(x_dates, y_depths, z_value);
-    // for (let q = 0; q < testDel.length; q++) {
-      // x_dates.push(testDel[q].date);
-      // y_depths.push(testDel[q].depth);
-      // z_value.push(testDel[q].value);
-    // }
-
-    // interpolation of the dataset
-    let coord = [];
-    let dataArray = [x_dates, y_depths, z_value];
-
-    for (let set in x_dates) {
-      coord.push([x_dates[set], y_depths[set], z_value[set]]);
-    }
-
-    let interpolatorArray = [];
-    for (let i = 0, k = 1; i < coord.length; i++ , k++) {
-      interpolatorArray.push(d3.interpolateObject(coord[i], [dataArray[0][k], dataArray[1][k], dataArray[2][k]]));
-      }
-    for (let j = 0; j < interpolatorArray.length; j++) {
-      let interpH = interpolatorArray[j](0.25);
-      x_dates.push(interpH[0]);
-      y_depths.push(Math.round(interpH[1]));
-      z_value.push(interpH[2]);
-    }
  
+    if (!this.interp.includes('linear')) {
+      let testDel = this.calculateDelaunayTriang(x_dates, y_depths, z_value);
+      for (let q = 0; q < testDel.length; q++) {
+      x_dates.push(testDel[q].date);
+      y_depths.push(testDel[q].depth);
+      z_value.push(testDel[q].value);
+      }
+    }
+    else {
+      // interpolation of the dataset
+      let coord = [];
+      let dataArray = [x_dates, y_depths, z_value];
 
-    // second interpolation
-    let coord3 = [];
-    let dataArray3 = [x_dates, y_depths, z_value];
-    for (let set2 in x_dates) {
-      coord3.push([x_dates[set2], y_depths[set2], z_value[set2]]);
+      for (let set in x_dates) {
+        coord.push([x_dates[set], y_depths[set], z_value[set]]);
+      }
+
+      let interpolatorArray = [];
+      for (let i = 0, k = 1; i < coord.length; i++ , k++) {
+        interpolatorArray.push(d3.interpolateObject(coord[i], [dataArray[0][k], dataArray[1][k], dataArray[2][k]]));
+      }
+      for (let j = 0; j < interpolatorArray.length; j++) {
+        let interpH = interpolatorArray[j](0.25);
+        x_dates.push(interpH[0]);
+        y_depths.push(Math.round(interpH[1]));
+        z_value.push(interpH[2]);
+      }
+
+
+      // second interpolation
+      let coord3 = [];
+      let dataArray3 = [x_dates, y_depths, z_value];
+      for (let set2 in x_dates) {
+        coord3.push([x_dates[set2], y_depths[set2], z_value[set2]]);
+      }
+      let interpolatorArray3 = [];
+      for (let m = 0, n = 1; m < coord3.length; m++ , n++) {
+        interpolatorArray3.push(d3.interpolateObject(coord3[m], [dataArray3[0][n], dataArray3[1][n], dataArray3[2][n]]));
+      }
+      for (let r = 0; r < interpolatorArray3.length; r++) {
+        let interpH3 = interpolatorArray3[r](0.25);
+        x_dates.push(interpH3[0]);
+        y_depths.push(Math.round(interpH3[1]));
+        z_value.push(interpH3[2]);
+      }
     }
-    let interpolatorArray3 = [];
-    for (let m = 0, n = 1; m < coord3.length; m++ , n++) {
-      interpolatorArray3.push(d3.interpolateObject(coord3[m], [dataArray3[0][n], dataArray3[1][n], dataArray3[2][n]]));
-    }
-    for (let r = 0; r < interpolatorArray3.length; r++) {
-      let interpH3 = interpolatorArray3[r](0.25);
-      x_dates.push(interpH3[0]);
-      y_depths.push(Math.round(interpH3[1]));
-      z_value.push(interpH3[2]);
-    }
+
+
+
 
     // define direction of color palette
     if (this.measureParam.startsWith("Sauerstoff")) {
@@ -345,7 +355,7 @@ export class IsoplethenGraphicComponent implements OnInit, OnChanges, AfterViewI
         title: 'Tiefe [m]',
         autorange: 'reversed',
         tick0: 0,
-        dtick: 2.5, 
+        dtick: 2.5,
         tickcolor: '#000',
         mirror: 'allticks',
         showline: true,
@@ -392,22 +402,22 @@ export class IsoplethenGraphicComponent implements OnInit, OnChanges, AfterViewI
       interpolDat.push(d3.interpolateDate(dates[t], dates[t + 13]));
       interpolDep.push(d3.interpolateNumber(depths[t], depths[t + 13]));
     }
-    
+
     interpolVal.forEach((val, i, array) => {
-      let interpH3= array[i](0.25);
+      let interpH3 = array[i](0.5);
       values.push(interpH3);
     });
-    
-   for(let i=0;i<interpolDat.length;i++) {
-     let interpDat = interpolDat[i](0.25);
+
+    for (let i = 0; i < interpolDat.length; i++) {
+      let interpDat = interpolDat[i](0.5);
       dates.push(interpDat);
     };
 
     interpolDep.forEach((val, i, array) => {
-      let interpDep = array[i](0.25);
+      let interpDep = array[i](0.5);
       depths.push(interpDep);
     });
-   
+
 
     for (let p = 0; p < dates.length; p++) {
       result.push({

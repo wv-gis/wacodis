@@ -64,6 +64,16 @@
                         </form>
                     </td>
                 </tr>
+                <tr>
+                    <td>
+                        <form id="interpolation">
+                            <input type="radio" name="inter" value="linear" checked> lineare Interpolation
+                            <br>
+                            <input type="radio" name="inter" value="other">andere Interpolation
+                           
+                        </form>
+                    </td>
+                </tr>
             </tbody>
         </table>
         Startdatum:
@@ -80,7 +90,7 @@
         <!-- <sensorwapp-toolbox-isoplethen style="margin: 5px;" [timespan]="timeSpan" [samplingId]="samplingId" [distIso]="size_iso"
             [numIso]="num_iso"></sensorwapp-toolbox-isoplethen> -->
             <wv-isoplethen-graphic [timespan]="timeSpan"  [distIso]="size_iso" [datasetID]='samplingId'
-            [numIso]="num_iso"></wv-isoplethen-graphic>
+            [numIso]="num_iso" [interp]='interpolation'></wv-isoplethen-graphic>
     </div>
 
 </div>

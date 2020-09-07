@@ -34,6 +34,7 @@ export class IsoplethenViewComponent implements OnInit, AfterViewInit {
   public showPlot: boolean = false;
   public samplingIds: string[] = [];
   public profileDataset: ApiV3Dataset;
+  public interpolation: string = 'linear';
 
   constructor(private datasetApi: DatasetImplApiV3InterfaceService, private api: ApiV3InterfaceService) {
     //observationType="profile", phenomenon = Sauerstoff
@@ -91,8 +92,21 @@ export class IsoplethenViewComponent implements OnInit, AfterViewInit {
         document.getElementById("distIso").setAttribute("disabled", "disabled");
         this.autocontourPara = !this.autocontourPara;
       }
+     
     });
-   
+
+    document.forms.item(4).addEventListener("click", listener => {
+
+      // if (document.forms.item(1).elements["inter"].value == "linear") {
+        this.interpolation = document.forms.item(4).elements["inter"].value;
+       console.log(this.interpolation);
+      // }
+      // else {
+        // this.even = this.even;
+    
+      // }
+    });
+
   }
 
   
