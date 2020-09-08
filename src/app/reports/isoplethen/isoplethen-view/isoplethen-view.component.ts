@@ -97,14 +97,9 @@ export class IsoplethenViewComponent implements OnInit, AfterViewInit {
 
     document.forms.item(4).addEventListener("click", listener => {
 
-      // if (document.forms.item(1).elements["inter"].value == "linear") {
         this.interpolation = document.forms.item(4).elements["inter"].value;
        console.log(this.interpolation);
-      // }
-      // else {
-        // this.even = this.even;
-    
-      // }
+   
     });
 
   }

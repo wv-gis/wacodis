@@ -104,8 +104,8 @@ export class IsoplethenGraphicComponent implements OnInit, OnChanges, AfterViewI
 
   ngOnInit(): void {
     Plotly.register(locale);
-    const serviceId: string =" this.dsUtils.getServiceId(this.dataset);";
-    const timespan =" this.dsUtils.timespanToIsoPeriod(this.timespan);";
+    // const serviceId: string =" this.dsUtils.getServiceId(this.dataset);";
+    // const timespan =" this.dsUtils.timespanToIsoPeriod(this.timespan);";
      this.receiveDatasets();
 
 
@@ -143,16 +143,17 @@ export class IsoplethenGraphicComponent implements OnInit, OnChanges, AfterViewI
         this.createProfileViews();
       }
     }
-    else if (changes.datasetID) {
+ else if(changes.interp){
+      if(!changes.interp.firstChange){
+        this.createProfileViews();
+      }
+    }
+    if (changes.datasetID) {
       if (!changes.datasetID.firstChange) {
         this.samplings_Dataset = [];
         this.maxDepth = [];
         this.measureDates = [];
         this.receiveDatasets();
-      }
-    }else if(changes.interp){
-      if(!changes.interp.firstChange){
-        this.createProfileViews();
       }
     }
   }
@@ -182,8 +183,8 @@ export class IsoplethenGraphicComponent implements OnInit, OnChanges, AfterViewI
 
   createProfileViews() {
     if (this.plot != undefined) {
-      Plotly.purge(this.swappChart.nativeElement);
-      //      Plotly.purge("isoplethenView");
+      // Plotly.purge(this.swappChart.nativeElement);
+           Plotly.purge("isoplethenView");
     }
 
     let x_dates = [], y_depths = [], z_value = [];
