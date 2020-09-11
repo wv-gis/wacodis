@@ -184,7 +184,7 @@ export class TSBarChartComponent implements OnInit, AfterViewInit, OnChanges {
               yaxis:{
                 showline: true
               },
-              legend: {orientation: 'h'}
+              legend: {orientation: 'h', y: -0.25}
             }
             var config = {
               locale: 'de',
