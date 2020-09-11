@@ -2,7 +2,7 @@
   <nav class="navbar navbar-expand-lg fixed-top navbar-light wv-navbar-light ">
     <div class="container-fluid">
       <div class="navbar-header">
-        <a href="/start" class="navbar-brand">
+        <a routerLink='/start' class="navbar-brand">
           <img src="assets/images/WaCoDiS_LogoTransp.png" alt="WaCoDiS" width="100" height="64">
         </a>
         <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#WvnavbarToggler">
@@ -33,7 +33,7 @@
               <ul class="dropdown-menu btn wv-menu-drop" aria-labelledby="dropdownMenuButton">
  
                 <li class="dropdown-submenu">
-                  <a class="dropdown-item  wv-drop" tabindex="-1" href="#">
+                  <a class="dropdown-item  wv-drop" tabindex="-1" [routerLink]="['/land-use-view','uW']" >
                     Berichte Landbedeckung
                   </a>
                   <ul class="dropdown-menu btn wv-menu-drop" aria-labelledby="dropSubMenuButton" id="subMenu">
