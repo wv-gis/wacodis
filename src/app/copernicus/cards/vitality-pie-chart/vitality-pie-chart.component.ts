@@ -124,7 +124,12 @@ export class VitalityPieChartComponent implements OnInit,OnChanges, AfterViewIni
   //      }
   //    });
 
-    this.values =[10,40,5];
+    if(this.chartId.includes('growthChart')){
+      this.values =[10 + Math.random()*5,65,25];
+    }
+    else{
+      this.values =[35,20 + Math.random()*5,45];
+    }
     this.labels = ['gering', 'mittel','stark']
     
     

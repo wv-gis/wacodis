@@ -183,8 +183,8 @@ export class IsoplethenGraphicComponent implements OnInit, OnChanges, AfterViewI
 
   createProfileViews() {
     if (this.plot != undefined) {
-      // Plotly.purge(this.swappChart.nativeElement);
-           Plotly.purge("isoplethenView");
+      Plotly.purge(this.swappChart.nativeElement);
+          //  Plotly.purge("swappChart");
     }
 
     let x_dates = [], y_depths = [], z_value = [];

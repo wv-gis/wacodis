@@ -93,7 +93,7 @@ export class PercentageChangeBarChartComponent implements AfterViewInit, OnChang
           var layout = {
             // width: 600,
             height: 275,
-            margin: { "t": 50, "b": 50, "l": 50, "r": 0 },
+            margin: { "t": 50, "b": 50, "l": 100, "r": 0 },
             showlegend: false,
             title: {
               text: 'Prozentuale Veränderung',
