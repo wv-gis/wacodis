@@ -3,7 +3,6 @@ import { DatasetOptions, Timespan, DatasetService, ColorService,HelgolandService
 import { HoveringStyle, D3PlotOptions } from '@helgoland/d3';
 import * as L from 'leaflet';
 import { SelectedProviderService } from 'src/app/services/selected-provider.service';
-import { SwappDatasetOptions } from 'swapp-toolbox';
 export var STYLE_DATA: DatasetOptions;
 @Component({
     selector: 'wv-timeseries-legend',

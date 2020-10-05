@@ -38,7 +38,7 @@ export class IsoplethenViewComponent implements OnInit, AfterViewInit {
 
   constructor(private datasetApi: DatasetImplApiV3InterfaceService, private api: ApiV3InterfaceService) {
     //observationType="profile", phenomenon = Sauerstoff
-    this.api.getDatasets("http://192.168.101.105/sos3/api/", { phenomenon: "174",observationTypes: [ApiV3ObservationTypes.Profil] }).subscribe((timeseries) => {
+    this.api.getDatasets("http://192.168.101.105/sos3/api/", { phenomena: ["174"],observationTypes: [ApiV3ObservationTypes.Profil] }).subscribe((timeseries) => {
       timeseries.forEach((series) => {
         if(new Date(series.samplingTimeEnd).getTime()>= new Date(this.timeSpan.to).getTime()){
           this.measureParams.push(series.label);
