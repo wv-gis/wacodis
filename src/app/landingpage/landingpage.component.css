@@ -1,75 +1,123 @@
-.backgroundImage {
-    width: 100%;
-    height: 100%;
-    display: block;
-    position: relative;
-     
- }
- 
- .backgroundImage::after{
-     opacity: 0.5;
-     top: 0;
-     left: 0;
-     bottom: 0;
-     right: 0;
-     z-index: -1;
-     position: absolute;
-     content: "";
-     background: url('../../assets/images/010.jpeg');
-     background-repeat: no-repeat;
-     background-size: cover; 
-     background-position: center;
- }
- h5 {
-    color: white;
-    font-size: 20px;
-}
-.backgroundImage .view {
-    width: 300px;
-    height: 150px;
-    top: 250px;
-    margin: auto;
-    padding: 10px;
-    background-color: #384c92;   
-}
-.backgroundImage table{
-    top: 100px;
-    margin: auto;
-}
 
-h1 {
-    color: black;
+p.small{
+    font-style: normal;
+    color: #2C333F; 
+    font-size: 11px;
+}
+p.mid{
+    font-style: normal;
+    color: #2C333F; 
+    font-size: 13px;
+}
+p.mid.bold{
+    font-weight: bold;
+    color: #2C333F; 
+    font-size: 13px;
+}
+p.big{
+    font-style: normal;
+    color: #2C333F; 
     font-size: 15px;
 }
-.view{
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-    word-wrap: break-word;
-    background-clip: border-box;
-    border: 1px solid rgba(0, 0, 0, 0.125);
-    border-radius: 0.25rem
+p.big.bold{
+    font-weight: bold;
+    color: #2C333F; 
+    font-size: 15px;
 }
-.btn-primary.round{
-    border-radius: 50%;
-    background-color: #384c92;   
-}
-.backgroundImage p {
-    margin-top: 250px;
-    margin-left: 185px;
-}
-.backgroundImage .card-body{
-    margin: auto;
-    width: 900px;
-    /* height: 250px; */
-    display: inherit;
+.btn-wv{
+    height: 38px;
+    line-height: 30px;
+    text-align: center;
+    color: #fff;
+    background-color: #718296;
+    border-radius: 3px;
+    padding: 4px 8px;
+    width: 300px
 }
 
-.btn.btn-success{
-    background-color: #718296;
-    border-color: #718296;
+.wv .nav-link{
+    font-style: normal;
+    color: #2C333F; 
+    font-size: 15px;
 }
-li{
-    list-style: none;
+.wv.active{
+   background-color: #718296;
+}
+.active .nav-link{
+    color: #fff;
+}
+.wv-submit-btn{
+    color: #fff;
+    background-color: #718296;
+}
+
+    .wv-h1{
+        font-size: 42px;
+        color: #2C4869;
+    }
+    .wv-h2{
+        font-size: 32px;
+        color: #2C333F; 
+    }
+    .wv-h3{
+        font-size: 24px;
+        color: #2C4869;
+    }
+
+/*
+* small screens
+*/
+ /* @include media-breakpoint-up(md) {   */
+    .wv-h1{
+        font-size: 34px;
+        color: #2C4869;
+    }
+    .wv-h2{
+        font-size: 22px;
+        color: #2C333F; 
+    } 
+ /* }  */
+.jumbotron{
+    height: 450px;
+    background:url('../../assets/images/010.jpeg'); 
+    background-size: cover;
+    border-radius: 0px
+}
+.row.featurette{
+    margin: 30px 0 !important;
+}
+.jumbo{
+    color: #fff;
+}
+
+
+#cookie-bar.fixed.bottom {
+    bottom: 0;
+    top: auto;
+}
+#cookie-bar.fixed {
+    position: fixed;
+    top: 0;
+    right: 0;
+}
+#cookie-bar {
+    background: rgba(255,255,255,0.7);
+    height: auto;
+    line-height: 24px;
+    color: #1a1a1a;
+    box-shadow: rgba(0,0,0,0.5) 0px 0px 8px;
+}
+iframe{
+    width: 100%;
+}
+
+.btn-start{
+    height: 38px;
+    line-height: 30px;
+    text-align: center;
+    color: #718296;
+    background-color: #fff;
+    border-radius: 3px;
+    padding: 4px 8px;
+    width: 300px
 }

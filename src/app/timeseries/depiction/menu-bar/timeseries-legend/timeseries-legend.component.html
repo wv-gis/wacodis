@@ -12,6 +12,7 @@
                 (onDeleteDataset)="removeDataset(id)" (onEditOptions)="editOption($event)" (onUpdateOptions)="updateOptions($event,id)"
                 (onShowGeometry)="showGeometry($event)"></wv-extended-timeseries-entry>
         </div>
+    
         <div class="bottom">
             <button class="btn btn-default" (click)="showOriginal()">
                 <i class="far fa-chart-bar" style="overflow: auto;"></i> Originalwerte</button>
@@ -29,7 +30,7 @@
                 <i class="fab fa-line" style="overflow: auto;"></i>
             </button> -->
             <button class="btn btn-default" (click)="refreshData()">
-                <i class="fas fa-sync-alt" style="overflow: auto;"></i>
+                <i class="fas fa-sync-alt"></i>
             </button>
             <button class="btn btn-default" (click)="showAllStations()">Karte</button>
         </div>

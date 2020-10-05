@@ -5,13 +5,17 @@
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
     "declaration": false,
+    "downlevelIteration": true,
+    "module": "esnext",
     "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "target": "es5",
+    "target": "es2015",
     "allowJs": true,
     "typeRoots": [
-      "node_modules/@types"
+      "node_modules/@types",
+      "typings.d.ts"
     ],
     "lib": [
       "es2017",

@@ -1,7 +1,9 @@
 import { Component, OnInit, EventEmitter, Input, Output } from '@angular/core';
-import { DatasetOptions, Timespan, DatasetService, ColorService, ReferenceValueOption, DatasetApiInterface, Timeseries, MinMaxRange } from '@helgoland/core';
+import { DatasetOptions, Timespan, DatasetService, ColorService,HelgolandServicesConnector, DatasetType } from '@helgoland/core';
 import { HoveringStyle, D3PlotOptions } from '@helgoland/d3';
 import * as L from 'leaflet';
+import { SelectedProviderService } from 'src/app/services/selected-provider.service';
+import { SwappDatasetOptions } from 'swapp-toolbox';
 export var STYLE_DATA: DatasetOptions;
 @Component({
     selector: 'wv-timeseries-legend',
@@ -43,8 +45,26 @@ export class TimeseriesLegendComponent {
     public stationGeometries: GeoJSON.GeoJsonObject[] = [];
     public stationLabels: string[] = [];
     public editOptions: DatasetOptions;
+    public selectedProviderUrl: string = '';
+    // public options: SwappDatasetOptions= {roundTo: 1,internalId: 'https://www.fluggs.de/sos2/api/v1/__426',
+    // shortLabel: 'TEst',
+    //     color: '#46824B',
+    //     type: 'bar',
+    //     barPeriod: '',
+    //     barStartOf: '',
+    //     visible: true,
+    //     showReferenceValues: [],
+    //     lineDashArray: [],
+    //     pointRadius: 0,
+    //     pointBorderColor: '',
+    //     pointBorderWidth: 0,
+    //     lineWidth: 2,zeroBasedYAxis: true};
 
-    constructor(private dataEmitService: DatasetService<DatasetOptions>, private color: ColorService, private datasetapi: DatasetApiInterface) {
+    constructor(private dataEmitService: DatasetService<DatasetOptions>,private selProv: SelectedProviderService, private color: ColorService, private datasetapi: HelgolandServicesConnector) {
+        this.selProv.getSelectedProvider().subscribe((res) => {
+            this.selectedProviderUrl = res.url;
+        });
+       
         if (dataEmitService !== undefined && dataEmitService.hasDatasets()) {
 
             for (let k = 0; k < dataEmitService.datasetIds.length; k++) {
@@ -112,29 +132,42 @@ export class TimeseriesLegendComponent {
     }
     public editOption(option: DatasetOptions) {
         this.editOptions = new DatasetOptions(option.internalId, option.color);
-        console.log(JSON.stringify(this.editOptions));
+        // console.log(JSON.stringify(this.editOptions));
         this.pick = 'visible';
     }
     public updateOptions(option: DatasetOptions, id: string) {
-        console.log('Reference: ' + JSON.stringify(option.showReferenceValues));
-        if (option.yAxisRange != undefined) {
-            option.yAxisRange = undefined;
-            this.dataEmitService.updateDatasetOptions(option, id);
-            this.refreshData();
-        } else {
-            this.datasetapi.getSingleTimeseriesByInternalId(id).subscribe((res) => {
-                res.referenceValues.forEach((re) => {
-
-                    option.yAxisRange = { min: 0, max: re.lastValue.value + 10 };
+        // console.log('Reference: ' + JSON.stringify(option.showReferenceValues));
+   
+        // if (option.yAxisRange != undefined) {
+        //     console.log('Reference: ' + JSON.stringify(option.yAxisRange));
+        //     option.yAxisRange = undefined;
+        //     this.dataEmitService.updateDatasetOptions(option, id);
+        //     this.refreshData();
+        // } else {
+            if(option.showReferenceValues.length>0){
+                this.datasetapi.getDataset(id, {type: DatasetType.Timeseries}).subscribe((res) => {
+                    res.referenceValues.forEach((re) => {
+    
+                        option.yAxisRange = { min: 0, max: re.lastValue.value + 10 };
+                       
+                    //   console.log('visible '+  option.autoRangeSelection);
+                    });
                 });
-            });
-
-            this.datasetOptions.set(id, option);
-            this.datasetOptionsMultiple.set(id, option);
-            this.updatedOptions.emit([option, id]);
-            this.dataEmitService.updateDatasetOptions(option, id);
-            this.refreshData();
-        }
+    
+                this.datasetOptions.set(id, option);
+                this.datasetOptionsMultiple.set(id, option);
+                this.updatedOptions.emit([option, id]);
+                this.dataEmitService.updateDatasetOptions(option, id);
+                this.refreshData();
+            }
+            else{
+                option.autoRangeSelection = true;
+                option.yAxisRange= undefined;
+                this.dataEmitService.updateDatasetOptions(option, id);
+                this.refreshData();
+            }
+     
+        // }
 
 
     }
@@ -196,11 +229,11 @@ export class TimeseriesLegendComponent {
         }).addTo(this.mymap);
 
         for (let k = 0; k < this.datasetIdsMultiple.length; k++) {
-            this.datasetapi.getSingleTimeseriesByInternalId(this.datasetIdsMultiple[k]).subscribe((dataset) => {
-                if (dataset instanceof Timeseries) {
-                    this.stationGeometries.push(dataset.station.geometry);
-                    this.stationLabels.push(dataset.station.properties.label)
-                }
+            this.datasetapi.getPlatform(this.datasetIdsMultiple[k],this.selectedProviderUrl).subscribe((dataset) => {
+  
+                    this.stationGeometries.push(dataset.geometry);
+                    this.stationLabels.push(dataset.label)
+                
 
                 for (let i = 0; i < this.stationGeometries.length; i++) {
                     L.marker([this.stationGeometries[i]['coordinates'][1], this.stationGeometries[i]['coordinates'][0]]).addTo(this.mymap);

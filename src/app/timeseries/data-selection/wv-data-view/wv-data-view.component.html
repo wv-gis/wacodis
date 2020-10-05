@@ -14,41 +14,57 @@
             <span class="mid badge badge-danger">  {{ badgeNumber}}</span>
           </li>
         </div>
+        <li class="entry" [ngClass]="{'active': checkSelection('/selection-map')}" routerLink='/selection-map'>
+          <i class="fas fa-map"></i>
+          <span class="mid" data-toggle="collapse" data-target=".navbar-collapse.show"> Karte</span>
+        </li>
         <li class="entry" [ngClass]="{'active': checkSelection('/selection-category')}" routerLink='/selection-category'>
           <i class="fas fa-tint"></i>
-          <span class="mid" data-toggle="collapse" data-target=".navbar-collapse.show"> Kategorie</span>
+          <span class="mid" data-toggle="collapse" data-target=".navbar-collapse.show"> Liste</span>
         </li>
 
-        <li class="entry" [ngClass]="{'active': checkSelection('/selection-station')}" routerLink='/selection-station'>
+        <li class="entry" [ngClass]="{'active': checkSelection('/selection-station')}" routerLink='#'>
           <i class="fas fa-home"></i>
           <span class="mid" data-toggle="collapse" data-target=".navbar-collapse.show"> Station</span>
         </li>
 
-        <li class="entry" [ngClass]="{'active': checkSelection('/selection-phenomenon')}" routerLink='/selection-phenomenon'>
+        <li class="entry" [ngClass]="{'active': checkSelection('/selection-phenomenon')}" routerLink='#'>
           <i class="fas fa-ruler-vertical"></i>
           <span class="mid" data-toggle="collapse" data-target=".navbar-collapse.show"> Phänomen</span>
-        </li>
-        <li class="entry" [ngClass]="{'active': checkSelection('/selection-map')}" routerLink='/selection-map'>
-          <i class="fas fa-map"></i>
-          <span class="mid" data-toggle="collapse" data-target=".navbar-collapse.show"> Karte</span>
         </li>
       </ul>
     </div>
   </div>
 </div>
-<div class="backgroundImage">
+<!-- <div class="backgroundImage"> -->
   <div *ngIf="checkSelection('/selection-category')" class="selectContent" routerLink='/selection-category'>
-    <wv-extended-list-selector [parameters]="categoryParams" [selectorId]="'category'" [providerList]="selectedProviderList"
-      (onDatasetSelection)="onDatasetSelected($event)"></wv-extended-list-selector>
-  </div>
-  <div *ngIf="checkSelection('/selection-phenomenon')" class="selectContent" routerLink='/selection-phenomenon'>
+    <!-- <wv-extended-list-selector [parameters]="categoryParams" [selectorId]="'category'" [providerList]="selectedProviderList"
+      (onDatasetSelection)="onDatasetSelected($event)"></wv-extended-list-selector> -->
+      <div class="container" id="result">
+        <wv-result-list [facetSearchService]="facetSearch" (selected)="onStationSelected($event)"></wv-result-list>
+      </div>
+  <!-- </div> -->
+  <!-- <div *ngIf="checkSelection('/selection-phenomenon')" class="selectContent" routerLink='/selection-phenomenon'>
     <wv-extended-list-selector [parameters]="phenomenonParams" [selectorId]="'phenomenon'" [providerList]="selectedProviderList"
       (onDatasetSelection)="onDatasetSelected($event)"></wv-extended-list-selector>
   </div>
   <div *ngIf="checkSelection('/selection-station')" class="selectContent" routerLink='/selection-station'>
     <wv-extended-list-selector [parameters]="stationParams" [selectorId]="'station'" [providerList]="selectedProviderList" (onDatasetSelection)="onDatasetSelected($event)"></wv-extended-list-selector>
-  </div>
+  </div> -->
 </div>
+
+  
+  <div style="width: 200px;" class="phenomena">
+    <div class="expand-button" [ngClass]="{'active': isActive}" (click)="change()">
+      <span class="icon">
+        <i class="fas fa-angle-left" [ngClass]="{'fa-angle-left': isActive, 'fa-angle-right': !isActive}"></i>
+      </span>
+    </div>
+    <div class="phenomenonSelector" [ngClass]="{'active': isActive}">
+      <wv-facets></wv-facets>
+    </div>
+  </div>
+
 <div *ngIf="checkSelection('/selection-map')" class="selectContent" routerLink='/selection-map'>
 
   <div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':display}">
@@ -61,24 +77,53 @@
           </button>
         </div>
         <div class="modal-body">
-            <button class="btn btn-default label" *ngFor="let selLabel of entryLabel" (click)="addDataset(selLabel)" type="button">{{selLabel}}</button>
+
+                <div class="item" *ngFor="let timeseries of entryLabel">
+                    <div class="ts-header mid">{{timeseries.parameters.phenomenon.label}}</div>
+                    <div class="ts-item" >
+                        <div class="loader dark" *ngIf="!timeseries.lastValue.timestamp"></div>
+                        <div>
+                          <div class="big">{{timeseries.parameters.procedure.label}}</div>
+                          <div class="mid">
+                            <span translate="map.station.category"></span>:
+                            <span>{{timeseries.parameters.category.label}}</span>
+                          </div>
+                          <div class="mid" *ngIf="timeseries.lastValue.timestamp">
+                            <span translate="map.station.lastValue"></span>
+                            <span class="last-value"></span>
+                            <span>{{timeseries.lastValue.value}}</span>
+                            <span>{{timeseries.uom}}</span>
+                            <span>| {{timeseries.lastValue.timestamp| date: 'dd.MM.yy | HH:mm'}} h </span>
+                          </div>
+                        </div>
+                        <div class="btn wv-button add" (click)="addDataset(timeseries)">
+                          <span class="far fa-chart-bar"
+                            [ngClass]="{'icon-timeline-checked':added, 'icon-timeline-add':!added}"></span>
+                        </div>
+                      </div>
+                </div>
+
+            <!-- <button class="btn btn-default label" *ngFor="let selLabel of entryLabel" (click)="addDataset(selLabel)" type="button">{{selLabel}}</button> -->
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" (click)="onCloseHandled()">Close</button>
         </div>
       </div>
     </div>
-
   </div>
 
   <div class="mapContent" id="timeseriesMap">
     <div id="main">
-      <n52-station-map-selector [mapId]="'timeMap'" [serviceUrl]="selectedProviderUrl" [filter]="stationFilter" [zoomControlOptions]="zoomControlOptions"
+      <!-- <n52-station-map-selector [mapId]="'timeMap'" [cluster]="true" [serviceUrl]="selectedProviderUrl" [filter]="stationFilter" [zoomControlOptions]="zoomControlOptions"
         [mapOptions]="mapOptions" [fitBounds]="fitBounds" [avoidZoomToSelection]="avoidZoomToSelection" [baseMaps]="baseMaps"
         [overlayMaps]="overlayMaps" (onSelected)="onStationSelected($event)" [cluster]="cluster" [statusIntervals]="statusIntervals"
-        (onContentLoading)="loadingStations = $event"></n52-station-map-selector>
+        (onContentLoading)="loadingStations = $event"></n52-station-map-selector> -->
+        <n52-result-map [facetSearchService]="facetSearch" [aggregateToStations]="true" [cluster]="true"  [zoomControlOptions]="zoomControlOptions" 
+        [mapOptions]="mapOptions" [fitBounds]="fitBounds" mapId="timeMap" [baseMaps]="baseMaps" [overlayMaps]="overlayMaps" (selected)="onStationSelected($event)">
+      </n52-result-map>
     </div>
   </div>
+  <!-- 
   <div style="width: 200px;" class="phenomena">
     <div class="expand-button" [ngClass]="{'active': isActive}" (click)="change()">
       <span class="icon">
@@ -89,5 +134,5 @@
       <wv-extended-phenomenon-service-filter-selector [serviceUrl]="selectedProviderUrl" endpoint="phenomenon" (onItemSelected)="onSelectPhenomenon($event)"
         (stationFilter)="removeStationFilter()"></wv-extended-phenomenon-service-filter-selector>
     </div>
-  </div>
+  </div> -->
 </div>

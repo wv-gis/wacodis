@@ -1,0 +1,5 @@
+<div class="entry" *ngFor="let param of parameterList | matchLabel: textualFilter" [ngClass]="{'selected': param.selected}"
+    (click)="toggleFacet(param)">
+    <div class="label">{{param.label}}</div>
+    <div class="counter">{{param.count}}</div>
+</div>

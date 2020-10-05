@@ -1,23 +1,31 @@
 import { Injectable } from '@angular/core';
-import { csvData } from '../../environments/environment';
+import {  tempData, tempDataDh, rainDataBe, rainDataDh } from '../../environments/environment';
 
+/**
+ * receive Data from external csv files
+ */
 @Injectable()
 export class CsvDataService {
-private headers;
-private datasets;
-private text;
+private rainData;
+private datasets: string;
+private text: string;
+private rainDataD;
     constructor() {
-        // this.headers = headerArray;
-        // this.datasets = data;
-        this.text = csvData;
+        this.rainData = rainDataBe;
+        this.datasets = tempDataDh;
+        this.text = tempData;
+        this.rainDataD = rainDataDh;
     }
-    public getCsvDatasets(){
+    public getTempDhDataset(){
         return this.datasets;
     }
-    public getHeaders(){
-        return this.headers;
+    public getRainDataset(){
+        return this.rainData;
     }
- public getCsvText(){
+ public getTempDatasetText(){
      return this.text;
+ }
+ public getRainDhDataset(){
+     return this.rainDataD;
  }
 }

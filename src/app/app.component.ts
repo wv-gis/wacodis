@@ -1,27 +1,33 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { registerLocaleData } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
-import { Language } from '@helgoland/core';
+import { Language, SettingsService } from '@helgoland/core';
 import localeDe from '@angular/common/locales/de';
 import { D3TimeFormatLocaleService } from '@helgoland/d3';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
+import { ExtendedSettings } from 'src/app/settings/settings.service';
+import { Icon } from 'leaflet';
+import { InitializeService } from './services/initialize.service';
 
 @Component({
   selector: 'wv-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'wv';
 
   public languageList: Language[];
-  constructor(private router: Router, translate: TranslateService, d3translate: D3TimeFormatLocaleService) {
+  public showNavBar: boolean = true;
+  public reservoirs: any[]= null;
+  constructor(private router: Router, translate: TranslateService, d3translate: D3TimeFormatLocaleService, 
+    private route: ActivatedRoute, private settingsService: SettingsService<ExtendedSettings>, private init: InitializeService) {
     translate.setDefaultLang('de');
     translate.use('de');
 
     registerLocaleData(localeDe);
 
-
+      // this.init.init();
     this.languageList = [
       {
         label: 'Deutsch',
@@ -47,7 +53,50 @@ export class AppComponent {
       }
     );
 
+    Icon.Default.mergeOptions({
+      iconRetinaUrl: './assets/images/map-marker.png',
+      iconUrl: './assets/images/map-marker.png',
+      shadowUrl: '',
+      iconSize: [32, 32],
+      iconAnchor: [16, 32]
+    });
   }
+
+  /**
+   * 
+   */
+  ngOnInit(): void {
+    this.reservoirs = this.settingsService.getSettings().reservoirs;
+    this.router.events.subscribe((val) => {
+      
+            if (val instanceof NavigationEnd) {
+              const urlParts: string[] = val.urlAfterRedirects.split("/");
+              const reservoirIdCandidate = this.reservoirs.find(x => x.id == urlParts[urlParts.length - 1]);
+
+              if(reservoirIdCandidate){
+                const iframeCandidate = urlParts[urlParts.length-2];
+                if(reservoirIdCandidate  && this.showNavBar && !iframeCandidate.endsWith('reports') ) {
+                  this.showNavBar = !this.showNavBar;
+                 }
+                 else if(reservoirIdCandidate && !this.showNavBar && iframeCandidate.endsWith('reports')){
+                   this.showNavBar = !this.showNavBar;
+                 }
+              }else if(!reservoirIdCandidate && val.url.endsWith('TS')){
+                this.showNavBar = !this.showNavBar;
+              }
+             
+             
+                   
+      }  });
+
+
+  }
+
+
+  /**
+   * check wether the current route is active
+   * @param route 
+   */
   checkSelection(route: string) {
     if (this.router.isActive(route, true)) {
       return false;
@@ -57,5 +106,6 @@ export class AppComponent {
       return true;
     }
   }
+
 
 }

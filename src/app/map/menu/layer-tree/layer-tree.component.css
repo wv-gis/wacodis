@@ -1,13 +1,11 @@
 .phenomena .expand-button.active {
-    right: 400px;
+    right: 600px;
     background-color: #2c4869;
 }
-.phenomena .expand-button {
-    top: 123px;
-}
+
 .phenomena .expand-button {
     position: absolute;
-    top: 75px;
+    top: 80px;
     right: 0;
     width: 49px;
     height: 54px;
@@ -25,18 +23,38 @@
 } 
 
 .phenomena .phenomenonSelector.active {
-    top: 111px;
-    width: 400px;
-}
-.phenomena .phenomenonSelector.active {
     display: inline;
     position: absolute;
-    top: 48px;
+    top: 68px;
     right: 0;
     bottom: 0;
     background-color: #718296;
+   width:600px;
+    z-index: 1000;
+
 }
 .phenomena .phenomenonSelector {
     overflow: auto;
     display: none;
+}
+.legend{
+    position: fixed; top: 130px; float: left;
+    visibility: visible ;
+    background-color: rgba(255, 255, 255, 0.85);
+}
+
+.legendicons:hover {
+    cursor: pointer;
+}
+
+#pieChart.active{
+    position: absolute;
+    top:250px;
+    right: 0px;
+    display: inline;
+    z-index: 1000;
+}
+
+#pieChart{
+  display: none;
 }

@@ -1,0 +1,75 @@
+<div>
+    <div id="selectionMenu" style="width: 500px; height: 30%; position: relative;">
+
+        <div class="row">
+            <div class="col-xl-6 col-md-6 mb-4">
+                <div class="card border-left-primary shadow h-100 py-2">
+                    <div class="card-header">
+                        Messstation:
+                    </div>
+                    <div class="card-body">
+                        <div class="btn-group">
+                            <button id="station" class="btn btn-default dropdown-toggle" type="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{dam_label}}</button>
+                            <div class="dropdown-menu" aria-labelledby="station">
+                                <button class="dropdown-item" *ngFor="let stat of samplingStationLabels; let i = index"
+                                    (click)="changeSamplingStation(stat, i)">{{stat}}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6 col-md-6 mb-4">
+                <div class="card border-left-primary shadow h-100 py-2">
+                    <div class="card-header">
+                        Nächster Überflug:
+                    </div>
+                    <div class="card-body">
+                        12.03.2020
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" style="margin-right: 0;">
+        <div class="col-xl-9 col-lg-9">
+            <sensorwapp-toolbox-isoplethen [timespan]="timeSpan" [samplingId]="samplingId">
+            </sensorwapp-toolbox-isoplethen>
+        </div>
+        <div class="col-xl-3 col-lg-3">
+            <div class="card border-left-primary shadow h-100 py-2"
+                style="overflow-y:scroll;overflow-x: hidden;max-height: 660px;">
+                <span style="text-align: center;background-color: lightgrey;">02.07.2018</span>
+                <svg class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="350"
+                    height="350" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"
+                    focusable="false" role="img" aria-label="Placeholder: 350x350">
+                    <rect width="100%" height="100%" fill="#eee"></rect>
+                </svg>
+                <span style="text-align: center;background-color: lightgrey;">07.07.2018</span>
+                <svg class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="350"
+                    height="350" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"
+                    focusable="false" role="img" aria-label="Placeholder: 350x350">
+                    <rect width="100%" height="100%" fill="#eee"></rect>
+                </svg>
+                <span style="text-align: center;background-color: lightgrey;">17.07.2018</span>
+                <svg class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="350"
+                    height="350" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"
+                    focusable="false" role="img" aria-label="Placeholder: 350x350">
+                    <rect width="100%" height="100%" fill="#eee"></rect>
+                </svg>
+                <span style="text-align: center;background-color: lightgrey;">24.07.2018</span>
+                <svg class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="350"
+                    height="350" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"
+                    focusable="false" role="img" aria-label="Placeholder: 350x350">
+                    <rect width="100%" height="100%" fill="#eee"></rect>
+                </svg>
+                <span style="text-align: center;background-color: lightgrey;">27.07.2018</span>
+                <svg class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="350"
+                    height="350" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"
+                    focusable="false" role="img" aria-label="Placeholder: 350x350">
+                    <rect width="100%" height="100%" fill="#eee"></rect>
+                </svg>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,14 @@
+<table>
+    <tbody id="tableLegend">
+        <div *ngIf="urls!==undefined">
+
+            <tr *ngFor="let url of urls,let i= index">
+
+                <td>
+                    <img src={{url.url}}>
+                    {{url.label}}
+                </td>
+            </tr>
+        </div>
+    </tbody>
+</table>
