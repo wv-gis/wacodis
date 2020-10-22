@@ -110,6 +110,20 @@ export class SelectionMapComponent implements OnInit, AfterViewInit {
         this.baselayers.forEach((blayer, i, arr) => {
           this.mapCache.getMap(this.mapId).addLayer(blayer);
           if (blayer instanceof esri.ImageMapLayer) {
+
+            // if(blayer.options.alt == "EO_WACODIS_DAT_SEALING_FACTORService"){
+            //   blayer.setRenderingRule(
+            //     {
+            //       "rasterFunction": "Mask",
+            //       "rasterFunctionArguments": {
+            //         "NoDataValues": ["NAN"],
+            //         "IncludedRanges": [0, 1],
+            //         "NoDataInterpretation": 0
+            //       }, "variableName": "Raster"
+            //     }
+              
+            //   );
+            // }
             if (blayer.options.alt == 'EO_WACODIS_DAT_VEGETATION_DENSITY_LAIService') {
 
               blayer.setRenderingRule(
@@ -122,6 +136,20 @@ export class SelectionMapComponent implements OnInit, AfterViewInit {
                   }, "variableName": "Raster"
                 }
               );
+
+              // blayer.setRenderingRule({
+              //   "rasterFunction": "Clip",
+              //   "rasterFunctionArguments": {
+              //     "ClippingGeometry": {
+              //       "extent":{"xmin" : 7.1219, "ymin" : 51.2422, "xmax" : 7.2566, "ymax" : 51.2896, "spatialReference" : {"wkid" : 4326}}
+
+              //     },
+              //     "ClippingType": 1
+                
+              //   },
+            
+              //   "variableName": "Raster"
+              // }); 
             }
 
 

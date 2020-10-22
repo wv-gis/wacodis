@@ -85,7 +85,7 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   ngOnInit(): void {
-
+ 
     for (let i = 0; i < sentinelLayerOptions.length; i++) {
       this.comparisonOptions.push(sentinelLayerOptions[i]);
     }
@@ -679,14 +679,14 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
           } else {
             this.loadingL = !this.loadingL;
           }
-
+            
           feature["features"].forEach((element, i, arr) => {
             this.acquisitionDates.push(new Date(arr[i]["attributes"].startTime));
           });
           switch (side) {
             case 'le': {
               this.defaultLDate = this.acquisitionDates[this.acquisitionDates.length - 1];
-              this.selLeftDate = this.acquisitionDates.filter((value, p, self) => self.indexOf(value) === p);
+                this.selLeftDate = this.acquisitionDates.filter((value, p, self) => self.indexOf(value) === p);
               if (this.isDisabledL) {
                 this.isDisabledL = !this.isDisabledL;
                 this.loadingL = !this.loadingL;
@@ -695,7 +695,7 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
             }
             case 'ri': {
               this.defaultRDate = this.acquisitionDates[this.acquisitionDates.length - 1];
-              this.selRightDate = this.acquisitionDates.filter((value, p, self) => self.indexOf(value) === p);
+               this.selRightDate = this.acquisitionDates.filter((value, p, self) => self.indexOf(value) === p);
               if (this.isDisabledR) {
                 this.isDisabledR = !this.isDisabledR;
                 this.loadingR = !this.loadingR;
@@ -835,6 +835,7 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
 
   private checkLeftDate(date: number, id: number) {
     this.defaultLDate = new Date(date);
+
     let to = new Date(this.defaultLDate.getFullYear(), this.defaultLDate.getMonth() + 1);
     if (this._leftLayer.options.pane.startsWith('imagePane') && this._leftLayer instanceof esri.ImageMapLayer) {
       this._leftLayer.authenticate(this.tokenService.getToken());
@@ -850,6 +851,7 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
 
   private checkRightDate(date: number, id: number) {
     this.defaultRDate = new Date(date);
+   
     let to = new Date(this.defaultRDate.getFullYear(), this.defaultRDate.getMonth() + 1);
 
     if (this._rightLayer.options.pane.startsWith('imagePane') && this._rightLayer instanceof esri.ImageMapLayer) {
@@ -879,7 +881,7 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
       this.leftLayer = this._leftLayer;
       if (this.leftLayer instanceof esri.ImageMapLayer && this.leftLayer.options.pane === 'imagePane' + id) {
         this.leftLayer.authenticate(this.tokenService.getToken());
-        this.leftLayer.setTimeRange(this.defaultLDate, this.defaultLDate);
+            this.leftLayer.setTimeRange(this.defaultLDate, this.defaultLDate);
       } else if (this.leftLayer instanceof esri.ImageMapLayer && this.leftLayer.options.pane === 'overlayPane' + id) {
         this.leftLayer.setTimeRange(new Date(new Date(this.defaultLDate.getFullYear(), this.defaultLDate.getMonth(), this.defaultLDate.getDate() + 2).getTime() - 2628000000),
           new Date(this.defaultLDate.getFullYear(), this.defaultLDate.getMonth(), this.defaultLDate.getDate() + 2));
@@ -989,5 +991,6 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
 
   ngOnDestroy(): void {
     this.removeEvents();
+    this.resetSelection();
   }
 }
