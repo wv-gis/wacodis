@@ -100,7 +100,7 @@ export class SelectionMapComponent implements OnInit, AfterViewInit {
             this.baselayers.push(
               (esri.imageMapLayer({
                 url: wacodisUrl + "/" + element["name"].split("/")[1] + "/" + element["type"],
-                maxZoom: 16, opacity: 0, alt: element["name"].split("/")[1]
+                maxZoom: 16, opacity: 0, alt: element["name"].split("/")[1], bandIds: "1"
               }))
             );
 
@@ -110,20 +110,6 @@ export class SelectionMapComponent implements OnInit, AfterViewInit {
         this.baselayers.forEach((blayer, i, arr) => {
           this.mapCache.getMap(this.mapId).addLayer(blayer);
           if (blayer instanceof esri.ImageMapLayer) {
-
-            // if(blayer.options.alt == "EO_WACODIS_DAT_SEALING_FACTORService"){
-            //   blayer.setRenderingRule(
-            //     {
-            //       "rasterFunction": "Mask",
-            //       "rasterFunctionArguments": {
-            //         "NoDataValues": ["NAN"],
-            //         "IncludedRanges": [0, 1],
-            //         "NoDataInterpretation": 0
-            //       }, "variableName": "Raster"
-            //     }
-              
-            //   );
-            // }
             if (blayer.options.alt == 'EO_WACODIS_DAT_VEGETATION_DENSITY_LAIService') {
 
               blayer.setRenderingRule(
@@ -137,19 +123,36 @@ export class SelectionMapComponent implements OnInit, AfterViewInit {
                 }
               );
 
-              // blayer.setRenderingRule({
-              //   "rasterFunction": "Clip",
-              //   "rasterFunctionArguments": {
-              //     "ClippingGeometry": {
-              //       "extent":{"xmin" : 7.1219, "ymin" : 51.2422, "xmax" : 7.2566, "ymax" : 51.2896, "spatialReference" : {"wkid" : 4326}}
+            }else  if (blayer.options.alt == 'EO_WACODIS_DAT_INTRA_LAND_COVER_CLASSIFICATIONService'){
 
-              //     },
-              //     "ClippingType": 1
-                
-              //   },
-            
-              //   "variableName": "Raster"
-              // }); 
+              blayer.setRenderingRule(
+                {
+                  "rasterFunction" : "Colormap",
+                  "rasterFunctionArguments" : {
+                    "Colormap" : [
+                    [1, 255, 255, 0],
+                    [2, 252, 200, 12],
+                    [3, 50, 220, 255],
+                    [4, 50, 220, 255],
+                    [5, 153, 153, 153],
+                    [6, 12, 252, 32],
+                    [7, 12, 252, 32],
+                    [8, 102, 63, 0],
+                    [9, 252, 12, 12],
+                    [10, 252, 12, 12],
+                    [11, 229, 127, 255],
+                    [12, 101, 178, 62],
+                    [13, 62, 178, 72],
+                    [14, 57, 127, 63],
+                    [15, 178, 178, 62],
+                    [16, 229, 160, 57],
+                    [17, 255, 127, 208]              
+                  ]
+                },
+                "variableName" : "Raster"
+                }
+              
+            );
             }
 
 
@@ -158,39 +161,39 @@ export class SelectionMapComponent implements OnInit, AfterViewInit {
         L.control.scale().addTo(this.mapCache.getMap(this.mapId));
       }
     });
-    let diffLayer = esri.imageMapLayer({
-      url: 'https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/EO_WACODIS_DAT_INTRA_LAND_COVER_CLASSIFICATIONService/ImageServer',
-      maxZoom: 16, opacity: 1, alt: 'DiffLandUse',bandIds: "1"
-    });
-    diffLayer.setRenderingRule(
-      {
-        "rasterFunction" : "Colormap",
-        "rasterFunctionArguments" : {
-          "Colormap" : [
-          [1, 255, 255, 0],
-          [2, 252, 200, 12],
-          [3, 50, 220, 255],
-          [4, 50, 220, 255],
-          [5, 153, 153, 153],
-          [6, 12, 252, 32],
-          [7, 12, 252, 32],
-          [8, 102, 63, 0],
-          [9, 252, 12, 12],
-          [10, 252, 12, 12],
-          [11, 229, 127, 255],
-          [12, 101, 178, 62],
-          [13, 62, 178, 72],
-          [14, 57, 127, 63],
-          [15, 178, 178, 62],
-          [16, 229, 160, 57],
-          [17, 255, 127, 208]              
-        ]
-      },
-      "variableName" : "Raster"
-      }
+  //   let diffLayer = esri.imageMapLayer({
+  //     url: 'https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/EO_WACODIS_DAT_INTRA_LAND_COVER_CLASSIFICATIONService/ImageServer',
+  //     maxZoom: 16, opacity: 1, alt: 'DiffLandUse',bandIds: "1"
+  //   });
+  //   diffLayer.setRenderingRule(
+  //     {
+  //       "rasterFunction" : "Colormap",
+  //       "rasterFunctionArguments" : {
+  //         "Colormap" : [
+  //         [1, 255, 255, 0],
+  //         [2, 252, 200, 12],
+  //         [3, 50, 220, 255],
+  //         [4, 50, 220, 255],
+  //         [5, 153, 153, 153],
+  //         [6, 12, 252, 32],
+  //         [7, 12, 252, 32],
+  //         [8, 102, 63, 0],
+  //         [9, 252, 12, 12],
+  //         [10, 252, 12, 12],
+  //         [11, 229, 127, 255],
+  //         [12, 101, 178, 62],
+  //         [13, 62, 178, 72],
+  //         [14, 57, 127, 63],
+  //         [15, 178, 178, 62],
+  //         [16, 229, 160, 57],
+  //         [17, 255, 127, 208]              
+  //       ]
+  //     },
+  //     "variableName" : "Raster"
+  //     }
     
-  );
-this.baselayers.push(diffLayer);
+  // );
+// this.baselayers.push(diffLayer);
 // this.mapCache.getMap(this.mapId).addLayer(diffLayer);
   }
 
