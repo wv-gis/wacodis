@@ -66,6 +66,9 @@ export class SoilTemperatureViewComponent implements OnInit, AfterViewInit {
   };
   public statusIntervals = false;
   public mapOptions: L.MapOptions = { dragging: true, zoomControl: false };
+  sceneNum: number;
+  public dyn: esri.DynamicMapLayer;
+  selectedPics: string[] = [];
 
   constructor(private mapCache: MapCache) {//private mapService: OlMapService, private requestTokenSrvc: RequestTokenService, private csvService: CsvDataService) {
     // this.responseInterp = csvService.getCsvText(); 
@@ -85,50 +88,73 @@ export class SoilTemperatureViewComponent implements OnInit, AfterViewInit {
         className: 'WV_GB'
       }
     ));
-    L.control.scale().addTo(this.mapCache.getMap(this.mapId));
+ 
   }
 
   /**
    * create Basemap
    */
   ngOnInit() {
+    this.map = L.map(this.mapId, this.mapOptions).setView([51.07, 7.22], 13);
 
-    this.baseMaps.set(this.mapId,
-      {
-        label: 'OSM-WMS', // will be shown in layer control
-        visible: true, // is layer by default visible
-        layer: L.tileLayer.wms(
-          'http://ows.terrestris.de/osm/service?',
-          {
-            layers: 'OSM-WMS', format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-            className: 'OSM'
-          }
-        )
-      }
+
+    L.control.scale().addTo(this.map);
+    this.mapCache.setMap(this.mapId, this.map);
+   
+
+    this.map.addLayer(
+      L.tileLayer.wms(
+        'http://ows.terrestris.de/osm/service?',
+        {
+          layers: 'OSM-WMS', format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+          className: 'OSM'
+        }
+      )
     );
 
-    this.baselayers.push(
-      (esri.imageMapLayer({
-        url: waterTempService,
-        maxZoom: 16, opacity: 1, alt: 'WaterTemperatureService'
-      }))
-    );
+    this.dyn = esri.dynamicMapLayer({
+      url: "https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/EO_WaCoDiS_Oberfl%C3%A4chentemperatur/MapServer", layers: [ 1], opacity: 1,
+      className: 'Oberflächentemp'
+    });
+    this.dyn.metadata((err, dat) => {
+      this.sceneNum = dat["layers"].length - 1;
+      let array = dat["layers"];
+      array.forEach((element, i, arr) => {
+        if (i == 0) {
+
+        } else {
+          this.selectedPics.push(element.name);
+        }
+
+      });
+
+    });
+
+    this.baselayers.push(this.dyn);
 
 
-    // this.createPieChart();
   }
 
   /**
    * 
-   * @param station : selected station in map
-   * on station selected in map open up popo up with selected station name
+   * @param date selected date of layer in mainMap
+   * date to visualize for diagram text
    */
-  public onStationSelected(station: HelgolandPlatform) {
-    alert(station.label);
-    console.log(station);
+  public onSubmitOne(date: number) {
+    // this.currentSelectedTimeL = date;
 
+    this.baselayers.forEach((lay,i,arr)=>{
+      lay.remove();
+    });
+    this.baselayers.push(esri.dynamicMapLayer({
+      url: "https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/EO_WaCoDiS_Oberfl%C3%A4chentemperatur/MapServer", layers: [date], opacity: 1,
+       className: 'Oberflächentemp' 
+    }));
+
+    this.baselayers.forEach((lay, i, arr) => {
+      this.mapCache.getMap(this.mapId).addLayer(lay);
+    });
   }
-
   /**
    * plot Avg Temperature of  river dams in Pie chart
    */

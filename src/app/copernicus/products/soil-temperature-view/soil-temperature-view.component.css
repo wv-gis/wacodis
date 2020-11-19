@@ -12,3 +12,15 @@ n52-station-map-selector{
     right: 0px;
     display: inline;
 }
+.map-viewer {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+.map-wrapper {
+    position: relative;
+    height: 100%;
+}  
+div #map{
+    height: 100%;
+}

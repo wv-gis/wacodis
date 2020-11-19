@@ -1,4 +1,4 @@
-<div style="height: 900px;">
+<!-- <div style="height: 900px;">
     <div id="map" style="width: 82%; height: 90%; padding: 5px; position:absolute;">
 
         <n52-station-map-selector [mapId]="mapId" [serviceUrl]="providerUrl" [filter]="stationFilter" [zoomControlOptions]="zoomControlOptions"
@@ -10,4 +10,95 @@
         <wv-layer-tree style="height: 20%;" id="soilTempTree" [baselayers]="baselayers" [mapId]="mapId"></wv-layer-tree> 
     </div>
     <div   id="tempChart" style="height: 80%"></div>  
+</div> -->
+<div class="container-fluid dashboard">
+    <div class="row">
+        <div class="col-xl-8 col-md-6 mb-2">
+            <div class="card border-left-primary shadow h-100 ">
+                <div class="card-header wv-bold-header">
+                    Fernerkundungsprodukt: Oberflächentemperatur
+                </div>
+                <div class="card-body">
+                    Temperaturdaten Landsat
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-2 col-md-3 mb-2">
+            <div class="card border-left-primary shadow h-100 ">
+                <div class="card-header wv-bold-header">
+                    Nächster Generierungsdurchlauf:
+                </div>
+                <div class="card-body">
+                    12.10.2020
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-2 col-md-3 mb-2">
+            <div class="card border-left-primary shadow h-100 ">
+                <div class="card-header wv-bold-header">
+                    Aktuell verfügbare Anzahl an Szenen
+                </div>
+                <div class="card-body">
+                    {{sceneNum}}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" style="height: 690px">
+        <div class="col-xl-10 col-md-8">
+            <div class='row' style="height: 55%;">
+                <div class="col-xl-12 col-md-12 mb-2">
+                    <div id="map">
+                        <div class="map-wrapper" id='map-wrapper'>
+                            <div id="soilTemp-map" class="map-viewer"></div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="row" style="top: 0rem;">
+                <div class="col-xl-12 col-md-12 mb-2">
+                    <div class="card border-left-primary shadow ">
+                        <div class="card-body" style="padding: 0rem;">
+                            <div style="width: 100%;">
+                                <select id="pic" (change)="onSubmitOne($event.target.value)">
+                                    <option *ngFor="let a of selectedPics; let i = index " id="pic_one" value="{{i}}">
+                                        {{a}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-2">
+            <div class="card border-left-primary shadow ">
+                <div class="card-header wv-bold-header">
+                    Legende
+                </div>
+                <div class="card-body h-100" style="padding: 0px;">
+                    <div class="wv-legend" style="width: 100%;">
+                        <wv-layer-legend-card [layer]="baselayers[0]" [id]="1"></wv-layer-legend-card>
+                    </div>
+                </div>
+                <div class="card-header wv-bold-header">
+
+                </div>
+                <div class="card-body h-100" style="padding: 0px;">
+                    <div class="wv-legend" style="width: 100%;">
+
+                    </div>
+                </div>
+                <div class="card-header wv-bold-header">
+
+                </div>
+                <div class="card-body h-100" style="padding: 0px;">
+                    <div class="wv-legend" style="width: 100%;">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
