@@ -16,6 +16,7 @@ import { IsoplethenGraphicComponent } from './isoplethen/isoplethen-graphic/isop
     SensorwappToolboxModule,
     WvProfilesModule
   ],
-  declarations: [ReportsViewComponent, SelectionViewComponent, IsoplethenViewComponent, IsoplethenGraphicComponent], providers: [ExtendedSettingsService]
+  declarations: [ReportsViewComponent, SelectionViewComponent, IsoplethenViewComponent, IsoplethenGraphicComponent], providers: [ExtendedSettingsService],
+  exports: [IsoplethenGraphicComponent]
 })
 export class WvReportsModule { }
