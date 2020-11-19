@@ -35,6 +35,7 @@ export class IsoplethenViewComponent implements OnInit, AfterViewInit {
   public samplingIds: string[] = [];
   public profileDataset: ApiV3Dataset;
   public interpolation: string = 'linear';
+  load: boolean = true;
 
   constructor(private datasetApi: DatasetImplApiV3InterfaceService, private api: ApiV3InterfaceService) {
     //observationType="profile", phenomenon = Sauerstoff
@@ -46,7 +47,7 @@ export class IsoplethenViewComponent implements OnInit, AfterViewInit {
           this.samplingIds.push(series.id);
         }     
       });
-    });
+    },(error)=>{console.log(error)},()=> this.load = false);
  
   }
 
@@ -98,8 +99,7 @@ export class IsoplethenViewComponent implements OnInit, AfterViewInit {
     document.forms.item(4).addEventListener("click", listener => {
 
         this.interpolation = document.forms.item(4).elements["inter"].value;
-       console.log(this.interpolation);
-   
+         
     });
 
   }

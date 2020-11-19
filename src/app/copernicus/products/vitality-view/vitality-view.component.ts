@@ -417,32 +417,7 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
       url: 'https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/WACODIS_LAND_COVER_CLASSIFICATION/ImageServer',
       maxZoom: 16, opacity: 1, alt: 'DiffLandUse'
     });
-    // diffLayer.setRenderingRule(
-    //   {
-    //     "rasterFunction": "Colormap",
-    //     "rasterFunctionArguments": {
-    //       "ColormapName": "Random"
-    //     },
-    //     "variableName":
-    //     {
-    //       "rasterFunction": "Mask",
-    //       "rasterFunctionArguments": {
-    //         "NoDataValues": ["4"],
-    //         "IncludedRanges": [0, 25],
-    //         "NoDataInterpretation": 0
-    //       },
-    //       "variableName": {
-    //         "rasterFunction": "Arithmetic",
-    //         "rasterFunctionArguments": {
-    //           "Raster": "$5",
-    //           "Raster2": "$2",
-    //           "Operation": 3
-    //         }
-    //       }
-    //     }
-    //   }
-
-    // );
+   
     // this.baselayers.push(diffLayer);
 
     // let testTimeLayer = L.timeDimension.layer.wms(L.tileLayer.wms("https://maps.dwd.de/geoserver/ows",

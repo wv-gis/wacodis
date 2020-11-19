@@ -196,8 +196,8 @@ this.featureTSLayer.bringToFront();
           layers: 'OSM-WMS', format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
         }));
 
-      this.baseLayers.push(esri.tiledMapLayer({
-        url: 'https://tiles.arcgis.com/tiles/GVrcJ5O2vy6xbu2e/arcgis/rest/services/SWATimClient_SubbasinInfo/MapServer',
+      this.baseLayers.push(esri.featureLayer({
+        url: 'https://tiles.arcgis.com/tiles/GVrcJ5O2vy6xbu2e/arcgis/rest/services/SWATimClient_SubbasinInfo/FeatureServer',// oder MapServer
       }));
       this.baseLayers.push(esri.featureLayer({
         url: 'https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/ArcGIS/rest/services/SWATimClient/FeatureServer'}));
@@ -296,24 +296,29 @@ this.featureTSLayer.bringToFront();
     })).fitBounds(t._bounds);
   
 
+    if(this.param== "Sedimente"){
+      this.sedOutputMap.addLayer(esri.featureLayer({
+        url: 'https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/ArcGIS/rest/services/SWATimClient/FeatureServer/'+ this.selSzenarioHRU[this.selSzen_Id],
+        where: 'hru_yearavg_csv_SUBBASIN=' + t.feature.id,  onEachFeature: (feature, layer) => {  
+          layer.bindPopup(function (l) {
+              return L.Util.template('<p>Sedimentaustrag von <strong>{hru_yearavg_csv_SYLD} [t/ha/a]</strong>.</p>',
+               feature.properties);          
+          });
+        }
+      })).fitBounds(t._bounds);
+    }
+    else{
+      this.sedOutputMap.addLayer(esri.featureLayer({
+        url: 'https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/ArcGIS/rest/services/SWATimClient/FeatureServer/'+ this.selSzenarioHRU[this.selSzen_Id],
+        where: 'hru_yearavg_csv_SUBBASIN=' + t.feature.id,  onEachFeature: (feature, layer) => {       
+          layer.bindPopup(function (l) {              
+              return L.Util.template('<p>Stoffaustrag von <strong>{hru_yearavg_csv_N_STRS} [kg/m³]</strong>.</p>', 
+              feature.properties);           
+          }); 
+        }
+      })).fitBounds(t._bounds);
+    }
 
-    this.sedOutputMap.addLayer(esri.featureLayer({
-      url: 'https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/ArcGIS/rest/services/SWATimClient/FeatureServer/'+ this.selSzenarioHRU[this.selSzen_Id],
-      // fields: ['hru_yearavg_csv_N_STRS','OBJECTID','hru_yearavg_csv_P_STRS','hru_yearavg_csv_BIOM','hru_yearavg_csv_SYLD'],
-      where: 'hru_yearavg_csv_SUBBASIN=' + t.feature.id,  onEachFeature: (feature, layer) => {
-
-        layer.bindPopup(function (l) {
-          if(feature.properties.hru_yearavg_csv_SYLD){
-            return L.Util.template('<p>Sedimentaustrag von <strong>{hru_yearavg_csv_SYLD} [t/ha/a]</strong>.</p>',
-             feature.properties);
-          }else{
-            return L.Util.template('<p>Stoffaustrag von <strong>{hru_yearavg_csv_SYLD} [t/ha/a]</strong>.</p>', 
-            feature.properties);
-          }
-        });
-
-      }
-    })).fitBounds(t._bounds);
 
  
   }

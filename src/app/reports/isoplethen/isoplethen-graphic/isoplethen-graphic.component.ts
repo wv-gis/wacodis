@@ -118,7 +118,7 @@ export class IsoplethenGraphicComponent implements OnInit, OnChanges, AfterViewI
 
   receiveDatasets() {
     this.swappApi.getDataset(this.datasetID, "http://192.168.101.105/sos3/api/").subscribe((dataset) => {
-      console.log(dataset);
+
       this.swappApi.getDatasetData(dataset.id, dataset.internalId.split('__')[0], { timespan: new Date(this.timespan.from).toISOString() + '/' + new Date(this.timespan.to).toISOString() })
         .subscribe(
           (values: any) => this.prepareDatasets(values),
