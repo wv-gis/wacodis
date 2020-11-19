@@ -47,36 +47,44 @@ export class PercentageChangeBarChartComponent implements AfterViewInit, OnChang
           if (err)
             console.log(err);
 
+            let labels=[];
+            let values=[];
+            let valuesSz=[];
+            let labelsSz=[];
+            let total=[]
             if (this.input == 0) {
               fCol.features.forEach((a, i, arr) => {
-                this.labels.push(arr[i].properties.Name);
-                this.values.push(parseFloat(arr[i].properties.rsv_yearavg_csv_SED_IN));
+                labels.push(arr[i].properties.Name);
+                values.push(parseFloat(arr[i].properties.rsv_yearavg_csv_SED_IN));
               });   
               featCol.features.forEach((a, i, arr) => {
-                this.labelsSz.push(arr[i].properties.Name);
-                this.valuesSz.push(parseFloat(arr[i].properties.rsv_yearavg_csv_SED_IN));
+                labelsSz.push(arr[i].properties.Name);
+                valuesSz.push(parseFloat(arr[i].properties.rsv_yearavg_csv_SED_IN));
               });
-              this.values.forEach((val,n,arr)=>{
-                this.absValues.push((this.valuesSz[n]-val)/this.valuesSz[n]*100);
+              values.forEach((val,n,arr)=>{
+                total.push((valuesSz[n]-val)/valuesSz[n]*100);
               });
+              this.absValues = total;
+              this.labels = labels;
             } 
             else {
               fCol.features.forEach((a, i, arr) => {
-                this.labels.push(arr[i].properties.Name);
-                this.values.push(parseFloat(arr[i].properties.rsv_yearavg_csv_NO3_IN) + parseFloat(arr[i].properties.rsv_yearavg_csv_NH3_IN) +
-                  parseFloat(arr[i].properties.rsv_yearavg_csv_NO2_IN) + parseFloat(arr[i].properties.rsv_yearavg_csv_ORGN_IN));   
+                labels.push(arr[i].properties.Name);
+                values.push(parseFloat(arr[i].properties.rsv_yearavg_csv_NO3_IN));   
               });
               featCol.features.forEach((a, i, arr) => {
-                this.labelsSz.push(arr[i].properties.Name);
-                this.valuesSz.push(parseFloat(arr[i].properties.rsv_yearavg_csv_NO3_IN) + parseFloat(arr[i].properties.rsv_yearavg_csv_NH3_IN) +
-                  parseFloat(arr[i].properties.rsv_yearavg_csv_NO2_IN) + parseFloat(arr[i].properties.rsv_yearavg_csv_ORGN_IN));
+                labelsSz.push(arr[i].properties.Name);
+                valuesSz.push(parseFloat(arr[i].properties.rsv_yearavg_csv_NO3_IN));
               });
 
 
-              this.values.forEach((val,n,arr)=>{
-                this.absValues.push((this.valuesSz[n]-val)/this.valuesSz[n]*100);
+              values.forEach((val,n,arr)=>{
+                total.push((valuesSz[n]-val)/valuesSz[n]*100);
               
               });
+            this.absValues = total;
+            this.labels = labels;
+            
             }
 
 
@@ -93,7 +101,7 @@ export class PercentageChangeBarChartComponent implements AfterViewInit, OnChang
           var layout = {
             // width: 600,
             height: 275,
-            margin: { "t": 50, "b": 50, "l": 100, "r": 0 },
+            margin: { "t": 50, "b": 50, "l": 100, "r": 5 },
             showlegend: false,
             title: {
               text: 'Prozentuale Veränderung',

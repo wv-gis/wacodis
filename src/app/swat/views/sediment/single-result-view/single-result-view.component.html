@@ -6,7 +6,8 @@
                     Stoffeintragsmodell: Einzelanalyse {{param}}
                 </div>
                 <div class="card-body">
-                    Information zum Modell und den Parametern
+                    Information zum Szenario:
+                    {{scenDescript}}
                 </div>
             </div>
         </div>
@@ -19,35 +20,71 @@
                     <div class="col-xl-6 col-md-6 mb-2">
 
                         <div class="card-body">
-                           
-                                SzenarioWahl:<select id="szenario" (change)="onSubmit($event.target.value)">
-                                    <option id="sz_one" value="0">T33</option>
-                                    <option id="sz_Two" value="1">T25</option>
-                                </select>
-                           
+
+                            SzenarioWahl:<select id="szenario" (change)="onSubmit($event.target.value)">
+                                <option *ngFor="let a of selSzenario; let i = index " id="sz_one" value="{{i}}"> {{a}}
+                                </option>
+                                <!-- <option id="sz_Two" value="i">T25</option> -->
+                            </select>
+
                         </div>
 
                     </div>
                 </div>
-                <div class="row" >
-                    <div class="col-xl-12 col-md-12 mb-2" >
-                        <div *ngIf="showBarChart">
+                <div class="row">
+                    <div class="col-xl-12 col-md-12 mb-2">
+                        <div *ngIf="showBarChart && barId==0;else indDiagram">
                             <wv-tsbar-chart [service]="featureTSLayerUrl" [selIndices]='[selSzenarioTS[selSzen_Id]]'
                                 [barChartId]="'tsInput'" [input]="barId">
                             </wv-tsbar-chart>
                         </div>
+                        <ng-template #indDiagram>
+                            <div *ngIf="showBarChart">
+                                <wv-tsbar-chart [service]="featureTSLayerUrl"
+                                    [selIndices]='[selSzenarioTSN[selSzen_Id]]' [barChartId]="'tsInput'"
+                                    [input]="barId">
+                                </wv-tsbar-chart>
+                            </div>
+                        </ng-template>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-xl-6 col-md-6 mb-2" style="height: 350px;">
+        <div class="col-xl-4 col-md-4 mb-2" style="height: 350px;">
             <div id="map" style="height: 100%;">
                 <div class="map-wrapper" id='map-wrapper'>
                     <div id="szTwo-map" class="map-viewer"></div>
                 </div>
             </div>
-            <div class="wv-legend" style="width: 100%;">
-                <!-- <wv-layer-legend-card [layer]="baseLayers[0]"></wv-layer-legend-card> -->
+
+        </div>
+
+        <div class="col-xl-2 col-md-2 mb-2" >
+            <div class="wv-legend" style="width: 100%;" *ngIf="showBarChart">
+                <div *ngIf="barId==0; else TsNlayer">
+                    <b>TS-Layer [t/a] </b>
+                    <wv-layer-legend-card [layer]="baseLayers[1]" [id]="selSzenarioTS[selSzen_Id]">
+                    </wv-layer-legend-card>
+                </div>
+                <ng-template #TsNlayer>
+                    <b>TS-Layer [kg/a] </b>
+                    <wv-layer-legend-card [layer]="baseLayers[1]" [id]="selSzenarioTSN[selSzen_Id]">
+                    </wv-layer-legend-card>
+                </ng-template>
+            </div>
+
+            <div class="wv-legend" style="width: 100%;" *ngIf="showBarChart">
+                <div *ngIf="barId==0; else subNLayer">
+                    <b> Subbasin-Layer [t/ha/a]</b>
+                    <wv-layer-legend-card [layer]="baseLayers[1]" [id]="selSzenarioSUB[selSzen_Id]">
+                    </wv-layer-legend-card>
+                </div>
+
+                <ng-template #subNLayer>
+                    <b> Subbasin-Layer [kg/ha/a]</b>
+                    <wv-layer-legend-card [layer]="baseLayers[1]" [id]="selSzenarioSUBN[selSzen_Id]">
+                    </wv-layer-legend-card>
+                </ng-template>
             </div>
         </div>
     </div>
@@ -55,9 +92,14 @@
         <div class="row" style="width: 100%;margin-left: 0.25px;">
             <div class="col-xl-3 col-md-3 ">
                 <div class="card border-left-primary shadow h-100 ">
-                    <div class="card-header wv-bold-header">
+                    <div class="card-header wv-bold-header" *ngIf="barId==0; else unitN">
                         Stoffaustrag [t/ha/a]
                     </div>
+                    <ng-template #unitN>
+                        <div class="card-header wv-bold-header" >
+                            Stoffaustrag [kg/ha/a]
+                        </div>
+                    </ng-template>       
                 </div>
             </div>
 
@@ -87,7 +129,7 @@
                         <div id="szSoil-map" class="map-viewer"></div>
                     </div>
                 </div>
-               
+
             </div>
             <div class="col-xl-3 col-md-3">
                 <div id="map" style="height: 100%;">
@@ -109,9 +151,14 @@
         <div class="col-xl-3 col-md-3 ">
             <div class="card border-left-primary shadow h-100 ">
                 <div class="card-body" style="overflow: auto;height: 140px;">
-                    <div class="wv-legend" style="width: 100%;">
-                        <wv-layer-legend-card [layer]="baseLayers[1]" [id]="selSzenarioHRU[selSzen_Id]"></wv-layer-legend-card>
+                    <div class="wv-legend" style="width: 100%;" *ngIf="barId==0; else Nlayer">
+                        <wv-layer-legend-card [layer]="baseLayers[1]" [id]="selSzenarioHRU[selSzen_Id]">
+                        </wv-layer-legend-card>
                     </div>
+                    <ng-template #Nlayer>
+                        <wv-layer-legend-card [layer]="baseLayers[1]" [id]="selSzenarioHRUN[selSzen_Id]">
+                        </wv-layer-legend-card>
+                    </ng-template>
                 </div>
             </div>
         </div>
@@ -128,7 +175,8 @@
             <div class="card border-left-primary shadow h-100 ">
                 <div class="card-body" style="overflow: auto;height: 140px;">
                     <div class="wv-legend" style="width: 100%;" *ngIf="showSingleMaps">
-                        <wv-layer-legend-card [layer]="baseLayers[0]" [id]="63"></wv-layer-legend-card>
+                        <wv-layer-legend-card [layer]="baseLayers[1]" [id]="selSzenarioLU[selSzen_Id]">
+                        </wv-layer-legend-card>
                     </div>
                 </div>
             </div>
@@ -137,7 +185,7 @@
             <div class="card border-left-primary shadow h-100 ">
                 <div class="card-body" style="overflow: auto;height: 140px;">
                     <div class="wv-legend" style="width: 100%;" *ngIf="showSingleMaps">
-                        <wv-layer-legend-card [layer]="baseLayers[0]" [id]="1"></wv-layer-legend-card>
+                        <wv-layer-legend-card [layer]="baseLayers[2]" [id]="1"></wv-layer-legend-card>
                     </div>
                 </div>
             </div>
