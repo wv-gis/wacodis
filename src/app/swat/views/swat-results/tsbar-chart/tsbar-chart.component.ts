@@ -8,6 +8,14 @@ import { locale } from 'src/environments/environment';
   templateUrl: './tsbar-chart.component.html',
   styleUrls: ['./tsbar-chart.component.css']
 })
+/**
+ * Component to plot bar chart for reservoir sediment and nitrate values
+ * @barChartID id of the html element to draw barChart
+ * @service service url to request values from
+ * @selIndices Indices of layers to request values from
+ * @input parameter to differentiate between nitrate and sediment values
+ * @comparison wether two plot two scenarios in barChart or single scenario
+ */
 export class TSBarChartComponent implements OnInit, AfterViewInit, OnChanges {
 
   @Input() barChartId: string;
@@ -27,12 +35,18 @@ export class TSBarChartComponent implements OnInit, AfterViewInit, OnChanges {
 
   constructor() { }
 
-
+/**
+ * 
+ * @param changes if selIndices change on selection replot graph
+ */
   ngOnChanges(changes: SimpleChanges): void {
     if (!changes.selIndices.firstChange) {
       this.plotBarChart();
     }
   }
+  /**
+   * After Initializatoin plot graph and register locale for graph values
+   */
   ngAfterViewInit(): void {
     Plotly.register(locale);
     this.plotBarChart();
@@ -43,7 +57,9 @@ export class TSBarChartComponent implements OnInit, AfterViewInit, OnChanges {
 
   }
 
-
+/**
+ * request values and draw barChart depending on compariosn Value
+ */
   public plotBarChart() {
 
 

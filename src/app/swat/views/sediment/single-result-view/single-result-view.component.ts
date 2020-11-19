@@ -20,7 +20,7 @@ const sedimentParam: string[] = ["OBJECTID", "rsv_yearavg_csv_SED_OUT", "rsv_yea
   styleUrls: ['./single-result-view.component.css']
 })
 /**
- * component to depict the model outputs for sediment values for single analysis
+ * component to depict the model outputs for sediment and nitrogen values for single analysis
  */
 export class SingleResultViewComponent implements OnInit, OnDestroy {
 
@@ -47,9 +47,9 @@ export class SingleResultViewComponent implements OnInit, OnDestroy {
   public featureTSLayer: esri.FeatureLayer;
   public featureHRULayer: esri.FeatureLayer;
   public showSingleMaps: boolean = false;
-  public selSzenarioTS: number[] = [];//[70, 137, 204, 271, 339, 406, 472, 539];
-  public selSzenarioSUB: number[] = [];//[71, 138, 205, 272, 338, 405, 473, 540];
-  public selSzenarioHRU: number[] = [];//[69, 136, 203, 270, 337, 404, 471, 538];
+  public selSzenarioTS: number[] = [];
+  public selSzenarioSUB: number[] = [];
+  public selSzenarioHRU: number[] = [];
 
   public selSzenarioTSN: number[] = [];
   public selSzenarioSUBN: number[] = [];
@@ -68,6 +68,10 @@ export class SingleResultViewComponent implements OnInit, OnDestroy {
   constructor(private mapCache: MapCache, private router: ActivatedRoute, private http: HttpClient) {
 
   }
+
+  /**
+   * on Destroy remove maps from mapCache
+   */
   ngOnDestroy(): void {
     this.mapCache.deleteMap(this.szenario2Id);
     this.mapCache.deleteMap(this.szenarioLUId);
@@ -77,6 +81,9 @@ export class SingleResultViewComponent implements OnInit, OnDestroy {
 
   }
 
+  /**
+   * on Initialization set parameters based on routing url and get response of groupLayer for scenarios and layer ids
+   */
   ngOnInit() {
 
     this.router.url.subscribe((obs) => {
@@ -100,7 +107,10 @@ export class SingleResultViewComponent implements OnInit, OnDestroy {
 
 
   }
-
+/**
+ * set grouplayerNames for scenarios and add sublayers for model information results
+ * @param ob json response of layer
+ */
   setLayerSzenarioIds(ob: any) {
     this.szenarioIds.forEach((szen, i, arr) => {
       this.selSzenario.push(ob['layers'][szen].name);
@@ -160,7 +170,7 @@ export class SingleResultViewComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * add feature Layer to created Basemap
+   * add feature Layer to created Basemap based on selected output (sediment or nitrogen)
    */
   public addLayer() {
     this.szenarioMap.addLayer(L.tileLayer.wms('http://ows.terrestris.de/osm/service?',
@@ -409,7 +419,7 @@ export class SingleResultViewComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * 
+   * on selected Scenario Changed remove information maps and add new selected layer
    * @param customerData 
    */
   onSubmit(customerData: number) {

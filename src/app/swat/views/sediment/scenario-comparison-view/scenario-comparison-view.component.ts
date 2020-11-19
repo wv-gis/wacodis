@@ -39,10 +39,7 @@ export class ScenarioComparisonViewComponent implements OnInit {
   public szenario2Id = 'szTwo-CompMap';
   public szenarioMap: L.Map;
   public featureService: esri.FeatureLayerService;
-  // public szenarioTS_ID = [70, 137, 204, 271, 339, 406, 472, 539];
-  // public szenarioHRU_ID = [69, 136, 203, 270, 337, 404, 471, 538];
-  // public szenarioSub_ID = [71, 138, 205, 272, 338, 405, 473, 540];
-  // szenarioIds: number[]=[67,134,201,268,335,402,469,536];
+
   public szenarioTS_ID: number[] = [];
   public szenarioSub_ID: number[] = [];
   public selSzenarioTSN_ID: number[] = [];
@@ -62,7 +59,10 @@ export class ScenarioComparisonViewComponent implements OnInit {
 
   constructor(private mapCache: MapCache, private router: ActivatedRoute, private http: HttpClient) { }
 
-  // set default maps with layout and configuration and ad  Layers, finally sync both maps
+  /**
+   * initialize the view depending on route url and set corresponding values
+   * request the scanrio Ids of the service and create Base Map
+   */
   ngOnInit() {
 
     this.router.url.subscribe((obs) => {
@@ -90,8 +90,8 @@ export class ScenarioComparisonViewComponent implements OnInit {
 
   }
   /**
-   * 
-   * @param ob 
+   * receive grouplayer names and sublayer IDs to add corresponding information of layers to the view
+   * @param ob json response
    */
   setLayerSzenarioIds(ob: any) {
     this.szenarioIds.forEach((szen, i, arr) => {
@@ -122,7 +122,7 @@ export class ScenarioComparisonViewComponent implements OnInit {
   }
 
   /**
-   * 
+   * set Base Map Layers and scale for both scenario maps
    */
   createBaseMap() {
     this.showBarChart = true;
@@ -147,7 +147,7 @@ export class ScenarioComparisonViewComponent implements OnInit {
   }
 
   /**
-   * 
+   * add scenario feature layers to left map and sync maps
    */
   addLayerMainMap() {
     this.wmsLayer = L.tileLayer.wms('http://ows.terrestris.de/osm/service?',
@@ -183,7 +183,7 @@ export class ScenarioComparisonViewComponent implements OnInit {
 
   }
   /**
-   * 
+   *  add scenario feature layers to right map and sync maps
    */
   addLayerSzenarioMap() {
 
@@ -220,7 +220,7 @@ export class ScenarioComparisonViewComponent implements OnInit {
   }
 
   /**
-   * 
+   * on selected scenario on left side change featureLayer in map
    * @param selSzenario 
    */
   onSubmitOne(selSzenario: number) {
@@ -232,7 +232,7 @@ export class ScenarioComparisonViewComponent implements OnInit {
     this.addLayerMainMap();
   }
   /**
-   * 
+   *  on selected scenario on right side change featureLayer in map
    * @param selSzenario 
    */
   onSubmitTwo(selSzenario: number) {

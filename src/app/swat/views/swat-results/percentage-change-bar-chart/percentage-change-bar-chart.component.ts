@@ -7,6 +7,13 @@ import { locale } from 'src/environments/environment';
   templateUrl: './percentage-change-bar-chart.component.html',
   styleUrls: ['./percentage-change-bar-chart.component.css']
 })
+/**
+ * Component to depict the changes between two scenarios in a bar chart as percentage values
+ * @barChartId -> html Id to draw the barChart
+ * @service --> layer service to receive values for difference calculation
+ * @selIndices --> layer indices to receive values from
+ * @input value to differentiate wether nitrate or sediment values shall be calculated
+ */
 export class PercentageChangeBarChartComponent implements AfterViewInit, OnChanges {
   @Input() barChartId: string;
   @Input() service: string;
@@ -24,17 +31,27 @@ export class PercentageChangeBarChartComponent implements AfterViewInit, OnChang
 
   constructor() { }
 
+  /**
+   * on changes to input parameters calculate new values and replot graph
+   * @param changes new values of input parameters
+   */
   ngOnChanges(changes: SimpleChanges): void {
     if (!changes.selIndices.firstChange) {
       this.plotBarChart();
     }
   }
+
+  /**
+   * after Initialisation draw plot and register locale
+   */
   ngAfterViewInit(): void {
     Plotly.register(locale);
     this.plotBarChart();
   }
 
-
+/**
+ * calculate percentage values and draw plot
+ */
   public plotBarChart() {
 
     esri.featureLayer({ url: this.service + '/' + this.selIndices[0] }).query().run((e, fCol, resp) => {
