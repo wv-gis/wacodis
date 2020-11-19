@@ -14,7 +14,10 @@ const externLayerOptions = ['IntraChange'];
 const rasterFunctionOpt = [{ "rasterFunction": "Natural Color" }, { "rasterFunction": "Color Infrared with DRA" }];//, { "rasterFunction": "Landcover" }
 const wacodisUrl = "https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS";
 
-
+/**
+ * Component for comparing two different services/ dates of a service in one map
+ * 
+ */
 
 @Component({
   selector: 'wv-comparison-view',
@@ -23,6 +26,7 @@ const wacodisUrl = "https://gis.wacodis.demo.52north.org:6443/arcgis/rest/servic
 })
 export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy {
 
+  /**diagram depicting the coure of pixelValues throughout the time */
   @ViewChild("pixelValue", { static: true }) public plotlydiv: ElementRef;
 
   public syncedMap: L.Map;
@@ -84,6 +88,9 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
 
   }
 
+  /**
+   * initialize view with map and fill the service option list
+   */
   ngOnInit(): void {
  
     for (let i = 0; i < sentinelLayerOptions.length; i++) {
@@ -121,6 +128,9 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
     // L.DomEvent.on(this.controlHtml,'click', this.changeVisibility(this.legend));
   }
 
+  /**
+   * define the request Url for legend infos of Wacodis Product Services
+   */
   public requestLegendUrl() {
     this.comparisonBaseLayers.forEach((lay, i, layArr) => {
       if (this.leftLayer instanceof esri.ImageMapLayer) {
@@ -205,6 +215,7 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
     this.mainMap.addLayer(this.rightLayer);
 
     this.container = L.DomUtil.create('div', 'leaflet-sbs', this.mainMap.getContainer().children['1']);
+    // define the divider and its position
     let Divider = L.Control.extend({
       onAdd: function (map) {
         let compDivider = L.DomUtil.create('div', 'leaflet-sps-divider');
@@ -262,9 +273,8 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
 
     let clipLeft = 'rect(' + [nw.y, clipX, se.y, nw.x].join('px,') + 'px);';
     let clipRight = 'rect(' + [nw.y, se.x, se.y, clipX].join('px,') + 'px);';
-    // document.getElementById('leftName').setAttribute('style', 'width: ' + clipX + 'px;');
-    // document.getElementById('leftTime').setAttribute('style', 'width: ' + clipX + 'px;');
-
+ 
+      // set the clip style of divider depending on type of layer
     if (this.leftLayer) {
 
       if (this.leftLayer.options.pane === 'imagePane' + this.selectedIdL) {
@@ -316,7 +326,7 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
 
   }
   /**
-   * Method for adding EventListeners for mouseover , move and zoom in regard to the divider
+   * Method for adding EventListeners for mouseover , move and zoom in with regard to the divider
    */
   private addEvents() {
     let _range = this.range;
@@ -333,7 +343,7 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
     map.on('click', this.identifyPixel,this);
   }
 
-
+// get information about the pixel value of the clicked mouse position of rigth layer over time and show in diagram
   public identifyPixel(e) {
     let pane = document.getElementById("pixelValue");
    
@@ -417,6 +427,10 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
     }
   }
 
+  /**
+   * set divider position/range depending on browser
+   * @param rangeInput value of divider position
+   */
   private getRangeEvent(rangeInput: any) {
     const match = navigator.userAgent.search(/(?:Edge|MSIE|Trident\/.*; rv:)/);
     if (match !== -1) {
@@ -529,7 +543,9 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
 
   }
 
-
+/**
+ * set elements to depict a synced View of the two selected services
+ */
   private setsyncedMap() {
 
     let newMap = document.createElement('div');
@@ -579,6 +595,9 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
     this.syncedMap.invalidateSize();
   }
 
+  /**
+   * remove mapComponents on change from SyncView to splittedView
+   */
   private removeSync() {
   
     if (!this.syncedMap || !this.mainMap) {
@@ -603,11 +622,16 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
     this.mainMap.invalidateSize();
     this.syncedMap = null;
   }
+
+  //return to last page on cancel
   public onCloseHandled() {
     this._location.back();
   }
 
-
+/**
+ * define the layerList for selection with pane Info
+ * @param url service URl
+ */
   public setSentinelLayer(url: string) {
     for (let i = 0; i < sentinelLayerOptions.length; i++) {
       this.senLayers.push(esri.imageMapLayer({
@@ -669,6 +693,12 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
 
     }
   }
+
+  /**
+   * query Selected ImageLayer to receive selectable date values
+   * @param side selected side of splittedView
+   * @param id selected Layerid
+   */
   private queryImagelayer(side: string, id: number) {
     esri.imageService({ url: this.comparisonBaseLayers[id].options.url }).query().where("1=1")
       .fields(["startTime", "endTime", "OBJECTID"]).returnGeometry(false).run((error, featureCollection, feature) => {
@@ -725,6 +755,10 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
 
   }
 
+  /**
+   * query sentinel Layers for selectable timestamps
+   * @param side 
+   */
   private queryLayer(side: string) {
     if (side === "ri") {
       this.loadingR = !this.loadingR;
@@ -798,6 +832,12 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
 
   }
 
+
+  /**
+   * check which layer is selected and query further info such a s selectable timestamps for the service depending on type of pane
+   * @param layerName 
+   * @param id 
+   */
   public checkLeftLayer(layerName: string, id: number) {
     this.selectLeftLayer = layerName;
     this.selectedIdL = id;
@@ -811,6 +851,11 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
     }
   }
 
+  /**
+   * check which layer is selected and query further info such as selectable timestamps for the service depending on type of pane
+   * @param layerName 
+   * @param id 
+   */
   public checkRightLayer(layerName: string, id: number) {
 
     this.selectRightLayer = layerName;
@@ -833,6 +878,11 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
     }
   }
 
+  /**
+   * check selected timestamp of list and set for the service to show selected timestamp
+   * @param date selected date
+   * @param id layerID
+   */
   private checkLeftDate(date: number, id: number) {
     this.defaultLDate = new Date(date);
 
@@ -849,6 +899,11 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
     }
   }
 
+    /**
+   * check selected timestamp of list and set for the service to show selected timestamp
+   * @param date selected date
+   * @param id layerID
+   */
   private checkRightDate(date: number, id: number) {
     this.defaultRDate = new Date(date);
    
@@ -867,6 +922,9 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
     }
   }
 
+  /**
+   * reset selected values within modal
+   */
   public resetSelection() {
     this.selectLeftLayer = 'Layer im linken Bereich';
     this.selectRightLayer = 'Layer im rechten Bereich';
@@ -874,6 +932,13 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
     this.defaultRDate = new Date();
   }
 
+
+  /**
+   * change the depicted layer to the new selected layer by removing the old one and requesting the parameters for the new layer depending on the 
+   * view selected and layer Type
+   * @param layerName 
+   * @param id 
+   */
   public changeLeftLayer(layerName: string, id: number) {
     if (this.view === 'split') {
       this.remove();
@@ -911,6 +976,12 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
     }
   }
 
+  /**
+   * change the depicted layer to the new selected layer by removing the old one and requesting the parameters for the new layer depending on the 
+   * view selected and layer Type
+   * @param layerName 
+   * @param id 
+   */
   public changeRightLayer(layerName: string, id: number) {
     if (this.view === 'split') {
       this.remove();
@@ -957,6 +1028,11 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
     }
   }
 
+  /**
+   * change depicted time range of layer to new selected time by updating the Layer time range
+   * @param date 
+   * @param id 
+   */
   private changeLeftDate(date: number, id: number) {
     this.defaultLDate = new Date(date);
     let to = new Date(this.defaultLDate.getFullYear(), this.defaultLDate.getMonth(), this.defaultLDate.getDate() + 1);
@@ -970,6 +1046,11 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
     }
   }
 
+  /**
+   *  change depicted time range of layer to new selected time by updating the Layer time range
+   * @param date 
+   * @param id 
+   */
   private changeRightDate(date: number, id: number) {
     this.defaultRDate = new Date(date);
     let to = new Date(this.defaultRDate.getFullYear(), this.defaultRDate.getMonth(), this.defaultRDate.getDate() + 1);
@@ -982,13 +1063,27 @@ export class ComparisonViewComponent implements OnInit, AfterViewInit, OnDestroy
       this.rightLayer.setTimeRange(this.defaultRDate, this.defaultRDate);
     }
   }
+
+  /**
+   * set legend layer depending on the selected service and its url
+   * @param url 
+   * @param urls 
+   */
   public getLegendUrl(url?: string, urls?: string[]) {
     this.legendUrls = [{ url: url, label: "", layer: url.split('layer=')[1] }];
   }
+
+  /**
+   * set legend layer url depending on the selected service and its url
+   * @param urls 
+   */
   public getLegendUrls(urls: legendParam[]) {
     this.legendUrls = urls;
   }
 
+  /**
+   * on destroy remove Events of layer and reset Selection
+   */
   ngOnDestroy(): void {
     this.removeEvents();
     this.resetSelection();
