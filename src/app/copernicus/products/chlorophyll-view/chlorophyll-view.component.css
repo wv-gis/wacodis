@@ -20,3 +20,9 @@ text{
 div #map{
     height: 100%;
 }
+.wv-bold-header{
+    font-weight: bold;
+}
+.wv-legend{
+    font-size: smaller;
+}

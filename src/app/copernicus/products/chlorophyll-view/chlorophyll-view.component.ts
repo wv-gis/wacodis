@@ -4,7 +4,6 @@ import * as L from 'leaflet';
 import * as esri from 'esri-leaflet';
 import { LayerOptions, MapCache } from '@helgoland/map';
 
-const watermask_Srvc = "https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/arcgis/rest/services/watermask_S1_2019_06_2019_11/FeatureServer"
 
 const WvG_URL = 'http://fluggs.wupperverband.de/secman_wss_v2/service/WMS_WV_Oberflaechengewaesser_EZG/guest?';
 @Component({
@@ -15,7 +14,7 @@ const WvG_URL = 'http://fluggs.wupperverband.de/secman_wss_v2/service/WMS_WV_Obe
 /**
  * component for depiction of Chlorophyll with Isoplethen diagram and RasterImage Results
  */
-export class ChlorophyllViewComponent implements OnInit,AfterViewInit {
+export class ChlorophyllViewComponent implements OnInit, AfterViewInit {
   public samplingStationLabels = [];
   public dam_label = 'Dhünn-Talsperre';
   public samplingIds: string[] = [];
@@ -34,16 +33,14 @@ export class ChlorophyllViewComponent implements OnInit,AfterViewInit {
   public showZoomControl = true;
 
   constructor(private mapCache: MapCache) {
-  
+
   }
 
-   /**
-   * add Layers and Scale to Map after Initialization
-   */
+  /**
+  * add Layers and listeners to Map after Initialization
+  */
   ngAfterViewInit(): void {
-    this.baselayers.forEach((blayer, i, arr) => {
-      this.mapCache.getMap(this.mapId).addLayer(blayer);
-    });
+   
     this.mapCache.getMap(this.mapId).addLayer(L.tileLayer.wms(
       WvG_URL,
       {
@@ -51,32 +48,32 @@ export class ChlorophyllViewComponent implements OnInit,AfterViewInit {
         className: 'WV_GB'
       }
     ));
-
+    this.map.on('click', this.identify, this);
   }
-
   /**
-   * create Basemap
+    * identify pixel value at selected mouse position
+    * 
+    * @param e mouse event
+    */
+  private identify(e) {
+
+    let popupText
+    this.dyn.identify().at(e.latlng).tolerance(1).on(this.map).run(function (err, data, resp) {
+
+      if (resp.results.length > 0) {
+        popupText = resp.results[0].attributes['Pixel Value'];
+
+      }
+    });
+    this.dyn.bindPopup(function (l) { return L.Util.template('<p> ~' + Math.round(parseFloat(popupText)) + 'mg/L </p>', e.latlng) });
+  }
+  /**
+   * set default layer and call create Basemap
    */
   ngOnInit() {
-    this.map = L.map(this.mapId, this.mapOptions).setView([51.07, 7.22], 13);
-
-
-    L.control.scale().addTo(this.map);
-    this.mapCache.setMap(this.mapId, this.map);
-   
-
-    this.map.addLayer(
-      L.tileLayer.wms(
-        'http://ows.terrestris.de/osm/service?',
-        {
-          layers: 'OSM-WMS', format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-          className: 'OSM'
-        }
-      )
-    );
 
     this.dyn = esri.dynamicMapLayer({
-      url: "https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/EO_WaCoDiS_Chlorophyll_2020/MapServer", layers: [1], opacity: 1,
+      url: "https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/EO_WaCoDiS_Chlorophyll_2020/MapServer", layers: [1], opacity: 0.8,
       className: 'Chloro'
     });
     this.dyn.metadata((err, dat) => {
@@ -92,10 +89,37 @@ export class ChlorophyllViewComponent implements OnInit,AfterViewInit {
       });
 
     });
+  this.createMap();
 
+  }
+  /**
+   * create Basemap parameters and call add Layers
+   */
+  public createMap(){
+    this.map = L.map(this.mapId, this.mapOptions).setView([51.07, 7.22], 13);
+
+
+    L.control.scale().addTo(this.map);
+    this.mapCache.setMap(this.mapId, this.map);
     this.baselayers.push(this.dyn);
+    this.addLayer();
+  }
+  /**
+   * add Layers to show
+   */
+  private addLayer(){
+    
+    this.map.addLayer(
+      L.tileLayer.wms(
+        'http://ows.terrestris.de/osm/service?',
+        {
+          layers: 'OSM-WMS', format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+          className: 'OSM'
+        }
+      )
+    );
 
-
+    this.map.addLayer(this.dyn);
   }
   /**
    * 
@@ -105,17 +129,14 @@ export class ChlorophyllViewComponent implements OnInit,AfterViewInit {
   public onSubmitOne(date: number) {
     // this.currentSelectedTimeL = date;
 
-    this.baselayers.forEach((lay,i,arr)=>{
+    this.map.eachLayer((lay) => {
       lay.remove();
     });
-    this.baselayers.push(esri.dynamicMapLayer({
-      url: "https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/EO_WaCoDiS_Chlorophyll_2020/MapServer", layers: [date], opacity: 1,
-       className: 'Chloro' 
-    }));
-
-    this.baselayers.forEach((lay, i, arr) => {
-      this.mapCache.getMap(this.mapId).addLayer(lay);
-    });
+    this.dyn = esri.dynamicMapLayer({
+      url: "https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/EO_WaCoDiS_Chlorophyll_2020/MapServer", layers: [date], opacity: 0.8,
+      className: 'Chloro'
+    })
+    this.addLayer();
   }
   /**
    * change Date to selected date
