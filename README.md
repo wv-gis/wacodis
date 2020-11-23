@@ -5,39 +5,51 @@ Wasserwirtschaftliche Copernicus-Dienste zur Bestimmung von Stoffeinträgen in G
  https://wacodis.fbg-hsbo.de/
 
 ### Modules 
-The WaCoDiS Data Access project consists of three (maven) modules. 
+The WaCoDiS Web Client project consists of different views for data depiction of satellite data and in-situ data. 
 
 * **Copernicus Fernerkundungsberichte**  
 
-
+<p align="center">
+  <!-- <img src="https://raw.githubusercontent.com/WaCoDiS/apis-and-workflows/master/misc/logos/mfund.jpg" height="100"> -->
+</p>
 
 * **Änderungsdetektion**  
-
+<p align="center">
+  <!-- <img src="https://raw.githubusercontent.com/WaCoDiS/apis-and-workflows/master/misc/logos/mfund.jpg" height="100"> -->
+</p>
 
 * **Wasserwirtschaftsbericht**  
-
+<p align="center">
+  <!-- <img src="https://raw.githubusercontent.com/WaCoDiS/apis-and-workflows/master/misc/logos/mfund.jpg" height="100"> -->
+</p>
 
 * **Modellierungsergebnisse**  
-
+<p align="center">
+  <!-- <img src="https://raw.githubusercontent.com/WaCoDiS/apis-and-workflows/master/misc/logos/mfund.jpg" height="100"> -->
+</p>
 
 * **Zeitreihendaten**  
+<p align="center">
+  <!-- <img src="https://raw.githubusercontent.com/WaCoDiS/apis-and-workflows/master/misc/logos/mfund.jpg" height="100"> -->
+</p>
 
 ### Included Packages
-esri-leaflet
-esri-leaflet-renderers
-leaflet
-plotly.js-dist
-helgoland-toolbox
-d3.js
-leaflet-timedimension
-leaflet.markercluster
-leaflet.sync
-bootstrap
+* esri-leaflet
+* esri-leaflet-renderers
+* leaflet
+* plotly.js-dist
+* helgoland-toolbox
+* d3.js
+* leaflet-timedimension
+* leaflet.markercluster
+* leaflet.sync
+* bootstrap
 
 ### Typings
 
 ### Settings
-DatasetAPIS
+For Sentinel Data requests a client Id and secret must be provided for the request token service.
+No guarantee that the services are still available due to ending support of project.
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 6.0.8.
 
@@ -50,7 +62,7 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 
 
 
-### License and Third Party Lib POM Plugins
+### License 
 Copyright [yyyy] [name of copyright owner]
 
 Licensed under the Apache License, Version 2.0 (the "License");
