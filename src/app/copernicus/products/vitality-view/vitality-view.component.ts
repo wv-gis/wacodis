@@ -134,28 +134,34 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
    * add Layers and Listener to Map
    */
   ngAfterViewInit(): void {
-    this.baselayers.forEach((lay, i, arr) => {
-      this.mapCache.getMap(this.mapId).addLayer(lay);
-    });
+ 
 
     this.mainMap.on('moveend', this.changeBounds, this);
     this.mainMap.on('click', this.identify, this);
 
   }
+  /**
+   * identify pixel value at selected mouse position
+   * 
+   * @param e mouse event
+   */
   private identify(e) {
 
+    let popupText;
     this.dyn.identify().at(e.latlng).tolerance(1).on(this.mainMap).run(function (err, data, resp) {
 
       if (resp.results.length > 0) {
-        var popupText = resp.results[0].attributes['Pixel Value'];
+        popupText = resp.results[0].attributes['Pixel Value'];
+    
         console.log(popupText);
       }
     });
+    this.dyn.bindPopup(function (l) {return L.Util.template('<p> ~' + Math.round(parseFloat(popupText)*100) + '% </p>',e.latlng)});
   }
 
   /**
-   * 
-   * @param TS 
+   * reset the map view on dam selected and set corresponding parameters 
+   * @param TS selected dam
    */
   public resetMapView(TS: string) {
     if (TS == 'Dhuenn') {
@@ -207,7 +213,9 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
     }
 
   }
-
+/**
+ * reset temp Data on input change
+ */
   resetTempRainData(){
      
     this.additionalDataRain = [];
@@ -333,7 +341,7 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * 
+   * set draw options for avg  day temperature
    */
   setAvgDayTmp(d: AdditionalDataEntry[]){
     const optionsTempVal = new DatasetOptions('addData', 'red');
@@ -473,28 +481,12 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
 
   }
   /**
-   * create default Map and Layers
+   * create default Layer and call createMap
    */
   ngOnInit() {
 
-    this.mainMap = L.map(this.mapId, this.mapOptions).setView([51.07, 7.22], 13);
-
-
-    L.control.scale().addTo(this.mainMap);
-    this.mapCache.setMap(this.mapId, this.mainMap);
-    this.mapBounds = this.mainMap.getBounds();
-
-    this.mainMap.addLayer(L.tileLayer.wms(
-      'http://ows.terrestris.de/osm/service?',
-      {
-        layers: 'OSM-WMS', format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-        className: 'OSM'
-      }
-    ));
-  
-
-    this.dyn = esri.dynamicMapLayer({
-      url: "https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/Vegetationsdichte_2020_Forst/MapServer", layers: [0,1], opacity: 1,
+      this.dyn = esri.dynamicMapLayer({
+      url: "https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/Vegetationsdichte_2020_Forst/MapServer", layers: [0,1], opacity: 0.8,
        className: 'Waldvital2018-2019' 
     });
     this.dyn.metadata((err,dat)=>{
@@ -510,16 +502,41 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
      }); 
     
     });
+
+    this.createMap();
    
-  this.baselayers.push(this.dyn);
-  
-    // this.dyn.getLayers().forEach((lay,i,arr)=>{
-    //   this.baselayers.push(lay);
-    // });
-    
+  }
+  /**
+   * create Map element and call addLayers afterwards
+   */
+  private createMap(){
+
+    this.mainMap = L.map(this.mapId, this.mapOptions).setView([51.07, 7.22], 13);
+
+
+    L.control.scale().addTo(this.mainMap);
+    this.mapCache.setMap(this.mapId, this.mainMap);
+    this.mapBounds = this.mainMap.getBounds();
+    this.baselayers.push(this.dyn);
+
+    this.addLayers();
 
   }
+  /**
+   * add Layers to map
+   */
+  private addLayers(){
 
+    this.mainMap.addLayer(L.tileLayer.wms(
+      'http://ows.terrestris.de/osm/service?',
+      {
+        layers: 'OSM-WMS', format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        className: 'OSM'
+      }
+    ));
+
+    this.mainMap.addLayer(this.dyn);
+  }
   /**
     * set MapBounds depending on scroll and drag Movements
     */
@@ -543,18 +560,15 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
    */
   public onSubmitOne(date: number) {
     // this.currentSelectedTimeL = date;
-
-    this.baselayers.forEach((lay,i,arr)=>{
+   
+    this.mainMap.eachLayer((lay)=>{
       lay.remove();
     });
-    this.baselayers.push(esri.dynamicMapLayer({
-      url: "https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/Vegetationsdichte_2020_Forst/MapServer", layers: [0,date], opacity: 1,
+    this.dyn = esri.dynamicMapLayer({
+      url: "https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/Vegetationsdichte_2020_Forst/MapServer", layers: [0,date], opacity: 0.8,
        className: 'Waldvital2018-2019' 
-    }));
-
-    this.baselayers.forEach((lay, i, arr) => {
-      this.mapCache.getMap(this.mapId).addLayer(lay);
     });
+    this.addLayers();
   }
 
   /**

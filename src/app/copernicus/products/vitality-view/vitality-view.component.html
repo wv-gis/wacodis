@@ -110,7 +110,7 @@
                   (timeIndex)="setSelectedTime($event)" (curTimeIndex)="setSelectedCurrentTimeLeft($event)">
                 </wv-layer-card> -->
                 <select id="pic" (change)="onSubmitOne($event.target.value)" >
-                  <option *ngFor="let a of selectedPics; let i = index " id="pic_one" value="{{i}}">{{a}}</option>
+                  <option *ngFor="let a of selectedPics; let i = index " id="pic_one" value="{{i+1}}">{{a}}</option>
               </select>
               </div>
             </div>
