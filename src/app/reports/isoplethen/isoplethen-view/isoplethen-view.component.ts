@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { Timespan, ApiV3Dataset, HelgolandServicesConnector, DatasetType, DatasetApiV3Connector, ApiV3InterfaceService, ApiV3ObservationTypes } from '@helgoland/core';
+import { Timespan, ApiV3Dataset, ApiV3InterfaceService, ApiV3ObservationTypes } from '@helgoland/core';
 import { DatasetImplApiV3InterfaceService } from '@sensorwapp-toolbox/core';
 
 @Component({
@@ -51,6 +51,9 @@ export class IsoplethenViewComponent implements OnInit, AfterViewInit {
  
   }
 
+  /**
+   * on initialisation receive dataset for selected id and url
+   */
   ngOnInit() {
     this.api.getDataset(this.internalId.id,this.internalId.url,{}).subscribe((data)=>{
          this.profileDataset = data;
