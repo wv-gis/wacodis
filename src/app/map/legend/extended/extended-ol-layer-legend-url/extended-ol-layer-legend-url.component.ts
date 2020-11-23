@@ -50,9 +50,12 @@ export class ExtendedOlLayerLegendUrlComponent implements OnChanges {
   }
 
   ngOnChanges(changes: import("@angular/core").SimpleChanges): void {
+   if(changes.id){
     if(!changes.id.firstChange){
       this.deliverLegendUrl();
     }
+   }
+    
   }//extends OlLayerLegendUrlComponent {
 
 
