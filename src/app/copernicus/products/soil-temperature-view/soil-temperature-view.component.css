@@ -1,6 +1,4 @@
-div #map{
-    height: 93% !important;
-}
+
 n52-station-map-selector{
     width: 100%;
     height: 100%;
@@ -23,4 +21,10 @@ n52-station-map-selector{
 }  
 div #map{
     height: 100%;
+}
+.wv-bold-header{
+    font-weight: bold;
+}
+.wv-legend{
+    font-size: smaller;
 }
