@@ -16,6 +16,7 @@ import { HelgolandD3Module } from '@helgoland/d3';
 import { VitalityBarChartComponent } from '../cards/vitality-bar-chart/vitality-bar-chart.component';
 import { VitalityPieChartComponent } from '../cards/vitality-pie-chart/vitality-pie-chart.component';
 import { MixedDataChartComponent } from '../cards/mixed-data-chart/mixed-data-chart.component';
+import { WvReportsModule } from 'src/app/reports/reports.module';
 
 
 @NgModule({
@@ -31,7 +32,8 @@ import { MixedDataChartComponent } from '../cards/mixed-data-chart/mixed-data-ch
     HelgolandOpenLayersModule,
     HelgolandD3Module,
     SensorwappToolboxModule,
-    WvMapModule
+    WvMapModule,
+    WvReportsModule
   ],exports:[LandCoverComponent, ChlorophyllViewComponent, MowingViewComponent, SoilTemperatureViewComponent,
     VitalityViewComponent,  CopernicusBarChartCardComponent,VitalityBarChartComponent,VitalityPieChartComponent,LayerLegendCardComponent,MixedDataChartComponent]
 })
