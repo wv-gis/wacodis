@@ -1,10 +1,11 @@
 import { Component, OnInit, Input, ViewChild, ElementRef, OnChanges, AfterViewInit } from '@angular/core';
 import { Timespan, ApiV3InterfaceService } from '@helgoland/core';
-import { IsoplethenDatasetSchema } from '@sensorwapp-toolbox/core/lib/models/IsoplethenDatasetSchema.model';
+
 
 import Plotly from 'plotly.js-dist';
 import * as d3 from 'd3';
 import { locale } from 'src/environments/environment';
+import { IsoplethenDatasetSchema } from '../models/isoplethen-dataset-schema.model';
 
 const width = 1040;
 const height = 750;
