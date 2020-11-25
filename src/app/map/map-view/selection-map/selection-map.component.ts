@@ -100,7 +100,7 @@ export class SelectionMapComponent implements OnInit, AfterViewInit {
             this.baselayers.push(
               (esri.imageMapLayer({
                 url: wacodisUrl + "/" + element["name"].split("/")[1] + "/" + element["type"],
-                maxZoom: 16, opacity: 0, alt: element["name"].split("/")[1], bandIds: "1"
+                maxZoom: 16, opacity: 0, alt: element["name"].split("/")[1]
               }))
             );
 
