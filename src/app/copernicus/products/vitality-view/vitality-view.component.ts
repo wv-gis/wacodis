@@ -4,11 +4,11 @@ import * as esri from 'esri-leaflet';
 import * as L from 'leaflet';
 require('leaflet-timedimension');
 import { MapCache } from '@helgoland/map';
-import { ActivatedRoute } from '@angular/router';
 import { D3PlotOptions, AdditionalData } from '@helgoland/d3';
 import { Timespan, DatasetOptions, DatasetType, HelgolandServicesConnector } from '@helgoland/core';
 import { CsvDataService } from 'src/app/settings/csvData.service';
 import { AdditionalDataEntry } from '@helgoland/d3/lib/extended-data-d3-timeseries-graph/extended-data-d3-timeseries-graph.component';
+import { HttpClient } from '@angular/common/http';
 
 
 
@@ -90,7 +90,7 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
   public avoidZoomToSelection = false;
   public layerControlOptions: L.Control.LayersOptions = { position: 'bottomleft' };
   public selectedTime: number = 1;
-  public currentSelectedTimeL: Date = new Date();
+  public currentSelectedTimeL: string='1';
   public showDiagram: boolean = false;
   public mapBounds: L.LatLngBounds;
   public service: string;
@@ -99,7 +99,6 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
     // timeDimension: true, timeDimensionControl: true,
     // timeDimensionControlOptions: { timeZones: ['Local'] }
   };
-  public providerUrl: string = 'https://www.fluggs.de/sos2-intern-gis/api/v1/';
   public avgMonthTemp_B: AdditionalDataEntry[] = [];
   public avgMonthTemp_D: AdditionalDataEntry[] = [];
   public avgMonthRain_B: AdditionalDataEntry[] = [];
@@ -121,8 +120,9 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
   loadingCountT: number = 0;
   showDiagramR: boolean = false;
   sceneNum: number;
+  control: L.Control;
 
-  constructor(private activatedRoute: ActivatedRoute, private mapCache: MapCache, private dataService: CsvDataService, private apiInterface: HelgolandServicesConnector) {
+  constructor( private mapCache: MapCache, private dataService: CsvDataService, private apiInterface: HelgolandServicesConnector, private http: HttpClient) {
     this.service = vitalityService;
 
     this.responseInterp = dataService.getTempDhDataset();
@@ -238,7 +238,7 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
    */
   public calculateMeanData() {
 
-    this.apiInterface.getDatasets('https://fluggs.wupperverband.de/sos2-intern-gis/api/v1/', {
+    this.apiInterface.getDatasets('https://fluggs.wupperverband.de/sos2-intern/api/v1/', {
       type: DatasetType.Timeseries,
       expanded: true
     }).subscribe((data) => {
@@ -247,21 +247,21 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
 
           for (let m = 0; m < 12; m++) {
             let sum = 0;
-            let d = new Date(new Date(new Date().getFullYear() - 1, m + 1, 1).getTime() - 86400000).getDate();
-            this.apiInterface.getDatasetData(val, new Timespan(new Date(new Date().getFullYear() - 1, m, 1), new Date(new Date().getFullYear() - 1, m, d))
+            let d = new Date(new Date(new Date().getFullYear() , m + 1, 1).getTime() - 86400000).getDate();
+            this.apiInterface.getDatasetData(val, new Timespan(new Date(new Date().getFullYear() , m, 1), new Date(new Date().getFullYear() , m, d))
             ).subscribe((dataset) => {
               dataset.values.forEach((v, i, arr) => {
                 sum += v[1];
               });
-            }, error => console.log(error), () => this.setMonthSum({ timestamp: new Date(new Date().getFullYear() - 1, m, 1).getTime(), value: sum }, m));
+            }, error => console.log(error), () => this.setMonthSum({ timestamp: new Date(new Date().getFullYear() , m, 1).getTime(), value: sum }, m));
           }
         }
         else if (val.id == this.tempId) {
           for (let m = 0; m < 12; m++) {
             let sum = 0;
             let h;
-            let d = new Date(new Date(new Date().getFullYear() - 1, m + 1, 1).getTime() - 86400000).getDate();
-            this.apiInterface.getDatasetData(val, new Timespan(new Date(new Date().getFullYear() - 1, m, 1), new Date(new Date().getFullYear() - 1, m, d))
+            let d = new Date(new Date(new Date().getFullYear(), m + 1, 1).getTime() - 86400000).getDate();
+            this.apiInterface.getDatasetData(val, new Timespan(new Date(new Date().getFullYear() , m, 1), new Date(new Date().getFullYear() , m, d))
             ).subscribe((dataset) => {
               if (dataset.values.length) {
                 dataset.values.forEach((v, i, arr) => {
@@ -271,9 +271,9 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
               }
             }, error => console.log(error), () => {
               if (h != undefined) {
-                this.setMonthMeanTemp({ timestamp: new Date(new Date().getFullYear() - 1, m, 1).getTime(), value: sum }, m, h);
+                this.setMonthMeanTemp({ timestamp: new Date(new Date().getFullYear() , m, 1).getTime(), value: sum }, m, h);
               } else {
-                this.setMonthMeanTemp({ timestamp: new Date(new Date().getFullYear() - 1, m, 1).getTime(), value: undefined }, m, undefined);
+                this.setMonthMeanTemp({ timestamp: new Date(new Date().getFullYear(), m, 1).getTime(), value: undefined }, m, undefined);
               }
             }
             );
@@ -431,7 +431,7 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
 
       this.avgMonthTemp_D.push(
         {
-          timestamp: new Date(new Date().getFullYear() - 1, 0 + p, 1).getTime(),
+          timestamp: new Date(new Date().getFullYear() , 0 + p, 1).getTime(),
           value: parseFloat(this.entries[p][1])
         });
     }
@@ -466,7 +466,7 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
 
       this.avgMonthRain_D.push(
         {
-          timestamp: new Date(this.entriesDh[p][0].split('.')[2], this.entriesDh[p][0].split('.')[1] - 1, this.entriesDh[p][0].split('.')[0]).getTime(),
+          timestamp: new Date(new Date().getFullYear() , 0 + p, 1).getTime(),
           value: parseFloat(this.entriesDh[p][1])
         });
     }
@@ -513,13 +513,14 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
 
     this.mainMap = L.map(this.mapId, this.mapOptions).setView([51.07, 7.22], 13);
 
-
+    
     L.control.scale().addTo(this.mainMap);
     this.mapCache.setMap(this.mapId, this.mainMap);
     this.mapBounds = this.mainMap.getBounds();
     this.baselayers.push(this.dyn);
 
     this.addLayers();
+  
 
   }
   /**
@@ -534,8 +535,69 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
         className: 'OSM'
       }
     ));
-
+    if(this.control!=undefined){
+      this.mainMap.removeControl(this.control);
+    }
+ 
+      this.addOverlays();
     this.mainMap.addLayer(this.dyn);
+    this.mainMap.invalidateSize();
+  }
+  addOverlays(){
+    let vitalityNRWLayer1 = L.tileLayer.wms(
+      vitalityService,
+      {
+        layers: 'nadelwald_06_2017_09_2018', format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        className: 'Vital'
+      }
+    );
+    let vitalityNRWLayer2 = L.tileLayer.wms(
+      vitalityService,
+      {
+        layers: 'nadelwald_06_2017_06_2019', format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        className: 'Vital'
+      }
+    );
+    let vitalityNRWLayer3 = L.tileLayer.wms(
+      vitalityService,
+      {
+        layers: 'nadelwald_06_2017_08_2019', format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        className: 'Vital'
+      }
+    );
+    let vitalityNRWLayer4 = L.tileLayer.wms(
+      vitalityService,
+      {
+        layers: 'nadelwald_06_2017_06_2020', format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        className: 'Vital'
+      }
+    );
+    let vitalityNRWLayer5 = L.tileLayer.wms(
+      vitalityService,
+      {
+        layers: 'nadelwald_06_2017_09_2020', format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        className: 'Vital'
+      }
+    );
+    let vitalityNRWLayer6 = L.tileLayer.wms(
+      vitalityService,
+      {
+        layers: 'nadelwald_03_2019_03_2020', format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        className: 'Vital'
+      }
+    );
+    let overlayMaps ={
+      "Vitalitätsabnahme 062017 vs. 092018": vitalityNRWLayer1,
+      "Vitalitätsabnahme 062017 vs. 062019": vitalityNRWLayer2,
+      "Vitalitätsabnahme 062017 vs. 082019": vitalityNRWLayer3,
+      "Vitalitätsabnahme 062017 vs. 062020": vitalityNRWLayer4,
+      "Vitalitätsabnahme 062017 vs. 092020": vitalityNRWLayer5,
+      "Vitalitätsabnahme 032020 vs. 032020": vitalityNRWLayer6,
+      "Vegetationsdichte": this.dyn
+    };
+   this.control= L.control.layers({},overlayMaps);
+   this.control.addTo(this.mainMap);
+    this.baselayers.push(vitalityNRWLayer1);
   }
   /**
     * set MapBounds depending on scroll and drag Movements
@@ -559,7 +621,7 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
    * date to visualize for diagram text
    */
   public onSubmitOne(date: number) {
-    // this.currentSelectedTimeL = date;
+    this.currentSelectedTimeL = date.toString();
    
     this.mainMap.eachLayer((lay)=>{
       lay.remove();
