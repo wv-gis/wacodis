@@ -34,7 +34,7 @@ export class SelectionMapComponent implements OnInit, AfterViewInit {
 
   public searchOptions: GeoSearchOptions = { countrycodes: [] };
 
-  public providerUrl: string = 'https://www.fluggs.de/sos2-intern-gis/api/v1/';//"http://www.fluggs.de/sos2/api/v1/";
+  public providerUrl: string = 'https://www.fluggs.de/sos2/api/v1/';//"http://www.fluggs.de/sos2/api/v1/";
 
   public mapId = 'test-map';
   public fitBounds: L.LatLngBoundsExpression = [[50.985, 6.924], [51.319, 7.607]];

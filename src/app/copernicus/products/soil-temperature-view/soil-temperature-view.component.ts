@@ -40,7 +40,7 @@ export class SoilTemperatureViewComponent implements OnInit, AfterViewInit {
   public dates: Date[] = [];
   public selectedTime: Date = new Date();
 
-  public providerUrl: string = 'https://www.fluggs.de/sos2-intern-gis/api/v1/';
+  public providerUrl: string = 'https://www.fluggs.de/sos2/api/v1/';
   public fitBounds: L.LatLngBoundsExpression = [[50.985, 6.924], [51.319, 7.607]];
   public zoomControlOptions: L.Control.ZoomOptions = { position: 'topleft' };
   public avoidZoomToSelection = false;
