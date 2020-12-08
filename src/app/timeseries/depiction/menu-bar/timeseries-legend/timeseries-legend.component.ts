@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, Input, Output } from '@angular/core';
+import { Component,  EventEmitter, Input, Output } from '@angular/core';
 import { DatasetOptions, Timespan, DatasetService, ColorService,HelgolandServicesConnector, DatasetType } from '@helgoland/core';
 import { HoveringStyle, D3PlotOptions } from '@helgoland/d3';
 import * as L from 'leaflet';
@@ -45,19 +45,7 @@ export class TimeseriesLegendComponent {
     public stationLabels: string[] = [];
     public editOptions: DatasetOptions;
     public selectedProviderUrl: string = '';
-    // public options: SwappDatasetOptions= {roundTo: 1,internalId: 'https://www.fluggs.de/sos2/api/v1/__426',
-    // shortLabel: 'TEst',
-    //     color: '#46824B',
-    //     type: 'bar',
-    //     barPeriod: '',
-    //     barStartOf: '',
-    //     visible: true,
-    //     showReferenceValues: [],
-    //     lineDashArray: [],
-    //     pointRadius: 0,
-    //     pointBorderColor: '',
-    //     pointBorderWidth: 0,
-    //     lineWidth: 2,zeroBasedYAxis: true};
+ 
 
     constructor(private dataEmitService: DatasetService<DatasetOptions>,private selProv: SelectedProviderService, private color: ColorService, private datasetapi: HelgolandServicesConnector) {
         this.selProv.getSelectedProvider().subscribe((res) => {
@@ -70,14 +58,7 @@ export class TimeseriesLegendComponent {
                 this.datasetIdsMultiple.push(dataEmitService.datasetIds[k]);
             }
         }
-        // this.datasetIdsMultiple.forEach((entry) => {
-        //     const option = new DatasetOptions(entry, this.color.getColor());
-        //     console.log(this.color.getColor());
-        //     option.generalize = true;
-        //     option.autoRangeSelection = true;
-        //     option.pointRadius = 2;
-        //     this.datasetOptions.set(entry, option);
-        // });
+
 
     }
 
@@ -131,25 +112,17 @@ export class TimeseriesLegendComponent {
     }
     public editOption(option: DatasetOptions) {
         this.editOptions = new DatasetOptions(option.internalId, option.color);
-        // console.log(JSON.stringify(this.editOptions));
+   
         this.pick = 'visible';
     }
     public updateOptions(option: DatasetOptions, id: string) {
-        // console.log('Reference: ' + JSON.stringify(option.showReferenceValues));
-   
-        // if (option.yAxisRange != undefined) {
-        //     console.log('Reference: ' + JSON.stringify(option.yAxisRange));
-        //     option.yAxisRange = undefined;
-        //     this.dataEmitService.updateDatasetOptions(option, id);
-        //     this.refreshData();
-        // } else {
+
             if(option.showReferenceValues.length>0){
                 this.datasetapi.getDataset(id, {type: DatasetType.Timeseries}).subscribe((res) => {
                     res.referenceValues.forEach((re) => {
     
                         option.yAxisRange = { min: 0, max: re.lastValue.value + 10 };
-                       
-                    //   console.log('visible '+  option.autoRangeSelection);
+                  
                     });
                 });
     
@@ -166,7 +139,7 @@ export class TimeseriesLegendComponent {
                 this.refreshData();
             }
      
-        // }
+      
 
 
     }
@@ -245,7 +218,7 @@ export class TimeseriesLegendComponent {
 
     }
     public newOptions(options: DatasetOptions) {
-        // console.log(JSON.stringify(options));
+    
 
         options.pointRadius = 2;
         this.updatedOptions.emit([options, options.internalId]);
