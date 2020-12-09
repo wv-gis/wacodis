@@ -296,7 +296,7 @@ export class IsoplethenGraphicComponent implements OnInit, OnChanges {
      * set layout of isoplethen graph
      */
     var layout = {
-      title: this.damLabel + " " + this.year,
+      title: {text: this.damLabel + " " + this.year,  y: 1, yanchor: 'top', pad: {t: 1}},
       xaxis: {
         side: 'top',
         tickmode: 'auto',
@@ -307,6 +307,10 @@ export class IsoplethenGraphicComponent implements OnInit, OnChanges {
         tickcolor: '#000',
         color: '#000',
         showline: true,
+        automargin: true,
+        title: {
+          standoff: 2
+        }
       },
       yaxis: {
         title: 'Tiefe [m]',
@@ -335,6 +339,7 @@ export class IsoplethenGraphicComponent implements OnInit, OnChanges {
         width: width,
       },
       displayModeBar: true,
+      editable: true,
       responsive: true,
       displaylogo: false,
       modeBarButtonsToRemove: ['select2d', 'lasso2d', 'hoverClosestCartesian',
