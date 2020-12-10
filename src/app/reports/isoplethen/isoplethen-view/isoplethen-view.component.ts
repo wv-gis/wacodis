@@ -1,6 +1,5 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { Timespan, ApiV3Dataset, HelgolandServicesConnector, DatasetType, DatasetApiV3Connector, ApiV3InterfaceService, ApiV3ObservationTypes } from '@helgoland/core';
-import { DatasetImplApiV3InterfaceService } from '@sensorwapp-toolbox/core';
+import { Timespan, ApiV3Dataset, ApiV3InterfaceService, ApiV3ObservationTypes } from '@helgoland/core';
 
 @Component({
   selector: 'wv-isoplethen-view',
@@ -37,7 +36,7 @@ export class IsoplethenViewComponent implements OnInit, AfterViewInit {
   public interpolation: string = 'linear';
   load: boolean = true;
 
-  constructor(private datasetApi: DatasetImplApiV3InterfaceService, private api: ApiV3InterfaceService) {
+  constructor( private api: ApiV3InterfaceService) {
     //observationType="profile", phenomenon = Sauerstoff
     this.api.getDatasets("http://192.168.101.105/sos3/api/", { phenomena: ["174"],observationTypes: [ApiV3ObservationTypes.Profil] }).subscribe((timeseries) => {
       timeseries.forEach((series) => {
@@ -51,6 +50,9 @@ export class IsoplethenViewComponent implements OnInit, AfterViewInit {
  
   }
 
+  /**
+   * on initialisation receive dataset for selected id and url
+   */
   ngOnInit() {
     this.api.getDataset(this.internalId.id,this.internalId.url,{}).subscribe((data)=>{
          this.profileDataset = data;

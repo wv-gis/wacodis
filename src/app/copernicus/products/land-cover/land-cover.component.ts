@@ -5,7 +5,6 @@ import * as L from 'leaflet';
 import { MapCache } from '@helgoland/map';
 require('leaflet-timedimension');
 require('leaflet.sync');
-import 'src/assets/js/leaflet.timedimension.layer.imagemap';
 import { ActivatedRoute } from '@angular/router';
 
 

@@ -9,7 +9,6 @@ import { HelgolandCoreModule } from '@helgoland/core';
 import { HelgolandMapModule, HelgolandMapControlModule, HelgolandMapSelectorModule, HelgolandMapViewModule } from '@helgoland/map';
 import { HelgolandOpenLayersModule } from '@helgoland/open-layers';
 import { WvMapModule } from 'src/app/map/map.module';
-import { SensorwappToolboxModule } from '@sensorwapp-toolbox/core';
 import { LayerLegendCardComponent } from '../cards/layer-legend-card/layer-legend-card.component';
 import { CopernicusBarChartCardComponent } from '../cards/copernicus-bar-chart-card/copernicus-bar-chart-card.component';
 import { HelgolandD3Module } from '@helgoland/d3';
@@ -31,7 +30,6 @@ import { WvReportsModule } from 'src/app/reports/reports.module';
     HelgolandMapViewModule,
     HelgolandOpenLayersModule,
     HelgolandD3Module,
-    SensorwappToolboxModule,
     WvMapModule,
     WvReportsModule
   ],exports:[LandCoverComponent, ChlorophyllViewComponent, MowingViewComponent, SoilTemperatureViewComponent,

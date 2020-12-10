@@ -34,7 +34,7 @@ export class SelectionMapComponent implements OnInit, AfterViewInit {
 
   public searchOptions: GeoSearchOptions = { countrycodes: [] };
 
-  public providerUrl: string = 'https://www.fluggs.de/sos2-intern-gis/api/v1/';//"http://www.fluggs.de/sos2/api/v1/";
+  public providerUrl: string = 'https://www.fluggs.de/sos2/api/v1/';//"http://www.fluggs.de/sos2/api/v1/";
 
   public mapId = 'test-map';
   public fitBounds: L.LatLngBoundsExpression = [[50.985, 6.924], [51.319, 7.607]];
@@ -100,7 +100,7 @@ export class SelectionMapComponent implements OnInit, AfterViewInit {
             this.baselayers.push(
               (esri.imageMapLayer({
                 url: wacodisUrl + "/" + element["name"].split("/")[1] + "/" + element["type"],
-                maxZoom: 16, opacity: 0, alt: element["name"].split("/")[1], bandIds: "1"
+                maxZoom: 16, opacity: 0, alt: element["name"].split("/")[1]
               }))
             );
 

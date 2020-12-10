@@ -1,45 +1,72 @@
 # Wacodis Web Client
-Web Anwendungskomponenten zur Visualisierung von Fernerkundungsdaten und in-situ Informationen im Rahmen des Forschungsprojekts
-Wasserwirtschaftliche Copernicus-Dienste zur Bestimmung von Stoffeinträgen in Gewässer und Talsperren im Rahmen des Umweltmonitorings (WaCoDiS)
+<p align="center">
+  <img src="https://raw.githubusercontent.com/WaCoDiS/apis-and-workflows/master/misc/logos/wacodis.png" width="200">
+</p>
+Web application components for the visualization of remote sensing data and in-situ information within the research project: 
+Copernicus-based services for monitoring material inputs in watercourses and dams – WaCoDiS (WaCoDiS)
 
  https://wacodis.fbg-hsbo.de/
 
 ### Modules 
-The WaCoDiS Data Access project consists of three (maven) modules. 
+The WaCoDiS Web Client project consists of different views for data depiction of satellite data and in-situ data. 
+* copernicus
+* change detection
+* reports
+* swat
+* timeseries
+* map
 
-* **Copernicus Fernerkundungsberichte**  
+* **Copernicus Remote Sensing Reports**  
+Reports with Information for land classification, vitality density, chlorophyll within dams and surface temperature for the Wupper Area
+<p align="center">
+  <!-- <img src="https://raw.githubusercontent.com/WaCoDiS/apis-and-workflows/master/misc/logos/mfund.jpg" height="100"> -->
+</p>
 
+* **Change Detection**  
+Compare different Satellite products or dates of the same product to detect changes
+<p align="center">
+  <!-- <img src="https://raw.githubusercontent.com/WaCoDiS/apis-and-workflows/master/misc/logos/mfund.jpg" height="100"> -->
+</p>
 
+* **Water management Report**  
+Report to depict the storage content of dams in comparison to dry years
+<p align="center">
+  <!-- <img src="https://raw.githubusercontent.com/WaCoDiS/apis-and-workflows/master/misc/logos/mfund.jpg" height="100"> -->
+</p>
 
-* **Änderungsdetektion**  
+* **Modelling Results**  
+Results of the susbtrance entry model (SWAT) for the Area of the "Obere Wupper" for sediment and nitrogen
+<p align="center">
+  <!-- <img src="https://raw.githubusercontent.com/WaCoDiS/apis-and-workflows/master/misc/logos/mfund.jpg" height="100"> -->
+</p>
 
+* **Timeseries Data**  
+Select and depict Sensor Data of measuring stations within the Wupper area in a diagram
+<p align="center">
+  <!-- <img src="https://raw.githubusercontent.com/WaCoDiS/apis-and-workflows/master/misc/logos/mfund.jpg" height="100"> -->
+</p>
 
-* **Wasserwirtschaftsbericht**  
-
-
-* **Modellierungsergebnisse**  
-
-
-* **Zeitreihendaten**  
-
-### Included Packages
-esri-leaflet
-esri-leaflet-renderers
-leaflet
-plotly.js-dist
-helgoland-toolbox
-d3.js
-leaflet-timedimension
-leaflet.markercluster
-leaflet.sync
-bootstrap
-
-### Typings
+### Third-Party Packages used
+* esri-leaflet
+* esri-leaflet-renderers
+* leaflet
+* plotly.js-dist 
+* helgoland-toolbox
+* d3.js
+* leaflet-timedimension
+* leaflet.markercluster
+* leaflet.sync
+* bootstrap
 
 ### Settings
-DatasetAPIS
+For Sentinel Data requests a client Id and secret must be provided for the request token service.
+No guarantee that the services are still available due to ending support of project.
+long term mean for temperature and rain data
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 6.0.8.
+
+### Troubleshooting
+ bug-fixing line 34472 add .apply(self) plotly.js-dist
 
 ## Development server
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
@@ -50,8 +77,8 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 
 
 
-### License and Third Party Lib POM Plugins
-Copyright [yyyy] [name of copyright owner]
+### License 
+Copyright [2020]
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
