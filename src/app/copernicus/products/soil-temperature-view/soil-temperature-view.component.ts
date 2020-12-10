@@ -1,11 +1,9 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import Plotly from 'plotly.js-dist';
 import { MapCache, LayerOptions } from '@helgoland/map';
-import { HelgolandPlatform, HelgolandParameterFilter } from '@helgoland/core';
+import { HelgolandParameterFilter } from '@helgoland/core';
 import * as L from 'leaflet';
 import * as esri from 'esri-leaflet';
-const waterTempService = 'https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/EO_WACODIS_DAT_WATER_SURFACE_TEMPERATURE_Service/ImageServer';
-const WvG_URL = 'http://fluggs.wupperverband.de/secman_wss_v2/service/WMS_WV_Oberflaechengewaesser_EZG/guest?';
 
 export interface StatisticTempData {
   date: Date;
@@ -13,13 +11,7 @@ export interface StatisticTempData {
   temp: number;
 }
 
-const categoryVal = ["BB0", "BE0", "BE1", "BE2",
-  "BE3", "BE4", "BE5", "BR0",
-  "DA0", "DH0", "DH10", "DH11", "DH12",
-  "DH13", "DH14", "DH15", "DH16", "DH17",
-  "DH1", "DH2", "DH2", "DH3",
-  "DH4", "DH5", "DH6", "DH7", "DH8", "DH9", "Diep0", "Esch0", "Herb0", "Herb1", "Kers0", "Kers1", "Kers2", "Kers3", "Kers4", "Kers5",
-  "LI0", "NE0", "PA0", "PA1", "RO0", "SC0", "Seng0", "Seng1", "WU0", "WU1", "WU2", "WU3", "WU4", "WU5"];
+
 
 @Component({
   selector: 'wv-soil-temperature-view',
@@ -36,10 +28,6 @@ export class SoilTemperatureViewComponent implements OnInit, AfterViewInit {
   public showZoomControl = true;
   public showAttributionControl = true;
   public map: L.Map;
-  // public zoom = 11;
-  // public lat = 51.15;
-  // public lon = 7.22;
-
   public mapId = 'soilTemp-map';
 
   public headers: string[] = [];
@@ -52,7 +40,7 @@ export class SoilTemperatureViewComponent implements OnInit, AfterViewInit {
   public dates: Date[] = [];
   public selectedTime: Date = new Date();
 
-  public providerUrl: string = 'https://www.fluggs.de/sos2-intern-gis/api/v1/';
+  public providerUrl: string = 'https://www.fluggs.de/sos2/api/v1/';
   public fitBounds: L.LatLngBoundsExpression = [[50.985, 6.924], [51.319, 7.607]];
   public zoomControlOptions: L.Control.ZoomOptions = { position: 'topleft' };
   public avoidZoomToSelection = false;
@@ -66,69 +54,113 @@ export class SoilTemperatureViewComponent implements OnInit, AfterViewInit {
   };
   public statusIntervals = false;
   public mapOptions: L.MapOptions = { dragging: true, zoomControl: false };
+  sceneNum: number;
+  public dyn: esri.DynamicMapLayer;
+  selectedPics: string[] = [];
 
-  constructor(private mapCache: MapCache) {//private mapService: OlMapService, private requestTokenSrvc: RequestTokenService, private csvService: CsvDataService) {
-    // this.responseInterp = csvService.getCsvText(); 
+  constructor(private mapCache: MapCache) {
   }
 
   /**
-   * add Layers and Scale to Map after Initialization
+   * add Layers and listeners to Map after Initialization
    */
   ngAfterViewInit(): void {
-    this.baselayers.forEach((blayer, i, arr) => {
-      this.mapCache.getMap(this.mapId).addLayer(blayer);
-    });
-    this.mapCache.getMap(this.mapId).addLayer(L.tileLayer.wms(
-      WvG_URL,
-      {
-        layers: '0', format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; Wupperverband>',
-        className: 'WV_GB'
-      }
-    ));
-    L.control.scale().addTo(this.mapCache.getMap(this.mapId));
-  }
 
+    this.map.on('click', this.identify, this);
+    this.map.invalidateSize();
+  }
   /**
-   * create Basemap
+    * identify pixel value at selected mouse position
+    * 
+    * @param e mouse event
+    */
+  private identify(e) {
+
+    let popupText;
+    this.dyn.identify().at(e.latlng).tolerance(1).on(this.map).run(function (err, data, resp) {
+
+      if (resp.results.length > 0) {
+        popupText = resp.results[0].attributes['Pixel Value'];
+
+      }
+    });
+    this.dyn.bindPopup(function (l) { return L.Util.template('<p> ~' + Math.round(parseFloat(popupText)) + 'C° </p>', e.latlng) });
+  }
+  /**
+   * set default layer and call create Basemap
    */
   ngOnInit() {
+    this.dyn = esri.dynamicMapLayer({
+      url: "https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/EO_WaCoDiS_Oberfl%C3%A4chentemperatur/MapServer", layers: [1], opacity: 0.8,
+      className: 'Oberflächentemp'
+    });
+    this.dyn.metadata((err, dat) => {
+      this.sceneNum = dat["layers"].length - 1;
+      let array = dat["layers"];
+      array.forEach((element, i, arr) => {
+        if (i == 0) {
 
-    this.baseMaps.set(this.mapId,
-      {
-        label: 'OSM-WMS', // will be shown in layer control
-        visible: true, // is layer by default visible
-        layer: L.tileLayer.wms(
-          'http://ows.terrestris.de/osm/service?',
-          {
-            layers: 'OSM-WMS', format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-            className: 'OSM'
-          }
-        )
-      }
-    );
+        } else {
+          this.selectedPics.push(element.name);
+        }
 
-    this.baselayers.push(
-      (esri.imageMapLayer({
-        url: waterTempService,
-        maxZoom: 16, opacity: 1, alt: 'WaterTemperatureService'
-      }))
-    );
+      });
+
+    });
+
+    this.createMap();
 
 
-    // this.createPieChart();
   }
+  /**
+   * create Basemap and call addLayers
+   */
+  private createMap() {
+    this.map = L.map(this.mapId, this.mapOptions).setView([51.07, 7.22], 12);
 
+
+    L.control.scale().addTo(this.map);
+    this.mapCache.setMap(this.mapId, this.map);
+
+    this.baselayers.push(this.dyn);
+
+    this.addLayer();
+  }
+  /**
+   * add Layers to mainMap
+   */
+  private addLayer() {
+    this.map.addLayer(
+      L.tileLayer.wms(
+        'http://ows.terrestris.de/osm/service?',
+        {
+          layers: 'OSM-WMS', format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+          className: 'OSM'
+        }
+      )
+    );
+     
+    this.map.addLayer(this.dyn);
+    this.map.invalidateSize();
+  }
   /**
    * 
-   * @param station : selected station in map
-   * on station selected in map open up popo up with selected station name
+   * @param date selected date of layer in mainMap
+   * date to visualize for diagram text
    */
-  public onStationSelected(station: HelgolandPlatform) {
-    alert(station.label);
-    console.log(station);
+  public onSubmitOne(date: number) {
+ 
+    this.map.eachLayer((lay) => {
+      lay.remove();
+    });
+    this.dyn = esri.dynamicMapLayer({
+      url: "https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/EO_WaCoDiS_Oberfl%C3%A4chentemperatur/MapServer", layers: [date], opacity: 0.8,
+      className: 'Oberflächentemp'
+    })
+    this.addLayer();
+
 
   }
-
   /**
    * plot Avg Temperature of  river dams in Pie chart
    */

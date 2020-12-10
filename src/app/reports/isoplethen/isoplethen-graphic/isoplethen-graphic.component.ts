@@ -1,19 +1,27 @@
 import { Component, OnInit, Input, ViewChild, ElementRef, OnChanges, AfterViewInit } from '@angular/core';
 import { Timespan, ApiV3InterfaceService } from '@helgoland/core';
-import { IsoplethenDatasetSchema } from '@sensorwapp-toolbox/core/lib/models/IsoplethenDatasetSchema.model';
+
 
 import Plotly from 'plotly.js-dist';
 import * as d3 from 'd3';
 import { locale } from 'src/environments/environment';
+import { IsoplethenDatasetSchema } from '../models/isoplethen-dataset-schema.model';
 
 const width = 1040;
 const height = 750;
+
+/**
+ * Component to plot profile data as isoplethen graph
+ * the graph can be updated by different input parameters such as interpolation type
+ * number of isoplethen lines, distance betweeen isoplethen lines and automatic evaluation od distance and number of isoplthen lines
+ * for the given datasetID and a timespan
+ */
 @Component({
   selector: 'wv-isoplethen-graphic',
   templateUrl: './isoplethen-graphic.component.html',
   styleUrls: ['./isoplethen-graphic.component.css']
 })
-export class IsoplethenGraphicComponent implements OnInit, OnChanges, AfterViewInit {
+export class IsoplethenGraphicComponent implements OnInit, OnChanges {
 
   @Input() autocontourValue: boolean = false;
   @Input() numIso: number = 15;// number of isolines
@@ -22,7 +30,6 @@ export class IsoplethenGraphicComponent implements OnInit, OnChanges, AfterViewI
   @Input() timespan: Timespan;
   @Input() datasetID: string;
   @Input() interp: string = 'linear';
-  // @Input() dataset: ApiV3Dataset;
 
   @ViewChild('swappChart', { static: false }) swappChart: ElementRef;
 
@@ -37,56 +44,7 @@ export class IsoplethenGraphicComponent implements OnInit, OnChanges, AfterViewI
   year: number;
   damLabel: string = '';
   maxDamDepth: string;
-  public depths = [0, 3, 7, 12, 16, 20, 22, 26, 28, 29, 33, 36, 39, 42, 0, 3, 6, 9, 12,
-    15, 16, 17, 20, 23, 29, 34, 40, 45, 0, 4, 8, 12, 17, 22, 23,
-    21, 29, 33, 34, 35, 40, 44, 45, 0, 2, 4, 8, 10, 13, 18, 28, 30, 36, 40, 44, 45, 47, 0, 3, 6, 9,
-    12, 16, 20, 25, 26, 31, 33, 38, 40, 45, 0, 4, 5, 6, 7, 7.,
-    9, 13, 20, 25, 30, 35, 40, 45, 0, 2, 4, 7, 10, 14, 15, 16, 17, 21,
-    24, 36, 41, 44, 0, 3, 6, 8, 10, 12, 14, 17, 18, 20, 30, 35,
-    40, 44, 0, 4, 7, 9, 12, 13, 14, 15, 16, 17, 18, 21, 27, 41,
-    0, 2, 4, 8, 10, 12, 14, 16, 20, 24, 28, 30, 35, 39, 0, 3,
-    5, 8, 11, 12, 16, 17, 19, 20, 22, 28, 34, 39, 0, 3, 6,
-    8, 10, 12, 14, 16, 18, 20, 25, 31, 34, 37, 0, 3, 6, 8, 9,
-    10, 12, 15, 20, 23, 26, 29, 32, 35];
 
-  public vals = [11.7, 11.7, 11.7, 11.7, 11.7, 11.7, 11.7, 11.7, 11.7, 11.7, 11.7, 11.7, 11.7,
-    11.0, 12.3, 12.3, 12.3, 12.3, 12.3, 12.2, 12.2, 12.2, 12.2, 12.2, 12.2, 12.2, 12.2, 12.2,
-    13.1, 13.1, 13.0, 13.0, 13.0, 13.0, 13.0, 13.0, 13.0, 13.0, 13.0, 13.0, 13.0, 13.0, 13.0,
-    13.4, 13.6, 13.9, 13.7, 13.6, 13.5, 13.4, 13.3, 13.3, 13.3, 13.2, 13.2, 13.2, 13.2, 11.1,
-    11.9, 12.4, 12.8, 12.8, 12.3, 12.1, 12.1, 12.1, 12.0, 12.0, 12.0, 12.0, 11.6, 9.9, 10.2,
-    12.0, 13.0, 13.4, 13.1, 13.3, 12.7, 11.8, 11.8, 11.8, 11.8, 10.8, 6.0, 9.9, 10.0, 10.0,
-    11.1, 11.8, 12.3, 13.0, 12.1, 11.7, 10.9, 10.9, 11.0, 9.4, 6.4, 9.4, 9.5, 10.7, 13.6,
-    11.9, 11.6, 11.7, 13.5, 11.5, 10.5, 10.2, 10.4, 8.2, 4.1, 10.0, 10.0, 10.1, 10.5, 10.1,
-    10.5, 10.7, 10.8, 11.7, 12.4, 12.4, 9.5, 9.2, 7.4, 10.1, 10.1, 10.0, 10.0, 8.8, 8.3,
-    8.4, 9.6, 9.8, 8.3, 7.5, 7.5, 7.7, 7.3, 10.4, 10.4, 10.4, 10.5, 9.1, 7.4, 8.1,
-    8.4, 9.3, 9.4, 8.8, 7.6, 7.2, 6.2, 10.2, 10.1, 10.1, 10.1, 10.1, 10.1, 10.1, 10.1,
-    7.8, 7.6, 7.2, 6.4, 6.0, 4.9, 10.2, 10.1, 10.1, 10.1, 10.1, 10.1, 10.1, 10.1, 10.1,
-    10.1, 10.2, 10.2, 10.1, 9.4];
-
-  public date = [
-    1484568000000, 1484568000000, 1484568000000, 1484568000000, 1484568000000, 1484568000000, 1484568000000, 1484568000000,
-    1484568000000, 1484568000000, 1484568000000, 1484568000000, 1484568000000, 1484568000000, 1487505600000, 1487505600000,
-    1487505600000, 1487505600000, 1487505600000, 1487505600000, 1487505600000, 1487505600000, 1487505600000, 1487505600000,
-    1487505600000, 1487505600000, 1487505600000, 1487505600000, 1490011200000, 1490011200000, 1490011200000, 1490011200000,
-    1490011200000, 1490011200000, 1490011200000, 1490011200000, 1490011200000, 1490011200000, 1490011200000, 1490011200000,
-    1490011200000, 1490011200000, 1490011200000, 1491825600000, 1491825600000, 1491825600000, 1491825600000, 1491825600000,
-    1491825600000, 1491825600000, 1491825600000, 1491825600000, 1491825600000, 1491825600000, 1491825600000, 1491825600000,
-    1491825600000, 1494244800000, 1494244800000, 1494244800000, 1494244800000, 1494244800000, 1494244800000, 1494244800000,
-    1494244800000, 1494244800000, 1494244800000, 1494244800000, 1494244800000, 1494244800000, 1494244800000, 1496664000000,
-    1496664000000, 1496664000000, 1496664000000, 1496664000000, 1496664000000, 1496664000000, 1496664000000, 1496664000000,
-    1496664000000, 1496664000000, 1496664000000, 1496664000000, 1496664000000, 1499083200000, 1499083200000, 1499083200000,
-    1499083200000, 1499083200000, 1499083200000, 1499083200000, 1499083200000, 1499083200000, 1499083200000, 1499083200000,
-    1499083200000, 1499083200000, 1499083200000, 1501502400000, 1501502400000, 1501502400000, 1501502400000, 1501502400000,
-    1501502400000, 1501502400000, 1501502400000, 1501502400000, 1501502400000, 1501502400000, 1501502400000, 1501502400000,
-    1501502400000, 1503835200000, 1503835200000, 1503835200000, 1503835200000, 1503835200000, 1503835200000, 1503835200000,
-    1503835200000, 1503835200000, 1503835200000, 1503835200000, 1503835200000, 1503835200000, 1503835200000, 1506254400000,
-    1506254400000, 1506254400000, 1506254400000, 1506254400000, 1506254400000, 1506254400000, 1506254400000, 1506254400000,
-    1506254400000, 1506254400000, 1506254400000, 1506254400000, 1506254400000, 1508241600000, 1508241600000, 1508241600000,
-    1508241600000, 1508241600000, 1508241600000, 1508241600000, 1508241600000, 1508241600000, 1508241600000, 1508241600000,
-    1508241600000, 1508241600000, 1508241600000, 1511092800000, 1511092800000, 1511092800000, 1511092800000, 1511092800000,
-    1511092800000, 1511092800000, 1511092800000, 1511092800000, 1511092800000, 1511092800000, 1511092800000, 1511092800000,
-    1511092800000, 1513598400000, 1513598400000, 1513598400000, 1513598400000, 1513598400000, 1513598400000, 1513598400000,
-    1513598400000, 1513598400000, 1513598400000, 1513598400000, 1513598400000, 1513598400000, 1513598400000];
 
   private setDefaultColorScale(): any[] {
     return [[0, 'rgb(230,25,75)'], [0.25, 'rgb(255,255,0)'], [0.45, 'rgb(0,255,0)'],
@@ -98,27 +56,24 @@ export class IsoplethenGraphicComponent implements OnInit, OnChanges, AfterViewI
 
   ) { }
 
-  ngAfterViewInit(): void {
-    // this.createProfileViews();
-  }
 
+  /**
+   * start request of data
+   */
   ngOnInit(): void {
     Plotly.register(locale);
     // const serviceId: string =" this.dsUtils.getServiceId(this.dataset);";
     // const timespan =" this.dsUtils.timespanToIsoPeriod(this.timespan);";
      this.receiveDatasets();
 
-
-    // this.measureParam = 'Sauerstoff xy';
-    // this.damLabel = 'Dhünn';
-    // this.year = new Date(2017, 0, 1).getFullYear();
-
-
   }
 
+  /**
+   * request dataset to show in graph
+   */
   receiveDatasets() {
     this.swappApi.getDataset(this.datasetID, "http://192.168.101.105/sos3/api/").subscribe((dataset) => {
-      console.log(dataset);
+
       this.swappApi.getDatasetData(dataset.id, dataset.internalId.split('__')[0], { timespan: new Date(this.timespan.from).toISOString() + '/' + new Date(this.timespan.to).toISOString() })
         .subscribe(
           (values: any) => this.prepareDatasets(values),
@@ -131,6 +86,10 @@ export class IsoplethenGraphicComponent implements OnInit, OnChanges, AfterViewI
     });
   }
 
+  /**
+   * if input parameters change replot the graph with new values
+   * @param changes 
+   */
   ngOnChanges(changes: import("@angular/core").SimpleChanges): void {
     if (changes.distIso) {
       if (!changes.distIso.firstChange) {
@@ -158,7 +117,10 @@ export class IsoplethenGraphicComponent implements OnInit, OnChanges, AfterViewI
     }
   }
 
-
+/**
+ * map the values to dataschema of the plot and set needed parameters
+ * @param observations observation data from sensor observation service
+ */
   private prepareDatasets(observations: any) {
     for (let p = 0; p < observations.values.length; p++) {
       for (let k = 0; k < observations.values[p].value.length; k++) {
@@ -181,10 +143,12 @@ export class IsoplethenGraphicComponent implements OnInit, OnChanges, AfterViewI
     }
   }
 
+  /**
+   * interpolate the given dataset and plot values as isoplethen graph depending on parameters
+   */
   createProfileViews() {
     if (this.plot != undefined) {
       Plotly.purge(this.swappChart.nativeElement);
-          //  Plotly.purge("swappChart");
     }
 
     let x_dates = [], y_depths = [], z_value = [];
@@ -195,12 +159,6 @@ export class IsoplethenGraphicComponent implements OnInit, OnChanges, AfterViewI
       z_value.push(this.samplings_Dataset[q].value); 
     }
 
-    // for (let q = 0; q < this.vals.length; q++) {
-    //   x_dates.push(new Date(this.date[q]));
-    //   y_depths.push(this.depths[q]);
-    //   z_value.push(this.vals[q]);
-
-    // }
  
     if (!this.interp.includes('linear')) {
       let testDel = this.calculateDelaunayTriang(x_dates, y_depths, z_value);
@@ -248,8 +206,6 @@ export class IsoplethenGraphicComponent implements OnInit, OnChanges, AfterViewI
         z_value.push(interpH3[2]);
       }
     }
-
-
 
 
     // define direction of color palette
@@ -340,7 +296,7 @@ export class IsoplethenGraphicComponent implements OnInit, OnChanges, AfterViewI
      * set layout of isoplethen graph
      */
     var layout = {
-      title: this.damLabel + " " + this.year,
+      title: {text: this.damLabel + " " + this.year,  y: 1, yanchor: 'top', pad: {t: 1}},
       xaxis: {
         side: 'top',
         tickmode: 'auto',
@@ -351,6 +307,10 @@ export class IsoplethenGraphicComponent implements OnInit, OnChanges, AfterViewI
         tickcolor: '#000',
         color: '#000',
         showline: true,
+        automargin: true,
+        title: {
+          standoff: 2
+        }
       },
       yaxis: {
         title: 'Tiefe [m]',
@@ -379,6 +339,7 @@ export class IsoplethenGraphicComponent implements OnInit, OnChanges, AfterViewI
         width: width,
       },
       displayModeBar: true,
+      editable: true,
       responsive: true,
       displaylogo: false,
       modeBarButtonsToRemove: ['select2d', 'lasso2d', 'hoverClosestCartesian',
@@ -392,6 +353,13 @@ export class IsoplethenGraphicComponent implements OnInit, OnChanges, AfterViewI
     this.plot = Plotly.newPlot(this.swappChart.nativeElement, plotlyData, layout, config);
   }
 
+  /**
+   * create a delaunay triangulation interpolation based on d3 interpolation methods
+   * 
+   * @dates time values of interpolation dataset
+   * @depths depth values of interpolation dataset
+   * @values observed values
+   */
   calculateDelaunayTriang(dates: Date[], depths: number[], values: number[]): IsoplethenDatasetSchema[] {
     let result = [];
     let interpolDat = [];

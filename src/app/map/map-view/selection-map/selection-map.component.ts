@@ -34,7 +34,7 @@ export class SelectionMapComponent implements OnInit, AfterViewInit {
 
   public searchOptions: GeoSearchOptions = { countrycodes: [] };
 
-  public providerUrl: string = 'https://www.fluggs.de/sos2-intern-gis/api/v1/';//"http://www.fluggs.de/sos2/api/v1/";
+  public providerUrl: string = 'https://www.fluggs.de/sos2/api/v1/';//"http://www.fluggs.de/sos2/api/v1/";
 
   public mapId = 'test-map';
   public fitBounds: L.LatLngBoundsExpression = [[50.985, 6.924], [51.319, 7.607]];
@@ -122,6 +122,37 @@ export class SelectionMapComponent implements OnInit, AfterViewInit {
                   }, "variableName": "Raster"
                 }
               );
+
+            }else  if (blayer.options.alt == 'EO_WACODIS_DAT_INTRA_LAND_COVER_CLASSIFICATIONService'){
+
+              blayer.setRenderingRule(
+                {
+                  "rasterFunction" : "Colormap",
+                  "rasterFunctionArguments" : {
+                    "Colormap" : [
+                    [1, 255, 255, 0],
+                    [2, 252, 200, 12],
+                    [3, 50, 220, 255],
+                    [4, 50, 220, 255],
+                    [5, 153, 153, 153],
+                    [6, 12, 252, 32],
+                    [7, 12, 252, 32],
+                    [8, 102, 63, 0],
+                    [9, 252, 12, 12],
+                    [10, 252, 12, 12],
+                    [11, 229, 127, 255],
+                    [12, 101, 178, 62],
+                    [13, 62, 178, 72],
+                    [14, 57, 127, 63],
+                    [15, 178, 178, 62],
+                    [16, 229, 160, 57],
+                    [17, 255, 127, 208]              
+                  ]
+                },
+                "variableName" : "Raster"
+                }
+              
+            );
             }
 
 
@@ -130,39 +161,39 @@ export class SelectionMapComponent implements OnInit, AfterViewInit {
         L.control.scale().addTo(this.mapCache.getMap(this.mapId));
       }
     });
-    let diffLayer = esri.imageMapLayer({
-      url: 'https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/EO_WACODIS_DAT_INTRA_LAND_COVER_CLASSIFICATIONService/ImageServer',
-      maxZoom: 16, opacity: 1, alt: 'DiffLandUse',bandIds: "1"
-    });
-    diffLayer.setRenderingRule(
-      {
-        "rasterFunction" : "Colormap",
-        "rasterFunctionArguments" : {
-          "Colormap" : [
-          [1, 255, 255, 0],
-          [2, 252, 200, 12],
-          [3, 50, 220, 255],
-          [4, 50, 220, 255],
-          [5, 153, 153, 153],
-          [6, 12, 252, 32],
-          [7, 12, 252, 32],
-          [8, 102, 63, 0],
-          [9, 252, 12, 12],
-          [10, 252, 12, 12],
-          [11, 229, 127, 255],
-          [12, 101, 178, 62],
-          [13, 62, 178, 72],
-          [14, 57, 127, 63],
-          [15, 178, 178, 62],
-          [16, 229, 160, 57],
-          [17, 255, 127, 208]              
-        ]
-      },
-      "variableName" : "Raster"
-      }
+  //   let diffLayer = esri.imageMapLayer({
+  //     url: 'https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/EO_WACODIS_DAT_INTRA_LAND_COVER_CLASSIFICATIONService/ImageServer',
+  //     maxZoom: 16, opacity: 1, alt: 'DiffLandUse',bandIds: "1"
+  //   });
+  //   diffLayer.setRenderingRule(
+  //     {
+  //       "rasterFunction" : "Colormap",
+  //       "rasterFunctionArguments" : {
+  //         "Colormap" : [
+  //         [1, 255, 255, 0],
+  //         [2, 252, 200, 12],
+  //         [3, 50, 220, 255],
+  //         [4, 50, 220, 255],
+  //         [5, 153, 153, 153],
+  //         [6, 12, 252, 32],
+  //         [7, 12, 252, 32],
+  //         [8, 102, 63, 0],
+  //         [9, 252, 12, 12],
+  //         [10, 252, 12, 12],
+  //         [11, 229, 127, 255],
+  //         [12, 101, 178, 62],
+  //         [13, 62, 178, 72],
+  //         [14, 57, 127, 63],
+  //         [15, 178, 178, 62],
+  //         [16, 229, 160, 57],
+  //         [17, 255, 127, 208]              
+  //       ]
+  //     },
+  //     "variableName" : "Raster"
+  //     }
     
-  );
-this.baselayers.push(diffLayer);
+  // );
+// this.baselayers.push(diffLayer);
 // this.mapCache.getMap(this.mapId).addLayer(diffLayer);
   }
 

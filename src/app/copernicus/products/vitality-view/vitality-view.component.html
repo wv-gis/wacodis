@@ -29,7 +29,7 @@
           Aktuell verfügbare Anzahl an Szenen
         </div>
         <div class="card-body">
-          1
+          {{sceneNum}}
         </div>
       </div>
     </div>
@@ -106,9 +106,12 @@
           <div class="card border-left-primary shadow ">
             <div class="card-body" style="padding: 0rem;">
               <div style="width: 100%;">
-                <wv-layer-card style="height: 50%;" id="layerLegendCard" [baselayers]="baselayers" [mapId]="mapId"
+                <!-- <wv-layer-card style="height: 50%;" id="layerLegendCard" [baselayers]="baselayers" [mapId]="mapId"
                   (timeIndex)="setSelectedTime($event)" (curTimeIndex)="setSelectedCurrentTimeLeft($event)">
-                </wv-layer-card>
+                </wv-layer-card> -->
+                <select id="pic" (change)="onSubmitOne($event.target.value)" >
+                  <option *ngFor="let a of selectedPics; let i = index " id="pic_one" value="{{i+1}}">{{a}}</option>
+              </select>
               </div>
             </div>
           </div>
@@ -138,6 +141,11 @@
         <div class="card-body h-100" style="padding: 0px;">
               <div class="wv-legend" style="width: 100%;">
                 <wv-layer-legend-card [layer]="baselayers[0]" [id]="1"></wv-layer-legend-card>
+              </div>
+            </div>
+            <div class="card-body h-100" style="padding: 0px;">
+              <div class="wv-legend" style="width: 100%;">
+                <wv-layer-legend-card [layer]="baselayers[1]" [id]="1"></wv-layer-legend-card>
               </div>
             </div>
             <div class="card-header wv-bold-header">

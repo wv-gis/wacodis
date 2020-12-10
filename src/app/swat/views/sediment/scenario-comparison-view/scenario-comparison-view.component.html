@@ -18,19 +18,35 @@
             <div class="col-xl-6 col-md-6 mb-2">
                 <div class="border-left-primary h-100 ">
                     <div class="card-body" *ngIf="showBarChart">
-                        <wv-tsbar-chart [service]="featureTSLayerUrl"
+                        <div *ngIf= "idInfo==0; else NOneDiagram">
+                            <wv-tsbar-chart [service]="featureTSLayerUrl"
                             [selIndices]='[szenarioTS_ID[selSzenario_id_l],szenarioTS_ID[selSzenario_id_r]]'
                             [barChartId]="'compTSInput'" [input]="idInfo" [comparison]="true">
                         </wv-tsbar-chart>
+                        </div>
+                        <ng-template #NOneDiagram>
+                            <wv-tsbar-chart [service]="featureTSLayerUrl"
+                            [selIndices]='[selSzenarioTSN_ID[selSzenario_id_l],selSzenarioTSN_ID[selSzenario_id_r]]'
+                            [barChartId]="'compTSInput'" [input]="idInfo" [comparison]="true">
+                        </wv-tsbar-chart>
+                        </ng-template>
                     </div>
+                
                 </div>
             </div>
             <div class="col-xl-6 col-md-6 mb-2">
                 <div class=" h-100">
-                    <div class="card-body" *ngIf="showBarChart">
-                        <wv-percentage-change-bar-chart [service]="featureTSLayerUrl"
+                    <div class="card-body" *ngIf="showBarChart ">
+                        <div *ngIf=" idInfo==0; else NDiagram">
+                            <wv-percentage-change-bar-chart [service]="featureTSLayerUrl"
                             [selIndices]='[szenarioTS_ID[selSzenario_id_l],szenarioTS_ID[selSzenario_id_r]]'
                             [barChartId]="'PercCompInput'" [input]="idInfo"></wv-percentage-change-bar-chart>
+                        </div>
+                        <ng-template #NDiagram>
+                            <wv-percentage-change-bar-chart [service]="featureTSLayerUrl"
+                                [selIndices]='[selSzenarioTSN_ID[selSzenario_id_l],selSzenarioTSN_ID[selSzenario_id_r]]'
+                                [barChartId]="'PercCompInput'" [input]="idInfo"></wv-percentage-change-bar-chart>
+                        </ng-template>
                     </div>
                 </div>
             </div>
@@ -42,17 +58,18 @@
             <div class="col-xl-5 col-md-4 mb-2" style="height: 100%;">
                 <div class=" border-left-primary  h-100 ">
                     <div class="card-body">
-                        SzenarioWahl 1 <select>
-                            <option>Test</option>
-                        </select>
+                        SzenarioWahl 1:
+                        <select id="szenario" (change)="onSubmitOne($event.target.value)" >
+                                    <option *ngFor="let a of selSzenario; let i = index " id="sz_one" value="{{i}}">{{a}}</option>
+                                </select>
                     </div>
                 </div>
             </div>
             <div class="col-xl-5 col-md-4 mb-2" style="height: 100%;">
                 <div class=" border-left-primary  h-100 ">
                     <div class="card-body">
-                        SzenarioWahl 2 <select>
-                            <option>Test</option>
+                        SzenarioWahl 2:  <select id="szenario2" (change)="onSubmitTwo($event.target.value)" >
+                            <option *ngFor="let a of selSzenario; let i = index " id="sz_one" value="{{i+1}}"> {{selSzenario[i+1]}}</option>
                         </select>
                     </div>
                 </div>
@@ -85,15 +102,31 @@
             <div class="col-xl-2 col-md-2 mb-2">
                 <div class="card border-left-primary h-100 ">
                     <div class="card-body">
-                        <div class="wv-legend" style="width: 100%;">
-                            <b>TS-Layer [mg/L] / [kg/m³]</b>
-                            <wv-layer-legend-card [layer]="baseLayers[0]" [id]="szenarioTS_ID[selSzenario_id_l]">
-                            </wv-layer-legend-card>
+                        <div class="wv-legend" style="width: 100%;" *ngIf="showBarChart">
+                            <div *ngIf=" idInfo==0; else tsNlayer">
+                                <b>TS-Layer [mg/L] </b>
+                                <wv-layer-legend-card [layer]="baseLayers[0]" [id]="szenarioTS_ID[selSzenario_id_l]">
+                                </wv-layer-legend-card>
+                            </div>
+                            <ng-template #tsNlayer>
+                                <b>TS-Layer  [kg/m³] </b>
+                                <wv-layer-legend-card [layer]="baseLayers[0]" [id]="selSzenarioTSN_ID[selSzenario_id_l]">
+                                </wv-layer-legend-card>
+                            </ng-template>
                         </div>
-                        <div class="wv-legend" style="width: 100%;">
-                            <b> Subbasin-Layer [t/ha/a]</b>
-                            <wv-layer-legend-card [layer]="baseLayers[0]" [id]="szenarioHRU_ID[selSzenario_id_l]">
-                            </wv-layer-legend-card>
+                     
+                        <div class="wv-legend" style="width: 100%;" *ngIf="showBarChart">
+                            <div *ngIf=" idInfo==0; else subNlayer">
+                                <b> Subbasin-Layer [t/ha/a]</b>
+                                <wv-layer-legend-card [layer]="baseLayers[0]" [id]="szenarioSub_ID[selSzenario_id_l]">
+                                </wv-layer-legend-card>
+                            </div>
+                           
+                            <ng-template #subNlayer>
+                                <b> Subbasin-Layer [kg/ha/a]</b>
+                                <wv-layer-legend-card [layer]="baseLayers[0]" [id]="selSzenarioSUBN_ID[selSzenario_id_l]">
+                                </wv-layer-legend-card>
+                            </ng-template>
                         </div>
                     </div>
                 </div>

@@ -3,6 +3,7 @@ import * as L from "leaflet";
 import { MapCache } from '@helgoland/map';
 import * as esri from "esri-leaflet";
 import { ActivatedRoute } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 declare var require;
 require('esri-leaflet-renderers');
 require('leaflet.sync');
@@ -19,7 +20,7 @@ const sedimentParam: string[] = ["OBJECTID", "rsv_yearavg_csv_SED_OUT", "rsv_yea
   styleUrls: ['./single-result-view.component.css']
 })
 /**
- * component to depict the model outputs for sediment values for single analysis
+ * component to depict the model outputs for sediment and nitrogen values for single analysis
  */
 export class SingleResultViewComponent implements OnInit, OnDestroy {
 
@@ -28,9 +29,10 @@ export class SingleResultViewComponent implements OnInit, OnDestroy {
     timeDimensionControlOptions: { timeZones: ['Local'], position: 'bottomleft' }
   };
   public wmsLayer: any;
-  public featureTSLayerUrl = "https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/ArcGIS/rest/services/SWATimClient/FeatureServer";
+  public featureTSLayerUrl = "https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/arcgis/rest/services/SWATimClient/FeatureServer";
+  public groupLayerUrl = "https://tiles.arcgis.com/tiles/GVrcJ5O2vy6xbu2e/arcgis/rest/services/SWATimClient/MapServer";
 
-  public showBarChart : boolean = false;
+  public showBarChart: boolean = false;
   public szenario2Id = 'szTwo-map';
   public szenarioSoilId = 'szSoil-map';
   public szenarioSlopeId = 'szSlope-map';
@@ -45,113 +47,213 @@ export class SingleResultViewComponent implements OnInit, OnDestroy {
   public featureTSLayer: esri.FeatureLayer;
   public featureHRULayer: esri.FeatureLayer;
   public showSingleMaps: boolean = false;
-  public selSzenarioTS: number[] = [1, 5];
-  public selSzenarioSUB: number[] = [2, 7];
-  public selSzenarioHRU: number[] = [3, 6];
+  public selSzenarioTS: number[] = [];
+  public selSzenarioSUB: number[] = [];
+  public selSzenarioHRU: number[] = [];
+
+  public selSzenarioTSN: number[] = [];
+  public selSzenarioSUBN: number[] = [];
+  public selSzenarioHRUN: number[] = [];
+  public selSzenarioLU: number[] = [];
+  sublayerIDs: number[] = [];
+  szenarioIds: number[] = [63, 72, 81, 90, 99, 108, 117, 126];
   public selSzen_Id: number = 0;
+  public selSzenario: string[] = [];
   public baseLayers: L.Layer[] = [];
   public params: string[];
-  public barId: number ;
+  public barId: number;
   public param: string = '';
+  scenDescript = "";
 
-  constructor(private mapCache: MapCache, private router: ActivatedRoute) { 
- 
+  constructor(private mapCache: MapCache, private router: ActivatedRoute, private http: HttpClient) {
+
   }
+
+  /**
+   * on Destroy remove maps from mapCache
+   */
   ngOnDestroy(): void {
     this.mapCache.deleteMap(this.szenario2Id);
     this.mapCache.deleteMap(this.szenarioLUId);
     this.mapCache.deleteMap(this.szenarioOutputId);
     this.mapCache.deleteMap(this.szenarioSlopeId);
     this.mapCache.deleteMap(this.szenarioSoilId);
-  
+
   }
 
+  /**
+   * on Initialization set parameters based on routing url and get response of groupLayer for scenarios and layer ids
+   */
   ngOnInit() {
 
-   this.router.url.subscribe((obs)=>{
-      switch(obs[0].path){
-      case 'substrance-entries-sediment':{
-        this.params = sedimentParam;
-        this.barId = 0;     
-        this.param = 'Sedimente';
-        break;
-      }
-      case 'substrance-entries-nitrogen':{
-        this.params = materialParam;    
-        this.barId = 1;
-        this.param = 'Stickstoff';
-        break;
-      }
-    }
-  });
-  this.createBaseMap();
-  }
-
-/**
- * set default BaseMap with view, Options and add to MapCache
- */
-  public createBaseMap(){
-  this.showBarChart = true;
-  this.wmsLayer = L.tileLayer.wms('http://ows.terrestris.de/osm/service?',
-    {
-      layers: 'OSM-WMS', format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-      className: 'OSM'
-    });
-
-  this.szenarioMap = L.map(this.szenario2Id, this.mapOptions).setView([51.128, 7.433], 11);
-  L.control.scale().addTo(this.szenarioMap);
-  this.szenarioMap.createPane('TopLayer').setAttribute('style', 'z-index: 450');
-  this.mapCache.setMap(this.szenario2Id, this.szenarioMap);
-
-  this.addLayer();
-
-  this.szenarioMap.invalidateSize();
-}
-
-/**
- * add feature Layer to created Basemap
- */
-public addLayer(){
-  this.szenarioMap.addLayer(L.tileLayer.wms('http://ows.terrestris.de/osm/service?',
-  {
-    layers: 'OSM-WMS', format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    className: 'OSM'
-  }));
-
-this.featureHRULayer = (esri.featureLayer({
-  url: "https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/ArcGIS/rest/services/SWATimClient/FeatureServer/"+this.selSzenarioSUB[this.selSzen_Id],
-  onEachFeature: (feature, layer) => {
-    layer.bindPopup(function (l) {
-      return L.Util.template('<p>Subbasin Nummer {sub_yearavg_csv_SUB}</p>', feature.properties);
-    }).on('click', this.plotSubbasinInfo, this);
-
-  }
-})).addTo(this.szenarioMap);
-
-this.featureTSLayer = esri.featureLayer({
-  url: "https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/ArcGIS/rest/services/SWATimClient/FeatureServer/" + this.selSzenarioTS[this.selSzen_Id],
-  fields: this.params, onEachFeature: (feature, layer) => {
-
-      layer.bindPopup(function (l) {
-        if(feature.properties.rsv_yearavg_csv_ORGN_OUT){
-          return L.Util.template('<p>Organischer Stickstoff-Austrag <strong>{rsv_yearavg_csv_ORGN_OUT}</strong> [kg/m³]  pro Jahr an der  {rsv_yearavg_csv_Name}-Talsperre.</p>',
-           feature.properties);
-        }else{
-          return L.Util.template('<p>Sediment Konzentration <strong>{rsv_yearavg_csv_SED_CONC}</strong> [mg/L] pro Zeitschritt in der  {rsv_yearavg_csv_Name}-Talsperre.</p>', 
-          feature.properties);
+    this.router.url.subscribe((obs) => {
+      switch (obs[0].path) {
+        case 'substrance-entries-sediment': {
+          this.params = sedimentParam;
+          this.barId = 0;
+          this.param = 'Sedimente';
+          break;
         }
-       });
+        case 'substrance-entries-nitrogen': {
+          this.params = materialParam;
+          this.barId = 1;
+          this.param = 'Stickstoff';
+          break;
+        }
+      }
+    }, error => console.log(error));
 
-    }, pane: 'TopLayer'
-}).addTo(this.szenarioMap);
+    this.http.get(this.groupLayerUrl + '/?f=json').subscribe((ob: any) => this.setLayerSzenarioIds(ob), err => console.log(err), () => this.createBaseMap());
 
-this.featureTSLayer.bringToFront();
-}
 
+  }
 /**
- * create Subbasin Maps based on information
- * @param e selected subbasin
+ * set grouplayerNames for scenarios and add sublayers for model information results
+ * @param ob json response of layer
  */
+  setLayerSzenarioIds(ob: any) {
+    this.szenarioIds.forEach((szen, i, arr) => {
+      this.selSzenario.push(ob['layers'][szen].name);
+      this.sublayerIDs = ob['layers'][szen].subLayerIds;
+      this.sublayerIDs.forEach((layer, i, arr) => {
+        if (ob['layers'][layer].name.startsWith('hru')) {
+          if (ob['layers'][layer].name.endsWith('Sed')) {
+            this.selSzenarioHRU.push(layer);
+          } else {
+            this.selSzenarioHRUN.push(layer);
+          }
+
+        } else if (ob['layers'][layer].name.startsWith('sub')) {
+          if (ob['layers'][layer].name.endsWith('Sed')) {
+            this.selSzenarioSUB.push(layer);
+          } else {
+            this.selSzenarioSUBN.push(layer);
+          }
+
+        } else if (ob['layers'][layer].name.startsWith('rsv')) {
+          if (ob['layers'][layer].name.endsWith('Sed')) {
+            this.selSzenarioTS.push(layer);
+          }
+          else {
+            this.selSzenarioTSN.push(layer);
+          }
+        }
+        else if (ob['layers'][layer].name.startsWith('Landuse')) {
+          this.selSzenarioLU.push(layer);
+        }
+      }
+
+      );
+    
+    });
+  }
+  /**
+   * set default BaseMap with view, Options and add to MapCache
+   */
+  public createBaseMap() {
+ 
+    this.wmsLayer = L.tileLayer.wms('http://ows.terrestris.de/osm/service?',
+      {
+        layers: 'OSM-WMS', format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        className: 'OSM'
+      });
+
+    this.szenarioMap = L.map(this.szenario2Id, this.mapOptions).setView([51.128, 7.433], 11);
+    L.control.scale().addTo(this.szenarioMap);
+    this.szenarioMap.createPane('TopLayer').setAttribute('style', 'z-index: 450');
+    this.mapCache.setMap(this.szenario2Id, this.szenarioMap);
+
+    this.addLayer();
+
+    this.szenarioMap.invalidateSize();
+    this.showBarChart = true;
+  }
+
+  /**
+   * add feature Layer to created Basemap based on selected output (sediment or nitrogen)
+   */
+  public addLayer() {
+    this.szenarioMap.addLayer(L.tileLayer.wms('http://ows.terrestris.de/osm/service?',
+      {
+        layers: 'OSM-WMS', format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        className: 'OSM'
+      }));
+
+    if (this.param == 'Sedimente') {
+      this.featureHRULayer = (esri.featureLayer({
+        url: "https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/arcgis/rest/services/SWATimClient/FeatureServer/" + this.selSzenarioSUB[this.selSzen_Id],
+        onEachFeature: (feature, layer) => {
+          layer.bindPopup(function (l) {
+            return L.Util.template('<p>Subbasin Nummer {sub_yearavg_csv_SUB} mit flächenhaftem Sedimentaustrag von {sub_yearavg_csv_SYLD} t/ha pro Jahr</p>', feature.properties);
+
+          }).on('click', this.plotSubbasinInfo, this);
+        }, ignoreRenderer: false, style: function (feature) {
+          return { fillOpacity: 0.8 };
+        }
+      })).addTo(this.szenarioMap);
+
+      this.featureTSLayer = esri.featureLayer({
+        url: "https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/arcgis/rest/services/SWATimClient/FeatureServer/" + this.selSzenarioTS[this.selSzen_Id],
+        fields: this.params, onEachFeature: (feature, layer) => {
+
+          layer.bindPopup(function (l) {
+
+            return L.Util.template('<p>Sediment Konzentration <strong>{rsv_yearavg_csv_SED_CONC}</strong> [mg/L] pro Zeitschritt in der  {rsv_yearavg_csv_Name}-Talsperre.</p>',
+              feature.properties);
+          });
+
+        }, pane: 'TopLayer'
+      }).addTo(this.szenarioMap);
+
+    } else {
+
+      this.featureHRULayer = (esri.featureLayer({
+        url: "https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/arcgis/rest/services/SWATimClient/FeatureServer/" + this.selSzenarioSUBN[this.selSzen_Id],
+        onEachFeature: (feature, layer) => {
+          layer.bindPopup(function (l) {
+
+            return L.Util.template('<p>Subbasin Nummer {sub_yearavg_csv_SUB} mit flächenhaftem NO3-Austrag von {sub_yearavg_csv_NO3kgNpHa} kg/ha pro Jahr</p>', feature.properties);
+
+          }).on('click', this.plotSubbasinInfo, this);
+        }, ignoreRenderer: false, style: function (feature) {
+
+          return { fillOpacity: 0.8 };
+        }
+      })).addTo(this.szenarioMap);
+
+      this.featureTSLayer = esri.featureLayer({
+        url: "https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/arcgis/rest/services/SWATimClient/FeatureServer/" + this.selSzenarioTSN[this.selSzen_Id],
+        fields: this.params, onEachFeature: (feature, layer) => {
+
+          layer.bindPopup(function (l) {
+
+            return L.Util.template('<p>Organischer Stickstoff-Austrag <strong>{rsv_yearavg_csv_ORGN_OUT}</strong> [kg/m³]  pro Jahr an der  {rsv_yearavg_csv_Name}-Talsperre.</p>',
+              feature.properties);
+
+          });
+
+        }, pane: 'TopLayer'
+      }).addTo(this.szenarioMap);
+    }
+
+
+    this.baseLayers.push(esri.featureLayer({
+      url: 'https://tiles.arcgis.com/tiles/GVrcJ5O2vy6xbu2e/arcgis/rest/services/SWATimClient_SubbasinInfo/MapServer',// oder MapServer
+    }));
+    this.baseLayers.push(esri.featureLayer({
+      url: 'https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/arcgis/rest/services/SWATimClient/FeatureServer'
+    }));
+    this.baseLayers.push(esri.dynamicMapLayer({
+      url: "https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/SWATimClient_Slope/MapServer"
+    }));
+
+    this.featureTSLayer.bringToFront();
+  }
+
+  /**
+   * create Subbasin Maps based on information
+   * @param e selected subbasin
+   */
   public plotSubbasinInfo(e) {
     let t = e.target;
 
@@ -196,12 +298,8 @@ this.featureTSLayer.bringToFront();
           layers: 'OSM-WMS', format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
         }));
 
-      this.baseLayers.push(esri.tiledMapLayer({
-        url: 'https://tiles.arcgis.com/tiles/GVrcJ5O2vy6xbu2e/arcgis/rest/services/SWATimClient_SubbasinInfo/MapServer',
-      }));
-      this.baseLayers.push(esri.featureLayer({
-        url: 'https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/ArcGIS/rest/services/SWATimClient/FeatureServer'}));
-   
+  
+
     }
     else {
       // remove selected feature layers and add new ones as well as baselayer
@@ -247,10 +345,9 @@ this.featureTSLayer.bringToFront();
     }
 
     //add new layers based on chosen subbasin
-
     this.landUseMap.addLayer(esri.featureLayer({
-      url: 'https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/ArcGIS/rest/services/SWATimClient_SubbasinInfo/FeatureServer/63',
-      where: 'Subbasin=' + t.feature.id,  onEachFeature: (feature, layer) => {
+      url: 'https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/arcgis/rest/services/SWATimClient/FeatureServer/' + (this.selSzenarioLU[this.selSzen_Id]),
+      where: 'Subbasin=' + t.feature.id, onEachFeature: (feature, layer) => {
 
         layer.bindPopup(function (l) {
           return L.Util.template('<p>Landnutzungsklasse: <strong>{Name}</strong>.</p>', feature.properties);
@@ -261,7 +358,7 @@ this.featureTSLayer.bringToFront();
 
     this.soilMap.addLayer(esri.featureLayer({
       url: 'https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/ArcGIS/rest/services/SWATimClient_SubbasinInfo/FeatureServer/64',
-      where: 'Subbasin=' + t.feature.id,  onEachFeature: (feature, layer) => {
+      where: 'Subbasin=' + t.feature.id, onEachFeature: (feature, layer) => {
 
         layer.bindPopup(function (l) {
           return L.Util.template('<p>Bodentyp <strong>{TYP_TEXT}</strong> mit der Art <strong>{ART_TEXT}</strong>.</p>', feature.properties);
@@ -294,37 +391,45 @@ this.featureTSLayer.bringToFront();
       }
 
     })).fitBounds(t._bounds);
-  
 
 
-    this.sedOutputMap.addLayer(esri.featureLayer({
-      url: 'https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/ArcGIS/rest/services/SWATimClient/FeatureServer/'+ this.selSzenarioHRU[this.selSzen_Id],
-      // fields: ['hru_yearavg_csv_N_STRS','OBJECTID','hru_yearavg_csv_P_STRS','hru_yearavg_csv_BIOM','hru_yearavg_csv_SYLD'],
-      where: 'hru_yearavg_csv_SUBBASIN=' + t.feature.id,  onEachFeature: (feature, layer) => {
-
-        layer.bindPopup(function (l) {
-          if(feature.properties.hru_yearavg_csv_SYLD){
+    if (this.param == "Sedimente") {
+      this.sedOutputMap.addLayer(esri.featureLayer({
+        url: 'https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/arcgis/rest/services/SWATimClient/FeatureServer/' + this.selSzenarioHRU[this.selSzen_Id],
+        where: 'hru_yearavg_csv_SUBBASIN=' + t.feature.id, onEachFeature: (feature, layer) => {
+          layer.bindPopup(function (l) {
             return L.Util.template('<p>Sedimentaustrag von <strong>{hru_yearavg_csv_SYLD} [t/ha/a]</strong>.</p>',
-             feature.properties);
-          }else{
-            return L.Util.template('<p>Stoffaustrag von <strong>{hru_yearavg_csv_SYLD} [t/ha/a]</strong>.</p>', 
-            feature.properties);
-          }
-        });
+              feature.properties);
+          });
+        }
+      })).fitBounds(t._bounds);
+    }
+    else {
+      this.sedOutputMap.addLayer(esri.featureLayer({
+        url: 'https://services9.arcgis.com/GVrcJ5O2vy6xbu2e/arcgis/rest/services/SWATimClient/FeatureServer/' + this.selSzenarioHRUN[this.selSzen_Id],
+        where: 'hru_yearavg_csv_SUBBASIN=' + t.feature.id, onEachFeature: (feature, layer) => {
+          layer.bindPopup(function (l) {
+            return L.Util.template('<p>Stoffaustrag von <strong>{hru_yearavg_csv_NO3kgNpHa} [kg NO3-N / ha]</strong>.</p>',
+              feature.properties);
+          });
+        }
+      })).fitBounds(t._bounds);
+    }
 
-      }
-    })).fitBounds(t._bounds);
-
- 
   }
-  onSubmit(customerData: number){
+
+  /**
+   * on selected Scenario Changed remove information maps and add new selected layer
+   * @param customerData 
+   */
+  onSubmit(customerData: number) {
     this.selSzen_Id = customerData;
     this.showSingleMaps = false;
     this.szenarioMap.eachLayer(layer => {
       layer.remove();
     });
-    if (this.mapCache.hasMap(this.szenarioSlopeId)){
-  
+    if (this.mapCache.hasMap(this.szenarioSlopeId)) {
+
       this.landUseMap.remove();
       this.soilMap.remove();
       this.sedOutputMap.remove();
@@ -347,8 +452,11 @@ this.featureTSLayer.bringToFront();
       this.soilMap.unsync(this.sedOutputMap);
       this.soilMap.unsync(this.landUseMap);
     }
- 
+
     this.addLayer();
+    this.http.get(this.groupLayerUrl + '/' + this.szenarioIds[customerData] + '/?f=json').subscribe(resp => {
+      this.scenDescript = resp["description"];
+    });
 
   }
 }

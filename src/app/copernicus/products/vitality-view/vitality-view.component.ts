@@ -4,11 +4,11 @@ import * as esri from 'esri-leaflet';
 import * as L from 'leaflet';
 require('leaflet-timedimension');
 import { MapCache } from '@helgoland/map';
-import { ActivatedRoute } from '@angular/router';
 import { D3PlotOptions, AdditionalData } from '@helgoland/d3';
 import { Timespan, DatasetOptions, DatasetType, HelgolandServicesConnector } from '@helgoland/core';
 import { CsvDataService } from 'src/app/settings/csvData.service';
 import { AdditionalDataEntry } from '@helgoland/d3/lib/extended-data-d3-timeseries-graph/extended-data-d3-timeseries-graph.component';
+import { HttpClient } from '@angular/common/http';
 
 
 
@@ -34,6 +34,7 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
   public d3Colors = ['#4682B4', '#DC143C'];
   // The timespan
   public timespan = new Timespan(new Date(2019, 0, 1).getTime(), new Date(2020, 0, 1).getTime());
+  selectedPics: string[]=[];
   // These are the plotting options.
   public diagramOptionsD3: D3PlotOptions = {
     togglePanZoom: true,
@@ -75,6 +76,7 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
   public showZoomControl = true;
   public showAttributionControl = true;
   public id = '426';
+  public tempDayId = '758';
   public baselayers: L.Layer[] = [];
   public categoryVal = ["no Data", "unverändert", "gering", "mittel",
     "stark", "Zuwachs gering", "Zuwachs mittel", "Zuwachs stark"];
@@ -88,7 +90,7 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
   public avoidZoomToSelection = false;
   public layerControlOptions: L.Control.LayersOptions = { position: 'bottomleft' };
   public selectedTime: number = 1;
-  public currentSelectedTimeL: Date = new Date();
+  public currentSelectedTimeL: string='1';
   public showDiagram: boolean = false;
   public mapBounds: L.LatLngBounds;
   public service: string;
@@ -97,7 +99,6 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
     // timeDimension: true, timeDimensionControl: true,
     // timeDimensionControlOptions: { timeZones: ['Local'] }
   };
-  public providerUrl: string = 'https://www.fluggs.de/sos2-intern-gis/api/v1/';
   public avgMonthTemp_B: AdditionalDataEntry[] = [];
   public avgMonthTemp_D: AdditionalDataEntry[] = [];
   public avgMonthRain_B: AdditionalDataEntry[] = [];
@@ -118,8 +119,10 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
   countValue: number[] = [];
   loadingCountT: number = 0;
   showDiagramR: boolean = false;
+  sceneNum: number;
+  control: L.Control;
 
-  constructor(private activatedRoute: ActivatedRoute, private mapCache: MapCache, private dataService: CsvDataService, private apiInterface: HelgolandServicesConnector) {
+  constructor( private mapCache: MapCache, private dataService: CsvDataService, private apiInterface: HelgolandServicesConnector, private http: HttpClient) {
     this.service = vitalityService;
 
     this.responseInterp = dataService.getTempDhDataset();
@@ -131,28 +134,34 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
    * add Layers and Listener to Map
    */
   ngAfterViewInit(): void {
-    this.baselayers.forEach((lay, i, arr) => {
-      this.mapCache.getMap(this.mapId).addLayer(lay);
-    });
+ 
 
     this.mainMap.on('moveend', this.changeBounds, this);
     this.mainMap.on('click', this.identify, this);
 
   }
+  /**
+   * identify pixel value at selected mouse position
+   * 
+   * @param e mouse event
+   */
   private identify(e) {
 
+    let popupText;
     this.dyn.identify().at(e.latlng).tolerance(1).on(this.mainMap).run(function (err, data, resp) {
 
       if (resp.results.length > 0) {
-        var popupText = resp.results[0].attributes['Pixel Value'];
+        popupText = resp.results[0].attributes['Pixel Value'];
+    
         console.log(popupText);
       }
     });
+    this.dyn.bindPopup(function (l) {return L.Util.template('<p> ~' + Math.round(parseFloat(popupText)*100) + '% </p>',e.latlng)});
   }
 
   /**
-   * 
-   * @param TS 
+   * reset the map view on dam selected and set corresponding parameters 
+   * @param TS selected dam
    */
   public resetMapView(TS: string) {
     if (TS == 'Dhuenn') {
@@ -161,6 +170,11 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
       this.mapBounds = this.mainMap.getBounds();
       this.id = '426';
       this.tempId = '682';
+      this.tempDayId = '682';
+      this.resetTempRainData();
+      this.getCsvData();
+      this.responseInterp = this.dataService.getTempDhDataset();
+      this.responseInterpDh = this.dataService.getRainDhDataset();
     }
     else if (TS == 'Kerspe') {
       this.mainMap.setView(viewCenters[3], 13);
@@ -168,6 +182,10 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
       this.mapBounds = this.mainMap.getBounds();
       this.id = '427';
       this.tempId = '751';
+      this.responseInterp = this.dataService.getTempDatasetText();
+      this.responseInterpDh = this.dataService.getRainDataset();
+      this.resetTempRainData();
+      this.getCsvData();
     }
     else if (TS == 'Herbringhauser') {
       this.mainMap.setView(viewCenters[2], 13);
@@ -175,21 +193,52 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
       this.mapBounds = this.mainMap.getBounds();
       this.id = '427';
       this.tempId = '751';
+      this.responseInterp = this.dataService.getTempDatasetText();
+      this.responseInterpDh = this.dataService.getRainDataset();
+      this.resetTempRainData();
+      this.getCsvData();
     } else if (TS == 'Wupper') {
       this.mainMap.setView(viewCenters[1], 13);
       this.mainMap.invalidateSize();
       this.mapBounds = this.mainMap.getBounds();
       this.id = '427';
       this.tempId = '751';
+      this.tempDayId = '758';
+      this.responseInterp = this.dataService.getTempDatasetText();
+      this.responseInterpDh = this.dataService.getRainDataset();
+      this.resetTempRainData();
+      this.getCsvData();
     } else {
 
     }
 
   }
-
+/**
+ * reset temp Data on input change
+ */
+  resetTempRainData(){
+     
+    this.additionalDataRain = [];
+    this.avgMonthRain_D = [];
+    this.avgMonthTemp_D =[];
+    this.additionalDataTemp = [];
+    this.InterArr =[];
+    this.InterArrDh =[];
+    this.moSum = [];
+    this.moSumTemp = [];
+    this.countValue = [];
+    this.divlongMo =[];
+    this.entries =[];
+    this.entriesDh=[];
+    this.showDiagram =false;
+    this.showDiagramR = false;
+  }
+  /**
+   * calculate monthly mean for temperature and rain data
+   */
   public calculateMeanData() {
 
-    this.apiInterface.getDatasets('https://fluggs.wupperverband.de/sos2-intern-gis/api/v1/', {
+    this.apiInterface.getDatasets('https://fluggs.wupperverband.de/sos2-intern/api/v1/', {
       type: DatasetType.Timeseries,
       expanded: true
     }).subscribe((data) => {
@@ -198,21 +247,21 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
 
           for (let m = 0; m < 12; m++) {
             let sum = 0;
-            let d = new Date(new Date(new Date().getFullYear() - 1, m + 1, 1).getTime() - 86400000).getDate();
-            this.apiInterface.getDatasetData(val, new Timespan(new Date(new Date().getFullYear() - 1, m, 1), new Date(new Date().getFullYear() - 1, m, d))
+            let d = new Date(new Date(new Date().getFullYear() , m + 1, 1).getTime() - 86400000).getDate();
+            this.apiInterface.getDatasetData(val, new Timespan(new Date(new Date().getFullYear() , m, 1), new Date(new Date().getFullYear() , m, d))
             ).subscribe((dataset) => {
               dataset.values.forEach((v, i, arr) => {
                 sum += v[1];
               });
-            }, error => console.log(error), () => this.setMonthSum({ timestamp: new Date(new Date().getFullYear() - 1, m, 1).getTime(), value: sum }, m));
+            }, error => console.log(error), () => this.setMonthSum({ timestamp: new Date(new Date().getFullYear() , m, 1).getTime(), value: sum }, m));
           }
         }
         else if (val.id == this.tempId) {
           for (let m = 0; m < 12; m++) {
             let sum = 0;
             let h;
-            let d = new Date(new Date(new Date().getFullYear() - 1, m + 1, 1).getTime() - 86400000).getDate();
-            this.apiInterface.getDatasetData(val, new Timespan(new Date(new Date().getFullYear() - 1, m, 1), new Date(new Date().getFullYear() - 1, m, d))
+            let d = new Date(new Date(new Date().getFullYear(), m + 1, 1).getTime() - 86400000).getDate();
+            this.apiInterface.getDatasetData(val, new Timespan(new Date(new Date().getFullYear() , m, 1), new Date(new Date().getFullYear() , m, d))
             ).subscribe((dataset) => {
               if (dataset.values.length) {
                 dataset.values.forEach((v, i, arr) => {
@@ -222,18 +271,35 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
               }
             }, error => console.log(error), () => {
               if (h != undefined) {
-                this.setMonthMeanTemp({ timestamp: new Date(new Date().getFullYear() - 1, m, 1).getTime(), value: sum }, m, h);
+                this.setMonthMeanTemp({ timestamp: new Date(new Date().getFullYear() , m, 1).getTime(), value: sum }, m, h);
               } else {
-                this.setMonthMeanTemp({ timestamp: new Date(new Date().getFullYear() - 1, m, 1).getTime(), value: undefined }, m, undefined);
+                this.setMonthMeanTemp({ timestamp: new Date(new Date().getFullYear(), m, 1).getTime(), value: undefined }, m, undefined);
               }
             }
             );
           }
         }
-      });
+      //   else if(val.id == this.tempDayId){
+      //    let values: AdditionalDataEntry[] =[];
+      //     this.apiInterface.getDatasetData(val, new Timespan(new Date(new Date().getFullYear() - 1, 0, 1), new Date(new Date().getFullYear() - 1,11 ,31 ))
+      //     ).subscribe((dataset) => {
+      //       if (dataset.values.length) {
+      //         dataset.values.forEach((v, i, arr) => {
+      //           values.push({timestamp: v[0],value: v[1]});         
+      //         });
+              
+      //       }
+      //     },error => console.log(error),()=>this.setAvgDayTmp(values))
+      //   }
+       });
     }, error => console.log(error));
   }
 
+
+  /**
+   * calculate differnec of long term mean rainData per month
+   * @param d data
+   */
   public calculateRainDiff(d: AdditionalDataEntry[]) {
 
     d.forEach((dat, p, array) => {
@@ -243,7 +309,7 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
     const optionsDiff = new DatasetOptions('addData', 'blue');
     optionsDiff.pointRadius = 3;
     optionsDiff.yAxisRange = { max: 200, min: -100 };
-    optionsDiff.type = 'line';
+    optionsDiff.type = 'bar';
     optionsDiff.barStartOf = 'month';
     optionsDiff.barPeriod = 'PT1M';
     optionsDiff.visible = true;
@@ -261,7 +327,11 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
   }
 
 
-
+/**
+ * set month sum and calculte rain difference to long term mean
+ * @param d data
+ * @param t index
+ */
   public setMonthSum(d: AdditionalDataEntry, t: number) {
     this.moSum[t] = d;
     this.loadingCounter++;
@@ -270,6 +340,35 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
     }
   }
 
+  /**
+   * set draw options for avg  day temperature
+   */
+  setAvgDayTmp(d: AdditionalDataEntry[]){
+    const optionsTempVal = new DatasetOptions('addData', 'red');
+    optionsTempVal.pointRadius = 3;
+    optionsTempVal.yAxisRange = { max: 40, min: -40 };
+    optionsTempVal.lineWidth = 1;
+    optionsTempVal.type = 'line';
+    optionsTempVal.visible = true;
+    optionsTempVal.zeroBasedYAxis = true;
+
+  
+    // this.additionalDataTemp.push(
+    //   {
+    //     internalId: 'tempDay',
+    //     yaxisLabel: 'Tagesmittel °C',
+    //     datasetOptions: optionsTempVal,
+    //     data: d
+    //   });
+      // this.showDiagram = true;
+  }
+
+  /**
+   * calculate the mean temperature values and set the corresponding datasetOptions
+   * @param d data
+   * @param t index
+   * @param x index
+   */
   public setMonthMeanTemp(d: AdditionalDataEntry, t: number, x: number) {
     this.moSumTemp[t] = d;
     this.countValue[t] = x;
@@ -332,7 +431,7 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
 
       this.avgMonthTemp_D.push(
         {
-          timestamp: new Date(new Date().getFullYear() - 1, 0 + p, 1).getTime(),
+          timestamp: new Date(new Date().getFullYear() , 0 + p, 1).getTime(),
           value: parseFloat(this.entries[p][1])
         });
     }
@@ -343,6 +442,8 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
         datasetOptions: optionsT,
         data: this.avgMonthTemp_D
       });
+
+
 
     let csvArray = this.responseInterpDh.split(/\r\n|\n/);
 
@@ -365,7 +466,7 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
 
       this.avgMonthRain_D.push(
         {
-          timestamp: new Date(this.entriesDh[p][0].split('.')[2], this.entriesDh[p][0].split('.')[1] - 1, this.entriesDh[p][0].split('.')[0]).getTime(),
+          timestamp: new Date(new Date().getFullYear() , 0 + p, 1).getTime(),
           value: parseFloat(this.entriesDh[p][1])
         });
     }
@@ -380,17 +481,52 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
 
   }
   /**
-   * create default Map and Layers
+   * create default Layer and call createMap
    */
   ngOnInit() {
 
+      this.dyn = esri.dynamicMapLayer({
+      url: "https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/Vegetationsdichte_2020_Forst/MapServer", layers: [0,1], opacity: 0.8,
+       className: 'Waldvital2018-2019' 
+    });
+    this.dyn.metadata((err,dat)=>{
+     this.sceneNum= dat["layers"].length-1;
+     let array =dat["layers"];
+     array.forEach((element,i,arr) => {
+       if(i==0){
+
+       }else{
+        this.selectedPics.push(element.name);
+       }
+      
+     }); 
+    
+    });
+
+    this.createMap();
+   
+  }
+  /**
+   * create Map element and call addLayers afterwards
+   */
+  private createMap(){
+
     this.mainMap = L.map(this.mapId, this.mapOptions).setView([51.07, 7.22], 13);
 
-    // this.mainMap.timeDimension.setCurrentTime(new Date().getTime());
-
+    
     L.control.scale().addTo(this.mainMap);
     this.mapCache.setMap(this.mapId, this.mainMap);
     this.mapBounds = this.mainMap.getBounds();
+    this.baselayers.push(this.dyn);
+
+    this.addLayers();
+  
+
+  }
+  /**
+   * add Layers to map
+   */
+  private addLayers(){
 
     this.mainMap.addLayer(L.tileLayer.wms(
       'http://ows.terrestris.de/osm/service?',
@@ -399,68 +535,70 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
         className: 'OSM'
       }
     ));
-    // this.baselayers.push(L.tileLayer.wms(vitalityService,
-    //   {
-    //     layers: 'nadelwald_06_2017_09_2018', format: 'image/png', transparent: true, maxZoom: 16, minZoom: 11, attribution: 'Datenlizenz Deutschland – Namensnennung – Version 2.0',
-    //     className: 'nadel_2017_2018'
-    //   })
-    // );
-
-    this.dyn = esri.dynamicMapLayer({
-      url: "https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/WPSErgebnis_Vital_Sealing/MapServer", layers: [1], opacity: 1, className: 'Waldvital2018-2019'
-    });
-    this.baselayers.push(this.dyn);
-
-
-    let layer = esri.imageMapLayer({ url: "https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/EO_WACODIS_DAT_NDVIService/ImageServer" });
-    let diffLayer = esri.imageMapLayer({
-      url: 'https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/WACODIS_LAND_COVER_CLASSIFICATION/ImageServer',
-      maxZoom: 16, opacity: 1, alt: 'DiffLandUse'
-    });
-    // diffLayer.setRenderingRule(
-    //   {
-    //     "rasterFunction": "Colormap",
-    //     "rasterFunctionArguments": {
-    //       "ColormapName": "Random"
-    //     },
-    //     "variableName":
-    //     {
-    //       "rasterFunction": "Mask",
-    //       "rasterFunctionArguments": {
-    //         "NoDataValues": ["4"],
-    //         "IncludedRanges": [0, 25],
-    //         "NoDataInterpretation": 0
-    //       },
-    //       "variableName": {
-    //         "rasterFunction": "Arithmetic",
-    //         "rasterFunctionArguments": {
-    //           "Raster": "$5",
-    //           "Raster2": "$2",
-    //           "Operation": 3
-    //         }
-    //       }
-    //     }
-    //   }
-
-    // );
-    // this.baselayers.push(diffLayer);
-
-    // let testTimeLayer = L.timeDimension.layer.wms(L.tileLayer.wms("https://maps.dwd.de/geoserver/ows",
-    //   {
-    //     layers: 'dwd:RX-Produkt', format: 'image/png', transparent: true
-    //   }), {
-    //   updateTimeDimension: true, getCapabilitiesLayerName: 'dwd:RX-Produkt', getCapabilitiesUrl: "https://maps.dwd.de/geoserver/ows"
-    // });
-
-    //   let secTimeLayer = L.timeDimension.layer.wms(L.tileLayer.wms("https://gis.wacodis.demo.52north.org:6443/arcgis/services/WaCoDiS/EO_WACODIS_DAT_INTRA_LAND_COVER_CLASSIFICATION_Service/ImageServer/WMSServer",
-    //   {
-    //     layers: 'EO_WACODIS_DAT_INTRA_LAND_COVER_CLASSIFICATION_Service:None', format: 'image/png', transparent: true
-    //   }),{ updateTimeDimensionMode: 'union',setDefaultTime: true,
-    //    updateTimeDimension: true, getCapabilitiesLayerName: 'EO_WACODIS_DAT_INTRA_LAND_COVER_CLASSIFICATION_Service:None', getCapabilitiesUrl: "https://maps.dwd.de/geoserver/ows" });
-    // this.baselayers.push(secTimeLayer);
-
+    if(this.control!=undefined){
+      this.mainMap.removeControl(this.control);
+    }
+ 
+      this.addOverlays();
+    this.mainMap.addLayer(this.dyn);
+    this.mainMap.invalidateSize();
   }
-
+  addOverlays(){
+    let vitalityNRWLayer1 = L.tileLayer.wms(
+      vitalityService,
+      {
+        layers: 'nadelwald_06_2017_09_2018', format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        className: 'Vital'
+      }
+    );
+    let vitalityNRWLayer2 = L.tileLayer.wms(
+      vitalityService,
+      {
+        layers: 'nadelwald_06_2017_06_2019', format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        className: 'Vital'
+      }
+    );
+    let vitalityNRWLayer3 = L.tileLayer.wms(
+      vitalityService,
+      {
+        layers: 'nadelwald_06_2017_08_2019', format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        className: 'Vital'
+      }
+    );
+    let vitalityNRWLayer4 = L.tileLayer.wms(
+      vitalityService,
+      {
+        layers: 'nadelwald_06_2017_06_2020', format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        className: 'Vital'
+      }
+    );
+    let vitalityNRWLayer5 = L.tileLayer.wms(
+      vitalityService,
+      {
+        layers: 'nadelwald_06_2017_09_2020', format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        className: 'Vital'
+      }
+    );
+    let vitalityNRWLayer6 = L.tileLayer.wms(
+      vitalityService,
+      {
+        layers: 'nadelwald_03_2019_03_2020', format: 'image/png', transparent: true, maxZoom: 16, attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        className: 'Vital'
+      }
+    );
+    let overlayMaps ={
+      "Vitalitätsabnahme 062017 vs. 092018": vitalityNRWLayer1,
+      "Vitalitätsabnahme 062017 vs. 062019": vitalityNRWLayer2,
+      "Vitalitätsabnahme 062017 vs. 082019": vitalityNRWLayer3,
+      "Vitalitätsabnahme 062017 vs. 062020": vitalityNRWLayer4,
+      "Vitalitätsabnahme 062017 vs. 092020": vitalityNRWLayer5,
+      "Vitalitätsabnahme 032020 vs. 032020": vitalityNRWLayer6,
+      "Vegetationsdichte": this.dyn
+    };
+   this.control= L.control.layers({},overlayMaps);
+   this.control.addTo(this.mainMap);
+    this.baselayers.push(vitalityNRWLayer1);
+  }
   /**
     * set MapBounds depending on scroll and drag Movements
     */
@@ -482,8 +620,17 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
    * @param date selected date of layer in mainMap
    * date to visualize for diagram text
    */
-  public setSelectedCurrentTimeLeft(date: Date) {
-    this.currentSelectedTimeL = date;
+  public onSubmitOne(date: number) {
+    this.currentSelectedTimeL = date.toString();
+   
+    this.mainMap.eachLayer((lay)=>{
+      lay.remove();
+    });
+    this.dyn = esri.dynamicMapLayer({
+      url: "https://gis.wacodis.demo.52north.org:6443/arcgis/rest/services/WaCoDiS/Vegetationsdichte_2020_Forst/MapServer", layers: [0,date], opacity: 0.8,
+       className: 'Waldvital2018-2019' 
+    });
+    this.addLayers();
   }
 
   /**

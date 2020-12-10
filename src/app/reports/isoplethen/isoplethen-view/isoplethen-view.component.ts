@@ -1,6 +1,5 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { Timespan, ApiV3Dataset, HelgolandServicesConnector, DatasetType, DatasetApiV3Connector, ApiV3InterfaceService, ApiV3ObservationTypes } from '@helgoland/core';
-import { DatasetImplApiV3InterfaceService } from '@sensorwapp-toolbox/core';
+import { Timespan, ApiV3Dataset, ApiV3InterfaceService, ApiV3ObservationTypes } from '@helgoland/core';
 
 @Component({
   selector: 'wv-isoplethen-view',
@@ -35,10 +34,11 @@ export class IsoplethenViewComponent implements OnInit, AfterViewInit {
   public samplingIds: string[] = [];
   public profileDataset: ApiV3Dataset;
   public interpolation: string = 'linear';
+  load: boolean = true;
 
-  constructor(private datasetApi: DatasetImplApiV3InterfaceService, private api: ApiV3InterfaceService) {
+  constructor( private api: ApiV3InterfaceService) {
     //observationType="profile", phenomenon = Sauerstoff
-    this.api.getDatasets("http://192.168.101.105/sos3/api/", { phenomenon: "174",observationTypes: [ApiV3ObservationTypes.Profil] }).subscribe((timeseries) => {
+    this.api.getDatasets("http://192.168.101.105/sos3/api/", { phenomena: ["174"],observationTypes: [ApiV3ObservationTypes.Profil] }).subscribe((timeseries) => {
       timeseries.forEach((series) => {
         if(new Date(series.samplingTimeEnd).getTime()>= new Date(this.timeSpan.to).getTime()){
           this.measureParams.push(series.label);
@@ -46,10 +46,13 @@ export class IsoplethenViewComponent implements OnInit, AfterViewInit {
           this.samplingIds.push(series.id);
         }     
       });
-    });
+    },(error)=>{console.log(error)},()=> this.load = false);
  
   }
 
+  /**
+   * on initialisation receive dataset for selected id and url
+   */
   ngOnInit() {
     this.api.getDataset(this.internalId.id,this.internalId.url,{}).subscribe((data)=>{
          this.profileDataset = data;
@@ -98,8 +101,7 @@ export class IsoplethenViewComponent implements OnInit, AfterViewInit {
     document.forms.item(4).addEventListener("click", listener => {
 
         this.interpolation = document.forms.item(4).elements["inter"].value;
-       console.log(this.interpolation);
-   
+         
     });
 
   }

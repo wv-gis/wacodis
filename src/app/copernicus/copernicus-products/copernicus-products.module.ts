@@ -9,13 +9,13 @@ import { HelgolandCoreModule } from '@helgoland/core';
 import { HelgolandMapModule, HelgolandMapControlModule, HelgolandMapSelectorModule, HelgolandMapViewModule } from '@helgoland/map';
 import { HelgolandOpenLayersModule } from '@helgoland/open-layers';
 import { WvMapModule } from 'src/app/map/map.module';
-import { SensorwappToolboxModule } from '@sensorwapp-toolbox/core';
 import { LayerLegendCardComponent } from '../cards/layer-legend-card/layer-legend-card.component';
 import { CopernicusBarChartCardComponent } from '../cards/copernicus-bar-chart-card/copernicus-bar-chart-card.component';
 import { HelgolandD3Module } from '@helgoland/d3';
 import { VitalityBarChartComponent } from '../cards/vitality-bar-chart/vitality-bar-chart.component';
 import { VitalityPieChartComponent } from '../cards/vitality-pie-chart/vitality-pie-chart.component';
 import { MixedDataChartComponent } from '../cards/mixed-data-chart/mixed-data-chart.component';
+import { WvReportsModule } from 'src/app/reports/reports.module';
 
 
 @NgModule({
@@ -30,8 +30,8 @@ import { MixedDataChartComponent } from '../cards/mixed-data-chart/mixed-data-ch
     HelgolandMapViewModule,
     HelgolandOpenLayersModule,
     HelgolandD3Module,
-    SensorwappToolboxModule,
-    WvMapModule
+    WvMapModule,
+    WvReportsModule
   ],exports:[LandCoverComponent, ChlorophyllViewComponent, MowingViewComponent, SoilTemperatureViewComponent,
     VitalityViewComponent,  CopernicusBarChartCardComponent,VitalityBarChartComponent,VitalityPieChartComponent,LayerLegendCardComponent,MixedDataChartComponent]
 })

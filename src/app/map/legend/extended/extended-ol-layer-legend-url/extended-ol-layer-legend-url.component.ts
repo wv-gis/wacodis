@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, Input } from '@angular/core';
+import { Component, Output, EventEmitter, Input, OnChanges } from '@angular/core';
 import { WmsCapabilitiesService } from '@helgoland/open-layers';
 import * as esri from "esri-leaflet";
 import L from 'leaflet';
@@ -33,7 +33,7 @@ export interface TilelegendResp {
   templateUrl: './extended-ol-layer-legend-url.component.html',
   styleUrls: ['./extended-ol-layer-legend-url.component.css']
 })
-export class ExtendedOlLayerLegendUrlComponent {//extends OlLayerLegendUrlComponent {
+export class ExtendedOlLayerLegendUrlComponent implements OnChanges {
 
   @Output()
   legendUrls: EventEmitter<legendParam[]> = new EventEmitter();
@@ -49,11 +49,23 @@ export class ExtendedOlLayerLegendUrlComponent {//extends OlLayerLegendUrlCompon
     // super(wmsCap);
   }
 
+  ngOnChanges(changes: import("@angular/core").SimpleChanges): void {
+   if(changes.id){
+    if(!changes.id.firstChange){
+      this.deliverLegendUrl();
+    }
+   }
+    
+  }//extends OlLayerLegendUrlComponent {
+
+
+
   /**
    * legend Url creation based on Layer type
    */
   public deliverLegendUrl() {
     if ((this.layer != undefined)) {
+   
       if (this.layer.options.url) {
         this.imageUrl = this.layer.options.url;
 
@@ -122,7 +134,7 @@ export class ExtendedOlLayerLegendUrlComponent {//extends OlLayerLegendUrlCompon
                 url: this.imageUrl + this.id
               }).metadata((err, meta) => {
                 let featureResp: legendParam[] = [];
-
+             
                 // set size of pixel and canvas 
                 const arr = new Uint8ClampedArray(1600);
                 const canvas = document.createElement('canvas');
@@ -130,27 +142,73 @@ export class ExtendedOlLayerLegendUrlComponent {//extends OlLayerLegendUrlCompon
                 canvas.height = 20;
                 const ctx = canvas.getContext('2d');
                 let imageData: ImageData[] = [];
-                for (let i = 0; i < meta.drawingInfo.renderer.classBreakInfos.length; i++) {
-                  // Iterate through every pixel
+             
+                if(meta.drawingInfo.renderer.type == "uniqueValue"){
+                  for (let i = 0; i < meta.drawingInfo.renderer.uniqueValueInfos.length; i++) {
+                    // Iterate through every pixel
+                    for (let k = 0; k < arr.length; k += 4) {
+                      arr[k + 0] = meta.drawingInfo.renderer.uniqueValueInfos[i].symbol.color[0]   // R value
+                      arr[k + 1] = meta.drawingInfo.renderer.uniqueValueInfos[i].symbol.color[1];  // G value
+                      arr[k + 2] = meta.drawingInfo.renderer.uniqueValueInfos[i].symbol.color[2];    // B value
+                      arr[k + 3] = meta.drawingInfo.renderer.uniqueValueInfos[i].symbol.color[3];  // A value
+                    }
+  
+                    // Initialize a new ImageData object
+                    imageData.push(new ImageData(arr, 20, 20));
+                    ctx.putImageData(imageData[i], 0, 0);
+                    ctx.scale(0.5, 0.5);
+                    // set canvas specification as DataUrl 
+                    featureResp.push({
+                      url: canvas.toDataURL('image/png'),
+                      label: meta.drawingInfo.renderer.uniqueValueInfos[i].label,
+                      layer: meta.drawingInfo.renderer.uniqueValueInfos[i].description
+                    });
+  
+                  }
+                }else if(meta.drawingInfo.renderer.type == "simple"){
                   for (let k = 0; k < arr.length; k += 4) {
-                    arr[k + 0] = meta.drawingInfo.renderer.classBreakInfos[i].symbol.color[0]   // R value
-                    arr[k + 1] = meta.drawingInfo.renderer.classBreakInfos[i].symbol.color[1];  // G value
-                    arr[k + 2] = meta.drawingInfo.renderer.classBreakInfos[i].symbol.color[2];    // B value
-                    arr[k + 3] = meta.drawingInfo.renderer.classBreakInfos[i].symbol.color[3];  // A value
+                    arr[k + 0] = meta.drawingInfo.renderer.symbol.color[0]   // R value
+                    arr[k + 1] = meta.drawingInfo.renderer.symbol.color[1];  // G value
+                    arr[k + 2] = meta.drawingInfo.renderer.symbol.color[2];    // B value
+                    arr[k + 3] = meta.drawingInfo.renderer.symbol.color[3];  // A value
                   }
 
                   // Initialize a new ImageData object
                   imageData.push(new ImageData(arr, 20, 20));
-                  ctx.putImageData(imageData[i], 0, 0);
+                  ctx.putImageData(imageData[0], 0, 0);
                   ctx.scale(0.5, 0.5);
                   // set canvas specification as DataUrl 
                   featureResp.push({
                     url: canvas.toDataURL('image/png'),
-                    label: meta.drawingInfo.renderer.classBreakInfos[i].label,
-                    layer: meta.drawingInfo.renderer.classBreakInfos[i].description
+                    label: meta.drawingInfo.renderer.label,
+                    layer: meta.drawingInfo.renderer.description
                   });
 
                 }
+                if(meta.drawingInfo.renderer.type == "classBreaks"){
+                  for (let i = 0; i < meta.drawingInfo.renderer.classBreakInfos.length; i++) {
+                    // Iterate through every pixel
+                    for (let k = 0; k < arr.length; k += 4) {
+                      arr[k + 0] = meta.drawingInfo.renderer.classBreakInfos[i].symbol.color[0]   // R value
+                      arr[k + 1] = meta.drawingInfo.renderer.classBreakInfos[i].symbol.color[1];  // G value
+                      arr[k + 2] = meta.drawingInfo.renderer.classBreakInfos[i].symbol.color[2];    // B value
+                      arr[k + 3] = meta.drawingInfo.renderer.classBreakInfos[i].symbol.color[3];  // A value
+                    }
+  
+                    // Initialize a new ImageData object
+                    imageData.push(new ImageData(arr, 20, 20));
+                    ctx.putImageData(imageData[i], 0, 0);
+                    ctx.scale(0.5, 0.5);
+                    // set canvas specification as DataUrl 
+                    featureResp.push({
+                      url: canvas.toDataURL('image/png'),
+                      label: meta.drawingInfo.renderer.classBreakInfos[i].label,
+                      layer: meta.drawingInfo.renderer.classBreakInfos[i].description
+                    });
+  
+                  }
+                }
+             
                 this.legendUrls.emit(featureResp);
                 this.urls = featureResp;
               });
