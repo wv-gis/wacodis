@@ -40,7 +40,7 @@
     "classlist.js": "^1.1.20150312",
     "core-js": "^3.8.1",
     "d3-delaunay": "^5.3.0",
-    "esri-leaflet": "^2.5.1",
+    "esri-leaflet": "^2.3.3",
     "esri-leaflet-renderers": "^2.1.2",
     "iso8601-js-period": "^0.2.1",
     "jquery": "^3.5.1",
