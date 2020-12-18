@@ -59,10 +59,10 @@ export class ProfileViewComponent implements OnInit, AfterViewInit {
   //   this.onResize();
   // }
 
-  @ViewChild('depthGraph', {static: false})
+  @ViewChild('depthGraph')
   public d3Elem: ElementRef;
 
-  @ViewChild('profileGraph', {static: false})
+  @ViewChild('profileGraph')
   public profileElem: ElementRef;
   
   public dataset: InterDataset[] = [];
