@@ -38,7 +38,7 @@ Report to depict the storage content of dams in comparison to dry years and isop
 * swat module
 Results of the susbtrance entry model (SWAT) for the Area of the "Obere Wupper" for sediment and nitrogen
 <p align="center">
-  <img src="src/assets/images/modellierung_Bericht.PNG" height="100">
+  <img src="src/assets/images/Modellierung_Bericht.PNG" height="100">
 </p>
 
 **Timeseries Data**  
