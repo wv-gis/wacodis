@@ -34,7 +34,7 @@ const height = 750;
  */
 export class ReportsViewComponent implements OnInit, OnDestroy {
 
-  @ViewChild('d3Graph', { static: false })
+  @ViewChild('d3Graph')
   public plotlydiv: ElementRef;
 
   @Input() serviceUrl: string;

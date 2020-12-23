@@ -3,50 +3,53 @@
   <img src="https://raw.githubusercontent.com/WaCoDiS/apis-and-workflows/master/misc/logos/wacodis.png" width="200">
 </p>
 Web application components for the visualization of remote sensing data and in-situ information within the research project: 
-Copernicus-based services for monitoring material inputs in watercourses and dams – WaCoDiS (WaCoDiS)
+Copernicus-based services for monitoring material inputs in watercourses and dams – WaCoDiS
 
  https://wacodis.fbg-hsbo.de/
 
-### Modules 
-The WaCoDiS Web Client project consists of different views for data depiction of satellite data and in-situ data. 
-* copernicus
-* change detection
-* reports
-* swat
-* timeseries
-* map
+## Modules 
+The WaCoDiS Web Client project consists of different views for data depiction of satellite data and in-situ data. These views are splitted into different modules.
 
-* **Copernicus Remote Sensing Reports**  
+**Copernicus Remote Sensing Reports** 
+* copernicus module 
 Reports with Information for land classification, vitality density, chlorophyll within dams and surface temperature for the Wupper Area
 <p align="center">
-  <!-- <img src="https://raw.githubusercontent.com/WaCoDiS/apis-and-workflows/master/misc/logos/mfund.jpg" height="100"> -->
+  <img src="src/assets/images/Landbedeckung.png" height="100">
 </p>
 
-* **Change Detection**  
+**Change Detection**  
+* change detection module
 Compare different Satellite products or dates of the same product to detect changes
 <p align="center">
-  <!-- <img src="https://raw.githubusercontent.com/WaCoDiS/apis-and-workflows/master/misc/logos/mfund.jpg" height="100"> -->
+  <img src="src/assets/images/ChangeDetection.PNG" height="100">
 </p>
 
-* **Water management Report**  
-Report to depict the storage content of dams in comparison to dry years
+**Water management Report**  
+* reports module
+Report to depict the storage content of dams in comparison to dry years and isoplethen profile visualisation of oxygen values at the Große Dhünn Talsperre
 <p align="center">
-  <!-- <img src="https://raw.githubusercontent.com/WaCoDiS/apis-and-workflows/master/misc/logos/mfund.jpg" height="100"> -->
+  <img src="src/assets/images/WaWiBericht.PNG" height="100">
+</p>
+<p align="center">
+  <img src="src/assets/images/Isoplethen.PNG" height="100">
 </p>
 
-* **Modelling Results**  
+**Modelling Results**  
+* swat module
 Results of the susbtrance entry model (SWAT) for the Area of the "Obere Wupper" for sediment and nitrogen
 <p align="center">
-  <!-- <img src="https://raw.githubusercontent.com/WaCoDiS/apis-and-workflows/master/misc/logos/mfund.jpg" height="100"> -->
+  <img src="src/assets/images/Modellierung_Bericht.PNG" height="100">
 </p>
 
-* **Timeseries Data**  
+**Timeseries Data**  
+* timeseries module
 Select and depict Sensor Data of measuring stations within the Wupper area in a diagram
-<p align="center">
-  <!-- <img src="https://raw.githubusercontent.com/WaCoDiS/apis-and-workflows/master/misc/logos/mfund.jpg" height="100"> -->
-</p>
 
-### Third-Party Packages used
+**Map Visualisation**
+* map module
+Display service within map and define Layer options like opacity, legend, visibility
+
+## Third-Party Packages used
 * esri-leaflet
 * esri-leaflet-renderers
 * leaflet
@@ -57,8 +60,10 @@ Select and depict Sensor Data of measuring stations within the Wupper area in a 
 * leaflet.markercluster
 * leaflet.sync
 * bootstrap
+* d3-delaunay
+* ol
 
-### Settings
+## Settings
 For Sentinel Data requests a client Id and secret must be provided for the request token service.
 No guarantee that the services are still available due to ending support of project.
 long term mean for temperature and rain data
@@ -77,7 +82,7 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 
 
 
-### License 
+## License 
 Copyright [2020]
 
 Licensed under the Apache License, Version 2.0 (the "License");

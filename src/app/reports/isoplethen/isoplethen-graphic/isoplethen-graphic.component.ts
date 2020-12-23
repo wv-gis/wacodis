@@ -31,7 +31,7 @@ export class IsoplethenGraphicComponent implements OnInit, OnChanges {
   @Input() datasetID: string;
   @Input() interp: string = 'linear';
 
-  @ViewChild('swappChart', { static: false }) swappChart: ElementRef;
+  @ViewChild('swappChart') swappChart: ElementRef;
 
   private start_iso = 1;
   private end_iso = this.numIso;
