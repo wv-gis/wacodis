@@ -14,31 +14,31 @@ The WaCoDiS Web Client project consists of different views for data depiction of
 * copernicus module 
 Reports with Information for land classification, vitality density, chlorophyll within dams and surface temperature for the Wupper Area
 <p align="center">
-  <img src="assets/images/Landbedeckung.png" height="100">
+  <img src="src/assets/images/Landbedeckung.png" height="100">
 </p>
 
 **Change Detection**  
 * change detection module
 Compare different Satellite products or dates of the same product to detect changes
 <p align="center">
-  <img src="assets/images/ChangeDetection.PNG" height="100">
+  <img src="src/assets/images/ChangeDetection.PNG" height="100">
 </p>
 
 **Water management Report**  
 * reports module
 Report to depict the storage content of dams in comparison to dry years and isoplethen profile visualisation of oxygen values at the Große Dhünn Talsperre
 <p align="center">
-  <img src="assets/images/WaWiBericht.PNG" height="100">
+  <img src="src/assets/images/WaWiBericht.PNG" height="100">
 </p>
 <p align="center">
-  <img src="assets/images/Isoplethen.PNG" height="100">
+  <img src="src/assets/images/Isoplethen.PNG" height="100">
 </p>
 
 **Modelling Results**  
 * swat module
 Results of the susbtrance entry model (SWAT) for the Area of the "Obere Wupper" for sediment and nitrogen
 <p align="center">
-  <img src="assets/images/modellierung_Bericht.PNG" height="100">
+  <img src="src/assets/images/Modellierung_Bericht.PNG" height="100">
 </p>
 
 **Timeseries Data**  
