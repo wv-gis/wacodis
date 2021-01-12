@@ -30,7 +30,7 @@
         },
         {
             "name":"SOS 3 Wupperverband",
-            "url": "http://192.168.101.105/sos3/api/",
+            "url": "http://192.168.101.105/sos-intern-gis/api/",
             "connector": "DatasetApiV3Connector"
         }
 
