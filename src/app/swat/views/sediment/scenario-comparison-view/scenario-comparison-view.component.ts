@@ -45,7 +45,7 @@ export class ScenarioComparisonViewComponent implements OnInit {
   public selSzenarioTSN_ID: number[] = [];
   public selSzenarioSUBN_ID: number[] = [];
   sublayerIDs: number[] = [];
-  szenarioIds: number[] = [63, 72, 81, 90, 99, 108, 117, 126];
+  szenarioIds: number[] = [63, 72, 81, 90,135, 99, 108, 117, 126];
   public selSzenario: string[] = [];
   public selSzenario_id_l = 0;
   public selSzenario_id_r = 1;
@@ -55,7 +55,8 @@ export class ScenarioComparisonViewComponent implements OnInit {
   public params: string[];
   public param: string;
   public idInfo: number;
-  public baseLayers: L.Layer[] = []
+  public baseLayers: L.Layer[] = [];
+  scenDescript = "Alles Ackerland wird zu intensiv (4 Mahden) genutztem Grünland.";
 
   constructor(private mapCache: MapCache, private router: ActivatedRoute, private http: HttpClient) { }
 
@@ -242,5 +243,9 @@ export class ScenarioComparisonViewComponent implements OnInit {
     });
     this.szenarioMap.unsync(this.mainMap);
     this.addLayerSzenarioMap();
+
+    this.http.get(this.groupLayerUrl + '/' + this.szenarioIds[selSzenario] + '/?f=json').subscribe(resp => {
+      this.scenDescript = resp["description"];
+    });
   }
 }
