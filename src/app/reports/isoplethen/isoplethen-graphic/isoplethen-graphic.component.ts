@@ -72,7 +72,7 @@ export class IsoplethenGraphicComponent implements OnInit, OnChanges {
    * request dataset to show in graph
    */
   receiveDatasets() {
-    this.swappApi.getDataset(this.datasetID, "http://192.168.101.105/sos3/api/").subscribe((dataset) => {
+    this.swappApi.getDataset(this.datasetID, "http://192.168.101.105/sos-intern-gis/api/").subscribe((dataset) => {
 
       this.swappApi.getDatasetData(dataset.id, dataset.internalId.split('__')[0], { timespan: new Date(this.timespan.from).toISOString() + '/' + new Date(this.timespan.to).toISOString() })
         .subscribe(

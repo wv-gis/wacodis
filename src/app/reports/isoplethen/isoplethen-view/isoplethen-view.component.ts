@@ -16,7 +16,7 @@ export class IsoplethenViewComponent implements OnInit, AfterViewInit {
   samplingId = '1223';
   public internalId = {
     id: this.samplingId,
-    url: "http://192.168.101.105/sos3/api/"
+    url: "http://192.168.101.105/sos-intern-gis/api/"
   };
   public fixed: boolean = true;
   public even: boolean = false;
@@ -38,7 +38,7 @@ export class IsoplethenViewComponent implements OnInit, AfterViewInit {
 
   constructor( private api: ApiV3InterfaceService) {
     //observationType="profile", phenomenon = Sauerstoff
-    this.api.getDatasets("http://192.168.101.105/sos3/api/", { phenomena: ["174"],observationTypes: [ApiV3ObservationTypes.Profil] }).subscribe((timeseries) => {
+    this.api.getDatasets("http://192.168.101.105/sos-intern-gis/api/", { phenomena: ["174"],observationTypes: [ApiV3ObservationTypes.Profil] }).subscribe((timeseries) => {
       timeseries.forEach((series) => {
         if(new Date(series.samplingTimeEnd).getTime()>= new Date(this.timeSpan.to).getTime()){
           this.measureParams.push(series.label);

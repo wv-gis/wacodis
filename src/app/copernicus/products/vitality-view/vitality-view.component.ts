@@ -247,21 +247,21 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
 
           for (let m = 0; m < 12; m++) {
             let sum = 0;
-            let d = new Date(new Date(new Date().getFullYear() , m + 1, 1).getTime() - 86400000).getDate();
-            this.apiInterface.getDatasetData(val, new Timespan(new Date(new Date().getFullYear() , m, 1), new Date(new Date().getFullYear() , m, d))
+            let d = new Date(new Date(new Date().getFullYear()-1 , m + 1, 1).getTime() - 86400000).getDate();
+            this.apiInterface.getDatasetData(val, new Timespan(new Date(new Date().getFullYear()-1 , m, 1), new Date(new Date().getFullYear()-1 , m, d))
             ).subscribe((dataset) => {
               dataset.values.forEach((v, i, arr) => {
                 sum += v[1];
               });
-            }, error => console.log(error), () => this.setMonthSum({ timestamp: new Date(new Date().getFullYear() , m, 1).getTime(), value: sum }, m));
+            }, error => console.log(error), () => this.setMonthSum({ timestamp: new Date(new Date().getFullYear()-1 , m, 1).getTime(), value: sum }, m));
           }
         }
         else if (val.id == this.tempId) {
           for (let m = 0; m < 12; m++) {
             let sum = 0;
             let h;
-            let d = new Date(new Date(new Date().getFullYear(), m + 1, 1).getTime() - 86400000).getDate();
-            this.apiInterface.getDatasetData(val, new Timespan(new Date(new Date().getFullYear() , m, 1), new Date(new Date().getFullYear() , m, d))
+            let d = new Date(new Date(new Date().getFullYear()-1, m + 1, 1).getTime() - 86400000).getDate();
+            this.apiInterface.getDatasetData(val, new Timespan(new Date(new Date().getFullYear()-1 , m, 1), new Date(new Date().getFullYear()-1 , m, d))
             ).subscribe((dataset) => {
               if (dataset.values.length) {
                 dataset.values.forEach((v, i, arr) => {
@@ -271,9 +271,9 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
               }
             }, error => console.log(error), () => {
               if (h != undefined) {
-                this.setMonthMeanTemp({ timestamp: new Date(new Date().getFullYear() , m, 1).getTime(), value: sum }, m, h);
+                this.setMonthMeanTemp({ timestamp: new Date(new Date().getFullYear()-1 , m, 1).getTime(), value: sum }, m, h);
               } else {
-                this.setMonthMeanTemp({ timestamp: new Date(new Date().getFullYear(), m, 1).getTime(), value: undefined }, m, undefined);
+                this.setMonthMeanTemp({ timestamp: new Date(new Date().getFullYear()-1, m, 1).getTime(), value: undefined }, m, undefined);
               }
             }
             );
@@ -431,7 +431,7 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
 
       this.avgMonthTemp_D.push(
         {
-          timestamp: new Date(new Date().getFullYear() , 0 + p, 1).getTime(),
+          timestamp: new Date(new Date().getFullYear()-1 , 0 + p, 1).getTime(),
           value: parseFloat(this.entries[p][1])
         });
     }
@@ -466,7 +466,7 @@ export class VitalityViewComponent implements OnInit, AfterViewInit {
 
       this.avgMonthRain_D.push(
         {
-          timestamp: new Date(new Date().getFullYear() , 0 + p, 1).getTime(),
+          timestamp: new Date(new Date().getFullYear()-1 , 0 + p, 1).getTime(),
           value: parseFloat(this.entriesDh[p][1])
         });
     }

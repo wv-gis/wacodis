@@ -56,7 +56,7 @@ export class SingleResultViewComponent implements OnInit, OnDestroy {
   public selSzenarioHRUN: number[] = [];
   public selSzenarioLU: number[] = [];
   sublayerIDs: number[] = [];
-  szenarioIds: number[] = [63, 72, 81, 90, 99, 108, 117, 126];
+  szenarioIds: number[] = [63, 72, 81, 90,135, 99, 108, 117, 126];
   public selSzen_Id: number = 0;
   public selSzenario: string[] = [];
   public baseLayers: L.Layer[] = [];
